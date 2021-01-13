@@ -1,0 +1,44 @@
+// A launch configuration that compiles the extension and then opens it inside a new window
+// Use IntelliSense to learn about possible attributes.
+// Hover to view descriptions of existing attributes.
+// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Backend",
+            "type": "java",
+            "request": "attach",
+            "preLaunchTask": "quarkus:dev",
+            "projectName": "wms-backend",
+            "internalConsoleOptions": "openOnFirstSessionStart",
+            "hostName": "localhost",
+            "port": 5005
+        },
+        {
+            "name": "Frontend",
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "npm install",
+            "cwd": "${workspaceFolder}/frontend",
+            "program": "${workspaceFolder}/frontend/node_modules/nuxt/bin/nuxt",
+            "runtimeArgs": [
+                "--inspect=9229"
+            ],
+            "port": 9229,
+            "outputCapture": "std",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Backend + Frontend",
+            "configurations": [
+                "Backend",
+                "Frontend"
+            ]
+        }
+    ]
+}

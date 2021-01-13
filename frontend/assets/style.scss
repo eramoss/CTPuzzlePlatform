@@ -28,6 +28,9 @@ section {
   }
   text-align: center;
 }
+h2{
+  margin-bottom: 20px;
+}
 a {
   margin: auto 10px;
 }
@@ -36,7 +39,7 @@ a {
   background: #fafafa;
   padding: 30px;
   border: 1px solid #dadada;
-  margin: 30px auto;
+
 
   .title {
     margin-bottom: 20px;
@@ -44,7 +47,14 @@ a {
     border-bottom: 1px solid #dadada;
   }
 }
+.left{
+  text-align: left;
+}
+.el-table{
+  margin-top: 20px;
+}
 .panel.register{
+  margin: 30px auto;
   margin-left: 10px;
   margin-right: 10px;
 }

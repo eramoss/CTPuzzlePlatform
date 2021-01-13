@@ -1,3 +1,4 @@
+const MonacoEditorPlugin = require('monaco-editor-webpack-plugin')
 
 export default {
   /*
@@ -30,7 +31,7 @@ export default {
   */
   plugins: [
     '@/plugins/index',
-    '@/plugins/element-ui'
+    '@/plugins/element-ui',
   ],
   /*
   ** Nuxt.js dev-modules
@@ -56,10 +57,18 @@ export default {
   */
   build: {
     transpile: [/^element-ui/],
+    plugins: [
+      /* new MonacoEditorPlugin({
+        // https://github.com/Microsoft/monaco-editor-webpack-plugin#options
+        languages: ['javascript', 'json', 'r', 'typescript'],
+        features: ['bracketMatching']
+      }) */
+    ],
     /*
     ** You can extend webpack config here
     */
-    extend (config, ctx) {
+    extend(config, ctx) {
+
     }
   }
 }
