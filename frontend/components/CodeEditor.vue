@@ -1,26 +1,38 @@
 <template>
-    <MonacoEditor class="editor" v-model="code" language="typescript" />
+  <div>
+    <!-- <pre>
+      {{ code }}
+    </pre> -->
+    <MonacoEditor
+      class="editor"
+      v-model="code"
+      language="typescript"
+      :style="{ width: width, height: height }"
+    />
+  </div>
 </template>
 
-<script>
-import MonacoEditor from 'vue-monaco'
+<script lang="ts">
 
-export default {
+import Vue from 'vue';
+//@ts-ignore
+import MonacoEditor from "vue-monaco";
+import { Component, Provide, Prop, VModel } from 'vue-property-decorator';
+
+@Component({
   components: {
     MonacoEditor
-  },
-
-  data() {
-    return {
-      code: 'const noop = () => {}'
-    }
   }
+})
+export default class CodeEditor extends Vue {
+  @Prop({default:'100%'}) width!:string
+  @Prop({default:'360px'}) height!:string
+  @VModel({default:'const code = {}'}) code!:string
 }
 </script>
 
 <style>
 .editor {
-  width: 600px;
-  height: 800px;
+  border: 1px solid #ccc;
 }
 </style>

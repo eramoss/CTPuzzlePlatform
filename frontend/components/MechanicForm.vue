@@ -11,10 +11,10 @@
             ></el-input>
           </el-form-item>
           <el-form-item>
-            <code-editor v-model="mechanic.classDefinition" />
+            <code-editor v-model="mechanic.classDefinition" height="200px" />
           </el-form-item>
           <el-form-item>
-            <code-editor v-model="mechanic.scoreFunction"></code-editor>
+            <code-editor v-model="mechanic.scoreFunction" height="200px" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -37,9 +37,17 @@ export default Vue.extend({
   data() {
     return {
       mechanic: {
-        name: null,
-        classDefinition: null,
-        scoreFunction: null,
+        name: 'Programação Rope',
+        classDefinition: `class ItemProgramacaoRope {
+  caminhoPercorrido: Array<string>;
+  melhorCaminho: Array<string>;
+  tempoDesependido: number;
+  numeroPecasUtilizadas: number;
+  numeroPecasNecessarias: number;
+}`,
+        scoreFunction: `function calculaScore(resposta: ItemProgramacaoRope){
+   //...
+}`,
       },
     };
   },
