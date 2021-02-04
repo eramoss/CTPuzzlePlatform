@@ -17,7 +17,7 @@
 import Vue from 'vue';
 //@ts-ignore
 import MonacoEditor from "vue-monaco";
-import { Component, Provide, Prop, VModel } from 'vue-property-decorator';
+import { Component, Prop, VModel } from 'vue-property-decorator';
 
 @Component({
   components: {
@@ -26,7 +26,7 @@ import { Component, Provide, Prop, VModel } from 'vue-property-decorator';
 })
 export default class CodeEditor extends Vue {
   @Prop({default:'100%'}) width!:string
-  @Prop({default:'360px'}) height!:string
+  @Prop({default:'260px'}) height!:string
   @VModel({default:'const code = {}'}) code!:string
 }
 </script>
@@ -34,5 +34,8 @@ export default class CodeEditor extends Vue {
 <style>
 .editor {
   border: 1px solid #ccc;
+}
+.editor:hover{
+  border: 1px solid #999;
 }
 </style>

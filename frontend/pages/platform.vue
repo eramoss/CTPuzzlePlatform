@@ -2,29 +2,30 @@
   <div>
     <el-container style="height: 100vh">
       <el-header style="padding: 0">
-        <top-bar width="100%" />
+        <top-bar width="100%"/>
       </el-header>
       <el-container>
         <el-aside width="200px"
-          ><el-menu
+        >
+          <el-menu
             router
             default-active="2"
             id="platform-menu"
             @open="handleOpen"
             @close="handleClose"
           >
-            <el-menu-item-group title="Configurações">
-              <el-menu-item index="/platform/mechanics">
+            <el-menu-item-group>
+              <el-menu-item index="/platform/mechanics" route="/platform/mechanics">
                 <i class="el-icon-s-operation"></i>
                 <span> Mecânicas </span>
               </el-menu-item>
-              <el-menu-item index="/platform/items">
+              <el-menu-item index="/platform/items" route="/platform/items">
                 <i class="el-icon-files"></i>
                 <span> Itens </span>
               </el-menu-item>
             </el-menu-item-group>
-            <el-menu-item-group title="Aplicações">
-              <el-menu-item index="/platform/tests">
+            <el-menu-item-group>
+              <el-menu-item index="/platform/tests" route="/platform/tests">
                 <i class="el-icon-receiving"></i>
                 <span> Testes </span>
               </el-menu-item>
@@ -33,16 +34,17 @@
                 <span> Amostras </span>
               </el-menu-item>
             </el-menu-item-group>
-            <el-menu-item-group title="Resultados">
+            <el-menu-item-group>
               <el-menu-item index="/platform/statistics">
                 <i class="el-icon-data-analysis"></i>
                 <span> Estatísticas </span>
               </el-menu-item>
             </el-menu-item-group>
-          </el-menu></el-aside
+          </el-menu>
+        </el-aside
         >
         <el-main>
-          <div class="panel">
+          <div>
             <nuxt-child></nuxt-child>
           </div>
         </el-main>
@@ -53,13 +55,14 @@
 
 <script>
 import TopBar from "@/components/TopBar";
+
 export default {
   head() {
     return {
       title: "Plataforma",
     };
   },
-  components: { TopBar },
+  components: {TopBar},
   methods: {
     handleOpen(key, keyPath) {
       console.log(key, keyPath);

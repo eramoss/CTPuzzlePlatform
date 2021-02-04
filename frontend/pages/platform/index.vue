@@ -1,10 +1,20 @@
 <template>
-  <div>Teste</div>
+  <div>
+
+    <el-button @click="goCreateTest" icon="el-icon-plus" type="primary">
+      Novo teste
+    </el-button>
+  </div>
 </template>
 
 <script>
-export default {
-
+import Vue from 'vue';
+import Component from 'vue-class-component';
+@Component
+export default class PlatformDashboard extends Vue {
+  goCreateTest(){
+    this.$router.push('/platform/tests/new')
+  }
 }
 </script>
 

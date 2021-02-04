@@ -9,34 +9,16 @@
         <el-form>
           <fieldset>
             <legend>Identificação</legend>
-            <el-form-item>
-              <el-row :gutter="15">
-                <el-col :span="8">
-                  <el-input
-                    placeholder="Nome completo"
-                    v-model="user.name"
-                    autofocus
-                    title="Nome"
-                  ></el-input>
-                </el-col>
-                <el-col :span="16">
-                  <el-input
-                    placeholder="Sobrenome"
-                    title="Sobrenome"
-                    v-model="user.surname"
-                  >
-                  </el-input>
-                </el-col>
-              </el-row>
+            <el-form-item label="Nome completo" label-width="140px">
+              <el-input
+                placeholder="Nome completo"
+                v-model="user.name"
+                autofocus
+                title="Nome"
+              ></el-input>
             </el-form-item>
 
-            <!-- <el-form-item label="Gênero">
-              <el-radio v-model="user.gender" label="M">Masculino</el-radio>
-              <el-radio v-model="user.gender" label="F">Feminino</el-radio>
-              <el-radio v-model="user.gender" label="O">Outro</el-radio>
-            </el-form-item> -->
-
-            <!-- <el-form-item label="Nascimento">
+            <el-form-item label="Data de nascimento">
               <el-row :gutter="10" type="flex">
                 <el-col :span="6"
                   ><el-select v-model="day" placeholder="Dia"
@@ -66,7 +48,12 @@
                   ></el-select>
                 </el-col>
               </el-row>
-            </el-form-item> -->
+            </el-form-item>
+            <el-form-item label="Gênero">
+              <el-radio v-model="user.gender" label="M">Masculino</el-radio>
+              <el-radio v-model="user.gender" label="F">Feminino</el-radio>
+              <el-radio v-model="user.gender" label="O">Não informar</el-radio>
+            </el-form-item>
           </fieldset>
 
           <!-- <fieldset>
@@ -87,7 +74,7 @@
           <fieldset>
             <legend>Credenciais</legend>
 
-            <el-form-item>
+            <el-form-item label="Email" label-width="50px">
               <el-input
                 type="email"
                 v-model="user.email"
@@ -96,7 +83,7 @@
               >
               </el-input>
             </el-form-item>
-            <el-form-item>
+            <el-form-item label="Senha" label-width="50px">
               <el-input
                 type="password"
                 v-model="user.password"
@@ -115,70 +102,91 @@
     </container>
   </div>
 </template>
-<script>
-export default {
-  data() {
-    return {
-      user: {
-        name: "Cassiano",
-        surname: "Viana",
-      },
-      day: null,
-      month: null,
-      year: null,
-      schoolings: [
-        "Básico",
-        "Médio",
-        "Superior incompleto",
-        "Superior completo",
-        "Pós-graduado(a)",
-        "Mestre",
-        "Doutor(a)",
-      ],
-      months: [
-        { index: "01", name: "Janeiro" },
-        { index: "02", name: "Fevereiro" },
-        { index: "03", name: "Março" },
-        { index: "04", name: "Abril" },
-        { index: "05", name: "Maio" },
-        { index: "06", name: "Junho" },
-        { index: "07", name: "Julho" },
-        { index: "08", name: "Agosto" },
-        { index: "09", name: "Setembro" },
-        { index: "10", name: "Outubro" },
-        { index: "11", name: "Novembro" },
-        { index: "12", name: "Dezembro" },
-      ],
-      days: (() => {
-        let days = [];
-        for (let i = 1; i <= 31; i++) {
-          let day = i;
-          if (i < 10) {
-            day = "0" + i;
-          }
-          days.push(day);
-        }
-        return days;
-      })(),
-      years: (() => {
-        let years = [];
-        let lastYear = new Date().getFullYear() - 10;
-        for (let x = 1970; x <= lastYear; x++) {
-          years.push(x);
-        }
-        return years;
-      })(),
-    };
-  },
-  computed: {
-    birthDate() {
-      return `${this.day}/${this.month}/${this.year}`;
-    },
-  },
-  methods: {
-    register() {
-      this.$router.push({ name: "index-signin-confirm-code", params: { email: this.user.email } });
-    },
-  },
-};
+<script lang="ts">
+import Vue from "vue";
+import User from "~/types/User";
+import { AxiosResponse } from "axios";
+
+import { Provide } from "vue-property-decorator";
+import { Action } from "vuex-class";
+
+import Component from "vue-class-component";
+
+class Month {
+  index!: string;
+  name!: string;
+}
+
+@Component
+export default class UserSigninForm extends Vue {
+  @Provide() user: User = new User();
+
+  @Provide() schoolings: string[] = [
+    "Básico",
+    "Médio",
+    "Superior incompleto",
+    "Superior completo",
+    "Pós-graduado(a)",
+    "Mestre",
+    "Doutor(a)",
+  ];
+
+  @Provide() months: Month[] = [
+    { index: "01", name: "Janeiro" },
+    { index: "02", name: "Fevereiro" },
+    { index: "03", name: "Março" },
+    { index: "04", name: "Abril" },
+    { index: "05", name: "Maio" },
+    { index: "06", name: "Junho" },
+    { index: "07", name: "Julho" },
+    { index: "08", name: "Agosto" },
+    { index: "09", name: "Setembro" },
+    { index: "10", name: "Outubro" },
+    { index: "11", name: "Novembro" },
+    { index: "12", name: "Dezembro" },
+  ];
+
+  day: string = "";
+  month: string = "";
+  year: string = "";
+
+  @Action("users/saveUser") saveUser!: (user: User) => Promise<AxiosResponse>;
+
+  get birthDate() {
+    return `${this.day}/${this.month}/${this.year}`;
+  }
+
+  get days() {
+    let days = [];
+    for (let i = 1; i <= 31; i++) {
+      let day = i + "";
+      if (i < 10) {
+        day = "0" + i;
+      }
+      days.push(day);
+    }
+    return days;
+  }
+
+  get years() {
+    let years = [];
+    let lastYear = new Date().getFullYear() - 10;
+    for (let x = 1970; x <= lastYear; x++) {
+      years.push(x);
+    }
+    return years;
+  }
+
+  async register() {
+    try{
+      await this.saveUser(this.user);
+    }catch(e){
+      console.log(e);
+    }
+    /* this.$router.push({
+      name: "index-signin-confirm-code",
+      params: { email: this.user.email },
+    }); */
+  }
+}
 </script>

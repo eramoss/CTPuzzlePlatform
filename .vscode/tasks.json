@@ -11,8 +11,8 @@
                 "cwd": "${workspaceFolder}/frontend"
             },
             "presentation": {
-                "reveal": "always",
-                "panel": "dedicated"
+                "group": "a",
+                "panel": "new"
             },
             "problemMatcher": []
         },
@@ -24,8 +24,8 @@
                 "cwd": "${workspaceFolder}/frontend"
             },
             "presentation": {
-                "reveal": "always",
-                "panel": "dedicated"
+                "group": "a",
+                "panel": "new"
             },
             "problemMatcher": []
         },

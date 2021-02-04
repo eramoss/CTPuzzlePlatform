@@ -7,30 +7,27 @@
     "configurations": [
         {
             "name": "Backend",
-            "type": "java",
-            "request": "attach",
-            "preLaunchTask": "quarkus:dev",
-            "projectName": "wms-backend",
-            "internalConsoleOptions": "openOnFirstSessionStart",
-            "hostName": "localhost",
-            "port": 5005
+            "command": "npm run start:debug",
+            "cwd": "${workspaceFolder}/backend",
+            "request": "launch",
+            "type": "node-terminal",
+            "internalConsoleOptions": "openOnSessionStart"
         },
         {
             "name": "Frontend",
-            "type": "node",
             "request": "launch",
-            "preLaunchTask": "npm install",
+            //"preLaunchTask": "npm install",
+            "envFile": "${workspaceFolder}/.env",
             "cwd": "${workspaceFolder}/frontend",
             "program": "${workspaceFolder}/frontend/node_modules/nuxt/bin/nuxt",
-            "runtimeArgs": [
-                "--inspect=9229"
-            ],
-            "port": 9229,
-            "outputCapture": "std",
             "skipFiles": [
                 "<node_internals>/**"
-            ]
-        }
+            ],
+            "type": "pwa-node",
+            "console": "internalConsole",
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+
     ],
     "compounds": [
         {
@@ -38,7 +35,7 @@
             "configurations": [
                 "Backend",
                 "Frontend"
-            ]
+            ],
         }
     ]
 }

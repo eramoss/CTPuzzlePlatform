@@ -1,4 +1,7 @@
+console.log('baseURL', process.env.baseURL)
+
 export default {
+
   /*
   ** Headers of the page
   */
@@ -22,7 +25,7 @@ export default {
   */
   css: [
     '~/assets/style.scss',
-    //'element-ui/lib/theme-chalk/index.css'
+    'element-ui/lib/theme-chalk/index.css'
   ],
   /*
   ** Plugins to load before mounting the App
@@ -30,6 +33,7 @@ export default {
   plugins: [
     '@/plugins/index',
     '@/plugins/element-ui',
+    '@/plugins/axios-accessors',
   ],
   /*
   ** Nuxt.js dev-modules
@@ -50,6 +54,7 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
+    baseURL: process.env.baseURL
   },
   /*
   ** Build configuration
@@ -57,6 +62,7 @@ export default {
   build: {
     transpile: [/^element-ui/],
     plugins: [
+
     ],
     /*
     ** You can extend webpack config here

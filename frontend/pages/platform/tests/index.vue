@@ -2,12 +2,12 @@
   <div class="left">
     <el-breadcrumb>
       <el-breadcrumb-item :to="{path: '/platform'}">Plataforma</el-breadcrumb-item>
-      <el-breadcrumb-item>Mecânicas</el-breadcrumb-item>
+      <el-breadcrumb-item>Testes</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="panel">
-      <h2>Mecânicas</h2>
+      <h2>Testes</h2>
       <el-button type="primary" icon="el-icon-plus" @click="create">
-        Nova
+        Novo
       </el-button>
       <el-table>
         <el-table-column></el-table-column>
@@ -22,13 +22,13 @@ import Component from "vue-class-component";
 @Component({
   head() {
     return {
-      title: "Mecânicas",
+      title: "Testes",
     };
   },
 })
-export default class MechanicsList extends Vue {
+export default class TestsList extends Vue {
   create() {
-    this.$router.push('/platform/mechanics/new')
+    this.$router.push('/platform/tests/new')
   }
 }
 </script>

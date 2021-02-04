@@ -37,7 +37,7 @@ a {
 .panel {
   border-radius: 10px;
   background: #fafafa;
-  padding: 30px;
+  padding: 20px;
   border: 1px solid #dadada;
 
 
@@ -86,4 +86,10 @@ a {
   width: 100%;
 }
 
+.el-breadcrumb{
+  margin-bottom: 10px;
+}
 
+.el-select{
+  width: 100%;
+}
