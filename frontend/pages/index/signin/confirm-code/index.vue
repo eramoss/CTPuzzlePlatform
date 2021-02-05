@@ -13,7 +13,7 @@
             type="error"
             class="error-message"
             style="margin-bottom: 10px"
-            v-show="isCodeInvalid"
+            v-show="!isCodeValid"
             :closable="false"
             :center="true"
           >
@@ -26,76 +26,105 @@
             ref="confirmCodeInput"
             :maxlength="codeMaxLength"
             class="confirm-code-input"
-            :class="{ invalid: isCodeInvalid }"
+            :class="{ invalid: !isCodeValid && isCodeRequired }"
             size="large"
             placeholder="_ _ _ _ _"
           />
         </div>
         <el-row class="flex-end" style="margin-top: 20px">
-          <el-button type="text" @click="resendCode"
+          <!-- <el-button type="text" @click="resendCode"
             >Reenviar código de confirmação</el-button
-          >
+          > -->
           <el-button type="primary"> Confirmar código </el-button>
         </el-row>
       </div>
     </container>
   </div>
 </template>
-<script>
-export default {
-  data() {
-    return {
-      codeMaxLength: 5,
-      confirmCode: "",
-      email: "",
-      loading: false,
-      loadingText: null,
-      isCodeInvalid: false,
-    };
-  },
-  created() {
-    this.email = this.$route.params.email;
-  },
-  mounted() {
-    this.$refs.confirmCodeInput.focus();
-  },
-  methods: {
-    resendCode() {
-      this.loading = true;
-      this.loadingText = "Reenviando código de confirmação...";
-      setTimeout(() => {
-        this.loading = false;
+<script lang="ts">
+import Vue from "vue";
+import { Action } from "vuex-class";
+import { Watch, Ref, Component } from "vue-property-decorator";
+import { ElInput } from "element-ui/types/input";
+import { AxiosResponse } from "axios";
+
+@Component
+export default class ConfirmCodeForm extends Vue {
+  codeMaxLength: number = 5;
+  confirmCode: string = "";
+  email: string = "";
+  loading: boolean = false;
+  loadingText: string = "";
+  isCodeValid: boolean = true;
+  isCodeRequired: boolean = false;
+
+  @Ref("confirmCodeInput") confirmCodeInput!: ElInput;
+
+  @Action("users/validateConfirmationCode") validateConfirmationCode!: ({
+    email: string,
+    code: string,
+    is,
+  }) => Promise<AxiosResponse>;
+
+  resendCode() {
+    this.loading = true;
+    this.loadingText = "Reenviando código de confirmação...";
+    setTimeout(() => {
+      this.loading = false;
+      this.$notify({
+        type: "success",
+        title: "Email enviado",
+        message: "Digite o código enviado para sua caixa de email",
+      });
+    }, 5000);
+  }
+
+  async callValidateCode() {
+    this.loading = true;
+    this.loadingText = "Validando código de confirmação...";
+    try {
+      let response = await this.validateConfirmationCode({
+        email: this.email,
+        code: this.confirmCode,
+      });
+      this.isCodeRequired = true;
+      this.isCodeValid = response.data as boolean;
+      if (!this.isCodeValid) {
+        this.$refs.confirmCodeInput.select();
+      }
+      if (this.isCodeValid) {
+        this.$router.push("/platform");
         this.$notify({
           type: "success",
-          title: "Email enviado",
-          message: "Digite o código enviado para sua caixa de email",
+          title: "Bem-vindo",
+          message:
+            "Você já pode começar a criar seus testes de Pensamento Computacional",
         });
-      }, 5000);
-    },
-    validateCode() {
-      this.loading = true;
-      this.loadingText = "Validando código de confirmação...";
-      setTimeout(() => {
-        this.loading = false;
-        this.isCodeInvalid = true;
-        this.$refs.confirmCodeInput.select();
-      }, 5000);
-    },
-  },
-  watch: {
-    confirmCode(val) {
-      this.isCodeInvalid = false;
-      if (val) {
-        if (val.length === this.codeMaxLength) {
-          this.validateCode();
-        }
       }
-    },
-  },
+    } catch (e: Error) {
+      console.error(e);
+      this.isCodeRequired = false;
+    } finally {
+      this.loading = false;
+    }
+  }
+
   mounted() {
+    this.email = this.$route.query.email;
     this.confirmCode = this.$route.query.code;
-  },
-};
+    this.$refs.confirmCodeInput.focus();
+  }
+
+  @Watch("confirmCode")
+  async onChange(confirmCode: string) {
+    this.isCodeValid = false;
+    if (confirmCode) {
+      if (confirmCode.length === this.codeMaxLength) {
+        await this.callValidateCode();
+      }
+    }
+  }
+}
 </script>
 <style lang="scss">
 .confirm-code-input {

@@ -4,8 +4,12 @@ import { AxiosResponse } from 'axios';
 import User from '~/types/User'
 export const actions: ActionTree<any, any> = {
 
-  async saveUser(state, user: User):Promise<AxiosResponse> {
+  async saveUser(state, user: User): Promise<AxiosResponse> {
     return $axios.post('/users', user);
+  },
+
+  async validateConfirmationCode(state, validationInfo: { email: string, code: string }): Promise<AxiosResponse> {
+    return $axios.post('/users/validateConfirmationCode', validationInfo);
   }
 
 }

@@ -6,10 +6,10 @@
           <h2>Registro de pesquisador</h2>
           <p>Informe seus dados para ter acesso à plataforma</p>
         </div>
-        <el-form>
+        <el-form ref="form" :model="user" :rules="formRules">
           <fieldset>
             <legend>Identificação</legend>
-            <el-form-item label="Nome completo" label-width="140px">
+            <el-form-item label="Nome completo" label-width="160px" prop="name">
               <el-input
                 placeholder="Nome completo"
                 v-model="user.name"
@@ -18,63 +18,80 @@
               ></el-input>
             </el-form-item>
 
-            <el-form-item label="Data de nascimento">
+            <el-form-item label="Data de nascimento" label-width="160px">
               <el-row :gutter="10" type="flex">
-                <el-col :span="6"
-                  ><el-select v-model="day" placeholder="Dia"
-                    ><el-option
-                      v-for="day in days"
-                      :value="day"
-                      :key="day"
-                    ></el-option></el-select
-                ></el-col>
+                <el-col :span="6">
+                  <el-form-item prop="birthDay">
+                    <select
+                      class="fill"
+                      v-model="user.birthDay"
+                      placeholder="Dia"
+                    >
+                      <option v-for="day in days" :value="day" :key="day">
+                        {{ day }}
+                      </option>
+                    </select>
+                  </el-form-item>
+                </el-col>
                 <el-col :span="12">
-                  <el-select v-model="month" class="fill" placeholder="Mês"
-                    ><el-option
-                      v-for="m in months"
-                      :value="m.index"
-                      :label="m.name"
-                      :key="m.index"
-                    ></el-option
-                  ></el-select>
+                  <el-form-item prop="birthMonth">
+                    <select
+                      v-model="user.birthMonth"
+                      class="fill"
+                      placeholder="Mês"
+                    >
+                      <option
+                        v-for="m in months"
+                        :value="m.index"
+                        :label="m.name"
+                        :key="m.index"
+                      >
+                        {{ m.name }}
+                      </option>
+                    </select>
+                  </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-select v-model="year" class="fill" placeholder="Ano"
-                    ><el-option
-                      v-for="year in years"
-                      :value="year"
-                      :key="year"
-                    ></el-option
-                  ></el-select>
+                  <el-form-item prop="birthYear">
+                    <select
+                      v-model="user.birthYear"
+                      class="fill"
+                      placeholder="Ano"
+                    >
+                      <option v-for="year in years" :value="year" :key="year">
+                        {{ year }}
+                      </option>
+                    </select>
+                  </el-form-item>
                 </el-col>
               </el-row>
             </el-form-item>
-            <el-form-item label="Gênero">
+            <el-form-item label="Gênero" label-width="160px">
               <el-radio v-model="user.gender" label="M">Masculino</el-radio>
               <el-radio v-model="user.gender" label="F">Feminino</el-radio>
-              <el-radio v-model="user.gender" label="O">Não informar</el-radio>
+              <el-radio v-model="user.gender" label="O">Outro</el-radio>
             </el-form-item>
           </fieldset>
 
           <!-- <fieldset>
             <legend>Formação</legend>
             <el-form-item>
-              <el-select
+              <select
                 v-model="user.schooling"
                 placeholder="Formação"
                 class="fill"
-                ><el-option
+                ><option
                   v-for="schooling in schoolings"
                   :value="schooling"
                   :key="schooling"
-                ></el-option
-              ></el-select>
+                >{{value}}</option
+              ></select>
             </el-form-item>
           </fieldset> -->
           <fieldset>
             <legend>Credenciais</legend>
 
-            <el-form-item label="Email" label-width="50px">
+            <el-form-item label="Email" label-width="100px" prop="email">
               <el-input
                 type="email"
                 v-model="user.email"
@@ -83,7 +100,7 @@
               >
               </el-input>
             </el-form-item>
-            <el-form-item label="Senha" label-width="50px">
+            <el-form-item label="Senha" label-width="100px" prop="password">
               <el-input
                 type="password"
                 v-model="user.password"
@@ -95,7 +112,9 @@
           </fieldset>
 
           <div class="flex-end">
-            <el-button type="primary" @click="register">Registrar-se</el-button>
+            <el-button type="primary" :loading="saving" @click="register"
+              >Registrar-se</el-button
+            >
           </div>
         </el-form>
       </div>
@@ -107,10 +126,11 @@ import Vue from "vue";
 import User from "~/types/User";
 import { AxiosResponse } from "axios";
 
-import { Provide } from "vue-property-decorator";
+import { Provide, Ref } from "vue-property-decorator";
 import { Action } from "vuex-class";
 
 import Component from "vue-class-component";
+import { ElForm } from "element-ui/types/form";
 
 class Month {
   index!: string;
@@ -119,9 +139,10 @@ class Month {
 
 @Component
 export default class UserSigninForm extends Vue {
-  @Provide() user: User = new User();
+  @Ref() form!: ElForm;
 
-  @Provide() schoolings: string[] = [
+  user: User = new User();
+  schoolings: string[] = [
     "Básico",
     "Médio",
     "Superior incompleto",
@@ -130,6 +151,39 @@ export default class UserSigninForm extends Vue {
     "Mestre",
     "Doutor(a)",
   ];
+
+  saving: boolean = false;
+
+  get formRules() {
+    return {
+      name: [{ required: true, message: "Informe o nome", trigger: "blur" }],
+      email: [{ required: true, message: "Informe o email", trigger: "blur" }],
+      birthDay: [
+        {
+          required: true,
+          message: "Informe o dia de nascimento",
+          trigger: "change",
+        },
+      ],
+      birthMonth: [
+        {
+          required: true,
+          message: "Informe o mês de nascimento",
+          trigger: "change",
+        },
+      ],
+      birthYear: [
+        {
+          required: true,
+          message: "Informe o ano de nascimento",
+          trigger: "change",
+        },
+      ],
+      password: [
+        { required: true, message: "Informe a senha", trigger: "blur" },
+      ],
+    };
+  }
 
   @Provide() months: Month[] = [
     { index: "01", name: "Janeiro" },
@@ -146,15 +200,7 @@ export default class UserSigninForm extends Vue {
     { index: "12", name: "Dezembro" },
   ];
 
-  day: string = "";
-  month: string = "";
-  year: string = "";
-
   @Action("users/saveUser") saveUser!: (user: User) => Promise<AxiosResponse>;
-
-  get birthDate() {
-    return `${this.day}/${this.month}/${this.year}`;
-  }
 
   get days() {
     let days = [];
@@ -178,15 +224,31 @@ export default class UserSigninForm extends Vue {
   }
 
   async register() {
-    try{
-      await this.saveUser(this.user);
-    }catch(e){
-      console.log(e);
+    let formValid = await this.form.validate();
+    if (formValid) {
+      this.saving = true;
+      try {
+        await this.saveUser(this.user);
+        this.$router.push({
+          name: "index-signin-confirm-code",
+          query: { email: this.user.email },
+        });
+        this.$notify({
+          type: "success",
+          message: "Verifique seu email para confirmar o código",
+          title: "Sucesso ao cadastrar usuário",
+        });
+      } catch (e) {
+        this.$notify({
+          type: "error",
+          message:
+            "Verifique se os dados estão corretos ou se já existe uma conta com esse email",
+          title: "Não foi possível realizar o cadastro",
+        });
+      } finally {
+        this.saving = false;
+      }
     }
-    /* this.$router.push({
-      name: "index-signin-confirm-code",
-      params: { email: this.user.email },
-    }); */
   }
 }
 </script>

@@ -1,19 +1,20 @@
-import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
-import UserDto from './user.dto'
+import { Body, Controller, Get, HttpCode, Inject, Post } from '@nestjs/common';
+import { User } from './user.entity'
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
 
-  @Get('/melancia')
-  getMelancia(): string {
-    return 'melancia';
-  }
-
+  constructor(private readonly userService: UsersService) { }
 
   @Post()
-  @HttpCode(204)
-  register(@Body() userDto: UserDto): UserDto {
-    return userDto
+  register(@Body() user: User): Promise<User> {
+    return this.userService.save(user)
+  }
+
+  @Post('validateConfirmationCode')
+  validateConfirmationCode(@Body() validationInfo: { email: string, code: string }): Promise<boolean> {
+    return this.userService.validateConfirmationCode(validationInfo);
   }
 
 }
