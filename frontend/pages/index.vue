@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top-bar />
+    <top-bar width="100%"/>
     <nuxt-child/>
   </div>
 </template>

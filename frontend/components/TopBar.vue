@@ -18,29 +18,51 @@
           Baixar CT Puzzle Test
         </el-button>
       </a>
-      <nuxt-link to="/signin/researcher" title="Registrar-se como pesquisador">
+      <nuxt-link
+        v-if="!$auth.loggedIn"
+        to="/signin/researcher"
+        title="Registrar-se como pesquisador"
+      >
         <el-button size="medium" type="text"> Registrar-se </el-button>
       </nuxt-link>
-      <nuxt-link to="/login">
-        <el-button size="small" type="primary" title="Entrar na plataforma"
-          >Entrar</el-button
-        >
+      <nuxt-link to="/login" v-show="!$auth.loggedIn">
+        Entrar
       </nuxt-link>
       <nuxt-link to="/platform">
-        <el-button size="small" type="primary" title="Plataforma"
+        <el-button
+          size="small"
+          type="primary"
+          title="Plataforma"
           >Plataforma</el-button
         >
       </nuxt-link>
+      <span v-if="$auth.loggedIn" style="margin: auto 10px">
+        {{ $auth.user.name }}
+      </span>
+      <el-button
+        size="small"
+        type="primary"
+        title="Plataforma"
+        @click="logout"
+        v-show="$auth.loggedIn"
+      >
+        Sair
+      </el-button>
     </container>
   </div>
 </template>
-<script>
-export default {
-  props: {
-    width: {
-      required: false,
-      default: '90%'
-    }
+<script lang="ts">
+import Component from "vue-class-component";
+import { Prop } from "vue-property-decorator";
+import Vue from "vue";
+
+@Component()
+export default class TopBar extends Vue {
+  @Prop({ default: "90%" }) width!: string;
+
+  async logout() {
+    await this.$auth.logout();
+    this.$router.push("/");
   }
 }
 </script>

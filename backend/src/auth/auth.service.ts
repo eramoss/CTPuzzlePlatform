@@ -6,6 +6,8 @@ import { UsersService } from "src/users/users.service";
 @Injectable()
 export class AuthService {
 
+
+
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService
@@ -25,6 +27,10 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload)
     }
+  }
+
+  async logout(user: User) {
+    //...
   }
 
 }

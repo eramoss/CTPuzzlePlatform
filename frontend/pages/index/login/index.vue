@@ -68,7 +68,6 @@ export default class LoginPage extends Vue {
   loading: boolean = false;
   loadingText: string = "";
   user: UsernamePassword = new UsernamePassword();
-
   @Ref("inputEmail") inputEmail!: ElInput;
 
   async login() {
@@ -76,6 +75,7 @@ export default class LoginPage extends Vue {
     this.loadingText = "Validando credenciais...";
     try {
       let response = await this.$auth.loginWith("local", { data: this.user });
+      this.$router.push('/platform');
       console.log(response);
     } catch (err) {
       console.log(err);
@@ -83,6 +83,8 @@ export default class LoginPage extends Vue {
       this.loading = false;
     }
   }
+
+
 
   recoverPassword() {
     this.loading = true;
