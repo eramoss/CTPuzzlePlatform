@@ -20,4 +20,7 @@ export class User {
   @Column({ default: null })
   confirmationCode: string
 
+  @Column({ nullable: true })
+  recoverPasswordHash: string
+
 }

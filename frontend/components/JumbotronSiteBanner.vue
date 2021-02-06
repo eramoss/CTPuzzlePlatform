@@ -17,7 +17,7 @@
             >Jogar!</el-button
           >
         </a>
-        <nuxt-link to="/signin/researcher">
+        <nuxt-link to="/signin/researcher" v-show="!$auth.loggedIn">
           <el-button
             class="shadow btn-big"
             type="text"

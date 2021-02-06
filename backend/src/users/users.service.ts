@@ -1,12 +1,14 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from 'typeorm';
 import { User } from "src/users/user.entity";
 import { GeneratorService } from "src/generators/generators.service";
 import { MailerService } from "src/mailer/mailer.service";
+import { v4 as uuidV4 } from 'uuid';
 
 @Injectable()
 export class UsersService {
+
 
 
   constructor(
@@ -25,7 +27,7 @@ export class UsersService {
 
   sendMailWithConfirmationCode(user: User, confirmCodeLength: number): string {
     let confirmCode = this.generator.generateNumberString(confirmCodeLength);
-    //this.mailer.sendConfirmCode(user, confirmCode);
+    this.mailer.sendConfirmCode(user, confirmCode);
     console.info('Generated code: ', confirmCode);
     return confirmCode;
   }
@@ -38,7 +40,35 @@ export class UsersService {
     return Promise.resolve(isCodeValid);
   }
 
+  async sendPasswordRecoveryLink(email: string): Promise<any> {
+    let user: User = await this.userRepository.findOne({ email });
+    if (!user) {
+      throw new ForbiddenException('Não foi encontrado usuário com esse email')
+    }
+    user.recoverPasswordHash = uuidV4();
+    this.userRepository.save(user);
+    this.mailer.sendPasswordRecoveryLink(user, user.recoverPasswordHash);
+  }
+
   async findByUsername(username: string): Promise<User> {
     return this.userRepository.findOne({ email: username });
+  }
+
+  async validateRecoveryLink(hash: string): Promise<boolean> {
+    let isLinkValid = false;
+    let user: User = await this.userRepository.findOne({ recoverPasswordHash: hash });
+    if (user) {
+      isLinkValid = true;
+    }
+    return Promise.resolve(isLinkValid);
+  }
+
+  async updatePassword(updatePasswordInfo: { hash: string; newPassword: string; }): Promise<any> {
+    let user: User = await this.userRepository.findOne({ recoverPasswordHash: updatePasswordInfo.hash });
+    if (user) {
+      user.recoverPasswordHash = null;
+      user.password = updatePasswordInfo.newPassword;
+      this.userRepository.save(user);
+    }
   }
 }

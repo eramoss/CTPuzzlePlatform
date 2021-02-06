@@ -1,12 +1,14 @@
 <template>
   <div>
-    <top-bar width="100%"/>
-    <nuxt-child/>
+    <top-bar width="100%" />
+    <nuxt-child />
   </div>
 </template>
-<script>
+<script lang="ts">
 import TopBar from "@/components/TopBar";
-export default {
+import Component from "vue-class-component";
+import Vue from "vue";
+@Component({
   head() {
     return {
       title:
@@ -18,7 +20,10 @@ export default {
   components: {
     TopBar,
   },
-};
+})
+export default class PlatformIndex extends Vue {
+
+}
 </script>
 <style lang="scss">
 </style>

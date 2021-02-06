@@ -10,6 +10,18 @@ export const actions: ActionTree<any, any> = {
 
   async validateConfirmationCode(state, validationInfo: { email: string, code: string }): Promise<AxiosResponse> {
     return $axios.post('/users/validateConfirmationCode', validationInfo);
+  },
+
+  async sendPasswordRecoveryLink(state, email: string): Promise<AxiosResponse> {
+    return $axios.post('/users/sendPasswordRecoveryLink', { email });
+  },
+
+  async validateRecoveryLink(state, hash: string): Promise<boolean> {
+    return $axios.$get('/users/validateRecoveryLink/' + hash)
+  },
+
+  async updatePassword(state, updatePasswordInfo: { hash: string, newPassword: string }): Promise<any> {
+    return $axios.$post('/users/updatePassword', updatePasswordInfo)
   }
 
 }

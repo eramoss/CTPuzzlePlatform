@@ -2,11 +2,10 @@
   <div>
     <el-container style="height: 100vh">
       <el-header style="padding: 0">
-        <top-bar width="100%"/>
+        <top-bar width="100%" />
       </el-header>
       <el-container>
-        <el-aside width="200px"
-        >
+        <el-aside width="200px">
           <el-menu
             router
             default-active="2"
@@ -15,7 +14,10 @@
             @close="handleClose"
           >
             <el-menu-item-group>
-              <el-menu-item index="/platform/mechanics" route="/platform/mechanics">
+              <el-menu-item
+                index="/platform/mechanics"
+                route="/platform/mechanics"
+              >
                 <i class="el-icon-s-operation"></i>
                 <span> Mecânicas </span>
               </el-menu-item>
@@ -41,8 +43,7 @@
               </el-menu-item>
             </el-menu-item-group>
           </el-menu>
-        </el-aside
-        >
+        </el-aside>
         <el-main>
           <div>
             <nuxt-child></nuxt-child>
@@ -62,7 +63,7 @@ export default {
       title: "Plataforma",
     };
   },
-  components: {TopBar},
+  components: { TopBar },
   methods: {
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
@@ -70,6 +71,12 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
+  },
+  mounted() {
+    this.$notify.success({
+      message: `Olá, ${this.$auth.user.name}`,
+      title: "Bem-vindo",
+    });
   },
 };
 </script>

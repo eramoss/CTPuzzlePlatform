@@ -9,8 +9,8 @@
         <div class="title">
           <h2>Login</h2>
         </div>
-        <el-form>
-          <el-form-item label="Email" required>
+        <el-form :model="user" :rules="rules" ref="form">
+          <el-form-item label="Email" required prop="username">
             <el-input
               ref="inputEmail"
               placeholder="Email"
@@ -20,7 +20,7 @@
             ></el-input>
           </el-form-item>
 
-          <el-form-item label="Senha" required>
+          <el-form-item label="Senha" required prop="password">
             <el-input
               @keydown.enter.native="login"
               placeholder="********"
@@ -47,10 +47,12 @@
   </div>
 </template>
 <script lang="ts">
+import { ElForm } from "element-ui/types/form";
 import { ElInput } from "element-ui/types/input";
 import Vue from "vue";
 import Component from "vue-class-component";
 import { Ref } from "vue-property-decorator";
+import { Action } from "vuex-class";
 
 class UsernamePassword {
   username!: string;
@@ -69,28 +71,50 @@ export default class LoginPage extends Vue {
   loadingText: string = "";
   user: UsernamePassword = new UsernamePassword();
   @Ref("inputEmail") inputEmail!: ElInput;
+  @Ref("form") form!: ElForm;
+
+  get rules() {
+    return {
+      username: [
+        { required: true, message: "Informe o email", trigger: "blur" },
+      ],
+      password: [
+        { required: true, message: "Informe a senha", trigger: "blur" },
+      ],
+    };
+  }
 
   async login() {
+    if (!await this.form.validate()) {
+      return;
+    }
     this.loading = true;
     this.loadingText = "Validando credenciais...";
     try {
       let response = await this.$auth.loginWith("local", { data: this.user });
-      this.$router.push('/platform');
+      this.$router.push("/platform");
       console.log(response);
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      this.$alert(
+        "Os dados informados estão incorretos",
+        "Verifique suas credenciais",
+        { type: "error" }
+      );
     } finally {
       this.loading = false;
     }
   }
 
+  @Action("users/sendPasswordRecoveryLink") sendPasswordRecoveryLink!: (
+    email: string
+  ) => Promise<any>;
 
-
-  recoverPassword() {
+  async recoverPassword() {
     this.loading = true;
     this.loadingText = "Enviando link de recuperação...";
-    setTimeout(() => {
-      this.loading = false;
+    try {
+      await this.sendPasswordRecoveryLink(this.user.username);
       this.$alert(
         "Enviamos um link de recuperação de senha para o seu email",
         "Verifique seu email",
@@ -98,7 +122,18 @@ export default class LoginPage extends Vue {
           type: "success",
         }
       );
-    }, 3000);
+    } catch (err) {
+      console.error(err);
+      this.$alert(
+        "Informe um email no campo para recuperar",
+        "Informe um email correto",
+        {
+          type: "error",
+        }
+      );
+    } finally {
+      this.loading = false;
+    }
   }
 
   mounted() {

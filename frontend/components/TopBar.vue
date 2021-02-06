@@ -26,13 +26,10 @@
         <el-button size="medium" type="text"> Registrar-se </el-button>
       </nuxt-link>
       <nuxt-link to="/login" v-show="!$auth.loggedIn">
-        Entrar
+        <el-button size="medium" type="text"> Entrar </el-button>
       </nuxt-link>
       <nuxt-link to="/platform">
-        <el-button
-          size="small"
-          type="primary"
-          title="Plataforma"
+        <el-button size="small" type="primary" title="Plataforma"
           >Plataforma</el-button
         >
       </nuxt-link>
@@ -56,7 +53,7 @@ import Component from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 import Vue from "vue";
 
-@Component()
+@Component
 export default class TopBar extends Vue {
   @Prop({ default: "90%" }) width!: string;
 
