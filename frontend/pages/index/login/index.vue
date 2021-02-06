@@ -15,7 +15,7 @@
               ref="inputEmail"
               placeholder="Email"
               autofocus
-              v-model="user.email"
+              v-model="user.username"
               title="Nome"
             ></el-input>
           </el-form-item>
@@ -46,43 +46,61 @@
     </container>
   </div>
 </template>
-<script>
-export default {
-  data() {
+<script lang="ts">
+import { ElInput } from "element-ui/types/input";
+import Vue from "vue";
+import Component from "vue-class-component";
+import { Ref } from "vue-property-decorator";
+
+class UsernamePassword {
+  username!: string;
+  password!: string;
+}
+
+@Component({
+  head() {
     return {
-      loading: false,
-      loadingText: null,
-      user: {
-        email: "Cassiano",
-        password: "Viana",
-      },
+      title: "CT Puzzle Platform | Entrar",
     };
   },
-  methods: {
-    login() {
-      this.loading = true;
-      this.loadingText = 'Validando credenciais...';
-      setTimeout(() => {
-        this.loading = false;
-      }, 3000);
-    },
-    recoverPassword() {
-      this.loading = true;
-      this.loadingText = "Enviando link de recuperação...";
-      setTimeout(() => {
-        this.loading = false;
-        this.$alert(
-          "Enviamos um link de recuperação de senha para o seu email",
-          "Verifique seu email",
-          {
-            type: "success",
-          }
-        );
-      }, 3000);
-    },
-  },
+})
+export default class LoginPage extends Vue {
+  loading: boolean = false;
+  loadingText: string = "";
+  user: UsernamePassword = new UsernamePassword();
+
+  @Ref("inputEmail") inputEmail!: ElInput;
+
+  async login() {
+    this.loading = true;
+    this.loadingText = "Validando credenciais...";
+    try {
+      let response = await this.$auth.loginWith("local", { data: this.user });
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  recoverPassword() {
+    this.loading = true;
+    this.loadingText = "Enviando link de recuperação...";
+    setTimeout(() => {
+      this.loading = false;
+      this.$alert(
+        "Enviamos um link de recuperação de senha para o seu email",
+        "Verifique seu email",
+        {
+          type: "success",
+        }
+      );
+    }, 3000);
+  }
+
   mounted() {
-    this.$refs.inputEmail.focus();
-  },
-};
+    this.inputEmail.focus();
+  }
+}
 </script>

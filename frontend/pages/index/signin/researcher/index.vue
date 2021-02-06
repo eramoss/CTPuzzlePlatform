@@ -137,7 +137,9 @@ class Month {
   name!: string;
 }
 
-@Component
+@Component({
+  auth: false,
+})
 export default class UserSigninForm extends Vue {
   @Ref() form!: ElForm;
 

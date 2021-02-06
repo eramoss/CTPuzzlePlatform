@@ -13,7 +13,7 @@
             type="error"
             class="error-message"
             style="margin-bottom: 10px"
-            v-show="!isCodeValid"
+            v-show="!isCodeValid && isCodeRequested"
             :closable="false"
             :center="true"
           >
@@ -26,7 +26,7 @@
             ref="confirmCodeInput"
             :maxlength="codeMaxLength"
             class="confirm-code-input"
-            :class="{ invalid: !isCodeValid && isCodeRequired }"
+            :class="{ invalid: !isCodeValid && isCodeRequested }"
             size="large"
             placeholder="_ _ _ _ _"
           />
@@ -48,7 +48,9 @@ import { Watch, Ref, Component } from "vue-property-decorator";
 import { ElInput } from "element-ui/types/input";
 import { AxiosResponse } from "axios";
 
-@Component
+@Component({
+  auth: false,
+})
 export default class ConfirmCodeForm extends Vue {
   codeMaxLength: number = 5;
   confirmCode: string = "";
@@ -56,14 +58,14 @@ export default class ConfirmCodeForm extends Vue {
   loading: boolean = false;
   loadingText: string = "";
   isCodeValid: boolean = true;
-  isCodeRequired: boolean = false;
+  isCodeRequested: boolean = false;
 
   @Ref("confirmCodeInput") confirmCodeInput!: ElInput;
 
-  @Action("users/validateConfirmationCode") validateConfirmationCode!: ({
-    email: string,
-    code: string,
-    is,
+  @Action("users/validateConfirmationCode")
+  validateConfirmationCode!: (validationInfo: {
+    email: string;
+    code: string;
   }) => Promise<AxiosResponse>;
 
   resendCode() {
@@ -87,10 +89,10 @@ export default class ConfirmCodeForm extends Vue {
         email: this.email,
         code: this.confirmCode,
       });
-      this.isCodeRequired = true;
+      this.isCodeRequested = true;
       this.isCodeValid = response.data as boolean;
       if (!this.isCodeValid) {
-        this.$refs.confirmCodeInput.select();
+        this.confirmCodeInput.select();
       }
       if (this.isCodeValid) {
         this.$router.push("/platform");
@@ -101,18 +103,23 @@ export default class ConfirmCodeForm extends Vue {
             "Você já pode começar a criar seus testes de Pensamento Computacional",
         });
       }
-    } catch (e: Error) {
+    } catch (e) {
       console.error(e);
-      this.isCodeRequired = false;
+      this.$notify({
+        type: 'error',
+        title: 'Erro ao validar código',
+        message: 'Não foi possível validar o código'
+      })
+      this.isCodeRequested = false;
     } finally {
       this.loading = false;
     }
   }
 
   mounted() {
-    this.email = this.$route.query.email;
-    this.confirmCode = this.$route.query.code;
-    this.$refs.confirmCodeInput.focus();
+    this.email = this.$route.query.email as string;
+    this.confirmCode = this.$route.query.code as string;
+    this.confirmCodeInput.focus();
   }
 
   @Watch("confirmCode")

@@ -4,7 +4,7 @@
       <jumbotron-site-banner />
       <section id="play">
         <h2 class="title">Confira esse game configurado na plataforma:</h2>
-        <gameIframe url="https://ct.playerweb.com.br"/>
+        <gameIframe url="https://ct.playerweb.com.br" />
       </section>
     </container>
   </div>
@@ -13,7 +13,10 @@
 import GameIframe from "@/components/GameIframe";
 import TopBar from "@/components/TopBar";
 import JumbotronSiteBanner from "@/components/JumbotronSiteBanner";
-export default {
+import Component from "vue-class-component";
+import Vue from "vue";
+@Component({
+  auth: false,
   head() {
     return {
       title:
@@ -27,7 +30,8 @@ export default {
     JumbotronSiteBanner,
     GameIframe,
   },
-};
+})
+export default class SiteIndex extends Vue {}
 </script>
 <style lang="scss">
 </style>

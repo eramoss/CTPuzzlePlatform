@@ -11,7 +11,7 @@
             "cwd": "${workspaceFolder}/backend",
             "request": "launch",
             "type": "node-terminal",
-            "internalConsoleOptions": "openOnSessionStart"
+            "internalConsoleOptions": "openOnFirstSessionStart"
         },
         {
             "name": "Frontend",
@@ -24,8 +24,7 @@
                 "<node_internals>/**"
             ],
             "type": "pwa-node",
-            "console": "internalConsole",
-            "internalConsoleOptions": "openOnSessionStart"
+            "console": "integratedTerminal",
         },
 
     ],

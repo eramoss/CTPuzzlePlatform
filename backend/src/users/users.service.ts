@@ -37,4 +37,8 @@ export class UsersService {
     console.info('Código é valido: ', isCodeValid)
     return Promise.resolve(isCodeValid);
   }
+
+  async findByUsername(username: string): Promise<User> {
+    return this.userRepository.findOne({ email: username });
+  }
 }

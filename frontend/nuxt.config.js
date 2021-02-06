@@ -47,6 +47,7 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    '@nuxtjs/auth-next',
     '@nuxtjs/pwa',
   ],
   /*
@@ -55,6 +56,32 @@ export default {
   */
   axios: {
     baseURL: process.env.baseURL
+  },
+
+  auth: {
+    strategies: {
+      local: {
+        token: {
+          property: 'access_token',
+          // required: true,
+          // type: 'Bearer'
+        },
+        user: {
+          property: 'user',
+          autoFetch: true
+        },
+        endpoints: {
+          login: { url: '/auth/login', method: 'post' },
+          logout: { url: '/auth/logout', method: 'post' },
+          user: { url: '/auth/user', method: 'get' }
+        }
+      }
+    }
+
+  },
+
+  router: {
+    middleware: ['auth']
   },
   /*
   ** Build configuration
