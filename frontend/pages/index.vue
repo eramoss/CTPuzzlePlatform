@@ -5,10 +5,15 @@
   </div>
 </template>
 <script lang="ts">
-import TopBar from "@/components/TopBar";
-import Component from "vue-class-component";
+import TopBar from "~/components/TopBar.vue";
+import { Component } from "nuxt-property-decorator";
 import Vue from "vue";
 @Component({
+  components: {
+    TopBar,
+  },
+})
+export default class PlatformIndex extends Vue {
   head() {
     return {
       title:
@@ -16,13 +21,7 @@ import Vue from "vue";
       description:
         "Plataforma de testes de Pensamento Computacional com puzzles",
     };
-  },
-  components: {
-    TopBar,
-  },
-})
-export default class PlatformIndex extends Vue {
-
+  }
 }
 </script>
 <style lang="scss">

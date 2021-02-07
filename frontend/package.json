@@ -16,6 +16,7 @@
     "@nuxtjs/pwa": "^3.0.0-0",
     "element-ui": "^2.15.0",
     "nuxt": "^2.14.12",
+    "nuxt-property-decorator": "^2.9.1",
     "vue-monaco": "^1.2.2",
     "vue-property-decorator": "^9.1.2",
     "vuex-class": "^0.3.2"

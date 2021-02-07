@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import TopBar from "@/components/TopBar";
+import TopBar from "~/components/TopBar.vue";
 
 export default {
   head() {

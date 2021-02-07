@@ -33,6 +33,15 @@
     </div>
   </div>
 </template>
+<script lang="ts">
+import Vue from 'vue'
+import { Component } from 'nuxt-property-decorator';
+
+@Component
+export default class JumbotronSiteBanner extends Vue {
+
+}
+</script>
 <style lang="scss">
 .jumbotron-and-image {
   display: flex;

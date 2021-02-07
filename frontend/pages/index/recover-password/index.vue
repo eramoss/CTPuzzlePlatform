@@ -45,23 +45,25 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Ref } from "vue-property-decorator";
-import Component from "vue-class-component";
+import { Component, Ref } from "nuxt-property-decorator";
 import { ElInput } from "element-ui/types/input";
 import { Action } from "vuex-class";
 
 @Component({
   auth: false,
-  head() {
-    title: "Recupearação de senha";
-  },
+
 })
 export default class RecoverPasswordPage extends Vue {
+
   @Ref("password") passwordInput!: ElInput;
   loading: boolean = false;
   password: string = "";
   hash: string = "";
   confirmation: string = "";
+
+  head() {
+    title: "Recupearação de senha";
+  }
 
   async confirm() {
     if (this.password != this.confirmation) {
@@ -111,7 +113,7 @@ export default class RecoverPasswordPage extends Vue {
   }) => Promise<any>;
 
   async mounted() {
-    this.hash = this.$route.query.hash;
+    this.hash = this.$route.query.hash+'';
     let valid = await this.validateRecoveryLink(this.hash);
     if (!valid) {
       await this.$alert(

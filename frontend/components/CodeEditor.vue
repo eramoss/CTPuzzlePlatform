@@ -31,11 +31,16 @@ export default class CodeEditor extends Vue {
 }
 </script>
 
-<style>
+<style lang="scss">
 .editor {
   border: 1px solid #ccc;
 }
 .editor:hover{
   border: 1px solid #999;
+}
+.el-form-item.is-error {
+  .editor {
+    border: 1px solid red;
+  }
 }
 </style>

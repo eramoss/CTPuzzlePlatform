@@ -34,7 +34,7 @@
         >
       </nuxt-link>
       <span v-if="$auth.loggedIn" style="margin: auto 10px">
-        {{ $auth.user.name }}
+        {{ $auth.user && $auth.user.name }}
       </span>
       <el-button
         size="small"
@@ -49,8 +49,7 @@
   </div>
 </template>
 <script lang="ts">
-import Component from "vue-class-component";
-import { Prop } from "vue-property-decorator";
+import { Prop, Component } from "nuxt-property-decorator";
 import Vue from "vue";
 
 @Component

@@ -1,33 +1,55 @@
 <template>
   <div class="left">
     <el-breadcrumb>
-      <el-breadcrumb-item :to="{path: '/platform'}">Plataforma</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{path: '/platform/items'}">Itens de teste</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/platform' }"
+        >Plataforma</el-breadcrumb-item
+      >
+      <el-breadcrumb-item :to="{ path: '/platform/items' }"
+        >Itens de teste</el-breadcrumb-item
+      >
       <el-breadcrumb-item>Edição</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="panel">
       <h2>Edição de item de testes</h2>
-      <el-form>
+      <el-form :model="testItem" :rules="formRules" ref="form">
         <el-row>
           <el-col>
             <el-row :gutter="20">
               <el-col :span="18">
-                <el-form-item label="Nome" title="Nome" required="" label-width="130px">
+                <el-form-item
+                  label="Nome"
+                  title="Nome"
+                  prop="name"
+                  required=""
+                  label-width="170px"
+                >
                   <el-input
+                    ref="nameInput"
                     v-model="testItem.name"
                     autofocus
-                    placeholder="Programação RoPE"
+                    placeholder="Fase de programação fácil"
                   ></el-input>
                 </el-form-item>
-                <el-form-item label="Tipo de mecânica" label-width="130px">
-                  <el-select v-model="testItem.mechanic">
-                    <el-option v-for="mechanic in availableMechanics"
-                               :key="mechanic.id"
-                               :value="mechanic"
-                               :label="mechanic.name"></el-option>
-                  </el-select>
+                <el-form-item
+                  label="Tipo de mecânica"
+                  label-width="170px"
+                  prop="mechanic"
+                >
+                  <select v-model="testItem.mechanic" class="fill">
+                    <option
+                      v-for="m in availableMechanics"
+                      :key="m.id"
+                      :value="m"
+                      :label="m.name"
+                    ></option>
+                  </select>
                 </el-form-item>
-                <el-form-item label="Descrição" title="Descrição da mecânica" label-width="130px">
+                <el-form-item
+                  prop="description"
+                  label="Descrição"
+                  title="Descrição da mecânica"
+                  label-width="170px"
+                >
                   <el-input
                     type="textarea"
                     v-model="testItem.description"
@@ -38,27 +60,34 @@
               </el-col>
               <el-col :span="6">
                 <el-form-item title="Ilustração da mecânica">
-                  <FormItemLabel label="Ilustração do item"/>
-                  <ImageUploader/>
+                  <FormItemLabel label="Ilustração do item" />
+                  <ImageUploader />
                 </el-form-item>
               </el-col>
             </el-row>
 
             <MessageAlert type="info">
-              A configuração do item deve obedecer as especificações definidas na mecânica. <br>
-              O objeto json/TypeScript configurado deve ser utilizado pelo desenvolvedor no momento de instanciar o item
-              do teste.
+              A configuração do item deve obedecer as especificações definidas
+              na mecânica. <br />
+              O objeto json/TypeScript configurado deve ser utilizado pelo
+              desenvolvedor no momento de instanciar o item do teste.
             </MessageAlert>
 
-            <el-form-item>
-              <FormItemLabel label="Especificação do item" :required="true"/>
-              <code-editor v-model="testItem.itemDefinition" height="200px"/>
+            <el-form-item prop="itemDefinition">
+              <FormItemLabel label="Especificação do item" :required="true" />
+              <code-editor
+                v-model="testItem.itemDefinition"
+                height="200px"
+                @input="form.validateField('itemDefinition')"
+              />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col>
-            <el-button @click="save" type="success">Salvar</el-button>
+            <el-button icon="el-icon-check" @click="save" type="success"
+              >Salvar</el-button
+            >
             <el-button @click="back">Cancelar</el-button>
           </el-col>
         </el-row>
@@ -68,47 +97,99 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import Component from "vue-class-component";
-import {Provide, VModel} from "vue-property-decorator";
-import Mechanic from '@/types/Mechanic'
+import { Ref, Component, Action } from "nuxt-property-decorator";
+import Mechanic from "@/types/Mechanic";
 import CodeEditor from "~/components/CodeEditor.vue";
-import TestItem from "~/types/TestItem";
-
-const testItemExample = new TestItem()
-testItemExample.itemDefinition = `let item = new MecanicaRope();
-item.mapa = [
-  ['tile','tile','tile'],
-  ['tile','tile','tile'],
-]
-item.osb = [
-  ['tile','tile','tile'],
-  ['tile','tile','tile'],
-]`;
-
+import TestItem, { createExampleItem } from "~/types/TestItem";
+import { Context } from "@nuxt/types";
+import { ElInput } from "element-ui/types/input";
+import { ElForm } from "element-ui/types/form";
 
 @Component({
   components: {
-    CodeEditor
-  }
+    CodeEditor,
+  },
 })
 export default class TestItemEditForm extends Vue {
+  testItem!: TestItem;
+  availableMechanics: Mechanic[] = [];
+  saving: boolean = false;
 
-  @VModel({default: () => testItemExample}) testItem!: TestItem;
-  @Provide() availableMechanics: Mechanic[] = [];
+  @Ref("nameInput") nameInput!: ElInput;
+  @Ref("form") form!: ElForm;
 
-  save() {
-    setTimeout(() => {
+  get formRules() {
+    return {
+      name: {
+        required: true,
+        message: "Informe o nome do item",
+        trigger: "blur",
+      },
+      mechanic: {
+        required: true,
+        message: "Informe a mecânica",
+        trigger: "change",
+      },
+      description: {
+        required: true,
+        message: "Informe a descrição do item",
+        trigger: "blur",
+      },
+      itemDefinition: {
+        required: true,
+        message: "Informe a definição do item",
+      },
+    };
+  }
+
+  async asyncData(ctx: Context) {
+    let item;
+    let id = ctx.params.id;
+    if (id == "new") {
+      item = createExampleItem();
+    }
+    if (id != "new") {
+      item = await ctx.store.dispatch("test-items/getById", id);
+    }
+    let availableMechanics = await ctx.store.dispatch("mechanics/findAll");
+    return { testItem: item, availableMechanics };
+  }
+
+  @Action("test-items/save") saveTestItem!: (
+    testItem: TestItem
+  ) => Promise<TestItem>;
+
+  async save() {
+    if (!(await this.form.validate())) {
+      return;
+    }
+    this.saving = true;
+    try {
+      this.testItem = await this.saveTestItem(this.testItem);
       this.$notify({
         type: "success",
         title: "Sucesso ao salvar o item de teste!",
-        message:
-          "Agora você já pode criar testes com esse item",
+        message: "Agora você já pode criar testes com esse item",
       });
-    }, 2000)
+      this.back();
+    } catch (e) {
+      console.error(e);
+      this.$notify({
+        type: "error",
+        title: "Não foi possível salvar o item!",
+        message: "Ocorreu uma falha ao salvar",
+      });
+    } finally {
+      this.saving = false;
+    }
   }
 
   back() {
     this.$router.go(-1);
+  }
+
+  mounted() {
+    this.nameInput?.focus();
   }
 }
 </script>

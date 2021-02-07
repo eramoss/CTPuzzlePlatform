@@ -27,6 +27,7 @@
                       v-model="user.birthDay"
                       placeholder="Dia"
                     >
+                      <option value="" disabled selected>Dia</option>
                       <option v-for="day in days" :value="day" :key="day">
                         {{ day }}
                       </option>
@@ -40,6 +41,7 @@
                       class="fill"
                       placeholder="Mês"
                     >
+                      <option value="" disabled selected>Mês</option>
                       <option
                         v-for="m in months"
                         :value="m.index"
@@ -58,6 +60,7 @@
                       class="fill"
                       placeholder="Ano"
                     >
+                      <option value="" disabled selected>Ano</option>
                       <option v-for="year in years" :value="year" :key="year">
                         {{ year }}
                       </option>

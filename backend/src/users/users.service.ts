@@ -9,8 +9,6 @@ import { v4 as uuidV4 } from 'uuid';
 @Injectable()
 export class UsersService {
 
-
-
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,

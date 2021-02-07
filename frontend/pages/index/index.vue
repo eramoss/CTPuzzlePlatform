@@ -9,14 +9,21 @@
     </container>
   </div>
 </template>
-<script>
-import GameIframe from "@/components/GameIframe";
-import TopBar from "@/components/TopBar";
-import JumbotronSiteBanner from "@/components/JumbotronSiteBanner";
-import Component from "vue-class-component";
+<script lang="ts">
+import GameIframe from "~/components/GameIframe.vue";
+import TopBar from "~/components/TopBar.vue";
+import JumbotronSiteBanner from "~/components/JumbotronSiteBanner.vue";
+import { Component } from "nuxt-property-decorator";
 import Vue from "vue";
 @Component({
   auth: false,
+  components: {
+    TopBar,
+    JumbotronSiteBanner,
+    GameIframe,
+  },
+})
+export default class SiteIndex extends Vue {
   head() {
     return {
       title:
@@ -24,14 +31,8 @@ import Vue from "vue";
       description:
         "Plataforma de testes de Pensamento Computacional com puzzles",
     };
-  },
-  components: {
-    TopBar,
-    JumbotronSiteBanner,
-    GameIframe,
-  },
-})
-export default class SiteIndex extends Vue {}
+  }
+}
 </script>
 <style lang="scss">
 </style>
