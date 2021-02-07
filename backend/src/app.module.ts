@@ -8,7 +8,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { MechanicsModule } from './mechanics/mechanics.module';
 import { PaginationModule } from './pagination/pagination.module';
-import { TestItemsModule } from './test-items/test-items.module';
+import { ItemsModule } from './items/items.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { TestModule } from './test/test.module';
 
@@ -19,7 +19,7 @@ import { TestModule } from './test/test.module';
     TypeOrmModule.forRoot(),
     MechanicsModule,
     PaginationModule,
-    TestItemsModule,
+    ItemsModule,
     FileUploadModule,
     TestModule,
   ],

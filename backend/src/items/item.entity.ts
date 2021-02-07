@@ -2,7 +2,7 @@ import { Mechanic } from "src/mechanics/mechanic.entity";
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 
 @Entity()
-export class TestItem {
+export class Item {
 
   @PrimaryGeneratedColumn()
   id: number

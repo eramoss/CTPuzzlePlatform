@@ -11,7 +11,7 @@
     </el-breadcrumb>
     <div class="panel">
       <h2>Edição de item de testes</h2>
-      <el-form :model="testItem" :rules="formRules" ref="form">
+      <el-form :model="item" :rules="formRules" ref="form">
         <el-row>
           <el-col>
             <el-row :gutter="20">
@@ -25,7 +25,7 @@
                 >
                   <el-input
                     ref="nameInput"
-                    v-model="testItem.name"
+                    v-model="item.name"
                     autofocus
                     placeholder="Fase de programação fácil"
                   ></el-input>
@@ -35,7 +35,7 @@
                   label-width="170px"
                   prop="mechanic"
                 >
-                  <select v-model="testItem.mechanic" class="fill">
+                  <select v-model="item.mechanic" class="fill">
                     <option
                       v-for="m in availableMechanics"
                       :key="m.id"
@@ -52,7 +52,7 @@
                 >
                   <el-input
                     type="textarea"
-                    v-model="testItem.description"
+                    v-model="item.description"
                     autofocus
                     placeholder="Informações sobre o desafio presente no item"
                   ></el-input>
@@ -76,7 +76,7 @@
             <el-form-item prop="itemDefinition">
               <FormItemLabel label="Especificação do item" :required="true" />
               <code-editor
-                v-model="testItem.itemDefinition"
+                v-model="item.itemDefinition"
                 height="200px"
                 @input="form.validateField('itemDefinition')"
               />
@@ -100,7 +100,7 @@ import Vue from "vue";
 import { Ref, Component, Action } from "nuxt-property-decorator";
 import Mechanic from "@/types/Mechanic";
 import CodeEditor from "~/components/CodeEditor.vue";
-import TestItem, { createExampleItem } from "~/types/TestItem";
+import Item, { createExampleItem } from "~/types/Item";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
 import { ElForm } from "element-ui/types/form";
@@ -110,8 +110,8 @@ import { ElForm } from "element-ui/types/form";
     CodeEditor,
   },
 })
-export default class TestItemEditForm extends Vue {
-  testItem!: TestItem;
+export default class ItemEditForm extends Vue {
+  item!: Item;
   availableMechanics: Mechanic[] = [];
   saving: boolean = false;
 
@@ -149,15 +149,15 @@ export default class TestItemEditForm extends Vue {
       item = createExampleItem();
     }
     if (id != "new") {
-      item = await ctx.store.dispatch("test-items/getById", id);
+      item = await ctx.store.dispatch("items/getById", id);
     }
     let availableMechanics = await ctx.store.dispatch("mechanics/findAll");
-    return { testItem: item, availableMechanics };
+    return { item: item, availableMechanics };
   }
 
-  @Action("test-items/save") saveTestItem!: (
-    testItem: TestItem
-  ) => Promise<TestItem>;
+  @Action("items/save") saveItem!: (
+    item: Item
+  ) => Promise<Item>;
 
   async save() {
     if (!(await this.form.validate())) {
@@ -165,7 +165,7 @@ export default class TestItemEditForm extends Vue {
     }
     this.saving = true;
     try {
-      this.testItem = await this.saveTestItem(this.testItem);
+      this.item = await this.saveItem(this.item);
       this.$notify({
         type: "success",
         title: "Sucesso ao salvar o item de teste!",

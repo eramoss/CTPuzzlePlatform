@@ -33,7 +33,7 @@ import Vue from "vue";
 import { Action, Component } from "nuxt-property-decorator";
 import { Context } from "@nuxt/types";
 import { PageRequest, PageResponse } from "~/types/pagination";
-import TestItem from "~/types/TestItem";
+import Item from "~/types/Item";
 import { AxiosResponse } from "axios";
 
 @Component({
@@ -43,27 +43,27 @@ import { AxiosResponse } from "axios";
     };
   },
 })
-export default class TestItemsList extends Vue {
+export default class ItemsList extends Vue {
   pageRequest: PageRequest = new PageRequest();
-  pageResponse: PageResponse<TestItem> = new PageResponse<TestItem>();
+  pageResponse: PageResponse<Item> = new PageResponse<Item>();
 
   async asyncData(ctx: Context) {
     let pageResponse = await ctx.store.dispatch(
-      "test-items/paginate",
+      "items/paginate",
       new PageRequest()
     );
     return { pageResponse };
   }
 
-  edit(row: TestItem) {
+  edit(row: Item) {
     this.$router.push("/platform/items/" + row.id);
   }
 
-  @Action("test-items/paginate") paginate!: (
+  @Action("items/paginate") paginate!: (
     pageRequest: PageRequest
-  ) => Promise<PageResponse<TestItem>>;
+  ) => Promise<PageResponse<Item>>;
 
-  @Action("test-items/removeById") removeById!: (
+  @Action("items/removeById") removeById!: (
     id: number
   ) => Promise<AxiosResponse>;
 
@@ -71,7 +71,7 @@ export default class TestItemsList extends Vue {
     this.pageResponse = await this.paginate(this.pageRequest);
   }
 
-  async remove(row: TestItem) {
+  async remove(row: Item) {
     try {
       let option = await this.$confirm(
         "Tem certeza de que deseja remover o item? A segunte item será removido: " +
