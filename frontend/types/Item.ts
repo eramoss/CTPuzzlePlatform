@@ -5,6 +5,7 @@ export default class Item {
   name: string = ''
   description: string = ''
   mechanic!: Mechanic
+  thumbnail!: string
   itemDefinition: string = ''
 }
 

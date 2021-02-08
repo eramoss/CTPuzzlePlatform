@@ -25,6 +25,7 @@
                   <el-input
                     v-model="mechanic.name"
                     autofocus
+                    ref="nameInput"
                     placeholder="Programação RoPE"
                   ></el-input>
                 </el-form-item>
@@ -113,6 +114,7 @@ import { Action } from "vuex-class";
 import { AxiosResponse } from "axios";
 import { ElForm } from "element-ui/types/form";
 import { Context } from "@nuxt/types";
+import { ElInput } from "element-ui/types/input";
 
 @Component({
   components: { CodeEditor },
@@ -121,6 +123,7 @@ export default class MechanicEditForm extends Vue {
   saving: boolean = false;
   mechanic!: Mechanic;
   @Ref("mechanicForm") mechanicForm!: ElForm;
+  @Ref("nameInput") nameInput!: ElInput
 
   get formRules() {
     return {
@@ -193,6 +196,10 @@ export default class MechanicEditForm extends Vue {
 
   back() {
     this.$router.go(-1);
+  }
+
+  mounted(){
+    this.nameInput.focus();
   }
 }
 </script>

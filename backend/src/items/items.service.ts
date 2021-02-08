@@ -16,9 +16,8 @@ export class ItemsService {
     return this.itemRepository.save(item)
   }
 
-  async getById(id: number): Promise<Item> {
-    let item = await this.itemRepository.findOne({ id }, { relations: ['mechanic'] })
-    return item;
+  getById(id: number): Promise<Item> {
+    return this.itemRepository.findOne({ id }, { relations: ['mechanic'] })
   }
 
   removeById(id: number) {
@@ -31,5 +30,9 @@ export class ItemsService {
       .take(pageRequest.limit)
       .getMany()
     return new PageResponse(data);
+  }
+
+  findAll(): Promise<Item[]> {
+    return this.itemRepository.find({});
   }
 }

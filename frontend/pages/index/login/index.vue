@@ -17,6 +17,7 @@
               autofocus
               v-model="user.username"
               title="Nome"
+              @keydown.enter.native="login"
             ></el-input>
           </el-form-item>
 
@@ -85,7 +86,7 @@ export default class LoginPage extends Vue {
   }
 
   async login() {
-    if (!await this.form.validate()) {
+    if (!(await this.form.validate())) {
       return;
     }
     this.loading = true;

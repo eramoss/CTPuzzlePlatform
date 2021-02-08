@@ -8,7 +8,12 @@
     </el-breadcrumb>
     <div class="panel">
       <h2>Itens de teste</h2>
-      <el-button type="primary" icon="el-icon-plus" @click="create">
+      <el-button
+        type="primary"
+        icon="el-icon-plus"
+        :loading="goingCreate"
+        @click="create"
+      >
         Novo
       </el-button>
       <el-table :data="pageResponse.data">
@@ -44,6 +49,7 @@ import { AxiosResponse } from "axios";
   },
 })
 export default class ItemsList extends Vue {
+  goingCreate: boolean = false;
   pageRequest: PageRequest = new PageRequest();
   pageResponse: PageResponse<Item> = new PageResponse<Item>();
 
@@ -104,6 +110,7 @@ export default class ItemsList extends Vue {
   }
 
   create() {
+    this.goingCreate = true;
     this.$router.push("/platform/items/new");
   }
 }

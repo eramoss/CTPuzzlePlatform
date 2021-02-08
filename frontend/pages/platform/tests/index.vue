@@ -1,23 +1,42 @@
 <template>
   <div class="left">
     <el-breadcrumb>
-      <el-breadcrumb-item :to="{path: '/platform'}">Plataforma</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/platform' }"
+        >Plataforma</el-breadcrumb-item
+      >
       <el-breadcrumb-item>Testes</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="panel">
       <h2>Testes</h2>
-      <el-button type="primary" icon="el-icon-plus" @click="create">
+      <el-button type="primary" icon="el-icon-plus" @click="create" :loading="goingCreate">
         Novo
       </el-button>
-      <el-table>
-        <el-table-column></el-table-column>
+      <!-- <el-input v-model="pageRequest.search"></el-input> -->
+      <el-table :data="pageResponse.data">
+        <el-table-column prop="id" label="Código" width="100"></el-table-column>
+        <el-table-column prop="name" label="Nome"></el-table-column>
+        <el-table-column label="Ações" width="200">
+          <template slot-scope="{ row }">
+            <el-button size="small" type="primary" @click="edit(row)">
+              Editar
+            </el-button>
+            <el-button size="small" type="danger" @click="remove(row)">
+              Remover
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import Vue from "vue";
-import Component from "vue-class-component";
+import { Watch, Component } from "nuxt-property-decorator";
+import { PageRequest, PageResponse } from "@/types/pagination";
+import Test from "~/types/Test";
+import { AxiosResponse } from "axios";
+import { Action } from "vuex-class";
+import { Context } from "@nuxt/types";
 
 @Component({
   head() {
@@ -27,8 +46,74 @@ import Component from "vue-class-component";
   },
 })
 export default class TestsList extends Vue {
+  goingCreate:boolean = false
+  pageResponse: PageResponse<Test> = new PageResponse<Test>();
+  pageRequest: PageRequest = new PageRequest();
+
   create() {
-    this.$router.push('/platform/tests/new')
+    this.goingCreate = true;
+    this.$router.push("/platform/tests/new");
+  }
+
+  edit(row: Test) {
+    this.$router.push("/platform/tests/" + row.id);
+  }
+
+  async remove(row: Test) {
+    try {
+      let option = await this.$confirm(
+        "Tem certeza de que deseja remover o teste? A segunte teste será removido: " +
+          row.name,
+        "Remover teste?",
+        {
+          confirmButtonText: "Remover",
+          confirmButtonClass: "el-button--danger",
+        }
+      );
+      if (option === "confirm") {
+        try {
+          await this.removeById(row.id);
+          this.$notify({
+            type: "success",
+            title: "Sucesso ao remover",
+            message: "O teste foi removido",
+          });
+          await this.loadData();
+        } catch (e) {
+          console.error(e);
+          this.$notify({
+            type: "error",
+            title: "Erro ao remover",
+            message: "O teste não foi removido",
+          });
+        }
+      }
+    } catch (cancel) {}
+  }
+
+  @Action("tests/paginate") paginate!: (
+    pageRequest: PageRequest
+  ) => Promise<PageResponse<Test>>;
+
+  @Action("tests/removeById") removeById!: (
+    id: number
+  ) => Promise<AxiosResponse>;
+
+  @Watch("pageRequest", { deep: true })
+  async onChangePageRequest() {
+    this.loadData();
+  }
+
+  async loadData() {
+    this.pageResponse = await this.paginate(this.pageRequest);
+  }
+
+  async asyncData(ctx: Context) {
+    let pageResponse: PageResponse<Test> = await ctx.store.dispatch(
+      "tests/paginate",
+      new PageRequest()
+    );
+    return { pageResponse };
   }
 }
 </script>

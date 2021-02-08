@@ -8,7 +8,7 @@
     </el-breadcrumb>
     <div class="panel">
       <h2>Mecânicas</h2>
-      <el-button type="primary" icon="el-icon-plus" @click="create">
+      <el-button type="primary" icon="el-icon-plus" @click="create" :loading="goingCreate">
         Nova
       </el-button>
       <!-- <el-input v-model="pageRequest.search"></el-input> -->
@@ -46,10 +46,12 @@ import { Context } from "@nuxt/types";
   },
 })
 export default class MechanicsList extends Vue {
+  goingCreate:boolean = false
   pageResponse: PageResponse<Mechanic> = new PageResponse<Mechanic>();
   pageRequest: PageRequest = new PageRequest();
 
   create() {
+    this.goingCreate = true;
     this.$router.push("/platform/mechanics/new");
   }
 

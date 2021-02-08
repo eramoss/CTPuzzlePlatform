@@ -12,7 +12,7 @@ export class ItemsController {
   constructor(private itemService: ItemsService) { }
 
   @Get('byId/:id')
-  getById(@Param('id') id:number):Promise<Item>{
+  getById(@Param('id') id: number): Promise<Item> {
     return this.itemService.getById(id);
   }
 
@@ -27,8 +27,13 @@ export class ItemsController {
   }
 
   @Delete('remove/:id')
-  remove(@Param('id') id:number){
+  remove(@Param('id') id: number) {
     this.itemService.removeById(id);
+  }
+
+  @Get('findAll')
+  findAll(): Promise<Item[]> {
+    return this.itemService.findAll()
   }
 
 }

@@ -38,7 +38,7 @@
       </span>
       <el-button
         size="small"
-        type="primary"
+        type="text"
         title="Plataforma"
         @click="logout"
         v-show="$auth.loggedIn"

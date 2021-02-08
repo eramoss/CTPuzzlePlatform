@@ -10,7 +10,7 @@ import { MechanicsModule } from './mechanics/mechanics.module';
 import { PaginationModule } from './pagination/pagination.module';
 import { ItemsModule } from './items/items.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
-import { TestModule } from './test/test.module';
+import { TestModule } from './tests/tests.module';
 
 @Module({
   imports: [

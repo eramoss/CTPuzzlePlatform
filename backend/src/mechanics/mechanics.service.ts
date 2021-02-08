@@ -10,8 +10,8 @@ export class MechanicsService {
 
   constructor(@InjectRepository(Mechanic) private mechanicRepository: Repository<Mechanic>) { }
 
-  async save(mechanic: Mechanic) {
-    return await this.mechanicRepository.save(mechanic)
+  save(mechanic: Mechanic): Promise<Mechanic> {
+    return this.mechanicRepository.save(mechanic)
   }
 
   getById(id: number): Promise<Mechanic> {
@@ -30,7 +30,7 @@ export class MechanicsService {
     return new PageResponse<Mechanic>(data)
   }
 
-  async findAll(): Promise<Mechanic[]> {
+  findAll(): Promise<Mechanic[]> {
     return this.mechanicRepository.find({});
   }
 }

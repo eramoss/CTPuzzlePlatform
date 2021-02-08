@@ -10,6 +10,9 @@ export class Item {
   @Column()
   name: string
 
+  @Column({ nullable: true })
+  thumbnail: string
+
   @Column()
   description: string
 
