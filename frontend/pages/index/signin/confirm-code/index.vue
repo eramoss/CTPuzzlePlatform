@@ -82,8 +82,6 @@ export default class ConfirmCodeForm extends Vue {
   }
 
   async callValidateCode() {
-    this.loading = true;
-    this.loadingText = "Validando código de confirmação...";
     try {
       let response = await this.validateConfirmationCode({
         email: this.email,
@@ -95,21 +93,23 @@ export default class ConfirmCodeForm extends Vue {
         this.confirmCodeInput.select();
       }
       if (this.isCodeValid) {
+        await this.$alert(
+          "Acesse a plataforma com seu email e senha",
+          "Código confirmado",
+          {
+            confirmButtonText: "Acessar",
+            type: "success",
+          }
+        );
         this.$router.push("/platform");
-        this.$notify({
-          type: "success",
-          title: "Bem-vindo",
-          message:
-            "Você já pode começar a criar seus testes de Pensamento Computacional",
-        });
       }
     } catch (e) {
       console.error(e);
       this.$notify({
-        type: 'error',
-        title: 'Erro ao validar código',
-        message: 'Não foi possível validar o código'
-      })
+        type: "error",
+        title: "Erro ao validar código",
+        message: "Não foi possível validar o código",
+      });
       this.isCodeRequested = false;
     } finally {
       this.loading = false;
@@ -127,7 +127,11 @@ export default class ConfirmCodeForm extends Vue {
     this.isCodeValid = false;
     if (confirmCode) {
       if (confirmCode.length === this.codeMaxLength) {
-        await this.callValidateCode();
+        this.loading = true;
+        this.loadingText = "Validando código de confirmação...";
+        setTimeout(async () => {
+          await this.callValidateCode();
+        }, 1000);
       }
     }
   }

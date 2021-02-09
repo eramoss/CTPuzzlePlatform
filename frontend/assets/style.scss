@@ -94,14 +94,3 @@ a {
   width: 100%;
 }
 
-select {
-  background: white;
-  border: 1px solid #ddd;
-  padding: 10px;
-  color: rgb(96, 98, 102);
-  border-radius: 3px;
-
-  selected:invalid{
-    color: red;
-  }
-}

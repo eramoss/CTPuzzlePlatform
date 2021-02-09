@@ -22,8 +22,9 @@
               <el-row :gutter="10" type="flex">
                 <el-col :span="6">
                   <el-form-item prop="birthDay">
-                    <select
+                    <selector
                       class="fill"
+                      @change="form.clearValidate('birthDay')"
                       v-model="user.birthDay"
                       placeholder="Dia"
                     >
@@ -31,12 +32,13 @@
                       <option v-for="day in days" :value="day" :key="day">
                         {{ day }}
                       </option>
-                    </select>
+                    </selector>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item prop="birthMonth">
-                    <select
+                    <selector
+                      @change="form.clearValidate('birthMonth')"
                       v-model="user.birthMonth"
                       class="fill"
                       placeholder="Mês"
@@ -50,12 +52,13 @@
                       >
                         {{ m.name }}
                       </option>
-                    </select>
+                    </selector>
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
                   <el-form-item prop="birthYear">
-                    <select
+                    <selector
+                      @change="form.clearValidate('birthYear')"
                       v-model="user.birthYear"
                       class="fill"
                       placeholder="Ano"
@@ -64,7 +67,7 @@
                       <option v-for="year in years" :value="year" :key="year">
                         {{ year }}
                       </option>
-                    </select>
+                    </selector>
                   </el-form-item>
                 </el-col>
               </el-row>

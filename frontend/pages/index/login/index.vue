@@ -7,7 +7,7 @@
         :element-loading-text="loadingText"
       >
         <div class="title">
-          <h2>Login</h2>
+          <h2>Acessar CT Puzzle Platform</h2>
         </div>
         <el-form :model="user" :rules="rules" ref="form">
           <el-form-item label="Email" required prop="username">
