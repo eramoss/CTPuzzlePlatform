@@ -1,13 +1,15 @@
 <template>
-  <select
-    class="selector el-input__inner"
-    :class="className"
-    @change="change"
-    :placeholder="placeholder"
-    v-model="selectedValue"
-  >
-    <slot />
-  </select>
+  <div>
+    <select
+      class="selector el-input__inner"
+      :class="className"
+      @change="change"
+      :placeholder="placeholder"
+      v-model="selectedValue"
+    >
+      <slot />
+    </select>
+  </div>
 </template>
 <script lang="ts">
 import { Component, Emit, Prop, VModel } from "nuxt-property-decorator";
@@ -43,8 +45,8 @@ export default class Selector extends Vue {
   background: url("/arrow-down-select.png") no-repeat;
   background-position: right;
 
-  .el-form-item.is-error{
-    .selector{
+  .el-form-item.is-error {
+    .selector {
       border: 1px solid red;
     }
   }

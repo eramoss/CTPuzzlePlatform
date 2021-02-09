@@ -35,14 +35,14 @@
                   label-width="170px"
                   prop="mechanic"
                 >
-                  <select v-model="item.mechanic" class="fill">
+                  <selector v-model="item.mechanic" class="fill">
                     <option
                       v-for="m in availableMechanics"
                       :key="m.id"
                       :value="m"
                       :label="m.name"
                     ></option>
-                  </select>
+                  </selector>
                 </el-form-item>
                 <el-form-item
                   prop="description"

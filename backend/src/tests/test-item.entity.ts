@@ -8,10 +8,10 @@ export class TestItem {
   @PrimaryGeneratedColumn()
   id: number
 
-  @ManyToOne(type => Test)
+  @ManyToOne(type => Test, { nullable: false, orphanedRowAction: 'delete' })
   test: Test
 
-  @ManyToOne(type => Item)
+  @ManyToOne(type => Item, { nullable: false })
   item: Item
 
 }
