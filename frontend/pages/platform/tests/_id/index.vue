@@ -49,14 +49,14 @@
               >
                 <div class="select-item">
                   <div class="image">
-                    <img :src="item.thumbnail" />
+                    <thumbnail :src="item.thumbnail"/>
                   </div>
                   <div class="item-infos">
                     <p class="title">{{ item.name }}</p>
                     <p class="description">{{ item.description }}</p>
                   </div>
                   <div class="image">
-                    <img :src="item.thumbnail" />
+                    <thumbnail :src="item.thumbnail"/>
                   </div>
                   <div>
                     <el-button

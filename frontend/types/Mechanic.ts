@@ -1,22 +1,26 @@
-export default class Mechanic {
-  id: number = 0
-  name: string = ''
-  description: string = ''
-  classDefinition: string = ''
-  responseClassDefinition: string = ''
-  scoreFunction: string = ''
+import User from "./User"
 
-  constructor(name: string, description: string, classDefinition: string, responseClassDefinition: string, scoreFunction: string) {
-    this.name = name;
-    this.description = description;
-    this.classDefinition = classDefinition;
-    this.responseClassDefinition = responseClassDefinition;
-    this.scoreFunction = scoreFunction;
-  }
+export default class Mechanic {
+    id: number = 0
+    name: string = ''
+    description: string = ''
+    thumbnail: string = ''
+    classDefinition: string = ''
+    responseClassDefinition: string = ''
+    scoreFunction: string = ''
+    user!: User
+
+    constructor(name: string, description: string, classDefinition: string, responseClassDefinition: string, scoreFunction: string) {
+        this.name = name;
+        this.description = description;
+        this.classDefinition = classDefinition;
+        this.responseClassDefinition = responseClassDefinition;
+        this.scoreFunction = scoreFunction;
+    }
 }
 
-export function createMechanicExample(): Mechanic {
-  const classDefinitionExample = `
+export function createMechanicExample(user: User): Mechanic {
+    const classDefinitionExample = `
 // Exemplo de classe de mecânica
 class MecanicaRope {
   // mapa: string[][];
@@ -28,14 +32,14 @@ class MecanicaRope {
   // y: number;
 }`;
 
-  const responseClassExample = `
+    const responseClassExample = `
 // Exemplo de classe de resposta
 class RespostaItem {
   caminhoPercorrido: Array<{x:number, y:number}>
   comandosUtilizados: string[]
 }`;
 
-  const scoreFunctionExample = `
+    const scoreFunctionExample = `
 // Exemplo de cálculo de nota
 function calculaScore(resposta: ItemProgramacaoRope){
    // implementar cálculo da nota...
@@ -43,13 +47,14 @@ function calculaScore(resposta: ItemProgramacaoRope){
    return nota;
 }`;
 
-  const mechanicExample = new Mechanic(
-    '',
-    '',
-    classDefinitionExample,
-    responseClassExample,
-    scoreFunctionExample
-  );
-  return mechanicExample;
+    const mechanicExample = new Mechanic(
+        '',
+        '',
+        classDefinitionExample,
+        responseClassExample,
+        scoreFunctionExample
+    );
+    mechanicExample.user = user;
+    return mechanicExample;
 
 }

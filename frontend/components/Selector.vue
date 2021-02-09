@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background:white">
     <select
       class="selector el-input__inner"
       :class="className"
@@ -33,10 +33,9 @@ export default class Selector extends Vue {
 </script>
 <style lang="scss">
 .selector.has-value {
-  background: none;
+  //background: none;
 }
 .selector {
-  background: white;
   border: 1px solid #ddd;
   padding-left: 6px;
   color: rgb(96, 98, 102);

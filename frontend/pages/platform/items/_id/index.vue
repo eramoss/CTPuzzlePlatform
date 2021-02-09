@@ -61,7 +61,7 @@
               <el-col :span="6">
                 <el-form-item title="Ilustração da mecânica">
                   <FormItemLabel label="Ilustração do item" />
-                  <ImageUploader />
+                  <ImageUploader v-model="item.thumbnail" />
                 </el-form-item>
               </el-col>
             </el-row>

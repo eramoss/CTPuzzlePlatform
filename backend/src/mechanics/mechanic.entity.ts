@@ -1,25 +1,32 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { User } from 'src/users/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
 
 
 @Entity()
 export class Mechanic {
 
-  @PrimaryGeneratedColumn()
-  id: number
+    @PrimaryGeneratedColumn()
+    id: number
 
-  @Column()
-  name: string
+    @Column()
+    name: string
 
-  @Column()
-  description: string
+    @Column()
+    description: string
 
-  @Column()
-  classDefinition: string
+    @Column({ nullable: true })
+    thumbnail: string
 
-  @Column()
-  responseClassDefinition: string
+    @Column()
+    classDefinition: string
 
-  @Column()
-  scoreFunction: string
+    @Column()
+    responseClassDefinition: string
+
+    @Column()
+    scoreFunction: string
+
+    @ManyToOne(type => User, { nullable: false })
+    user: User
 
 }

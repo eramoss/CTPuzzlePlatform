@@ -1,69 +1,107 @@
 <template>
-  <el-upload
-    class="avatar-uploader"
-    :action="action"
-    :show-file-list="false"
-    :on-success="handleAvatarSuccess"
-    :before-upload="beforeAvatarUpload"
-  >
-    <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-  </el-upload>
+  <div>
+    <div
+      class="avatar-uploader"
+      @click="input.click()"
+      :style="{ background: `url(${imageUrl})` }"
+    >
+      <img
+        v-if="imageUrl"
+        :src="imageUrl"
+        class="avatar"
+        style="display: none"
+      />
+      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+    </div>
+    <input
+      style="display: none"
+      type="file"
+      ref="fileUpload"
+      @change="updateImage"
+    />
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "nuxt-property-decorator";
+import {
+  Component,
+  Ref,
+  VModel,
+  Watch,
+} from "nuxt-property-decorator";
 import { $axios } from "~/utils/axios";
 
 @Component
 export default class ImageUploader extends Vue {
-  imageUrl: string = "";
+  imageUrl?: any = "";
+
+  @Ref("fileUpload") input!: any;
+  @VModel() imageName!: string;
 
   get action() {
     return $axios.defaults.baseURL + "/file-upload/upload";
   }
 
-  handleAvatarSuccess(res: any, file: any) {
-    this.imageUrl = URL.createObjectURL(file.raw);
+  get fileLocation(): string {
+    let location = "";
+    if (this.imageName) {
+      location =
+        $axios.defaults.baseURL + "/file-upload/view/" + this.imageName;
+    }
+    return location;
   }
 
-  beforeAvatarUpload(file: any) {
-    //const isJPG = file.type === "image/jpeg";
-    const isLt2M = file.size / 1024 / 1024 < 2;
+  @Watch("imageName", { immediate: true })
+  onChangeImageName() {
+    this.imageUrl = this.fileLocation;
+  }
 
-    /* if (!isJPG) {
-      this.$message.error("Avatar picture must be JPG format!");
-    } */
-    if (!isLt2M) {
-      this.$message.error("A imagem não pode ter tamanho maior que 2MB!");
+  async updateImage() {
+    let file: File = this.input.files[0];
+    try {
+      let formData = new FormData();
+      formData.append("file", file, file.name);
+      let response = await fetch(this.action, {
+        method: "POST",
+        body: formData,
+      });
+
+      let text = await response.text();
+      this.imageName = text;
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imageUrl = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error(error);
     }
-    //return isJPG &&
-    return isLt2M;
   }
 }
 </script>
-<style>
-.avatar-uploader .el-upload {
+<style lang="scss">
+.avatar-uploader {
+  display: flex;
+  align-content: center;
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
+  width: 220px;
+  height: 170px;
+  background-position: center !important;
+  background-size: cover !important;
 }
-.avatar-uploader .el-upload:hover {
+.avatar-uploader:hover {
   border-color: #409eff;
 }
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 220px;
+  width: 100%;
   height: 170px;
   line-height: 170px;
   text-align: center;
-}
-.avatar {
-  width: 220px;
-  height: 170px;
-  display: block;
 }
 </style>

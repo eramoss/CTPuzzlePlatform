@@ -45,7 +45,7 @@
               <el-col :span="6">
                 <el-form-item title="Ilustração da mecânica">
                   <FormItemLabel label="Imagem de ilustração" />
-                  <ImageUploader />
+                  <ImageUploader v-model="mechanic.thumbnail" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -115,6 +115,7 @@ import { AxiosResponse } from "axios";
 import { ElForm } from "element-ui/types/form";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
+import User from "~/types/User";
 
 @Component({
   components: { CodeEditor },
@@ -123,7 +124,7 @@ export default class MechanicEditForm extends Vue {
   saving: boolean = false;
   mechanic!: Mechanic;
   @Ref("mechanicForm") mechanicForm!: ElForm;
-  @Ref("nameInput") nameInput!: ElInput
+  @Ref("nameInput") nameInput!: ElInput;
 
   get formRules() {
     return {
@@ -156,7 +157,8 @@ export default class MechanicEditForm extends Vue {
     let mechanic;
     let id = ctx.params.id;
     if (id == "new") {
-      mechanic = createMechanicExample();
+      let user = { id: ctx.$auth.user?.id } as User;
+      mechanic = createMechanicExample(user);
     }
     if (id != "new") {
       mechanic = await ctx.store.dispatch("mechanics/getById", id);
@@ -198,7 +200,7 @@ export default class MechanicEditForm extends Vue {
     this.$router.go(-1);
   }
 
-  mounted(){
+  mounted() {
     this.nameInput.focus();
   }
 }
