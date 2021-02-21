@@ -1,0 +1,9 @@
+<template>
+  <el-button
+    v-bind="$attrs"
+    icon="el-icon-check"
+    @click="$emit('click')"
+    type="success"
+    >Salvar</el-button
+  >
+</template>

@@ -1,0 +1,9 @@
+<template>
+    <el-button
+              icon="el-icon-edit"
+              v-bind="$attrs"
+              size="small"
+              type="default"
+              @click="$emit('click')"
+            >Editar</el-button>
+</template>

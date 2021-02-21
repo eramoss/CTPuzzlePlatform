@@ -3,6 +3,7 @@ import Test from "./Test"
 
 export default class TestItem {
   id!: number
+  order!: number
   test!: Test
   item!: Item
 }

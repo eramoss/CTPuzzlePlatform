@@ -1,17 +1,20 @@
 import { Item } from "src/items/item.entity";
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Test } from "./test.entity";
 
 @Entity()
 export class TestItem {
 
-  @PrimaryGeneratedColumn()
-  id: number
+    @PrimaryGeneratedColumn()
+    id: number
 
-  @ManyToOne(type => Test, { nullable: false, orphanedRowAction: 'delete' })
-  test: Test
+    @Column({ nullable: false })
+    order: number
 
-  @ManyToOne(type => Item, { nullable: false })
-  item: Item
+    @ManyToOne(type => Test, { nullable: false, orphanedRowAction: 'delete' })
+    test: Test
+
+    @ManyToOne(type => Item, { nullable: false })
+    item: Item
 
 }

@@ -8,21 +8,27 @@
     </el-breadcrumb>
     <div class="panel">
       <h2>Testes</h2>
-      <el-button type="primary" icon="el-icon-plus" @click="create" :loading="goingCreate">
+      <el-button
+        type="primary"
+        icon="el-icon-plus"
+        @click="create"
+        :loading="goingCreate"
+      >
         Novo
       </el-button>
       <!-- <el-input v-model="pageRequest.search"></el-input> -->
       <el-table :data="pageResponse.data">
         <el-table-column prop="id" label="Código" width="100"></el-table-column>
         <el-table-column prop="name" label="Nome"></el-table-column>
-        <el-table-column label="Ações" width="200">
+        <el-table-column prop="name" label="Itens" width="100">
           <template slot-scope="{ row }">
-            <el-button size="small" type="primary" @click="edit(row)">
-              Editar
-            </el-button>
-            <el-button size="small" type="danger" @click="remove(row)">
-              Remover
-            </el-button>
+            {{ row.items.length }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Ações" width="240">
+          <template slot-scope="{ row }">
+            <btn-edit @click="edit(row)"> Editar </btn-edit>
+            <btn-remove @click="remove(row)"> Remover </btn-remove>
           </template>
         </el-table-column>
       </el-table>
@@ -46,7 +52,7 @@ import { Context } from "@nuxt/types";
   },
 })
 export default class TestsList extends Vue {
-  goingCreate:boolean = false
+  goingCreate: boolean = false;
   pageResponse: PageResponse<Test> = new PageResponse<Test>();
   pageRequest: PageRequest = new PageRequest();
 

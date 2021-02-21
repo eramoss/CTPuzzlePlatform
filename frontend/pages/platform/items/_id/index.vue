@@ -77,7 +77,7 @@
               <FormItemLabel label="Especificação do item" :required="true" />
               <code-editor
                 v-model="item.itemDefinition"
-                height="200px"
+                height="500px"
                 @input="form.validateField('itemDefinition')"
               />
             </el-form-item>
@@ -85,10 +85,9 @@
         </el-row>
         <el-row>
           <el-col>
-            <el-button icon="el-icon-check" @click="save" type="success"
-              >Salvar</el-button
-            >
+            <btn-save @click="save"/>
             <el-button @click="back">Cancelar</el-button>
+            <el-button type="primary" @click="copy">Copiar</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -155,9 +154,7 @@ export default class ItemEditForm extends Vue {
     return { item: item, availableMechanics };
   }
 
-  @Action("items/save") saveItem!: (
-    item: Item
-  ) => Promise<Item>;
+  @Action("items/save") saveItem!: (item: Item) => Promise<Item>;
 
   async save() {
     if (!(await this.form.validate())) {
@@ -182,6 +179,21 @@ export default class ItemEditForm extends Vue {
     } finally {
       this.saving = false;
     }
+  }
+
+  copy() {
+    this.item.id = 0;
+    this.item.name = "Cópia " + this.item.name;
+    this.$notify({
+      type: "success",
+      title: "O item foi copiado",
+      message: "Altere o que for necessário no item atual",
+    });
+    window.scrollTo(0, 0);
+    this.$nextTick(() => {
+      this.nameInput?.focus();
+      this.nameInput?.select();
+    });
   }
 
   back() {

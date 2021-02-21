@@ -8,11 +8,3 @@ export default class Test {
   items: TestItem[] = []
 
 }
-
-export function setItems(test: Test, items: Item[]) {
-  test.items = items.map((item: Item) => {
-    let testItem = new TestItem()
-    testItem.item = item;
-    return testItem;
-  })
-}

@@ -32,80 +32,101 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-form-item label="Pesquisar itens" label-width="130px">
-            <el-select
-              value=""
-              :v-model="selectedItems"
-              popper-class="items-select"
-              filterable
-              placeholder="Selecione os itens do teste"
-            >
-              <el-option
-                v-for="item in noSelectedItems"
-                :label="item.name"
-                :key="item.id"
-                :value="item"
-                value-key="id"
+          <el-col :span="19">
+            <el-form-item label="Pesquisar itens" label-width="130px">
+              <el-select
+                no-data-text="Não há itens para selecionar"
+                value=""
+                :v-model="selectedItems"
+                popper-class="items-select"
+                filterable
+                multiple
+                placeholder="Selecione os itens do teste"
               >
-                <div class="select-item">
-                  <div class="image">
-                    <thumbnail :src="item.thumbnail"/>
+                <el-option
+                  v-for="item in noSelectedItems"
+                  :label="item.name"
+                  :key="item.id"
+                  :value="item"
+                  value-key="id"
+                >
+                  <div class="select-item">
+                    <div class="image">
+                      <thumbnail :src="item.thumbnail" />
+                    </div>
+                    <div class="item-infos">
+                      <p class="title">{{ item.name }}</p>
+                      <p class="description">{{ item.description }}</p>
+                    </div>
+                    <div class="image">
+                      <thumbnail :src="item.thumbnail" />
+                    </div>
+                    <div>
+                      <el-button
+                        class="add-button"
+                        size="large"
+                        @click="addItemToTest(item)"
+                      >
+                        <i class="el-icon-plus"></i>
+                        <p>Adicionar ao teste</p>
+                      </el-button>
+                    </div>
                   </div>
-                  <div class="item-infos">
-                    <p class="title">{{ item.name }}</p>
-                    <p class="description">{{ item.description }}</p>
-                  </div>
-                  <div class="image">
-                    <thumbnail :src="item.thumbnail"/>
-                  </div>
-                  <div>
-                    <el-button
-                      class="add-button"
-                      size="large"
-                      @click="addItemToTest(item)"
-                    >
-                      <i class="el-icon-plus"></i>
-                      <p>Adicionar ao teste</p>
-                    </el-button>
-                  </div>
-                </div>
-              </el-option>
-            </el-select>
-          </el-form-item>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-form-item>
-            <form-item-label label="Itens adicionados" required />
-            <draggable v-model="selectedItems" class="added-items">
-              <div
-                class="added-item"
-                v-for="(testItem, index) in selectedItems"
-                :key="testItem.id"
-              >
-                <div class="item-title">{{ testItem.item.name }}</div>
-                <div class="item-subtitle">Fase {{ index + 1 }}</div>
-                <div class="trash">
+            <form-item-label
+              label="Itens adicionados (arraste para ordenar)"
+              required
+            />
+            <draggable
+              :v-bind="dragOptions"
+              v-model="selectedItems"
+              class="added-items"
+              @end="updateOrder"
+            >
+              <transition-group type="transition" name="flip-list">
+                <div
+                  title="Arraste para mudar a orde"
+                  class="added-item"
+                  v-for="(testItem, index) in selectedItems"
+                  :key="testItem.item.id"
+                >
+                  <!-- <div class="drag-indicator"><i class="el-icon-rank"></i></div> -->
+                  <div class="item-text">
+                    <div class="item-title">{{ testItem.item.name }}</div>
+                    <div class="item-subtitle">Fase {{ index + 1 }}</div>
+                  </div>
                   <el-button
+                    @click="editItem(testItem)"
+                    size="small"
+                    title="Editar item"
+                    icon="el-icon-edit"
+                    type="default"
+                  >
+                    Editar
+                  </el-button>
+                  <el-button
+                    size="small"
                     @click="removeItem(testItem)"
                     title="Remover item"
                     icon="el-icon-delete-solid"
-                    type="text"
-                  ></el-button>
+                    type="danger"
+                    >Remover</el-button
+                  >
                 </div>
-              </div>
+              </transition-group>
             </draggable>
           </el-form-item>
         </el-row>
         <el-row>
           <el-col>
-            <el-button
-              icon="el-icon-check"
-              @click="save"
-              :loading="saving"
-              type="success"
-              >Salvar</el-button
-            >
-            <el-button @click="back">Voltar</el-button>
+            <btn-save @click="save" :loading="saving"/>
+            <btn-back @click="back"/>
           </el-col>
         </el-row>
       </el-form>
@@ -116,7 +137,7 @@
 import draggable from "vuedraggable";
 import Vue from "vue";
 import { Action, Component, Ref } from "nuxt-property-decorator";
-import Test, { setItems } from "~/types/Test";
+import Test from "~/types/Test";
 import Item from "~/types/Item";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
@@ -142,6 +163,15 @@ export default class TestEditForm extends Vue {
 
   @Action("tests/save") saveTest!: (test: Test) => Promise<Test>;
 
+  get dragOptions() {
+    return {
+      animation: 0,
+      group: "description",
+      disabled: false,
+      ghostClass: "ghost",
+    };
+  }
+
   async save() {
     this.saving = true;
     try {
@@ -165,6 +195,12 @@ export default class TestEditForm extends Vue {
     }
   }
 
+  updateOrder() {
+    this.selectedItems.forEach((item: TestItem, index: number) => {
+      item.order = index;
+    });
+  }
+
   get noSelectedItems(): Item[] {
     let notInTestItems = (item: Item) => {
       let testItemIds = this.selectedItems.map(
@@ -179,20 +215,25 @@ export default class TestEditForm extends Vue {
     let testItem = new TestItem();
     testItem.item = item;
     this.selectedItems.push(testItem);
-    this.$notify({
+    this.updateOrder();
+    /* this.$notify({
       type: "success",
       title: "O item foi adicionado",
       message: "O item foi adicionado ao teste. Salve para registrar.",
-    });
+    }); */
+  }
+
+  editItem(testItem: TestItem) {
+    this.$router.push("/platform/items/" + testItem.item.id);
   }
 
   removeItem(testItem: TestItem) {
     this.selectedItems.splice(this.selectedItems.indexOf(testItem), 1);
-    this.$notify({
+    /* this.$notify({
       type: "success",
       title: "O item foi removido",
       message: "O item foi removido do teste. Salve para registrar.",
-    });
+    }); */
   }
 
   async asyncData(ctx: Context) {
@@ -267,23 +308,42 @@ export default class TestEditForm extends Vue {
 }
 .added-items {
   display: flex;
-  flex-flow: row wrap;
-  .added-item:hover {
-    cursor: grab;
+  flex-flow: column nowrap;
+  .added-item {
+    .drag-indicator {
+      margin-right: 5px;
+      font-size: 15pt;
+      flex-grow: 0;
+      color: #777;
+    }
+    .item-text {
+      display: flex;
+      flex-flow: column;
+      flex-grow: 1;
+    }
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
   }
   .added-item:hover {
-    box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.3);
+    background: #eee;
+    cursor: grab;
+  }
+  .added-item .drag-indicator {
+    color: #ddd;
+  }
+  .added-item:hover .drag-indicator {
+    color: #222;
   }
   .added-item {
     background: white;
-
     position: relative;
     padding: 10px;
     margin: 5px;
-    width: 200px;
-    height: 130px;
+    width: 100%;
     border: 1px solid #ccc;
-    border-radius: 3px;
+    border-radius: 5px;
 
     .item-title {
       line-height: 1.2em;
@@ -297,21 +357,17 @@ export default class TestEditForm extends Vue {
       font-size: 9pt;
       color: #333;
     }
-
-    .trash {
-      position: absolute;
-      right: 10px;
-      bottom: 0;
-      .el-button {
-        color: red;
-        font-size: 18pt;
-      }
-    }
-    .trash:hover {
-      .el-button {
-        color: rgb(138, 14, 14);
-      }
-    }
   }
+}
+.flip-list-move {
+  transition: transform 0.5s;
+}
+.no-move {
+  transition: transform 0s;
+}
+
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
 }
 </style>

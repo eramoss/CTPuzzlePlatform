@@ -64,7 +64,7 @@
               <code-editor
                 v-model="mechanic.classDefinition"
                 @input="mechanicForm.validateField('classDefinition')"
-                height="200px"
+                height="300px"
               />
             </el-form-item>
             <el-form-item prop="responseClassDefinition">
@@ -83,21 +83,18 @@
               <code-editor
                 v-model="mechanic.scoreFunction"
                 @input="mechanicForm.validateField('scoreFunction')"
-                height="200px"
+                height="300px"
               />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col>
-            <el-button
+            <btn-save
               @click="save"
-              icon="el-icon-check"
               :loading="saving"
-              type="success"
-              >Salvar</el-button
-            >
-            <el-button @click="back">Voltar</el-button>
+              />
+            <btn-back @click="back"></btn-back>
           </el-col>
         </el-row>
       </el-form>

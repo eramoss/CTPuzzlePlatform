@@ -15,14 +15,14 @@
       <el-table :data="pageResponse.data">
         <el-table-column prop="id" label="Código" width="100"></el-table-column>
         <el-table-column prop="name" label="Nome"></el-table-column>
-        <el-table-column label="Ações" width="200">
+        <el-table-column label="Ações" width="240">
           <template slot-scope="{ row }">
-            <el-button size="small" type="primary" @click="edit(row)">
+            <btn-edit @click="edit(row)">
               Editar
-            </el-button>
-            <el-button size="small" type="danger" @click="remove(row)">
+            </btn-edit>
+            <btn-remove @click="remove(row)">
               Remover
-            </el-button>
+            </btn-remove>
           </template>
         </el-table-column>
       </el-table>
