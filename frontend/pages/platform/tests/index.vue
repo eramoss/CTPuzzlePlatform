@@ -25,24 +25,39 @@
             {{ row.items.length }}
           </template>
         </el-table-column>
-        <el-table-column label="Ações" width="240">
+        <el-table-column label="Status" width="100">
           <template slot-scope="{ row }">
+            {{ row.status }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Ações" width="330">
+          <template slot-scope="{ row }">
+            <el-button
+              size="small"
+              type="success"
+              icon="el-icon-s-promotion"
+              @click="openTestApplicationDialog(row)"
+            >
+              Aplicar
+            </el-button>
             <btn-edit @click="edit(row)"> Editar </btn-edit>
             <btn-remove @click="remove(row)"> Remover </btn-remove>
           </template>
         </el-table-column>
       </el-table>
+      <test-application-dialog ref="testApplicationDialog" />
     </div>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Watch, Component } from "nuxt-property-decorator";
+import { Watch, Component, Ref } from "nuxt-property-decorator";
 import { PageRequest, PageResponse } from "@/types/pagination";
 import Test from "~/types/Test";
 import { AxiosResponse } from "axios";
 import { Action } from "vuex-class";
 import { Context } from "@nuxt/types";
+import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
 
 @Component({
   head() {
@@ -50,11 +65,17 @@ import { Context } from "@nuxt/types";
       title: "Testes",
     };
   },
+  components: {
+    TestApplicationDialog,
+  },
 })
 export default class TestsList extends Vue {
   goingCreate: boolean = false;
   pageResponse: PageResponse<Test> = new PageResponse<Test>();
   pageRequest: PageRequest = new PageRequest();
+
+  @Ref("testApplicationDialog")
+  testApplicationDialog!: TestApplicationDialog;
 
   create() {
     this.goingCreate = true;
@@ -65,10 +86,14 @@ export default class TestsList extends Vue {
     this.$router.push("/platform/tests/" + row.id);
   }
 
+  openTestApplicationDialog(test: Test) {
+    this.testApplicationDialog.open(test);
+  }
+
   async remove(row: Test) {
     try {
       let option = await this.$confirm(
-        "Tem certeza de que deseja remover o teste? A segunte teste será removido: " +
+        "Tem certeza de que deseja remover o teste? O segunte teste será removido: " +
           row.name,
         "Remover teste?",
         {

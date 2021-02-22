@@ -11,6 +11,7 @@ import { PaginationModule } from './pagination/pagination.module';
 import { ItemsModule } from './items/items.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { TestModule } from './tests/tests.module';
+import { TestApplicationsModule } from './test-applications/test-applications.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { TestModule } from './tests/tests.module';
     ItemsModule,
     FileUploadModule,
     TestModule,
+    TestApplicationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

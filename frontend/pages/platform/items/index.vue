@@ -80,7 +80,7 @@ export default class ItemsList extends Vue {
   async remove(row: Item) {
     try {
       let option = await this.$confirm(
-        "Tem certeza de que deseja remover o item? A segunte item será removido: " +
+        "Tem certeza de que deseja remover o item? O segunte item será removido: " +
           row.name,
         "Remover item?",
         {

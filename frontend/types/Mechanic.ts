@@ -22,7 +22,7 @@ export default class Mechanic {
 export function createMechanicExample(user: User): Mechanic {
     const classDefinitionExample = `
 // Exemplo de classe de mecânica
-class MecanicaRope {
+// class MecanicaRope {
   // mapa: string[][];
   // obstaculos: string[][];
   // solucaoEsperada: Array<{x:number, y:number}>;
@@ -30,21 +30,21 @@ class MecanicaRope {
   // face: string;
   // x: number;
   // y: number;
-}`;
+//}`;
 
     const responseClassExample = `
 // Exemplo de classe de resposta
-class RespostaItem {
-  caminhoPercorrido: Array<{x:number, y:number}>
-  comandosUtilizados: string[]
-}`;
+// class RespostaItem {
+//  caminhoPercorrido: Array<{x:number, y:number}>
+//  comandosUtilizados: string[]
+//}`;
 
     const scoreFunctionExample = `
 // Exemplo de cálculo de nota
-function calculaScore(resposta: ItemProgramacaoRope){
-   // implementar cálculo da nota...
-   let nota = 9
-   return nota;
+// function calculaScore(resposta: ItemProgramacaoRope){
+//   implementar cálculo da nota...
+//   let nota = 9
+//   return nota;
 }`;
 
     const mechanicExample = new Mechanic(

@@ -13,21 +13,13 @@
       <h2>Edição de teste</h2>
       <el-form>
         <el-row :gutter="15">
-          <el-col :span="15">
+          <el-col :span="19">
             <el-form-item label-width="130px" label="Nome do teste">
               <el-input
                 ref="inputName"
                 v-model="test.name"
                 placeholder="Teste de Pensamento Computacional"
               ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="9">
-            <el-form-item label-width="130px" label="Situação">
-              <el-tag type="success" size="large">PUBLICADO</el-tag>
-              <a :href="test.link" title="Acessar teste" target="_blank">{{
-                test.link
-              }}</a>
             </el-form-item>
           </el-col>
         </el-row>

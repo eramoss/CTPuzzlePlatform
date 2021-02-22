@@ -154,7 +154,8 @@ export default class MechanicEditForm extends Vue {
     let mechanic;
     let id = ctx.params.id;
     if (id == "new") {
-      let user = { id: ctx.$auth.user?.id } as User;
+      let ctxUser = ctx.$auth.user;
+      let user = { id: ctxUser?.userId } as User;
       mechanic = createMechanicExample(user);
     }
     if (id != "new") {
@@ -181,7 +182,7 @@ export default class MechanicEditForm extends Vue {
         title: "Sucesso ao salvar a mecânica!",
         message: "Agora você já pode criar itens com essa mecânica",
       });
-      this.$router.replace({ params: { id: data.id } });
+      //this.$router.replace({ params: { id: data.id } });
       this.back();
     } catch (e) {
       this.$notify.error({

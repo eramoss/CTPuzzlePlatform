@@ -13,35 +13,33 @@
             @open="handleOpen"
             @close="handleClose"
           >
-            <el-menu-item-group>
-              <el-menu-item
-                index="/platform/mechanics"
-                route="/platform/mechanics"
-              >
-                <i class="el-icon-s-operation"></i>
-                <span> Mecânicas </span>
-              </el-menu-item>
-              <el-menu-item index="/platform/items" route="/platform/items">
-                <i class="el-icon-files"></i>
-                <span> Itens </span>
-              </el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group>
-              <el-menu-item index="/platform/tests" route="/platform/tests">
-                <i class="el-icon-receiving"></i>
-                <span> Testes </span>
-              </el-menu-item>
-              <el-menu-item index="/platform/users">
-                <i class="el-icon-user"></i>
-                <span> Amostras </span>
-              </el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group>
-              <el-menu-item index="/platform/statistics">
-                <i class="el-icon-data-analysis"></i>
-                <span> Estatísticas </span>
-              </el-menu-item>
-            </el-menu-item-group>
+            <el-menu-item
+              index="/platform/mechanics"
+              route="/platform/mechanics"
+            >
+              <i class="el-icon-s-operation"></i>
+              <span> Mecânicas </span>
+            </el-menu-item>
+            <el-menu-item index="/platform/items" route="/platform/items">
+              <i class="el-icon-files"></i>
+              <span> Itens </span>
+            </el-menu-item>
+
+            <el-menu-item index="/platform/tests" route="/platform/tests">
+              <i class="el-icon-document"></i>
+              <span> Testes </span>
+            </el-menu-item>
+            <el-menu-item
+              index="/platform/test-applications"
+              route="/platform/test-applications"
+            >
+              <i class="el-icon-video-play"></i>
+              <span> Aplicações </span>
+            </el-menu-item>
+            <el-menu-item index="/platform/statistics">
+              <i class="el-icon-s-data"></i>
+              <span> Estatísticas </span>
+            </el-menu-item>
           </el-menu>
         </el-aside>
         <el-main>

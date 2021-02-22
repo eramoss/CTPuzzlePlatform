@@ -4,6 +4,7 @@
     <MonacoEditor
       class="editor"
       v-model="code"
+      ref="editor"
       :options="options"
       :style="{ width: width, height: height }"
     />
@@ -27,15 +28,20 @@ import { Component, Prop, Ref, VModel } from "nuxt-property-decorator";
 export default class CodeEditor extends Vue {
   @Prop({ default: "100%" }) width!: string;
   @Prop({ default: "500px" }) height!: string;
+  @Prop({ default: "typescript" }) language!: string;
   @VModel({ default: "const code = {}" }) code!: string;
+
+  @Ref("editor")
+  editor!: MonacoEditor;
 
   get options() {
     return {
       scrollBeyondLastLine: false,
-      lineNumbers: "off",
-      theme: "vs-light", //theme: "vs-dark",
+      //lineNumbers: "off",
+      //theme: "vs-light",
+      //theme: "vs-dark",
       roundedSelection: true,
-      language: 'typescript'
+      language: this.language,
     };
   }
 
@@ -64,5 +70,8 @@ export default class CodeEditor extends Vue {
   .editor {
     border: 1px solid red;
   }
+}
+.suggest-widget {
+  display: none !important;
 }
 </style>

@@ -76,6 +76,7 @@
             <el-form-item prop="itemDefinition">
               <FormItemLabel label="Especificação do item" :required="true" />
               <code-editor
+                language="json,typescript"
                 v-model="item.itemDefinition"
                 height="500px"
                 @input="form.validateField('itemDefinition')"
@@ -86,8 +87,8 @@
         <el-row>
           <el-col>
             <btn-save @click="save"/>
-            <el-button @click="back">Cancelar</el-button>
-            <el-button type="primary" @click="copy">Copiar</el-button>
+            <btn-back @click="back"></btn-back>
+            <el-button type="primary" @click="copy" title="Cria um novo item igual a este">Copiar item</el-button>
           </el-col>
         </el-row>
       </el-form>
