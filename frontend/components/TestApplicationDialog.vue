@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="Aplicar teste" :visible.sync="visible">
-    <el-form label-position="left" label-width="180px">
-      <el-form-item label="Identificação da aplicação">
+    <el-form label-position="left" label-width="130px">
+      <el-form-item label="Nome aplicação">
         <el-input
           v-model="testApplication.name"
           placeholder="Ex.: Aplicação da turma 3º ano"
@@ -9,12 +9,16 @@
         />
       </el-form-item>
       <el-form-item label="Link do teste">
-        <copy-input 
-        v-model="applicationUrl" placeholder="Informe o nome da aplicação para gerar o link" />
+        <copy-input
+          v-model="applicationUrl"
+          placeholder="Informe o nome da aplicação para gerar o link"
+        />
       </el-form-item>
     </el-form>
     <div slot="footer">
       <el-button
+        @click="createApplication"
+        :loading="creatingApplication"
         icon="el-icon-s-promotion"
         type="success"
         :disabled="!isStateValid"
@@ -25,7 +29,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Ref, Watch } from "nuxt-property-decorator";
+import { Action, Component, Ref, Watch } from "nuxt-property-decorator";
 import Test from "~/types/Test";
 import { ElInput } from "element-ui/types/input";
 import CopyInput from "~/components/CopyInput.vue";
@@ -38,6 +42,7 @@ import TestApplication from "~/types/TestApplication";
 })
 export default class TestApplicationDialog extends Vue {
   visible: boolean = false;
+  creatingApplication: boolean = false;
 
   @Ref("firstInput") firstInput!: ElInput;
 
@@ -49,10 +54,41 @@ export default class TestApplicationDialog extends Vue {
 
   open(test: Test) {
     this.testApplication = new TestApplication();
+    this.testApplication.test = test;
     this.visible = true;
     this.$nextTick(() => {
       this.firstInput?.focus();
     });
+  }
+
+  @Action("test-applications/save") saveApplication!: (
+    testApplication: TestApplication
+  ) => Promise<TestApplication>;
+
+  async createApplication() {
+    this.creatingApplication = true;
+    setTimeout(async () => {
+      try {
+        this.testApplication.url = this.applicationUrl;
+        this.testApplication = await this.saveApplication(this.testApplication);
+        this.$notify({
+          type: "success",
+          title: "Sucesso ao publicar",
+          message: "Envie o link do teste para os participantes",
+        });
+        this.$router.push(
+          "/platform/test-applications/" + this.testApplication.id
+        );
+      } catch (e) {
+        this.$notify({
+          type: "error",
+          title: "Erro ao publicar",
+          message: "Ocorreu um problema ao iniciar a aplicação do teste",
+        });
+      } finally {
+        this.creatingApplication = false;
+      }
+    }, 2000);
   }
 
   get applicationUrl(): string {
@@ -66,6 +102,5 @@ export default class TestApplicationDialog extends Vue {
     }
     return url.toLowerCase();
   }
-
 }
 </script>

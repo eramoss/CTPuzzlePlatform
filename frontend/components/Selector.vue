@@ -1,12 +1,14 @@
 <template>
-  <div style="background:white">
+  <div style="background: white">
     <select
       class="selector el-input__inner"
       :class="className"
       @change="change"
-      :placeholder="placeholder"
       v-model="selectedValue"
     >
+      <option v-show="placeholder" value="" disabled selected>
+        {{placeholder}}
+      </option>
       <slot />
     </select>
   </div>

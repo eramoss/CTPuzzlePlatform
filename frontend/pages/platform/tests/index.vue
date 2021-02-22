@@ -32,14 +32,16 @@
         </el-table-column>
         <el-table-column label="Ações" width="330">
           <template slot-scope="{ row }">
-            <el-button
-              size="small"
-              type="success"
-              icon="el-icon-s-promotion"
-              @click="openTestApplicationDialog(row)"
-            >
-              Aplicar
-            </el-button>
+            <el-tooltip content="Cria uma aplicação de teste">
+              <el-button
+                size="small"
+                type="success"
+                icon="el-icon-s-promotion"
+                @click="openTestApplicationDialog(row)"
+              >
+                Aplicar
+              </el-button>
+            </el-tooltip>
             <btn-edit @click="edit(row)"> Editar </btn-edit>
             <btn-remove @click="remove(row)"> Remover </btn-remove>
           </template>
@@ -114,8 +116,9 @@ export default class TestsList extends Vue {
           console.error(e);
           this.$notify({
             type: "error",
-            title: "Erro ao remover",
-            message: "O teste não foi removido",
+            title: "Não foi possível remover o teste",
+            message:
+              "Verifique se o teste não está sendo utilizado em alguma aplicação.",
           });
         }
       }

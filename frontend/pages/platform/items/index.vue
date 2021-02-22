@@ -21,12 +21,8 @@
         <el-table-column label="Nome" prop="name"></el-table-column>
         <el-table-column label="Ações" prop="name" width="240">
           <template slot-scope="{ row }">
-            <btn-edit @click="edit(row)">
-              Editar
-            </btn-edit>
-            <btn-remove @click="remove(row)">
-              Remover
-            </btn-remove>
+            <btn-edit @click="edit(row)"> Editar </btn-edit>
+            <btn-remove @click="remove(row)"> Remover </btn-remove>
           </template>
         </el-table-column>
       </el-table>
@@ -101,8 +97,9 @@ export default class ItemsList extends Vue {
           console.error(e);
           this.$notify({
             type: "error",
-            title: "Erro ao remover",
-            message: "O item não foi removido",
+            title: "O item não foi removido",
+            message:
+              "O item não pode ser removido. Verifique se ele não está sendo usado em um teste.",
           });
         }
       }

@@ -21,7 +21,7 @@ export const actions: ActionTree<any, any> = {
     return $axios.$post('/tests/paginate', pageRequest);
   },
 
-  async findAll(state, pageRequest: PageRequest): Promise<Test[]> {
+  async findAll(state): Promise<Test[]> {
     return $axios.$get('/tests/findAll');
   },
 

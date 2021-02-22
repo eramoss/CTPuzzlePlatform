@@ -28,22 +28,32 @@
       <nuxt-link to="/login" v-show="!$auth.loggedIn">
         <el-button size="medium" type="text"> Entrar </el-button>
       </nuxt-link>
-      <nuxt-link to="/platform">
-        <el-button size="small" type="primary" title="Plataforma"
-          >Plataforma</el-button
-        >
+      <nuxt-link to="/platform" v-show="currentRoutIsNotPlatform">
+        <el-button size="small" type="primary" title="Plataforma">
+          Plataforma
+        </el-button>
       </nuxt-link>
-      <span v-if="$auth.loggedIn" style="margin: auto 10px">
-        {{ $auth.user && $auth.user.name }}
-      </span>
+      <el-dropdown @command="handleCommand" v-if="$auth.loggedIn">
+        <span style="margin: auto 10px">
+          <el-button type="text">
+            {{ $auth.user && $auth.user.name }}
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+        </span>
+        <el-dropdown-menu>
+          <el-dropdown-item icon="el-icon-circle-close" command="logout"
+            >Sair</el-dropdown-item
+          >
+        </el-dropdown-menu>
+      </el-dropdown>
+
       <el-button
         size="small"
         type="text"
-        title="Plataforma"
+        title="Sair"
         @click="logout"
         v-show="$auth.loggedIn"
       >
-        Sair
       </el-button>
     </container>
   </div>
@@ -59,6 +69,16 @@ export default class TopBar extends Vue {
   async logout() {
     await this.$auth.logout();
     this.$router.push("/");
+  }
+
+  handleCommand(command: string) {
+    if (command === "logout") {
+      this.logout();
+    }
+  }
+
+  get currentRoutIsNotPlatform() {
+    return this.$route.path.indexOf("platform") === -1;
   }
 }
 </script>
