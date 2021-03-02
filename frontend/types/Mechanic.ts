@@ -1,13 +1,20 @@
 import User from "./User"
 
 export default class Mechanic {
+    static newEmpty(): Mechanic {
+        return new Mechanic('', '', '', '', '');
+    }
+
     id: number = 0
     name: string = ''
+    baseUrl: string = ''
     description: string = ''
     thumbnail: string = ''
     classDefinition: string = ''
     responseClassDefinition: string = ''
     scoreFunction: string = ''
+    itemInstantiation: string = ''
+    responseInstantiation: string = ''
     user!: User
 
     constructor(name: string, description: string, classDefinition: string, responseClassDefinition: string, scoreFunction: string) {
@@ -21,31 +28,31 @@ export default class Mechanic {
 
 export function createMechanicExample(user: User): Mechanic {
     const classDefinitionExample = `
-// Exemplo de classe de mecânica
-// class MecanicaRope {
-  // mapa: string[][];
-  // obstaculos: string[][];
-  // solucaoEsperada: Array<{x:number, y:number}>;
-  // comandosEsperados: Array<string>;
-  // face: string;
-  // x: number;
-  // y: number;
+// Exemplo:
+// class ItemProgramacao {
+//  mapa: string[][];
+//  obstaculos: string[][];
+//  solucaoEsperada: Array<{x:number, y:number}>;
+//  comandosEsperados: Array<string>;
+//  face: string;
+//  x: number;
+//  y: number;
 //}`;
 
     const responseClassExample = `
-// Exemplo de classe de resposta
+// Exemplo:
 // class RespostaItem {
 //  caminhoPercorrido: Array<{x:number, y:number}>
 //  comandosUtilizados: string[]
 //}`;
 
     const scoreFunctionExample = `
-// Exemplo de cálculo de nota
-// function calculaScore(resposta: ItemProgramacaoRope){
+// Exemplo:
+// function calculaScore(item: ItemProgramacao, resposta: RespostaItem){
 //   implementar cálculo da nota...
 //   let nota = 9
-//   return nota;
-}`;
+//   return { score: nota, max: 10 };
+//}`;
 
     const mechanicExample = new Mechanic(
         '',

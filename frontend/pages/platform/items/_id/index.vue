@@ -35,14 +35,19 @@
                   label-width="170px"
                   prop="mechanic"
                 >
-                  <selector v-model="item.mechanic" class="fill">
-                    <option
+                  <el-select
+                    value-key="id"
+                    v-model="item.mechanic"
+                    class="fill"
+                    filterable
+                  >
+                    <el-option
                       v-for="m in availableMechanics"
                       :key="m.id"
                       :value="m"
                       :label="m.name"
-                    ></option>
-                  </selector>
+                    ></el-option>
+                  </el-select>
                 </el-form-item>
                 <el-form-item
                   prop="description"
@@ -75,20 +80,52 @@
 
             <el-form-item prop="itemDefinition">
               <FormItemLabel label="Especificação do item" :required="true" />
-              <code-editor
-                language="json,typescript"
-                v-model="item.itemDefinition"
-                height="500px"
-                @input="form.validateField('itemDefinition')"
-              />
+              <el-row :gutter="10">
+                <el-col :span="8" v-if="item.mechanic">
+                  <code-editor
+                    editor-title="Classe da mecânica"
+                    :font-size="13"
+                    :readonly="true"
+                    v-model="item.mechanic.classDefinition"
+                  >
+                  </code-editor>
+                </el-col>
+                <el-col :span="16">
+                  <code-editor
+                    editor-title="Instanciação do item"
+                    :disabled="!item.mechanic"
+                    language="typescript"
+                    v-model="item.itemDefinition"
+                    height="500px"
+                    @input="form.validateField('itemDefinition')"
+                  >
+                    <template v-slot:bar>
+                      <el-button
+                        @click="testOpenItem"
+                        type="text"
+                        style="padding: 0"
+                        title="Testar item no ambiente do puzzle"
+                      >
+                        <i class="el-icon-caret-right"></i>
+                        Testar
+                      </el-button>
+                    </template>
+                  </code-editor>
+                </el-col>
+              </el-row>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col>
-            <btn-save @click="save"/>
+            <btn-save @click="save" />
             <btn-back @click="back"></btn-back>
-            <el-button type="primary" @click="copy" title="Cria um novo item igual a este">Copiar item</el-button>
+            <el-button
+              type="primary"
+              @click="copy"
+              title="Cria um novo item igual a este"
+              >Copiar item</el-button
+            >
           </el-col>
         </el-row>
       </el-form>
@@ -169,7 +206,8 @@ export default class ItemEditForm extends Vue {
         title: "Sucesso ao salvar o item de teste!",
         message: "Agora você já pode criar testes com esse item",
       });
-      this.back();
+      this.$router.push({ params: { id: this.item.id + "" } });
+      //this.back();
     } catch (e) {
       console.error(e);
       this.$notify({
@@ -195,6 +233,45 @@ export default class ItemEditForm extends Vue {
       this.nameInput?.focus();
       this.nameInput?.select();
     });
+  }
+
+  testOpenItem() {
+    if (!this.item.mechanic) {
+      this.$notify({
+        type: "error",
+        title: "Não foi possível abrir o item",
+        message:
+          "Para rodar o item, é necessário selecionar uma mecânica válida, com url base do aplicativo que vai abrir o item configurado",
+      });
+      return;
+    }
+
+    if (!this.item.mechanic.baseUrl) {
+      this.$notify({
+        type: "error",
+        title: "Não existe o endereço base do aplicativo",
+        message:
+          "A mecânica não possui uma url base do aplicativo que deve apresentar a o item configurado",
+      });
+      return;
+    }
+
+    if (!this.item.id) {
+      this.$notify({
+        type: "error",
+        title: "Salve o item",
+        message: "Para testar o item é necessário salvá-lo na base de dados",
+      });
+      return;
+    }
+
+    let appBaseUrl = this.item.mechanic.baseUrl;
+    let serverBaseUrl = this.$axios.defaults.baseURL;
+    let testItemNumber = this.item.id;
+    window.open(
+      `${appBaseUrl}?op=playground&testItemNumber=${testItemNumber}&baseUrl=${serverBaseUrl}`,
+      "_blank"
+    );
   }
 
   back() {

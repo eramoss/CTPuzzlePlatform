@@ -3,10 +3,11 @@ import { ItemsService } from './items.service';
 import { ItemsController } from './items.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Item } from './item.entity';
+import { CodeInterpreterModule } from 'src/code-interpreter/code-interpreter.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Item])],
-  providers: [ItemsService],
-  controllers: [ItemsController]
+    imports: [TypeOrmModule.forFeature([Item]), CodeInterpreterModule],
+    providers: [ItemsService],
+    controllers: [ItemsController]
 })
 export class ItemsModule { }

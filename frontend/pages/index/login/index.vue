@@ -93,7 +93,7 @@ export default class LoginPage extends Vue {
     this.loadingText = "Validando credenciais...";
     try {
       let response = await this.$auth.loginWith("local", { data: this.user });
-      this.$router.push("/platform");
+      this.$router.push("/platform?op=login");
       console.log(response);
     } catch (err) {
       console.error(err);

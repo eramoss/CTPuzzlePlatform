@@ -12,6 +12,8 @@ import { ItemsModule } from './items/items.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { TestModule } from './tests/tests.module';
 import { TestApplicationsModule } from './test-applications/test-applications.module';
+import { ScoreFunctionTestModule } from './score-function-test/score-function-test.module';
+import { CodeInterpreterModule } from './code-interpreter/code-interpreter.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { TestApplicationsModule } from './test-applications/test-applications.mo
     FileUploadModule,
     TestModule,
     TestApplicationsModule,
+    ScoreFunctionTestModule,
+    CodeInterpreterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

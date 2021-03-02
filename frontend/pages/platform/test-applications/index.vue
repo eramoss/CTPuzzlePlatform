@@ -9,23 +9,57 @@
     <div class="panel">
       <h2>Aplicações</h2>
       <!-- <el-input v-model="pageRequest.search"></el-input> -->
-      {{value}}
-       <el-select v-model="value" placeholder="Select">
-    <el-option
-      v-for="item in options"
-      :key="item.id"
-      :label="item.name"
-      :value="item.id">
-    </el-option>
-  </el-select>
-      <el-table :data="pageResponse.data">
+      <legend>Filtros</legend>
+      <fieldset>
+        <el-form inline>
+          <el-form-item label="Testes" label-width="150">
+            <el-select
+              v-model="pageRequest.filter.test"
+              @clear="clearTestFilter"
+              placeholder="Filtro por testes"
+              value-key="id"
+              filterable
+              clearable
+            >
+              <el-option
+                v-for="test in tests"
+                :key="test.id"
+                :value="test"
+                :label="test.name"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </fieldset>
+
+      <el-table
+        :data="pageResponse.data"
+        v-if="pageResponse"
+        empty-text="Sem resultados"
+      >
         <el-table-column prop="id" label="Código" width="100"></el-table-column>
         <el-table-column prop="name" label="Nome"></el-table-column>
-        <el-table-column label="Ações" width="220">
+        <el-table-column label="Teste" width="340">
           <template slot-scope="{ row }">
-            <el-button size="small" icon="el-icon-eye" @click="follow(row)"
-              >Acompanhar</el-button
-            >
+            <div>
+              {{ row.test.name }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="Ações" width="300">
+          <template slot-scope="{ row }">
+            <el-tooltip content="Ver andamento do teste">
+              <el-button
+                size="small"
+                icon="el-icon-view"
+                @click="follow(row)"
+                type="primary"
+              >
+                Acompanhar
+              </el-button>
+            </el-tooltip>
+            <btn-remove @click="remove(row)" />
           </template>
         </el-table-column>
       </el-table>
@@ -39,8 +73,13 @@ import { PageRequest, PageResponse } from "@/types/pagination";
 import Test from "~/types/Test";
 import { Action } from "vuex-class";
 import { Context } from "@nuxt/types";
+import BtnRemove from "~/components/BtnRemove.vue";
+import TestApplication from "~/types/TestApplication";
+
+const ACTION_PAGINATE_NAME = "test-applications/paginate";
 
 @Component({
+  components: { BtnRemove },
   head() {
     return {
       title: "Aplicações",
@@ -49,53 +88,88 @@ import { Context } from "@nuxt/types";
 })
 export default class ApplicationsList extends Vue {
   goingCreate: boolean = false;
-  pageResponse: PageResponse<Test> = new PageResponse<Test>();
-  pageRequest: PageRequest = new PageRequest();
-  options:Test[] = []
-  value = ''
-      
-  filter: { test: Test } = { test: new Test() };
+  pageResponse!: PageResponse<Test>;
+  pageRequest!: PageRequest;
+  tests: Test[] = [];
 
-  follow(row: Test) {
-    this.$router.push("/platform/tests/" + row.id);
-  }
-
-  @Action("tests-applications/paginate") paginate!: (
+  @Action(ACTION_PAGINATE_NAME) paginate!: (
     pageRequest: PageRequest
   ) => Promise<PageResponse<Test>>;
+
+  @Action("test-applications/removeById") removeById!: (
+    id: number
+  ) => Promise<any>;
 
   @Watch("pageRequest", { deep: true })
   async onChangePageRequest() {
     this.loadData();
   }
 
+  follow(row: Test) {
+    this.$router.push("/platform/test-applications/" + row.id);
+  }
+
+  clearTestFilter() {
+    this.pageRequest.filter.test = undefined;
+  }
+
   async loadData() {
-    this.pageResponse = await this.paginate(this.pageRequest);
+    try {
+      this.pageResponse = await this.paginate(this.pageRequest);
+    } catch (e) {
+      console.error(e);
+      this.$notify.error({
+        message: "Não foi possível listar as aplicações",
+        title: "Erro ao listar aplicações",
+      });
+    }
   }
 
   async asyncData(ctx: Context) {
+    let filter: { test?: Test } = { test: undefined };
+    let tests: Test[] = await ctx.store.dispatch("tests/findAll");
+    let testId = ctx.query.test;
+    if (testId) {
+      filter.test = tests.find((test) => test.id + "" == testId);
+    }
+    let pageRequest = new PageRequest(filter);
     let pageResponse: PageResponse<Test> = await ctx.store.dispatch(
-      "test-applications/paginate",
-      new PageRequest()
+      ACTION_PAGINATE_NAME,
+      pageRequest
     );
-    let options = await ctx.store.dispatch("tests/findAll");
-    return { pageResponse, options };
+    return { pageResponse, pageRequest, tests };
   }
 
-  @Watch("filter", { deep: true })
-  onChangeFilter() {
-    //this.loadData()
+  async remove(testApplication: TestApplication) {
+    try {
+      let option = await this.$confirm(
+        "Tem certeza de que deseja remover a aplicação? A seguinte aplicação será removida: " +
+          testApplication.name,
+        "Remover aplicação?",
+        {
+          confirmButtonText: "Remover",
+          confirmButtonClass: "el-button--danger",
+        }
+      );
+      if (option === "confirm") {
+        try {
+          await this.removeById(testApplication.id);
+          this.$notify({
+            type: "success",
+            title: "Sucesso ao remover",
+            message: "A aplicação foi removida",
+          });
+          await this.loadData();
+        } catch (e) {
+          console.error(e);
+          this.$notify({
+            type: "error",
+            title: "Não foi possível remover a aplicação",
+            message: "Verifique se a aplicação não está sendo utilizada.",
+          });
+        }
+      }
+    } catch (cancel) {}
   }
 }
-/**
- * Icone do google play
- * tirar botão plataforma
- * Adicionar descrição da especificação da resposta
- * funcoes de auxilio:
- * leveshtein
- * 
- * Testar resultado do score na tela de mecânica
- * Categorizar gráfico.
- * Qualidade do item: 5 estrelas.
- */
 </script>

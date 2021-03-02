@@ -9,5 +9,6 @@ export default class TestApplication {
 
     name: string = ''
     url!: string
+    hash!: string
 
 }

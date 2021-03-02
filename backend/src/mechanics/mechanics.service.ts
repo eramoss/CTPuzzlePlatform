@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Mechanic } from './mechanic.entity';
 
 @Injectable()
@@ -18,8 +18,8 @@ export class MechanicsService {
     return this.mechanicRepository.findOne({ id });
   }
 
-  removeById(id: number) {
-    this.mechanicRepository.delete({ id });
+  removeById(id: number):Promise<DeleteResult> {
+    return this.mechanicRepository.delete({ id });
   }
 
   async paginate(pageRequest: PageRequest): Promise<PageResponse<Mechanic>> {

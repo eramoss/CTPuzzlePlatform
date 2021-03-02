@@ -7,11 +7,9 @@
       <el-container>
         <el-aside width="200px">
           <el-menu
-            router
-            default-active="2"
+            :router="true"
+            :default-active="activeLink"
             id="platform-menu"
-            @open="handleOpen"
-            @close="handleClose"
           >
             <el-menu-item
               index="/platform/mechanics"
@@ -62,19 +60,26 @@ export default {
     };
   },
   components: { TopBar },
-  methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
+  data() {
+    return {
+      activeLink: "",
+    };
   },
   mounted() {
-    this.$notify.success({
-      message: `Olá, ${this.$auth.user.name}`,
-      title: "Bem-vindo",
-    });
+    if (this.$route.query.op == "login") {
+      this.$notify.success({
+        message: `Olá, ${this.$auth.user.name}`,
+        title: "Bem-vindo",
+      });
+    }
+  },
+  watch: {
+    $route: {
+      immediate: true,
+      handler() {
+        this.activeLink = this.$route.path;
+      },
+    },
   },
 };
 </script>

@@ -25,23 +25,22 @@
             {{ row.items.length }}
           </template>
         </el-table-column>
-        <el-table-column label="Status" width="100">
+        <el-table-column label="Aplicações" width="230">
           <template slot-scope="{ row }">
-            {{ row.status }}
+            <!-- ({{ row.applications.length }}) -->
+            <el-button
+              size="small"
+              title="Abrir tela para lançar aplicação"
+              type="success"
+              icon="el-icon-s-promotion"
+              @click="openTestApplicationDialog(row)"
+            >
+              Aplicar
+            </el-button>
           </template>
         </el-table-column>
-        <el-table-column label="Ações" width="330">
+        <el-table-column label="Ações" width="240">
           <template slot-scope="{ row }">
-            <el-tooltip content="Cria uma aplicação de teste">
-              <el-button
-                size="small"
-                type="success"
-                icon="el-icon-s-promotion"
-                @click="openTestApplicationDialog(row)"
-              >
-                Aplicar
-              </el-button>
-            </el-tooltip>
             <btn-edit @click="edit(row)"> Editar </btn-edit>
             <btn-remove @click="remove(row)"> Remover </btn-remove>
           </template>

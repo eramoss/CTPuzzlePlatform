@@ -30,6 +30,18 @@
                   ></el-input>
                 </el-form-item>
                 <el-form-item
+                  label="Url base"
+                  title="Url base do aplicativo onde esse item será apresentado"
+                  required=""
+                  prop="baseUrl"
+                >
+                  <el-input
+                    v-model="mechanic.baseUrl"
+                    autofocus
+                    placeholder="https://ct.programming-game.com.br"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item
                   label="Descrição"
                   title="Descrição da mecânica"
                   prop="description"
@@ -51,9 +63,9 @@
             </el-row>
 
             <MessageAlert type="info">
-              A criação da mecânica é a especificação do formato de configuração
-              dos puzzles. Essa especificação deve ser feita por meio de uma
-              classe, na linguagem TypeScript.
+              A especificação da mecânica é a estrutura de dados para
+              configuração do puzzle. Deve seguir as restrições de uma classe na
+              linguagem TypeScript.
             </MessageAlert>
 
             <el-form-item prop="classDefinition">
@@ -67,33 +79,61 @@
                 height="300px"
               />
             </el-form-item>
+
+            <MessageAlert type="info">
+              A classe resposta é a estrutura de dados enviada como resposta do
+              usuário e utilizada para o cálculo do escore.
+            </MessageAlert>
+
             <el-form-item prop="responseClassDefinition">
               <FormItemLabel
                 label="Especificação da resposta"
                 :required="true"
               />
+
               <code-editor
                 @input="mechanicForm.validateField('responseClassDefinition')"
                 v-model="mechanic.responseClassDefinition"
                 height="200px"
               />
             </el-form-item>
+
+            <MessageAlert type="info">
+              A função de cálculo de escore recebe o item e uma resposta. Deve
+              calcular a nota e retorná-la junto com a nota máxima alcançável,
+              no seguinte formato: { score: number, max: number }. Exemplo de
+              acerto da metade do item: { score: 4, max: 8 }
+            </MessageAlert>
+
             <el-form-item prop="scoreFunction">
-              <FormItemLabel label="Cálculo do escore" :required="true" />
+              <FormItemLabel
+                label="Cálculo do escore"
+                :required="true"
+                style="flex-grow: 1"
+              />
+              <el-button
+                type="success"
+                size="small"
+                icon="el-icon-video-play"
+                @click="openTestDialog"
+              >
+                Testar função
+              </el-button>
               <code-editor
                 v-model="mechanic.scoreFunction"
                 @input="mechanicForm.validateField('scoreFunction')"
                 height="300px"
+              />
+              <score-function-test-form
+                ref="scoreFunctionTestForm"
+                v-model="mechanic"
               />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col>
-            <btn-save
-              @click="save"
-              :loading="saving"
-              />
+            <btn-save @click="save" :loading="saving" />
             <btn-back @click="back"></btn-back>
           </el-col>
         </el-row>
@@ -112,16 +152,18 @@ import { AxiosResponse } from "axios";
 import { ElForm } from "element-ui/types/form";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
+import ScoreFunctionTestForm from "~/components/ScoreFunctionTestForm.vue";
 import User from "~/types/User";
 
 @Component({
-  components: { CodeEditor },
+  components: { CodeEditor, ScoreFunctionTestForm },
 })
 export default class MechanicEditForm extends Vue {
   saving: boolean = false;
   mechanic!: Mechanic;
   @Ref("mechanicForm") mechanicForm!: ElForm;
   @Ref("nameInput") nameInput!: ElInput;
+  @Ref() scoreFunctionTestForm!: ScoreFunctionTestForm;
 
   get formRules() {
     return {
@@ -133,6 +175,12 @@ export default class MechanicEditForm extends Vue {
       description: {
         required: true,
         message: "Informe a descrição da mecânica",
+        trigger: "blur",
+      },
+      baseUrl: {
+        required: true,
+        message:
+          "Informe a url base do aplicativo onde esse item será apresentado",
         trigger: "blur",
       },
       classDefinition: {
@@ -148,6 +196,10 @@ export default class MechanicEditForm extends Vue {
         message: "Informe função de cálculo do escore",
       },
     };
+  }
+
+  openTestDialog() {
+    this.scoreFunctionTestForm.show();
   }
 
   async asyncData(ctx: Context) {
@@ -182,8 +234,7 @@ export default class MechanicEditForm extends Vue {
         title: "Sucesso ao salvar a mecânica!",
         message: "Agora você já pode criar itens com essa mecânica",
       });
-      //this.$router.replace({ params: { id: data.id } });
-      this.back();
+      this.$router.push({ params: { id: data.id } });
     } catch (e) {
       this.$notify.error({
         message: "Não foi possível salvar a mecânica",

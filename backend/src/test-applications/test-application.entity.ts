@@ -13,6 +13,9 @@ export class TestApplication {
     @Column()
     url: String
 
+    @Column()
+    hash!: string
+
     @ManyToOne(type => Test)
     test: Test
 

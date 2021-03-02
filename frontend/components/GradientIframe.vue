@@ -6,7 +6,7 @@
       height: `${calculatedHeight}px`,
     }"
   >
-    <div class="gradient">
+    <div class="gradient" v-if="!disabled">
       <div class="slot">
         <div class="slot-content">
           <slot />
@@ -33,6 +33,10 @@ export default {
     },
     height: {
       default: 480,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

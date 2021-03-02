@@ -15,6 +15,18 @@
         />
       </el-form-item>
     </el-form>
+    <el-button
+      title="Acessar lista de aplicações"
+      :disabled="!getQuantityApplicationsText(testApplication.test).enabled"
+      @click="
+        $router.push(
+          `/platform/test-applications?test=${testApplication.test.id}`
+        )
+      "
+      type="text"
+    >
+      {{ getQuantityApplicationsText(testApplication.test).text }}
+    </el-button>
     <div slot="footer">
       <el-button
         @click="createApplication"
@@ -29,11 +41,14 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Action, Component, Ref, Watch } from "nuxt-property-decorator";
+import { Action, Component, Prop, Ref, Watch } from "nuxt-property-decorator";
 import Test from "~/types/Test";
 import { ElInput } from "element-ui/types/input";
 import CopyInput from "~/components/CopyInput.vue";
 import TestApplication from "~/types/TestApplication";
+
+//@ts-ignore
+import { v4 as uuidv4 } from "uuid";
 
 @Component({
   components: {
@@ -43,23 +58,29 @@ import TestApplication from "~/types/TestApplication";
 export default class TestApplicationDialog extends Vue {
   visible: boolean = false;
   creatingApplication: boolean = false;
+  testApplication: TestApplication = new TestApplication();
 
   @Ref("firstInput") firstInput!: ElInput;
-
-  testApplication: TestApplication = new TestApplication();
+  puzzleUrl!: string;
 
   get isStateValid() {
     return this.testApplication.name.length > 0;
   }
 
-  open(test: Test) {
+  async open(test: Test) {
     this.testApplication = new TestApplication();
+    this.puzzleUrl = await this.getPuzzleBaseUrl(test.id);
+    this.testApplication.hash = uuidv4();
     this.testApplication.test = test;
     this.visible = true;
     this.$nextTick(() => {
       this.firstInput?.focus();
     });
   }
+
+  @Action("tests/getPuzzleBaseUrl") getPuzzleBaseUrl!: (
+    testId: number
+  ) => Promise<string>;
 
   @Action("test-applications/save") saveApplication!: (
     testApplication: TestApplication
@@ -97,10 +118,22 @@ export default class TestApplicationDialog extends Vue {
       ""
     );
     let url = "";
+    let baseUrl = this.$axios.defaults.baseURL;
     if (applicationName.length) {
-      url = `http://localhost:9000?test=123&application=${applicationName}&server=http://localhost:3000`;
+      url = `${this.puzzleUrl}?op=application&hash=${this.testApplication.hash}&baseUrl=${baseUrl}`;
     }
-    return url.toLowerCase();
+    return url;
+  }
+
+  getQuantityApplicationsText(test: Test): { enabled: boolean; text: string } {
+    let total = test.applications.length;
+    let enabled = false;
+    let text = "Esse teste ainda não foi aplicado";
+    if (total > 0) {
+      enabled = true;
+      text = `Esse teste já tem ${total} aplicações`;
+    }
+    return { enabled, text };
   }
 }
 </script>

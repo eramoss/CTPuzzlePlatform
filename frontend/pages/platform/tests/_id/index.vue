@@ -11,16 +11,27 @@
     </el-breadcrumb>
     <div class="panel">
       <h2>Edição de teste</h2>
-      <el-form>
+      <el-form :model="test" :rules="formRules" ref="form" v-if="test">
         <el-row :gutter="15">
           <el-col :span="19">
-            <el-form-item label-width="130px" label="Nome do teste">
+            <el-form-item label-width="130px" label="Nome do teste" prop="name">
               <el-input
                 ref="inputName"
                 v-model="test.name"
                 placeholder="Teste de Pensamento Computacional"
               ></el-input>
             </el-form-item>
+          </el-col>
+          <el-col :span="5" style="text-align: right">
+            <el-tooltip content="Publicar o teste para ser aplicado">
+              <el-button
+                type="success"
+                icon="el-icon-s-promotion"
+                :disabled="!test || !test.id"
+                @click="openTestApplicationDialog"
+                >Aplicar</el-button
+              >
+            </el-tooltip>
           </el-col>
         </el-row>
         <el-row>
@@ -83,7 +94,7 @@
             >
               <transition-group type="transition" name="flip-list">
                 <div
-                  title="Arraste para mudar a orde"
+                  title="Arraste para ordenar"
                   class="added-item"
                   v-for="(testItem, index) in selectedItems"
                   :key="testItem.item.id"
@@ -117,11 +128,15 @@
         </el-row>
         <el-row>
           <el-col>
-            <btn-save @click="save" :loading="saving"/>
-            <btn-back @click="back"/>
+            <btn-save @click="save" :loading="saving" />
+            <btn-back @click="back" />
           </el-col>
         </el-row>
       </el-form>
+      <test-application-dialog
+        ref="testApplicationDialog"
+        :puzzleUrl="puzzleUrl"
+      />
     </div>
   </div>
 </template>
@@ -134,10 +149,13 @@ import Item from "~/types/Item";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
 import TestItem from "~/types/TestItem";
+import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
+import { ElForm } from "element-ui/types/form";
 
 @Component({
   components: {
     draggable,
+    TestApplicationDialog,
   },
   data() {
     return {
@@ -147,13 +165,28 @@ import TestItem from "~/types/TestItem";
 })
 export default class TestEditForm extends Vue {
   saving: boolean = false;
-  test!: Test;
+  test: Test = new Test();
   availableItems: Item[] = [];
   selectedItems: TestItem[] = [];
+  puzzleUrl: string = "";
 
   @Ref("inputName") inputName!: ElInput;
+  @Ref("form") form!: ElForm;
+  @Ref("testApplicationDialog") testApplicationDialog!: TestApplicationDialog;
 
   @Action("tests/save") saveTest!: (test: Test) => Promise<Test>;
+
+  async openTestApplicationDialog() {
+    this.testApplicationDialog.open(this.test);
+  }
+
+  get formRules() {
+    return {
+      name: [
+        { required: true, trigger: "blur", message: "Informe o nome do teste" },
+      ],
+    };
+  }
 
   get dragOptions() {
     return {
@@ -164,17 +197,24 @@ export default class TestEditForm extends Vue {
     };
   }
 
+  async formIsValid() {
+    return this.form.validate();
+  }
+
   async save() {
-    this.saving = true;
+    if (!(await this.formIsValid())) {
+      return;
+    }
     try {
-      //setItems(this.test, this.selectedItems);
+      this.saving = true;
       this.test = await this.saveTest(this.test);
       this.$notify({
         type: "success",
         title: "O teste foi salvo",
         message: "Você já pode acessar o teste.",
       });
-      this.back();
+      this.$router.push({ params: { id: this.test.id + "" } });
+      //this.back();
     } catch (e) {
       console.error(e);
       this.$notify({
@@ -237,7 +277,7 @@ export default class TestEditForm extends Vue {
     if (id != "new") {
       test = await ctx.store.dispatch("tests/getById", id);
     }
-    let selectedItems = test.items;
+    let selectedItems = test.items || [];
     let availableItems = await ctx.store.dispatch("items/findAll");
     return {
       test,

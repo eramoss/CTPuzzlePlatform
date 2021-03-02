@@ -14,7 +14,7 @@ export class TestItem {
     @ManyToOne(type => Test, { nullable: false, orphanedRowAction: 'delete' })
     test: Test
 
-    @ManyToOne(type => Item, { nullable: false })
+    @ManyToOne(type => Item, { nullable: false, orphanedRowAction: 'nullify' })
     item: Item
 
 }

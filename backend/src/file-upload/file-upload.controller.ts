@@ -12,6 +12,8 @@ export class FileUploadController {
 
     @Get('view/:filename')
     viewFile(@Param('filename') filename: string, @Res() res) {
-        res.sendFile(filename, { root: 'uploads' })
+        if (filename != 'null') {
+            res.sendFile(filename, { root: 'uploads' })
+        }
     }
 }

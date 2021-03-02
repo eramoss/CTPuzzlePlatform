@@ -4,7 +4,7 @@
       <jumbotron-site-banner />
       <section id="play">
         <h2 class="title">Confira esse game configurado na plataforma:</h2>
-        <gameIframe url="https://ct.playerweb.com.br" />
+        <gameIframe url="https://ct.playerweb.com.br?test=123" />
       </section>
     </container>
   </div>

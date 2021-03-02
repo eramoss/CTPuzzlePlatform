@@ -1,6 +1,6 @@
 <template>
   <div>
-    <gradient-iframe :url="url">
+    <gradient-iframe :url="url" disabled>
       <el-button type="success" class="btn-big shadow">Jogar!</el-button>
     </gradient-iframe>
   </div>

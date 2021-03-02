@@ -25,4 +25,8 @@ export const actions: ActionTree<any, any> = {
     return $axios.$get('/tests/findAll');
   },
 
+  async getPuzzleBaseUrl(state, testId:number): Promise<string> {
+    return $axios.$get('/tests/getPuzzleBaseUrl/'+testId);
+  }
+
 }

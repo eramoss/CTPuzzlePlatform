@@ -14,13 +14,24 @@
       <el-form>
         <el-row>
           <el-col :span="20">
-            <el-form-item label-width="100px" label="Teste">
+            <el-form-item label-width="100px" label="Nome">
               <el-input
-                ref="inputName"
-                readonly
-                v-model="test.name"
-                placeholder="Teste de Pensamento Computacional"
+                v-model="testApplication.name"
+                placeholder="Avaliação Turma 3º ano"
               ></el-input>
+            </el-form-item>
+            <el-form-item label-width="100px" label="Teste">
+              <nuxt-link
+                target="_blank"
+                title="Acessar teste"
+                :to="`/platform/tests/${testApplication.test.id}`"
+                ref="inputName"
+              >
+                <el-button type="text"
+                  >{{ testApplication.test.name }}
+                  <i class="el-icon-top-right" />
+                </el-button>
+              </nuxt-link>
             </el-form-item>
           </el-col>
         </el-row>
@@ -28,13 +39,17 @@
           <el-col :span="20">
             <el-form-item label="Link" label-width="100px">
               <div class="flex-row">
-                <copy-input v-model="testApplication.url" style="flex-grow:1" />
+                <copy-input
+                  v-model="testApplication.url"
+                  style="flex-grow: 1"
+                />
                 <el-tooltip content="Abrir tela do teste">
                   <el-button
                     style="margin-left: 20px"
                     type="text"
                     @click="accessTestApplication"
-                    icon="el-icon-position">
+                    icon="el-icon-position"
+                  >
                     Acessar
                   </el-button>
                 </el-tooltip>
@@ -43,14 +58,15 @@
           </el-col>
         </el-row>
         <el-row>
-            <form-item-label label="Acompanhar"/>
-            <el-table>
-                <el-table-column label="Participante"/>
-                <el-table-column label="Progresso"/>
-            </el-table>
+          <h3>Participantes</h3>
+          <el-table>
+            <el-table-column label="Participante" />
+            <el-table-column label="Progresso" />
+          </el-table>
         </el-row>
         <el-row>
           <el-col>
+            <btn-save @click="save" :loading="loading" />
             <btn-back @click="back" />
           </el-col>
         </el-row>
@@ -61,7 +77,7 @@
 <script lang="ts">
 import CopyInput from "~/components/CopyInput.vue";
 import Vue from "vue";
-import { Component } from "nuxt-property-decorator";
+import { Action, Component, Watch } from "nuxt-property-decorator";
 import { Context } from "@nuxt/types";
 import TestApplication from "~/types/TestApplication";
 import Test from "~/types/Test";
@@ -72,7 +88,7 @@ import Test from "~/types/Test";
   },
 })
 export default class TestEditForm extends Vue {
-  saving: boolean = false;
+  loading: boolean = false;
   testApplication: TestApplication = new TestApplication();
 
   async asyncData(ctx: Context) {
@@ -100,6 +116,33 @@ export default class TestEditForm extends Vue {
 
   back() {
     this.$router.go(-1);
+  }
+
+  @Action("test-applications/save") saveTestApplication!: (
+    testApplication: TestApplication
+  ) => Promise<TestApplication>;
+
+  async save() {
+    try {
+      this.loading = true;
+      this.testApplication = await this.saveTestApplication(
+        this.testApplication
+      );
+      this.$notify({
+        type: "success",
+        title: "As alterações foram registradas",
+        message: "As modificações realizadas na aplicação foram salvas",
+      });
+    } catch (e) {
+      console.error(e);
+      this.$notify({
+        type: "error",
+        title: "Erro ao salvar",
+        message: "Não foi possível salvar a aplicação",
+      });
+    } finally {
+      this.loading = false;
+    }
   }
 }
 </script>

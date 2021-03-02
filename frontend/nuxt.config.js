@@ -2,6 +2,7 @@ import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 
 console.log("==============================")
 console.log('baseURL', process.env.baseURL)
+console.log('NODE_ENV', process.env.NODE_ENV)
 console.log("==============================")
 
 export default {
@@ -103,7 +104,7 @@ export default {
                 config.plugins.push(
                     //"monaco-editor-webpack-plugin": "^3.0.0",
                     new MonacoWebpackPlugin({
-                        languages: ['json', 'typescript', 'r', 'javascript']
+                        languages: ['json', 'typescript', 'r']
                     })
                 )
             }

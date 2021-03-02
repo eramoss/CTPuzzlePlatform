@@ -15,7 +15,7 @@
           type="warning"
           title="Acessa a Google Play para baixar o app"
         >
-          Baixar CT Puzzle Test
+          <img src="/play_icon.svg" style="width: 11px"/> Baixar CT Puzzle Test 
         </el-button>
       </a>
       <nuxt-link
