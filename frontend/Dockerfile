@@ -9,7 +9,7 @@ RUN npm install
 COPY . .
 
 ARG NODE_ENV
-ARG baseURL
+ARG API_URL
 
 RUN npm run build
 

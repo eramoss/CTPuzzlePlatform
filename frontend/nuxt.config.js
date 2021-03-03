@@ -1,7 +1,7 @@
 import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 
 console.log("==============================")
-console.log('baseURL', process.env.baseURL)
+console.log('API_URL', process.env.API_URL)
 console.log('NODE_ENV', process.env.NODE_ENV)
 console.log("==============================")
 
@@ -60,11 +60,6 @@ export default {
     ** See https://axios.nuxtjs.org/options
     */
     axios: {
-        proxy: true
-    },
-
-    proxy: {
-        '/api': process.env.baseURL
     },
 
     auth: {

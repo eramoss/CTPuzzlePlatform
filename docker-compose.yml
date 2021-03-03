@@ -16,7 +16,7 @@ services:
     build: 
         context: frontend
         args: 
-            baseURL: $baseURL
+            API_URL: $API_URL
             NODE_ENV: ${NODE_ENV:-production}
     ports:
     - 3020:${NUXT_PORT:-3002}
