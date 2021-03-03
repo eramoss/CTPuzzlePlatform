@@ -12,6 +12,8 @@ job-deploy:
     image: docker/compose:1.25.0-rc2
     services:
         - docker:19.03.12-dind
+    before_script:
+        - apt-get install -y ca-certificates
     script:
         # - docker info
         - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
