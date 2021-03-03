@@ -60,7 +60,11 @@ export default {
     ** See https://axios.nuxtjs.org/options
     */
     axios: {
-        baseURL: process.env.baseURL
+        proxy: true
+    },
+
+    proxy: {
+        '/api': process.env.baseURL
     },
 
     auth: {
