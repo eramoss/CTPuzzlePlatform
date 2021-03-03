@@ -1,5 +1,6 @@
 production:
-    stage: build
+    stage: deploy
+    tag: platform
     image: docker/compose:latest
     services:
         - docker:dind
