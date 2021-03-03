@@ -7,7 +7,7 @@ services:
         context: backend
     command: npm start
     ports:
-    - 3010:$BACKEND_PORT
+    - 3010:${BACKEND_PORT:-3001}
     depends_on:
     - db
   frontend:
@@ -19,7 +19,7 @@ services:
             baseURL: $baseURL
             NODE_ENV: ${NODE_ENV:-production}
     ports:
-    - 3020:$NUXT_PORT
+    - 3020:${NUXT_PORT:-3002}
     command: npm start
     depends_on:
     - backend
