@@ -1,0 +1,33 @@
+version: "3.3"
+services:
+  backend:
+    image: ct-puzzle-platform-backend:1.0
+    env_file: .env
+    build: 
+        context: backend
+    command: npm start
+    ports:
+    - 3010:$BACKEND_PORT
+    depends_on:
+    - db
+  frontend:
+    image: ct-puzzle-platform-frontend:1.0
+    env_file: .env
+    build: 
+        context: frontend
+        args: 
+            baseURL: $baseURL
+            NODE_ENV: $NODE_ENV
+    ports:
+    - 3020:$NUXT_PORT
+    command: npm start
+    depends_on:
+    - backend
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_PASSWORD: $DATABASE_PASSWORD
+      POSTGRES_USER: $DATABASE_USERNAME
+      POSTGRES_DB: $DATABASE_NAME
+    ports:
+    - 5656:5432

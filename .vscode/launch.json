@@ -7,26 +7,26 @@
     "configurations": [
         {
             "name": "Backend",
-            "command": "npm run start:debug",
-            "cwd": "${workspaceFolder}/backend",
             "request": "launch",
             "type": "node-terminal",
+            "command": "npm run start:debug",
+            "envFile": "${workspaceFolder}/.env.dev",
+            "cwd": "${workspaceFolder}/backend",
             "internalConsoleOptions": "openOnFirstSessionStart"
         },
         {
             "name": "Frontend",
             "request": "launch",
             //"preLaunchTask": "npm install",
-            "envFile": "${workspaceFolder}/.env",
+            "type": "pwa-node",
+            "envFile": "${workspaceFolder}/.env.dev",
             "cwd": "${workspaceFolder}/frontend",
             "program": "${workspaceFolder}/frontend/node_modules/nuxt/bin/nuxt",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "type": "pwa-node",
             "console": "integratedTerminal",
         },
-
     ],
     "compounds": [
         {

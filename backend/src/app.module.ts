@@ -14,22 +14,27 @@ import { TestModule } from './tests/tests.module';
 import { TestApplicationsModule } from './test-applications/test-applications.module';
 import { ScoreFunctionTestModule } from './score-function-test/score-function-test.module';
 import { CodeInterpreterModule } from './code-interpreter/code-interpreter.module';
+import { ConfigModule } from '@nestjs/config';
+import { databaseConfig } from './databaseConfig'
 
 @Module({
-  imports: [
-    UsersModule,
-    AuthModule,
-    TypeOrmModule.forRoot(),
-    MechanicsModule,
-    PaginationModule,
-    ItemsModule,
-    FileUploadModule,
-    TestModule,
-    TestApplicationsModule,
-    ScoreFunctionTestModule,
-    CodeInterpreterModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true
+        }),
+        TypeOrmModule.forRoot(databaseConfig),
+        UsersModule,
+        AuthModule,
+        MechanicsModule,
+        PaginationModule,
+        ItemsModule,
+        FileUploadModule,
+        TestModule,
+        TestApplicationsModule,
+        ScoreFunctionTestModule,
+        CodeInterpreterModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule { }
