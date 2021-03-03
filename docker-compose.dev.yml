@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   backend:
-    image: registry.gitlab.com/cassiano.pvianna/ct-puzzle-platform/backend:1.0
+    image: ct-puzzle-platform-backend:1.0
     env_file: .env
     build: 
         context: backend
@@ -11,7 +11,7 @@ services:
     depends_on:
     - db
   frontend:
-    image: registry.gitlab.com/cassiano.pvianna/ct-puzzle-platform/frontend:1.0
+    image: ct-puzzle-platform-frontend:1.0
     env_file: .env
     build: 
         context: frontend
