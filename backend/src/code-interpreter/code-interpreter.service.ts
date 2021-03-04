@@ -1,11 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { ChildProcess, spawn } from 'child_process';
 
 @Injectable()
 export class CodeInterpreterService {
 
-    denoLocation = '/home/cassiano/.deno/bin/deno'
+    denoLocation!:string
+
+    constructor(private configService:ConfigService){
+        this.denoLocation = this.configService.get('DENO_LOCATION')
+    }
 
     execute(script: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {

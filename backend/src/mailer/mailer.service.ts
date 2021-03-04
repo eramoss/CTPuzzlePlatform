@@ -17,7 +17,7 @@ export class MailerService {
         this.siteUrl = this.configService.get('SITE_URL')
         this.mailFrom = this.configService.get('MAIL_FROM')
 
-        const mailHost = this.configService.get("MAIL_SMTP_HOST")
+        const mailHost = this.configService.get("MAIL_HOST")
         const mailUser = this.configService.get("MAIL_USER")
         const mailPass = this.configService.get("MAIL_PASS")
         const mailPort = this.configService.get("MAIL_PORT")

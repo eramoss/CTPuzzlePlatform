@@ -10,6 +10,9 @@ COPY . .
 
 RUN npm run build
 
+RUN apk add curl
+RUN curl -fsSL https://deno.land/x/install/install.sh | sh
+
 # Buildar
 # docker image build -t backend-platform:1.0 .
 
