@@ -14,6 +14,21 @@
       <el-row :gutter="20" v-if="mechanic">
         <el-col :span="12">
           <form-item-label label="Instanciação do item" />
+          <el-button
+            type="text"
+            size="small"
+            title="Resetar para exemplo inicial"
+            icon="el-icon-refresh-left"
+            @click="clearSampleItem"
+          ></el-button>
+          <el-button
+            type="text"
+            title="Refazer"
+            size="small"
+            icon="el-icon-refresh-right"
+            :disabled="!bkpItem"
+            @click="redoSampleItem"
+          ></el-button>
 
           <code-editor
             editorTitle="Função que retorna o item (siga o exemplo)"
@@ -21,23 +36,7 @@
             language="typescript"
             v-model="mechanic.itemInstantiation"
           >
-            <template slot="bar">
-              <el-button
-                type="text"
-                size="small"
-                title="Resetar para exemplo inicial"
-                icon="el-icon-refresh-left"
-                @click="clearSampleItem"
-              ></el-button>
-              <el-button
-                type="text"
-                title="Refazer"
-                size="small"
-                icon="el-icon-refresh-right"
-                :disabled="!bkpItem"
-                @click="redoSampleItem"
-              ></el-button>
-            </template>
+            <template slot="bar"> </template>
           </code-editor>
         </el-col>
         <el-col :span="12">

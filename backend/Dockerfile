@@ -1,6 +1,9 @@
-FROM node:12.20.0-alpine
+FROM node:12.20.0
 
 WORKDIR /backend
+
+RUN apt-get install curl -y
+RUN curl -fsSL https://deno.land/x/install/install.sh | sh
 
 COPY package.json .
 
@@ -9,9 +12,6 @@ RUN npm install
 COPY . .
 
 RUN npm run build
-
-RUN apk add curl
-RUN curl -fsSL https://deno.land/x/install/install.sh | sh
 
 # Buildar
 # docker image build -t backend-platform:1.0 .
