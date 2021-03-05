@@ -11,10 +11,10 @@ export class TestItem {
     @Column({ nullable: false })
     order: number
 
-    @ManyToOne(type => Test, { nullable: false, orphanedRowAction: 'delete' })
+    @ManyToOne(type => Test, { nullable: false, orphanedRowAction: 'delete', onDelete: 'CASCADE' })
     test: Test
 
-    @ManyToOne(type => Item, { nullable: false, orphanedRowAction: 'nullify' })
+    @ManyToOne(type => Item, { nullable: false })
     item: Item
 
 }

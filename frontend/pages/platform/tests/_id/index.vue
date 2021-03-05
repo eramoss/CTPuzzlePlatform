@@ -101,8 +101,8 @@
                 >
                   <!-- <div class="drag-indicator"><i class="el-icon-rank"></i></div> -->
                   <div class="item-text">
-                    <div class="item-title">{{ testItem.item.name }}</div>
-                    <div class="item-subtitle">Fase {{ index + 1 }}</div>
+                    <div class="item-title">Fase {{ index + 1 }}: {{ testItem.item.name }}</div>
+                    <div class="item-subtitle">{{ testItem.item.description }}</div>
                   </div>
                   <el-button
                     @click="editItem(testItem)"

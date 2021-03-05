@@ -11,11 +11,12 @@
         href="https://play.google.com/store/apps/details?id=com.univali.ctpuzzle"
       >
         <el-button
+          v-if="!$auth.loggedIn"
           size="small"
           type="warning"
           title="Acessa a Google Play para baixar o app"
         >
-          <img src="/play_icon.svg" style="width: 11px"/> Baixar CT Puzzle Test 
+          <img src="/play_icon.svg" style="width: 11px" /> Baixar CT Puzzle Test
         </el-button>
       </a>
       <nuxt-link
