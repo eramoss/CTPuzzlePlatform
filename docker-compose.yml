@@ -7,9 +7,11 @@ services:
         context: backend
     command: npm start
     ports:
-    - 3010:${BACKEND_PORT:-3001}
+        - 3010:${BACKEND_PORT:-3001}
     depends_on:
-    - db
+        - db
+    volumes:
+        - files:/root/files
   frontend:
     image: registry.gitlab.com/cassiano.pvianna/ct-puzzle-platform/frontend:1.0
     env_file: .env.prod
@@ -31,3 +33,8 @@ services:
       POSTGRES_DB: $DATABASE_NAME
     ports:
     - 5656:5432
+    volumes:
+      - database:/var/lib/postgresql
+volumes:
+    files: {}
+    database: {}

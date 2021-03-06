@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
-import { FileUploadService } from './file-upload.service';
 import { FileUploadController } from './file-upload.controller';
+import { MulterModule } from '@nestjs/platform-express';
+import MulterConfigService from './multer-config.service'
 
 @Module({
-  providers: [FileUploadService],
-  controllers: [FileUploadController]
+    providers: [MulterConfigService],
+    imports: [MulterModule.registerAsync({
+        useClass: MulterConfigService,
+    })],
+    controllers: [FileUploadController]
 })
-export class FileUploadModule {}
+export class FileUploadModule { }

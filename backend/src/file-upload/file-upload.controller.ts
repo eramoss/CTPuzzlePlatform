@@ -1,11 +1,16 @@
 import { Controller, Post, UploadedFile, UseInterceptors, Request, Get, Res, Param } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
+import MulterConfigService from './multer-config.service';
 
 @Controller('file-upload')
 export class FileUploadController {
 
+    constructor(private multerConfigService: MulterConfigService) {
+    }
+
     @Post('upload')
-    @UseInterceptors(FileInterceptor('file', { dest: './uploads' }))
+    @UseInterceptors(FileInterceptor('file'))
     uploadSingle(@UploadedFile() file: any): string {
         return file.filename
     }
@@ -13,7 +18,7 @@ export class FileUploadController {
     @Get('view/:filename')
     viewFile(@Param('filename') filename: string, @Res() res) {
         if (filename != 'null') {
-            res.sendFile(filename, { root: 'uploads' })
+            res.sendFile(filename, { root: this.multerConfigService.destConfigDirectory })
         }
     }
 }

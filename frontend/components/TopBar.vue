@@ -11,7 +11,7 @@
         href="https://play.google.com/store/apps/details?id=com.univali.ctpuzzle"
       >
         <el-button
-          v-if="!$auth.loggedIn"
+          v-show="!$auth.loggedIn"
           size="small"
           type="warning"
           title="Acessa a Google Play para baixar o app"
@@ -20,7 +20,7 @@
         </el-button>
       </a>
       <nuxt-link
-        v-if="!$auth.loggedIn"
+        v-show="!$auth.loggedIn"
         to="/signin/researcher"
         title="Registrar-se como pesquisador"
       >
@@ -34,7 +34,7 @@
           Plataforma
         </el-button>
       </nuxt-link>
-      <el-dropdown @command="handleCommand" v-if="$auth.loggedIn">
+      <el-dropdown @command="handleCommand" v-show="$auth.loggedIn">
         <span style="margin: auto 10px">
           <el-button type="text">
             {{ $auth.user && $auth.user.name }}

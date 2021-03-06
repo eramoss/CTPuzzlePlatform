@@ -122,9 +122,9 @@
             <btn-back @click="back"></btn-back>
             <el-button
               type="primary"
-              @click="copy"
+              @click="duplicateItem"
               title="Cria um novo item igual a este"
-              >Copiar item</el-button
+              >Duplicar item</el-button
             >
           </el-col>
         </el-row>
@@ -220,7 +220,7 @@ export default class ItemEditForm extends Vue {
     }
   }
 
-  copy() {
+  duplicateItem() {
     this.item.id = 0;
     this.item.name = "Cópia " + this.item.name;
     this.$notify({
