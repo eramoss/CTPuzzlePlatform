@@ -59,9 +59,9 @@
         </el-row>
         <el-row>
           <h3>Participantes</h3>
-          <el-table>
-            <el-table-column label="Participante" />
-            <el-table-column label="Progresso" />
+          <el-table :data="testApplication.participations" style="margin-bottom:30px">
+            <el-table-column label="Participante" prop="user.name" width="250" />
+            <el-table-column label="Progresso" prop="progress"/>
           </el-table>
         </el-row>
         <el-row>

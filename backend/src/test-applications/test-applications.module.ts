@@ -4,9 +4,12 @@ import { TestApplicationsController } from './test-applications.controller';
 import { TestApplication } from './test-application.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Test } from 'src/tests/test.entity';
+import { UsersModule } from 'src/users/users.module';
+import Participation from 'src/participation/participation.entity';
+import { ParticipationModule } from 'src/participation/participation.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([TestApplication, Test])],
+    imports: [TypeOrmModule.forFeature([TestApplication, Test, Participation]), UsersModule, ParticipationModule],
     providers: [TestApplicationsService],
     controllers: [TestApplicationsController]
 })

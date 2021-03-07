@@ -3,6 +3,5 @@
         "*/**/node_modules/": true,
         "*/**/dist": true,
         ".idea": true,
-        ".vscode": true,
     }
 }

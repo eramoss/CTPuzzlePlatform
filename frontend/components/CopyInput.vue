@@ -2,7 +2,7 @@
   <div class="copy-input">
     <el-input
       v-bind="$attrs"
-      readonly
+      :readonly="!editable"
       @click="onFocusCopyInput"
       @focus="onFocusCopyInput"
       ref="copyInput"
@@ -23,11 +23,12 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Ref, VModel } from "nuxt-property-decorator";
+import { Component, Prop, Ref, VModel } from "nuxt-property-decorator";
 import { ElInput } from "element-ui/types/input";
 @Component
 export default class CopyInput extends Vue {
   @VModel() text!: string;
+  @Prop({ default: false }) editable!: boolean;
 
   get isBtnVisible() {
     return this.text.length > 0;

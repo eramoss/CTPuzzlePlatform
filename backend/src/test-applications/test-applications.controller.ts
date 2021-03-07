@@ -2,6 +2,8 @@ import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/c
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
+import Participation from 'src/participation/participation.entity';
+import { User } from 'src/users/user.entity';
 import { DeleteResult } from 'typeorm';
 import { TestApplication } from './test-application.entity';
 import { TestApplicationsService } from './test-applications.service';
@@ -38,7 +40,15 @@ export class TestApplicationsController {
 
     @UseGuards(JwtAuthGuard)
     @Post('paginate')
-    async paginate(@Body() pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {
+    paginate(@Body() pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {
         return this.testApplicationsService.paginate(pageRequest)
     }
+
+    @Post('participate-in-the-test/:testApplicationHash')
+    participateInTheTest(
+        @Param('testApplicationHash') testApplicationHash: string,
+        @Body() user: User): Promise<Participation> {
+        return this.testApplicationsService.participateInTheTest(testApplicationHash, user);
+    }
+
 }

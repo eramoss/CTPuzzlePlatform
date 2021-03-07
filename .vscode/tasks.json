@@ -12,6 +12,14 @@
             "command": "docker-compose --file docker-compose.prod.local.yml up --build"
         },
         {
+            "label": "Run local docker detached",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "command": "docker-compose --file docker-compose.prod.local.yml up -d"
+        },
+        {
             "label": "run dev",
             "type": "shell",
             "command": "npm run dev",

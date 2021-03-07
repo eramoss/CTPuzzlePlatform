@@ -123,8 +123,9 @@
             <el-button
               type="primary"
               @click="duplicateItem"
-              title="Cria um novo item igual a este"
-              >Duplicar item</el-button
+              icon="el-icon-copy-document"
+              title="Cria um novo item igual a este para servir de base"
+              >Fazer uma cópia</el-button
             >
           </el-col>
         </el-row>
