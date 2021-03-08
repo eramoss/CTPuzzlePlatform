@@ -58,7 +58,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <h3>Participantes</h3>
+          <h3>Participantes ({{testApplication.participations.length}})</h3>
           <el-table :data="testApplication.participations" style="margin-bottom:30px">
             <el-table-column label="Participante" prop="user.name" width="250" />
             <el-table-column label="Progresso" prop="progress"/>

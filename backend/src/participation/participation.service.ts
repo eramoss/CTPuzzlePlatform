@@ -7,7 +7,7 @@ import Participation from './participation.entity';
 
 @Injectable()
 export class ParticipationService {
-    
+
     constructor(@InjectRepository(Participation) private participationRepository: Repository<Participation>) { }
 
     async saveProgress(participation: Participation) {
@@ -30,6 +30,7 @@ export class ParticipationService {
                 user: user,
                 finishedAt: null
             })
+            .orderBy("participation.id", "DESC")
             .getOne()
     }
 }

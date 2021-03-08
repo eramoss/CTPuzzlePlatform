@@ -83,7 +83,7 @@ export class TestApplicationsService {
         if (itemsToPlay.length) {
             testApplication.test.items = itemsToPlay
         }
-        //participation.application.test.sortItemsByOrder();
+        participation.application.test.sortItemsByOrder();
         return participation;
     }
 }
