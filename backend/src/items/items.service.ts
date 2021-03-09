@@ -39,8 +39,8 @@ export class ItemsService {
         return this.itemRepository.find({});
     }
 
-    async instantiateToGetJson(id: number): Promise<string> {
-        let item = await this.getById(id)
+    async instantiateToGetJson(testItemId: number): Promise<string> {
+        let item = await this.getById(testItemId)
         let code = `
         ${item.mechanic.classDefinition}
         console.log(JSON.stringify(${item.itemDefinition}()))

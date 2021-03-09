@@ -3,9 +3,14 @@ import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 console.log("==============================================")
 console.log('API_URL', process.env.API_URL)
 console.log('NODE_ENV', process.env.NODE_ENV)
+console.log('SITE_URL', process.env.SITE_URL)
 console.log("==============================================")
 
 export default {
+
+    env: {
+        SITE_URL: process.env.SITE_URL
+    },
 
     /*
     ** Headers of the page

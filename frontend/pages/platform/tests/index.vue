@@ -43,6 +43,7 @@
           <template slot-scope="{ row }">
             <btn-edit @click="edit(row)"> Editar </btn-edit>
             <btn-remove @click="remove(row)"> Remover </btn-remove>
+            
           </template>
         </el-table-column>
       </el-table>
@@ -71,7 +72,8 @@ import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
   },
 })
 export default class TestsList extends Vue {
-  goingCreate: boolean = false;
+  goingCreate = false;
+  
   pageResponse: PageResponse<Test> = new PageResponse<Test>();
   pageRequest: PageRequest = new PageRequest();
 
@@ -90,7 +92,7 @@ export default class TestsList extends Vue {
   openTestApplicationDialog(test: Test) {
     this.testApplicationDialog.open(test);
   }
-
+  
   async remove(row: Test) {
     try {
       let option = await this.$confirm(

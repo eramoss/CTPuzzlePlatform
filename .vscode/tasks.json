@@ -9,7 +9,8 @@
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "command": "docker-compose --file docker-compose.prod.local.yml up --build"
+            "command": "docker-compose --file docker-compose.prod.local.yml up --build",
+            "problemMatcher": []
         },
         {
             "label": "Run local docker detached",
@@ -50,7 +51,7 @@
             "type": "shell",
             "command": "${input:terminateAllTasks}",
             "problemMatcher": []
-        },
+        }
     ],
     "inputs": [
         {

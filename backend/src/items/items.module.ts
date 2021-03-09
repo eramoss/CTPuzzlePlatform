@@ -7,6 +7,7 @@ import { CodeInterpreterModule } from 'src/code-interpreter/code-interpreter.mod
 
 @Module({
     imports: [TypeOrmModule.forFeature([Item]), CodeInterpreterModule],
+    exports: [ItemsService],
     providers: [ItemsService],
     controllers: [ItemsController]
 })

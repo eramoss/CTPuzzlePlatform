@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, Param, Post, Res, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
@@ -41,7 +41,13 @@ export class TestController {
     }
 
     @Get('getPuzzleBaseUrl/:id')
-    async getPuzzleBaseUrl(@Param('id') id: number):Promise<string> {
+    async getPuzzleBaseUrl(@Param('id') id: number): Promise<string> {
         return this.testService.getPuzzleBaseUrl(id)
+    }
+
+    @Get('generateJson/:id')
+    @Header('Content-Type', 'application/json')
+    generateJsonFromTest(@Param('id') testId: number): Promise<string> {
+        return this.testService.generateJson(testId);
     }
 }

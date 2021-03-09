@@ -101,8 +101,12 @@
                 >
                   <!-- <div class="drag-indicator"><i class="el-icon-rank"></i></div> -->
                   <div class="item-text">
-                    <div class="item-title">Fase {{ index + 1 }}: {{ testItem.item.name }}</div>
-                    <div class="item-subtitle">{{ testItem.item.description }}</div>
+                    <div class="item-title">
+                      Fase {{ index + 1 }}: {{ testItem.item.name }}
+                    </div>
+                    <div class="item-subtitle">
+                      {{ testItem.item.description }}
+                    </div>
                   </div>
                   <el-button
                     @click="editItem(testItem)"
@@ -130,6 +134,9 @@
           <el-col>
             <btn-save @click="save" :loading="saving" />
             <btn-back @click="back" />
+            <el-button type="primary" @click="genereateTestJson" icon="" :disabled="!test.id">
+              Gerar JSON
+            </el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -164,7 +171,8 @@ import { ElForm } from "element-ui/types/form";
   },
 })
 export default class TestEditForm extends Vue {
-  saving: boolean = false;
+  saving = false;
+  generatingJson = false;
   test: Test = new Test();
   availableItems: Item[] = [];
   selectedItems: TestItem[] = [];
@@ -175,6 +183,9 @@ export default class TestEditForm extends Vue {
   @Ref("testApplicationDialog") testApplicationDialog!: TestApplicationDialog;
 
   @Action("tests/save") saveTest!: (test: Test) => Promise<Test>;
+  @Action("tests/generateJson") generateJsonFromTest!: (
+    test: Test
+  ) => Promise<string>;
 
   async openTestApplicationDialog() {
     this.testApplicationDialog.open(this.test);
@@ -186,6 +197,25 @@ export default class TestEditForm extends Vue {
         { required: true, trigger: "blur", message: "Informe o nome do teste" },
       ],
     };
+  }
+
+  async genereateTestJson() {
+    try {
+      if (this.test.id) {
+        this.generatingJson = true;
+        let url = this.$axios.defaults.baseURL+'/tests/generateJson/'+this.test.id
+        window.open(url, '_blank')
+        //let json = await this.generateJsonFromTest(this.test);
+      }
+    } catch (e) {
+      this.$notify({
+        type: "error",
+        title: "Não foi possível gerar o json",
+        message: e,
+      });
+    } finally {
+      this.generatingJson = false;
+    }
   }
 
   get dragOptions() {
