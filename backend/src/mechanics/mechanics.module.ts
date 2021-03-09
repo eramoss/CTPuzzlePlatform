@@ -5,10 +5,11 @@ import { Mechanic } from './mechanic.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Mechanic])
-  ],
-  providers: [MechanicsService],
-  controllers: [MechanicsController]
+    imports: [
+        TypeOrmModule.forFeature([Mechanic])
+    ],
+    exports: [MechanicsService],
+    providers: [MechanicsService],
+    controllers: [MechanicsController]
 })
 export class MechanicsModule { }

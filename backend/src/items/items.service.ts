@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CodeInterpreterService } from 'src/code-interpreter/code-interpreter.service';
+import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
+import { TestItem } from 'src/tests/test-item.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { Item } from './item.entity';
 
@@ -29,6 +31,7 @@ export class ItemsService {
 
     async paginate(pageRequest: PageRequest): Promise<PageResponse<Item>> {
         const data = await this.itemRepository.createQueryBuilder('item')
+            .leftJoinAndSelect('item.mechanic', 'mechanic')
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .getMany()
@@ -47,5 +50,15 @@ export class ItemsService {
         `
         let instantiatedItem = await this.codeInterpreterService.execute(code);
         return instantiatedItem;
+    }
+
+    async getMechanicFromTestItem(testItem: TestItem): Promise<Mechanic> {
+        let itemId = testItem.item.id;
+        let item = await this.itemRepository.createQueryBuilder('item')
+        .leftJoinAndSelect('item.mechanic','mechanic')
+        .where({id:itemId})
+        .getOne()
+        return item.mechanic;
+        
     }
 }

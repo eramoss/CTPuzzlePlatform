@@ -4,18 +4,26 @@ import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import Participation from 'src/participation/participation.entity';
 import { ParticipationService } from 'src/participation/participation.service';
+import { TestService } from 'src/tests/tests.service';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { DeleteResult, Repository } from 'typeorm';
 import { TestApplication } from './test-application.entity';
+import { v4 as uuidv4 } from "uuid";
+import { ConfigService } from '@nestjs/config';
+import PreparedParticipation from 'src/participation/prepared-participation.dto';
+import { Mechanic } from 'src/mechanics/mechanic.entity';
 
 @Injectable()
 export class TestApplicationsService {
 
     constructor(
-        @InjectRepository(TestApplication) private testApplicationRepository: Repository<TestApplication>,
+        @InjectRepository(TestApplication)
+        private testApplicationRepository: Repository<TestApplication>,
         private usersService: UsersService,
-        private participationService: ParticipationService
+        private participationService: ParticipationService,
+        private testService: TestService,
+        private configService: ConfigService
     ) {
     }
 
@@ -59,20 +67,54 @@ export class TestApplicationsService {
         return new PageResponse(data);
     }
 
+    async getApplicationData(applicationHash: string): Promise<PreparedParticipation> {
+        let user = new User();
+        let userHash = uuidv4().substring(0, 7);
+        user.hash = userHash;
+        user.name = 'APP-USER' + userHash;
+        let participation = await this.participateInTheTest(applicationHash, user)
+        let urlToSendResponses = this.configService.get('API_URL') + `/respond/${participation.id}`
+
+        let responseClassDefinition = ''
+        try {
+            let testItem = participation.application.test.items[0]
+            let mechanic:Mechanic = await this.testService.getMechanicFromTestItem(testItem);
+            responseClassDefinition = mechanic.responseClassDefinition
+        } catch { } finally { }
+
+        let preparedParticipation = {
+            testAsJson: participation.testAsJson,
+            urlToSendResponses: {
+                method: 'POST',
+                url: urlToSendResponses,
+                help: 'Envie as respostas de acordo com a classe de respostas definida ne macânica de cada item',
+                responseClass: responseClassDefinition
+            }
+        } as PreparedParticipation
+
+        return preparedParticipation;
+    }
+
     async participateInTheTest(testApplicationHash: string, user: User): Promise<Participation> {
-        user.password = user.hash
-        user.email = user.hash + '@mail.com'
+
+        if (!user.password)
+            user.password = user.hash
+        if (!user.email)
+            user.email = user.hash + '@mail.com'
+
         const testApplication: TestApplication = await this.getByHash(testApplicationHash);
         const savedUser = await this.usersService.saveOrGetByHash(user);
 
         let participation = await this.participationService.getNonFinishedParticipation(testApplication, savedUser);
+        let testJson = await this.testService.generateJson(testApplication.test.id)
         if (!participation) {
             participation = new Participation();
-            participation.user = savedUser;
-            participation.application = testApplication;
-            participation = await this.participationService.save(participation);
         }
-        participation.application = testApplication
+        participation.testAsJson = testJson
+        participation.user = savedUser;
+        participation.application = testApplication;
+        participation = await this.participationService.save(participation);
+
         let itemsToPlay = []
         let items = testApplication.test.items;
         if (participation.lastVisitedItemId) {

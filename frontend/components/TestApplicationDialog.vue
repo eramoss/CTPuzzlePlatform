@@ -112,15 +112,28 @@ export default class TestApplicationDialog extends Vue {
     }, 2000);
   }
 
+  queryString(params: any) {
+    return Object.keys(params)
+      .map((key) => `${key}=${params[key]}`)
+      .join("&");
+  }
+
   get applicationUrl(): string {
     let applicationName = this.testApplication.name.replace(
       /[^A-Za-z0-9]/g,
       ""
     );
     let url = "";
-    let baseUrl = this.$axios.defaults.baseURL;
     if (applicationName.length) {
-      url = `${this.puzzleUrl}?op=application&hash=${this.testApplication.hash}&baseUrl=${baseUrl}`;
+      let baseUrl = this.$axios.defaults.baseURL;
+      let hash = this.testApplication.hash;
+      let params = {
+        op: "application",
+        hash: hash,
+        baseUrl: baseUrl,
+        dataUrl: `${baseUrl}/test-applications/data/${hash}`,
+      };
+      url = `${this.puzzleUrl}?${this.queryString(params)}`;
     }
     return url;
   }

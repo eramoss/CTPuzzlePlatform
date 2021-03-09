@@ -11,7 +11,9 @@ export default class Item {
 
 export function createExampleItem(): Item {
   const itemExample = new Item()
-  itemExample.itemDefinition = `let item = new MecanicaRope();
+  itemExample.itemDefinition = `
+  function createItem() {
+  let item = new MecanicaRope();
 item.mapa = [
   ['tile','tile','tile'],
   ['tile','tile','tile'],
@@ -19,6 +21,8 @@ item.mapa = [
 item.osb = [
   ['tile','tile','tile'],
   ['tile','tile','tile'],
-]`;
+]
+return item;
+}`;
   return itemExample;
 }

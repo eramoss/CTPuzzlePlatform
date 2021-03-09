@@ -23,6 +23,7 @@
             <thumbnail :src="row.thumbnail" width="120px" height="80px" />
           </template>
         </el-table-column>
+        <el-table-column label="Mecânica" prop="mechanic.name" width="140"></el-table-column>
         <el-table-column label="Nome" prop="name" width="200"></el-table-column>
         <el-table-column label="Descrição" prop="description"></el-table-column>
         <el-table-column label="Ações" prop="name" width="240">

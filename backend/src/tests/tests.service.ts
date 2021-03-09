@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ItemsService } from 'src/items/items.service';
+import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import { DeleteResult, Repository } from 'typeorm';
@@ -12,7 +13,8 @@ export class TestService {
 
 
     constructor(
-        @InjectRepository(Test) private testRepository: Repository<Test>,
+        @InjectRepository(Test) 
+        private testRepository: Repository<Test>,
         private itemService: ItemsService,
     ) { }
 
@@ -76,5 +78,9 @@ export class TestService {
         }))
         json.items = itemsJson.map(itemAsJsonString => JSON.parse(itemAsJsonString))
         return json;
+    }
+
+    getMechanicFromTestItem(testItem: TestItem): Promise<Mechanic> {
+        return this.itemService.getMechanicFromTestItem(testItem);
     }
 }

@@ -1,7 +1,9 @@
 <template>
   <div class="copy-input">
     <el-input
+      type="textarea"
       v-bind="$attrs"
+      rows="5"
       :readonly="!editable"
       @click="onFocusCopyInput"
       @focus="onFocusCopyInput"
@@ -51,7 +53,7 @@ export default class CopyInput extends Vue {
   }
 
   onFocusCopyInput() {
-    this.copyInput.select();
+    //this.copyInput.select();
   }
 
   mounted() {

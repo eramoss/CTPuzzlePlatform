@@ -23,4 +23,7 @@ export default class Participation {
     @Column({ default: 0 })
     lastVisitedItemId: number
 
+    @Column({ nullable: true })
+    testAsJson: string
+
 }
