@@ -42,18 +42,8 @@
                   :value="item"
                   value-key="id"
                 >
-                  <div class="select-item">
-                    <div class="image">
-                      <thumbnail :src="item.thumbnail" />
-                    </div>
-                    <div class="item-infos">
-                      <p class="title">{{ item.name }}</p>
-                      <p class="description">{{ item.description }}</p>
-                    </div>
-                    <div class="image">
-                      <thumbnail :src="item.thumbnail" />
-                    </div>
-                    <div>
+                  <item-thumbnail :item="item">
+                    <template slot="end">
                       <el-button
                         class="add-button"
                         size="large"
@@ -62,62 +52,75 @@
                         <i class="el-icon-plus"></i>
                         <p>Adicionar ao teste</p>
                       </el-button>
-                    </div>
-                  </div>
+                    </template>
+                  </item-thumbnail>
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-form-item>
-            <form-item-label
-              label="Itens adicionados (arraste para ordenar)"
-              required
-            />
-            <draggable
-              :v-bind="dragOptions"
-              v-model="selectedItems"
-              class="added-items"
-              @end="updateOrder"
-            >
-              <transition-group type="transition" name="flip-list">
-                <div
-                  title="Arraste para ordenar"
-                  class="added-item"
-                  v-for="(testItem, index) in selectedItems"
-                  :key="testItem.item.id"
-                >
-                  <!-- <div class="drag-indicator"><i class="el-icon-rank"></i></div> -->
-                  <div class="item-text">
-                    <div class="item-title">
-                      Fase {{ index + 1 }}: {{ testItem.item.name }}
-                    </div>
-                    <div class="item-subtitle">
-                      {{ testItem.item.description }}
-                    </div>
+          <!-- <el-col :span="12">
+
+          </el-col> -->
+          <el-col :span="24">
+            <el-form-item>
+              <form-item-label
+                v-if="selectedItems.length"
+                label="Itens adicionados (arraste para ordenar)"
+                required
+              />
+              <draggable
+                :v-bind="dragOptions"
+                v-model="selectedItems"
+                class="added-items"
+                @end="updateOrder"
+              >
+                <transition-group type="transition" name="flip-list">
+                  <div
+                    class="added-item"
+                    v-for="(testItem, index) in selectedItems"
+                    :key="testItem.item.id"
+                  >
+                    <item-thumbnail
+                      :item="testItem.item"
+                      title="Arraste para ordenar"
+                    >
+                      <div slot="headline">
+                        Fase {{ index + 1 }}: {{ testItem.item.name }}
+                      </div>
+                      <template slot="start">
+                        <div class="drag-indicator" title="Mover">
+                          <img src="/dragger.svg" alt="Arrastar" />
+                        </div>
+                      </template>
+                      <template slot="end">
+                        <div>
+                          <el-button
+                            @click="editItem(testItem)"
+                            size="small"
+                            title="Editar item"
+                            icon="el-icon-edit"
+                            type="default"
+                          >
+                            Editar
+                          </el-button>
+                          <el-button
+                            size="small"
+                            @click="removeItem(testItem)"
+                            title="Remover item"
+                            icon="el-icon-delete-solid"
+                            type="danger"
+                            >Remover</el-button
+                          >
+                        </div>
+                      </template>
+                    </item-thumbnail>
                   </div>
-                  <el-button
-                    @click="editItem(testItem)"
-                    size="small"
-                    title="Editar item"
-                    icon="el-icon-edit"
-                    type="default"
-                  >
-                    Editar
-                  </el-button>
-                  <el-button
-                    size="small"
-                    @click="removeItem(testItem)"
-                    title="Remover item"
-                    icon="el-icon-delete-solid"
-                    type="danger"
-                    >Remover</el-button
-                  >
-                </div>
-              </transition-group>
-            </draggable>
-          </el-form-item>
+                </transition-group>
+              </draggable>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col>
@@ -147,12 +150,14 @@ import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
 import TestItem from "~/types/TestItem";
 import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
+import ItemThumbnail from "~/components/ItemThumbnail.vue";
 import { ElForm } from "element-ui/types/form";
 
 @Component({
   components: {
     draggable,
     TestApplicationDialog,
+    ItemThumbnail,
   },
   data() {
     return {
@@ -311,99 +316,37 @@ export default class TestEditForm extends Vue {
 }
 </script>
 <style lang="scss">
-.select-item > div {
-  margin: 0 10px;
-}
-.select-item {
-  display: flex;
-  flex-flow: row nowrap;
-  padding: 5px;
-  justify-content: space-between;
-
-  .item-infos {
-    flex-grow: 1;
-    padding: 6px;
-    display: flex;
-    flex-flow: column nowrap;
-    .title {
-      font-weight: bold;
-      font-size: 16pt;
-    }
-  }
-  .add-button {
-    justify-content: center;
-    height: 130px;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    .el-icon-plus {
-      font-size: 30pt;
-    }
-  }
-  .image {
-    width: 200px;
-    height: 130px;
-    border: 1px solid #ccc;
-  }
-}
 .items-select {
   .el-select-dropdown__item {
-    height: 140px !important;
+    height: 100px !important;
     padding: 0;
     //border: 1px solid red;
   }
 }
 .added-items {
-  display: flex;
   flex-flow: column nowrap;
   .added-item {
+    box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 3px;
     .drag-indicator {
-      margin-right: 5px;
-      font-size: 15pt;
-      flex-grow: 0;
-      color: #777;
-    }
-    .item-text {
+      height: 100%;
+      //border: 1px solid red;
       display: flex;
-      flex-flow: column;
-      flex-grow: 1;
+      visibility: hidden;
     }
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    align-items: center;
   }
   .added-item:hover {
-    background: #eee;
     cursor: grab;
-  }
-  .added-item .drag-indicator {
-    color: #ddd;
-  }
-  .added-item:hover .drag-indicator {
-    color: #222;
+    box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 10px;
+    .drag-indicator {
+      visibility: visible;
+    }
   }
   .added-item {
     background: white;
-    position: relative;
-    padding: 10px;
     margin: 5px;
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 5px;
-
-    .item-title {
-      line-height: 1.2em;
-      font-size: 13pt;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .item-subtitle {
-      line-height: 1.2em;
-      font-size: 9pt;
-      color: #333;
-    }
   }
 }
 .flip-list-move {
@@ -414,7 +357,17 @@ export default class TestEditForm extends Vue {
 }
 
 .ghost {
-  opacity: 0.5;
-  background: #c8ebfb;
+  border: 1px solid red;
+  opacity: 1;
+}
+
+.add-button {
+  justify-content: center;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  .el-icon-plus {
+    font-size: 30pt;
+  }
 }
 </style>

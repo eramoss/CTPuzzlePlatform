@@ -222,7 +222,7 @@ export default class UserSigninForm extends Vue {
   get years() {
     let years = [];
     let lastYear = new Date().getFullYear() - 10;
-    for (let x = 1970; x <= lastYear; x++) {
+    for (let x = lastYear; x >= 1970; x--) {
       years.push(x);
     }
     return years;

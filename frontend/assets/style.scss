@@ -101,5 +101,11 @@ a {
 }
 
 input[readonly=readonly].el-input__inner{
-    background: rgba(0, 0, 0, 0.02);
+    /* background: rgba(0, 0, 0, 0.02); */
+}
+
+.center-vertical{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
 }

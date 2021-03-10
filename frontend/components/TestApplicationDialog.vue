@@ -82,7 +82,11 @@ export default class TestApplicationDialog extends Vue {
   tests: Test[] = [];
 
   get isStateValid() {
-    return this.testApplication.name.length > 0;
+    return (
+      this.testApplication.name.length > 0 &&
+      this.testApplication.test &&
+      this.testApplication.test.id
+    );
   }
 
   async open(test: Test = new Test()) {
