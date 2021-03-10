@@ -7,9 +7,12 @@
     <message-alert type="warning">
         <div>
             <p>
-                O link da aplicação serve para abrir um site ou aplicativo que
-                demonstrará os itens (puzzles) do teste. Esse sistema externo deve usar
-                os parâmetros da URL para buscar o teste e enviar as respostas.
+                O link da aplicação permite iniciar a comunicação entre a plataforma e o aplicativo responsável pela apresentação dos puzzles.
+                O desenvolvedor do aplicativo deve usar os parâmetros da URL para: <br>
+                <ol style="padding-left:2em">
+                    <li> Buscar o teste: utilizando o parâmetro <b>dataUrl</b></li>
+                    <li> Enviar as respostas dos participantes: enviando o evento de resposta para a URL obtida ao chamar a <b>dataUrl</b></li>
+                </ol>
             </p>
             <p>
                 <table class="params-table" v-show="applicationUrl">
@@ -36,7 +39,8 @@
                     <tr>
                         <td>dataUrl</td>
                         <td>{{dataUrl}}</td>
-                        <td>Endereço dos dados do teste em formato JSON</td>
+                        <td>Endereço dos dados do teste em formato JSON.
+                             O parâmetro <b>&lt;user_uuid&gt;</b> deve ser gerado pelo sistema (aplicação que se comunica com a plataforma) e enviado a cada nova participação no teste</td>
                     </tr>
 
                 </table>
@@ -90,7 +94,7 @@ export default class TestApplicationUrlInput extends Vue {
   get dataUrl() {
     let hash = this.hash;
     let baseUrl = this.$axios.defaults.baseURL;
-    return `${baseUrl}/test-applications/data/${hash}`;
+    return `${baseUrl}/test-applications/data/${hash}/<user_uuid>`;
   }
 
   get applicationUrl(): string {

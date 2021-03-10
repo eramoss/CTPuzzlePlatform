@@ -72,11 +72,16 @@ export class TestApplicationsService {
         return new PageResponse(data);
     }
 
-    async getApplicationData(applicationHash: string): Promise<PreparedParticipation> {
+    async getApplicationData(
+        applicationHash: string,
+        userHash: string,
+    ): Promise<PreparedParticipation> {
         let user = new User();
-        let userHash = uuidv4().substring(0, 7);
         user.hash = userHash;
-        user.name = 'APP-USER' + userHash;
+        if (userHash == '<user_uuid>') {
+            userHash = uuidv4().substring(0, 7);
+            user.name = 'APP-USER' + userHash;
+        }
         let participation = await this.participateInTheTest(applicationHash, user)
         let urlToSendResponses = this.configService.get('API_URL') + `/respond/${participation.id}`
 

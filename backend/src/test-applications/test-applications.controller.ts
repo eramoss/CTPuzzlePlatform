@@ -45,9 +45,13 @@ export class TestApplicationsController {
         return this.testApplicationsService.paginate(pageRequest)
     }
 
-    @Get('data/:testApplicationHash')
-    getApplicationData(@Param('testApplicationHash') testAplicationHash: string): Promise<PreparedParticipation> {
-        return this.testApplicationsService.getApplicationData(testAplicationHash);
+    @Get('data/:testApplicationHash/:userHash')
+    getApplicationData(
+        @Param('testApplicationHash') testAplicationHash: string,
+        @Param('userHash') userHash: string
+        ): 
+        Promise<PreparedParticipation> {
+        return this.testApplicationsService.getApplicationData(testAplicationHash, userHash);
     }
 
     @Post('participate-in-the-test/:testApplicationHash')
