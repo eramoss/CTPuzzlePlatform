@@ -8,7 +8,7 @@ export class TestApplication {
     @PrimaryGeneratedColumn()
     id: number
 
-    @OneToMany(type => Participation, participation => participation.application, { cascade: ['insert', 'update'] })
+    @OneToMany(type => Participation, participation => participation.application, { cascade: ['insert', 'update', ] })
     participations: Participation[]
 
     @Column()

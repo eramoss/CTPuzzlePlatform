@@ -10,7 +10,7 @@
       <el-breadcrumb-item>Edição</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="panel">
-      <h2>Edição de mecânica</h2>
+      <h2>Edição de mecânica de puzzle</h2>
       <el-form :model="mechanic" :rules="formRules" ref="mechanicForm">
         <el-row>
           <el-col>
@@ -30,7 +30,7 @@
                   ></el-input>
                 </el-form-item>
                 <el-form-item
-                  label="Url base"
+                  label="Endereço do aplicativo (URL) que apresenta o puzzle"
                   title="Url base do aplicativo onde esse item será apresentado"
                   required=""
                   prop="baseUrl"

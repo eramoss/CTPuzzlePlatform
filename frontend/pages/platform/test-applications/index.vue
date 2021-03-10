@@ -8,28 +8,49 @@
     </el-breadcrumb>
     <div class="panel">
       <h2>Aplicações</h2>
+      <el-button
+        title="Permite criar uma aplicação do teste para que algumas pessoas possam executá-lo resolvendo os itens"
+        type="primary"
+        icon="el-icon-plus"
+        :loading="goingCreate"
+        @click="create"
+      >
+        Nova aplicação de teste
+      </el-button>
       <!-- <el-input v-model="pageRequest.search"></el-input> -->
-      <legend>Filtros</legend>
+
+      <legend style="margin-top: 20px">Filtros</legend>
       <fieldset>
         <el-form inline>
-          <el-form-item label="Testes" label-width="150">
-            <el-select
-              v-model="pageRequest.filter.test"
-              @clear="clearTestFilter"
-              placeholder="Filtro por testes"
-              value-key="id"
-              filterable
-              clearable
-            >
-              <el-option
-                v-for="test in tests"
-                :key="test.id"
-                :value="test"
-                :label="test.name"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
+          <el-row :gutter="20">
+            <el-col :span="18">
+              <el-input
+                placeholder="Pesquisar"
+                v-model="pageRequest.search"
+                class="fill"
+              ></el-input>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="Testes" label-width="250">
+                <el-select
+                  v-model="pageRequest.filter.test"
+                  @clear="clearTestFilter"
+                  placeholder="Filtro por testes"
+                  value-key="id"
+                  filterable
+                  clearable
+                >
+                  <el-option
+                    v-for="test in tests"
+                    :key="test.id"
+                    :value="test"
+                    :label="test.name"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </fieldset>
 
@@ -39,12 +60,14 @@
         empty-text="Sem resultados"
       >
         <el-table-column prop="id" label="Código" width="80"></el-table-column>
-        <el-table-column prop="hash" label="Hash" width="200"></el-table-column>
+        <!-- <el-table-column prop="hash" label="Hash" width="200"></el-table-column> -->
         <el-table-column prop="name" label="Nome"></el-table-column>
         <el-table-column label="Teste" width="340">
           <template slot-scope="{ row }">
             <div>
-              {{ row.test.name }}
+              <nuxt-link :to="`/platform/tests/${row.test.id}`">
+                <el-button type="text">{{ row.test.name }}</el-button>
+              </nuxt-link>
             </div>
           </template>
         </el-table-column>
@@ -65,6 +88,7 @@
         </el-table-column>
       </el-table>
     </div>
+    <test-application-dialog ref="applicationDialog" />
   </div>
 </template>
 <script lang="ts">
@@ -76,11 +100,12 @@ import { Action } from "vuex-class";
 import { Context } from "@nuxt/types";
 import BtnRemove from "~/components/BtnRemove.vue";
 import TestApplication from "~/types/TestApplication";
+import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
 
 const ACTION_PAGINATE_NAME = "test-applications/paginate";
 
 @Component({
-  components: { BtnRemove },
+  components: { BtnRemove, TestApplicationDialog },
   head() {
     return {
       title: "Aplicações",
@@ -92,6 +117,7 @@ export default class ApplicationsList extends Vue {
   pageResponse!: PageResponse<Test>;
   pageRequest!: PageRequest;
   tests: Test[] = [];
+  @Ref("applicationDialog") testApplicationDialog!: TestApplicationDialog;
 
   @Action(ACTION_PAGINATE_NAME) paginate!: (
     pageRequest: PageRequest
@@ -104,6 +130,10 @@ export default class ApplicationsList extends Vue {
   @Watch("pageRequest", { deep: true })
   async onChangePageRequest() {
     this.loadData();
+  }
+
+  create() {
+    this.testApplicationDialog.open();
   }
 
   follow(row: Test) {

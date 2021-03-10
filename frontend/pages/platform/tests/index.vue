@@ -9,6 +9,7 @@
     <div class="panel">
       <h2>Testes</h2>
       <el-button
+        title="Criar novo teste escolhendo os itens para depois publicá-lo"
         type="primary"
         icon="el-icon-plus"
         @click="create"
@@ -27,8 +28,16 @@
         </el-table-column>
         <el-table-column label="Aplicações" width="230">
           <template slot-scope="{ row }">
-            <!-- ({{ row.applications.length }}) -->
-            <el-button
+            <nuxt-link :to="`/platform/test-applications?test=${row.id}`">
+              <el-button type="text" title="Abrir lista de aplicações">
+                <span v-show="row.applications.length"
+                  >{{ row.applications.length }} aplicações
+                </span>
+                <span v-show="!row.applications.length">Aplicar </span>
+              </el-button>
+            </nuxt-link>
+
+            <!-- <el-button
               size="small"
               title="Abrir tela para lançar aplicação"
               type="success"
@@ -36,14 +45,13 @@
               @click="openTestApplicationDialog(row)"
             >
               Aplicar
-            </el-button>
+            </el-button> -->
           </template>
         </el-table-column>
         <el-table-column label="Ações" width="240">
           <template slot-scope="{ row }">
             <btn-edit @click="edit(row)"> Editar </btn-edit>
             <btn-remove @click="remove(row)"> Remover </btn-remove>
-            
           </template>
         </el-table-column>
       </el-table>
@@ -73,7 +81,7 @@ import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
 })
 export default class TestsList extends Vue {
   goingCreate = false;
-  
+
   pageResponse: PageResponse<Test> = new PageResponse<Test>();
   pageRequest: PageRequest = new PageRequest();
 
@@ -92,7 +100,7 @@ export default class TestsList extends Vue {
   openTestApplicationDialog(test: Test) {
     this.testApplicationDialog.open(test);
   }
-  
+
   async remove(row: Test) {
     try {
       let option = await this.$confirm(

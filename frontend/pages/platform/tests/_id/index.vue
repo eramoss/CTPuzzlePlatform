@@ -22,17 +22,6 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="5" style="text-align: right">
-            <el-tooltip content="Publicar o teste para ser aplicado">
-              <el-button
-                type="success"
-                icon="el-icon-s-promotion"
-                :disabled="!test || !test.id"
-                @click="openTestApplicationDialog"
-                >Aplicar</el-button
-              >
-            </el-tooltip>
-          </el-col>
         </el-row>
         <el-row>
           <el-col :span="19">
@@ -134,16 +123,17 @@
           <el-col>
             <btn-save @click="save" :loading="saving" />
             <btn-back @click="back" />
-            <el-button type="primary" @click="genereateTestJson" icon="" :disabled="!test.id">
+            <el-button
+              type="primary"
+              @click="genereateTestJson"
+              icon=""
+              :disabled="!test.id"
+            >
               Gerar JSON
             </el-button>
           </el-col>
         </el-row>
       </el-form>
-      <test-application-dialog
-        ref="testApplicationDialog"
-        :puzzleUrl="puzzleUrl"
-      />
     </div>
   </div>
 </template>
@@ -176,20 +166,14 @@ export default class TestEditForm extends Vue {
   test: Test = new Test();
   availableItems: Item[] = [];
   selectedItems: TestItem[] = [];
-  puzzleUrl: string = "";
 
   @Ref("inputName") inputName!: ElInput;
   @Ref("form") form!: ElForm;
-  @Ref("testApplicationDialog") testApplicationDialog!: TestApplicationDialog;
 
   @Action("tests/save") saveTest!: (test: Test) => Promise<Test>;
   @Action("tests/generateJson") generateJsonFromTest!: (
     test: Test
   ) => Promise<string>;
-
-  async openTestApplicationDialog() {
-    this.testApplicationDialog.open(this.test);
-  }
 
   get formRules() {
     return {
@@ -203,8 +187,9 @@ export default class TestEditForm extends Vue {
     try {
       if (this.test.id) {
         this.generatingJson = true;
-        let url = this.$axios.defaults.baseURL+'/tests/generateJson/'+this.test.id
-        window.open(url, '_blank')
+        let url =
+          this.$axios.defaults.baseURL + "/tests/generateJson/" + this.test.id;
+        window.open(url, "_blank");
         //let json = await this.generateJsonFromTest(this.test);
       }
     } catch (e) {
@@ -321,7 +306,7 @@ export default class TestEditForm extends Vue {
   }
 
   back() {
-    this.$router.go(-1);
+    this.$router.push("/platform/tests");
   }
 }
 </script>

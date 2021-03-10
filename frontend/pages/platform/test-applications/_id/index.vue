@@ -39,8 +39,8 @@
           <el-col :span="20">
             <el-form-item label="Link" label-width="100px">
               <div class="flex-row">
-                <copy-input
-                  v-model="testApplication.url"
+                <test-application-url-input
+                  :test-application="testApplication"
                   style="flex-grow: 1"
                 />
                 <el-tooltip content="Abrir tela do teste">
@@ -58,10 +58,17 @@
           </el-col>
         </el-row>
         <el-row>
-          <h3>Participantes ({{testApplication.participations.length}})</h3>
-          <el-table :data="testApplication.participations" style="margin-bottom:30px">
-            <el-table-column label="Participante" prop="user.name" width="250" />
-            <el-table-column label="Progresso" prop="progress"/>
+          <h3>Participantes ({{ testApplication.participations.length }})</h3>
+          <el-table
+            :data="testApplication.participations"
+            style="margin-bottom: 30px"
+          >
+            <el-table-column
+              label="Participante"
+              prop="user.name"
+              width="250"
+            />
+            <el-table-column label="Progresso" prop="progress" />
           </el-table>
         </el-row>
         <el-row>
@@ -75,7 +82,7 @@
   </div>
 </template>
 <script lang="ts">
-import CopyInput from "~/components/CopyInput.vue";
+import TestApplicationUrlInput from "~/components/TestApplicationUrlInput.vue";
 import Vue from "vue";
 import { Action, Component, Watch } from "nuxt-property-decorator";
 import { Context } from "@nuxt/types";
@@ -84,7 +91,7 @@ import Test from "~/types/Test";
 
 @Component({
   components: {
-    CopyInput,
+    TestApplicationUrlInput,
   },
 })
 export default class TestEditForm extends Vue {

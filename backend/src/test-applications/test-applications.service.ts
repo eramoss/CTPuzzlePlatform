@@ -7,7 +7,7 @@ import { ParticipationService } from 'src/participation/participation.service';
 import { TestService } from 'src/tests/tests.service';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { DeleteResult, Repository } from 'typeorm';
+import { Brackets, DeleteResult, Repository } from 'typeorm';
 import { TestApplication } from './test-application.entity';
 import { v4 as uuidv4 } from "uuid";
 import { ConfigService } from '@nestjs/config';
@@ -58,11 +58,16 @@ export class TestApplicationsService {
 
     async paginate(pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {
         let where = pageRequest.filter
+        const searchLike = { search: `%${pageRequest.search.toString()}%` };
         let data = await this.testApplicationRepository.createQueryBuilder('test-application')
             .leftJoinAndSelect('test-application.test', 'test')
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .where(where)
+            .andWhere(new Brackets(qb => {
+                qb.where("test-application.name like :search", searchLike)
+                    .orWhere("test.name like :search", searchLike)
+            }))
             .getMany();
         return new PageResponse(data);
     }
@@ -78,7 +83,7 @@ export class TestApplicationsService {
         let responseClassDefinition = ''
         try {
             let testItem = participation.application.test.items[0]
-            let mechanic:Mechanic = await this.testService.getMechanicFromTestItem(testItem);
+            let mechanic: Mechanic = await this.testService.getMechanicFromTestItem(testItem);
             responseClassDefinition = mechanic.responseClassDefinition
         } catch { } finally { }
 

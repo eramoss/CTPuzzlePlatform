@@ -1,5 +1,6 @@
 <template>
   <el-button
+    title="Editar"
     icon="el-icon-edit"
     v-bind="$attrs"
     size="small"

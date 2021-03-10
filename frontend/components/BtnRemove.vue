@@ -1,9 +1,11 @@
 <template>
-    <el-button
-              icon="el-icon-delete-solid"
-              size="small"
-              v-bind="$attrs"
-              type="danger"
-              @click="$emit('click')"
-            >Remover</el-button>
+  <el-button
+    title="Remover!"
+    icon="el-icon-delete-solid"
+    size="small"
+    v-bind="$attrs"
+    type="danger"
+    @click="$emit('click')"
+    >Remover</el-button
+  >
 </template>

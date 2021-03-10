@@ -1,6 +1,22 @@
 <template>
   <el-dialog title="Aplicar teste" :visible.sync="visible">
     <el-form label-position="left" label-width="130px">
+      <el-form-item label="Teste">
+        <el-select
+          placeholder="Selecione o teste a ser aplicado"
+          v-model="testApplication.test"
+          value-key="id"
+          ref="selectTests"
+        >
+          <el-option
+            v-for="test in tests"
+            :key="test.id"
+            :value="test"
+            :label="test.name"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="Nome aplicação">
         <el-input
           v-model="testApplication.name"
@@ -9,9 +25,9 @@
         />
       </el-form-item>
       <el-form-item label="Link do teste">
-        <copy-input
-          v-model="applicationUrl"
-          placeholder="Informe o nome da aplicação para gerar o link"
+        <test-application-url-input
+          ref="applicationUrlInput"
+          :test-application="this.testApplication"
         />
       </el-form-item>
     </el-form>
@@ -44,15 +60,16 @@ import Vue from "vue";
 import { Action, Component, Prop, Ref, Watch } from "nuxt-property-decorator";
 import Test from "~/types/Test";
 import { ElInput } from "element-ui/types/input";
-import CopyInput from "~/components/CopyInput.vue";
+import TestApplicationUrlInput from "~/components/TestApplicationUrlInput.vue";
 import TestApplication from "~/types/TestApplication";
 
 //@ts-ignore
 import { v4 as uuidv4 } from "uuid";
+import { ElSelect } from "element-ui/types/select";
 
 @Component({
   components: {
-    CopyInput,
+    TestApplicationUrlInput,
   },
 })
 export default class TestApplicationDialog extends Vue {
@@ -61,27 +78,31 @@ export default class TestApplicationDialog extends Vue {
   testApplication: TestApplication = new TestApplication();
 
   @Ref("firstInput") firstInput!: ElInput;
-  puzzleUrl!: string;
+  @Ref("selectTests") selectTests!: ElSelect;
+  tests: Test[] = [];
 
   get isStateValid() {
     return this.testApplication.name.length > 0;
   }
 
-  async open(test: Test) {
+  async open(test: Test = new Test()) {
     this.testApplication = new TestApplication();
-    this.puzzleUrl = await this.getPuzzleBaseUrl(test.id);
     this.testApplication.hash = uuidv4();
     this.testApplication.test = test;
     this.visible = true;
     this.$nextTick(() => {
-      this.firstInput?.focus();
+      if (this.testApplication.test) {
+        this.firstInput?.focus();
+      }
+      if (this.testApplication.test) {
+        this.selectTests.focus();
+      }
     });
   }
 
-  @Action("tests/getPuzzleBaseUrl") getPuzzleBaseUrl!: (
-    testId: number
-  ) => Promise<string>;
+  @Ref("applicationUrlInput") applicationUrlInput!: TestApplicationUrlInput;
 
+  @Action("tests/findAll") findAllTests!: () => Promise<Test[]>;
   @Action("test-applications/save") saveApplication!: (
     testApplication: TestApplication
   ) => Promise<TestApplication>;
@@ -90,7 +111,7 @@ export default class TestApplicationDialog extends Vue {
     this.creatingApplication = true;
     setTimeout(async () => {
       try {
-        this.testApplication.url = this.applicationUrl;
+        this.testApplication.url = this.applicationUrlInput.applicationUrl;
         this.testApplication = await this.saveApplication(this.testApplication);
         this.$notify({
           type: "success",
@@ -109,37 +130,15 @@ export default class TestApplicationDialog extends Vue {
       } finally {
         this.creatingApplication = false;
       }
-    }, 2000);
+    }, 1000);
   }
 
-  queryString(params: any) {
-    return Object.keys(params)
-      .map((key) => `${key}=${params[key]}`)
-      .join("&");
-  }
-
-  get applicationUrl(): string {
-    let applicationName = this.testApplication.name.replace(
-      /[^A-Za-z0-9]/g,
-      ""
-    );
-    let url = "";
-    if (applicationName.length) {
-      let baseUrl = this.$axios.defaults.baseURL;
-      let hash = this.testApplication.hash;
-      let params = {
-        op: "application",
-        hash: hash,
-        baseUrl: baseUrl,
-        dataUrl: `${baseUrl}/test-applications/data/${hash}`,
-      };
-      url = `${this.puzzleUrl}?${this.queryString(params)}`;
-    }
-    return url;
+  async mounted() {
+    this.tests = await this.findAllTests();
   }
 
   getQuantityApplicationsText(test: Test): { enabled: boolean; text: string } {
-    let total = test.applications.length;
+    let total = (test.applications || []).length;
     let enabled = false;
     let text = "Esse teste ainda não foi aplicado";
     if (total > 0) {
