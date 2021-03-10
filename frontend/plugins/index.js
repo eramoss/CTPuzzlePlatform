@@ -10,6 +10,8 @@ import BtnRemove from '~/components/BtnRemove'
 import BtnSave from '~/components/BtnSave'
 import BtnBack from '~/components/BtnBack'
 import TipIcon from '~/components/TipIcon'
+import FiltersBox from '~/components/FiltersBox'
+import FiltersBoxItem from '~/components/FiltersBoxItem'
 
 Vue.component('container', Container)
 Vue.component('FormItemLabel', FormItemLabel)
@@ -22,5 +24,7 @@ Vue.component('BtnRemove', BtnRemove)
 Vue.component('BtnSave', BtnSave)
 Vue.component('BtnBack', BtnBack)
 Vue.component('TipIcon', TipIcon)
+Vue.component('FiltersBox', FiltersBox)
+Vue.component('FiltersBoxItem', FiltersBoxItem)
 
 

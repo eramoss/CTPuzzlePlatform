@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import { TestItem } from 'src/tests/test-item.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { Brackets, DeleteResult, Repository } from 'typeorm';
 import { Mechanic } from './mechanic.entity';
 
 @Injectable()
@@ -29,14 +29,21 @@ export class MechanicsService {
     }
 
     async paginate(pageRequest: PageRequest): Promise<PageResponse<Mechanic>> {
+        let search = pageRequest.search;
+        let filter = pageRequest.filter;
         let data = await this.mechanicRepository.createQueryBuilder("mechanic")
+            .where(filter)
+            .andWhere(new Brackets(qb => {
+                qb.where("mechanic.name like :search", { search: `%${search}%` })
+                    .orWhere("mechanic.description like :search", { search: `%${search}%` })
+            }))
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .getMany();
         return new PageResponse<Mechanic>(data)
     }
 
-    
+
 
     findAll(): Promise<Mechanic[]> {
         return this.mechanicRepository.find({});

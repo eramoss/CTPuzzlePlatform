@@ -5,7 +5,7 @@ import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import { TestItem } from 'src/tests/test-item.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { Brackets, DeleteResult, Repository } from 'typeorm';
 import { Item } from './item.entity';
 
 @Injectable()
@@ -30,8 +30,15 @@ export class ItemsService {
     }
 
     async paginate(pageRequest: PageRequest): Promise<PageResponse<Item>> {
+        let filter = pageRequest.filter
+        let search = pageRequest.search
         const data = await this.itemRepository.createQueryBuilder('item')
             .leftJoinAndSelect('item.mechanic', 'mechanic')
+            .where(filter)
+            .andWhere(new Brackets(qb => {
+                qb.where("mechanic.name like :search", { search: `%${search}%` })
+                    .orWhere("item.name like :search", { search: `%${search}%` })
+            }))
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .getMany()
@@ -55,10 +62,10 @@ export class ItemsService {
     async getMechanicFromTestItem(testItem: TestItem): Promise<Mechanic> {
         let itemId = testItem.item.id;
         let item = await this.itemRepository.createQueryBuilder('item')
-        .leftJoinAndSelect('item.mechanic','mechanic')
-        .where({id:itemId})
-        .getOne()
+            .leftJoinAndSelect('item.mechanic', 'mechanic')
+            .where({ id: itemId })
+            .getOne()
         return item.mechanic;
-        
+
     }
 }

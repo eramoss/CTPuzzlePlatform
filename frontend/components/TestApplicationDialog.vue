@@ -24,7 +24,7 @@
           ref="firstInput"
         />
       </el-form-item>
-      <el-form-item label="Link do teste">
+      <el-form-item label="Link da aplicação">
         <test-application-url-input
           ref="applicationUrlInput"
           :test-application="this.testApplication"

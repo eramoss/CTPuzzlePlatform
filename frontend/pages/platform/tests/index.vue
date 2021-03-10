@@ -28,24 +28,22 @@
         </el-table-column>
         <el-table-column label="Aplicações" width="230">
           <template slot-scope="{ row }">
-            <nuxt-link :to="`/platform/test-applications?test=${row.id}`">
+            <nuxt-link
+              v-show="row.applications.length"
+              :to="`/platform/test-applications?test=${row.id}`"
+            >
               <el-button type="text" title="Abrir lista de aplicações">
-                <span v-show="row.applications.length"
-                  >{{ row.applications.length }} aplicações
-                </span>
-                <span v-show="!row.applications.length">Aplicar </span>
+                {{ row.applications.length }} aplicações
               </el-button>
             </nuxt-link>
-
-            <!-- <el-button
-              size="small"
-              title="Abrir tela para lançar aplicação"
-              type="success"
-              icon="el-icon-s-promotion"
-              @click="openTestApplicationDialog(row)"
+            <nuxt-link
+              :to="`/platform/test-applications?test=${row.id}&action=apply`"
+              v-show="!row.applications.length"
             >
-              Aplicar
-            </el-button> -->
+              <el-button type="text" title="Abrir lista de aplicações">
+                <span>Aplicar </span>
+              </el-button>
+            </nuxt-link>
           </template>
         </el-table-column>
         <el-table-column label="Ações" width="240">
@@ -55,7 +53,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <test-application-dialog ref="testApplicationDialog" />
     </div>
   </div>
 </template>
@@ -67,16 +64,12 @@ import Test from "~/types/Test";
 import { AxiosResponse } from "axios";
 import { Action } from "vuex-class";
 import { Context } from "@nuxt/types";
-import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
 
 @Component({
   head() {
     return {
       title: "Testes",
     };
-  },
-  components: {
-    TestApplicationDialog,
   },
 })
 export default class TestsList extends Vue {
@@ -85,9 +78,6 @@ export default class TestsList extends Vue {
   pageResponse: PageResponse<Test> = new PageResponse<Test>();
   pageRequest: PageRequest = new PageRequest();
 
-  @Ref("testApplicationDialog")
-  testApplicationDialog!: TestApplicationDialog;
-
   create() {
     this.goingCreate = true;
     this.$router.push("/platform/tests/new");
@@ -95,10 +85,6 @@ export default class TestsList extends Vue {
 
   edit(row: Test) {
     this.$router.push("/platform/tests/" + row.id);
-  }
-
-  openTestApplicationDialog(test: Test) {
-    this.testApplicationDialog.open(test);
   }
 
   async remove(row: Test) {

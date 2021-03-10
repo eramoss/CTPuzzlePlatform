@@ -53,7 +53,7 @@ export default class CopyInput extends Vue {
   }
 
   onFocusCopyInput() {
-    //this.copyInput.select();
+    this.copyInput.select();
   }
 
   mounted() {

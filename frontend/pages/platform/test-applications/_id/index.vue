@@ -38,22 +38,10 @@
         <el-row>
           <el-col :span="20">
             <el-form-item label="Link" label-width="100px">
-              <div class="flex-row">
-                <test-application-url-input
-                  :test-application="testApplication"
-                  style="flex-grow: 1"
-                />
-                <el-tooltip content="Abrir tela do teste">
-                  <el-button
-                    style="margin-left: 20px"
-                    type="text"
-                    @click="accessTestApplication"
-                    icon="el-icon-position"
-                  >
-                    Acessar
-                  </el-button>
-                </el-tooltip>
-              </div>
+              <test-application-url-input
+                :test-application="testApplication"
+                style="flex-grow: 1"
+              />
             </el-form-item>
           </el-col>
         </el-row>

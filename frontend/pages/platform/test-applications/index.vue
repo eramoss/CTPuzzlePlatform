@@ -19,40 +19,33 @@
       </el-button>
       <!-- <el-input v-model="pageRequest.search"></el-input> -->
 
-      <legend style="margin-top: 20px">Filtros</legend>
-      <fieldset>
-        <el-form inline>
-          <el-row :gutter="20">
-            <el-col :span="18">
-              <el-input
-                placeholder="Pesquisar"
-                v-model="pageRequest.search"
-                class="fill"
-              ></el-input>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="Testes" label-width="250">
-                <el-select
-                  v-model="pageRequest.filter.test"
-                  @clear="clearTestFilter"
-                  placeholder="Filtro por testes"
-                  value-key="id"
-                  filterable
-                  clearable
-                >
-                  <el-option
-                    v-for="test in tests"
-                    :key="test.id"
-                    :value="test"
-                    :label="test.name"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </fieldset>
+      <filters-box>
+        <filters-box-item label="Pesquisa">
+          <el-input
+            placeholder="Pesquisar"
+            v-model="pageRequest.search"
+            class="fill"
+          ></el-input>
+        </filters-box-item>
+        <filters-box-item label="Filtro por testes">
+          <el-select
+            v-model="pageRequest.filter.test"
+            @clear="clearTestFilter"
+            placeholder="Filtro por testes"
+            value-key="id"
+            filterable
+            clearable
+          >
+            <el-option
+              v-for="test in tests"
+              :key="test.id"
+              :value="test"
+              :label="test.name"
+            >
+            </el-option>
+          </el-select>
+        </filters-box-item>
+      </filters-box>
 
       <el-table
         :data="pageResponse.data"
@@ -163,12 +156,20 @@ export default class ApplicationsList extends Vue {
     if (testId) {
       filter.test = tests.find((test) => test.id + "" == testId);
     }
+
     let pageRequest = new PageRequest(filter);
     let pageResponse: PageResponse<Test> = await ctx.store.dispatch(
       ACTION_PAGINATE_NAME,
       pageRequest
     );
     return { pageResponse, pageRequest, tests };
+  }
+
+  mounted() {
+    let action = this.$route.query.action;
+    if (action == "apply") {
+      this.testApplicationDialog.open(this.pageRequest.filter.test);
+    }
   }
 
   async remove(testApplication: TestApplication) {

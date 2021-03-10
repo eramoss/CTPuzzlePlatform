@@ -31,7 +31,7 @@
                 </el-form-item>
                 <el-form-item
                   label="Endereço do aplicativo (URL) que apresenta o puzzle"
-                  title="Url base do aplicativo onde esse item será apresentado"
+                  title="URL base do aplicativo que deve apresentar esse tipo de puzzle (mecânica)"
                   required=""
                   prop="baseUrl"
                 >
@@ -185,7 +185,7 @@ export default class MechanicEditForm extends Vue {
       baseUrl: {
         required: true,
         message:
-          "Informe a url base do aplicativo onde esse item será apresentado",
+          "Informe a url base do aplicativo onde esse tipo de puzzle será apresentado",
         trigger: "blur",
       },
       classDefinition: {
