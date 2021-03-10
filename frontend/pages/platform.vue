@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container style="height: 100vh">
+    <el-container>
       <el-header style="padding: 0">
         <top-bar width="100%" />
       </el-header>
@@ -52,27 +52,16 @@
 
 <script>
 import TopBar from "~/components/TopBar.vue";
+import { Component } from "nuxt-property-decorator";
+import Vue from "vue";
 
-export default {
+@Component({
   head() {
     return {
       title: "Plataforma",
     };
   },
   components: { TopBar },
-  data() {
-    return {
-      activeLink: "",
-    };
-  },
-  mounted() {
-    if (this.$route.query.op == "login") {
-      this.$notify.success({
-        message: `Olá, ${this.$auth.user.name}`,
-        title: "Bem-vindo",
-      });
-    }
-  },
   watch: {
     $route: {
       immediate: true,
@@ -81,11 +70,23 @@ export default {
       },
     },
   },
-};
+})
+export default class Platform extends Vue {
+  activeLink = "";
+  mounted() {
+    if (this.$route.query.op == "login") {
+      this.$notify.success({
+        message: `Olá, ${this.$auth.user.name}`,
+        title: "Bem-vindo",
+      });
+    }
+  }
+}
 </script>
-
 <style lang="scss">
 #platform-menu {
+  position: fixed;
+  width: 200px;
   .el-menu-item {
     text-align: left;
   }

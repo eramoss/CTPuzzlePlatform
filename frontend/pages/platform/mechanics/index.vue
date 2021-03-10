@@ -69,6 +69,7 @@ export default class MechanicsList extends Vue {
         "Remover mecânica?",
         {
           confirmButtonText: "Remover",
+          cancelButtonText: "Cancelar",
           confirmButtonClass: "el-button--danger",
         }
       );

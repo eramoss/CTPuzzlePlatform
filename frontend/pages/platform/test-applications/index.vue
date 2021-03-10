@@ -180,6 +180,7 @@ export default class ApplicationsList extends Vue {
         "Remover aplicação?",
         {
           confirmButtonText: "Remover",
+          cancelButtonText: "Cancelar",
           confirmButtonClass: "el-button--danger",
         }
       );

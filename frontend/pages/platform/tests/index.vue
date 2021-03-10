@@ -95,6 +95,7 @@ export default class TestsList extends Vue {
         "Remover teste?",
         {
           confirmButtonText: "Remover",
+          cancelButtonText: "Cancelar",
           confirmButtonClass: "el-button--danger",
         }
       );

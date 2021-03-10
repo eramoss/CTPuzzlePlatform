@@ -132,6 +132,7 @@ export default class ItemsList extends Vue {
         "Remover item?",
         {
           confirmButtonText: "Remover",
+          cancelButtonText: "Cancelar",
           confirmButtonClass: "el-button--danger",
         }
       );
