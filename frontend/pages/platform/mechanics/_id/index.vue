@@ -111,19 +111,24 @@
                 :required="true"
                 style="flex-grow: 1"
               />
-              <el-button
-                type="success"
-                size="small"
-                icon="el-icon-video-play"
-                @click="openTestDialog"
-              >
-                Testar função
-              </el-button>
+
               <code-editor
+                editorTitle="Dica: utilize as classes definidas anteriormente. O editor completa automaticamente"
                 v-model="mechanic.scoreFunction"
                 @input="mechanicForm.validateField('scoreFunction')"
                 height="300px"
-              />
+              >
+                <template slot="bar">
+                  <el-button
+                    type="success"
+                    title="Abrir playground de teste de função de escore"
+                    icon="el-icon-video-play"
+                    @click="openTestDialog"
+                  >
+                    Testar função
+                  </el-button>
+                </template>
+              </code-editor>
               <score-function-test-form
                 ref="scoreFunctionTestForm"
                 v-model="mechanic"

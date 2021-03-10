@@ -6,7 +6,7 @@
         {{ editorTitle }}
         <i v-if="readonly">(apenas leitura)</i>
       </div>
-      <div>
+      <div class="slot-bar">
         <slot name="bar" />
       </div>
     </span>
@@ -128,6 +128,12 @@ export default class CodeEditor extends Vue {
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
   padding-left: 0.5em;
-  padding-right: 0.5em;
+  padding-right: 0.2em;
+}
+.slot-bar {
+  .el-button {
+    padding: 4px;
+    font-weight: bold;
+  }
 }
 </style>

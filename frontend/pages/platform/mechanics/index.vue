@@ -8,8 +8,14 @@
     </el-breadcrumb>
     <div class="panel">
       <h2>Mecânicas</h2>
-      <el-button type="primary" icon="el-icon-plus" @click="create" :loading="goingCreate">
-        Nova
+      <el-button
+        title="Abre o cadastro de uma nova mecânica para um jogo (puzzle) de Pensamento Computacional"
+        type="primary"
+        icon="el-icon-plus"
+        @click="create"
+        :loading="goingCreate"
+      >
+        Nova mecânica de puzzle
       </el-button>
       <!-- <el-input v-model="pageRequest.search"></el-input> -->
       <el-table :data="pageResponse.data">
@@ -17,12 +23,8 @@
         <el-table-column prop="name" label="Nome"></el-table-column>
         <el-table-column label="Ações" width="240">
           <template slot-scope="{ row }">
-            <btn-edit @click="edit(row)">
-              Editar
-            </btn-edit>
-            <btn-remove @click="remove(row)">
-              Remover
-            </btn-remove>
+            <btn-edit @click="edit(row)"> Editar </btn-edit>
+            <btn-remove @click="remove(row)"> Remover </btn-remove>
           </template>
         </el-table-column>
       </el-table>
@@ -46,7 +48,7 @@ import { Context } from "@nuxt/types";
   },
 })
 export default class MechanicsList extends Vue {
-  goingCreate:boolean = false
+  goingCreate: boolean = false;
   pageResponse: PageResponse<Mechanic> = new PageResponse<Mechanic>();
   pageRequest: PageRequest = new PageRequest();
 

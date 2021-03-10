@@ -9,6 +9,7 @@ import BtnEdit from '~/components/BtnEdit'
 import BtnRemove from '~/components/BtnRemove'
 import BtnSave from '~/components/BtnSave'
 import BtnBack from '~/components/BtnBack'
+import TipIcon from '~/components/TipIcon'
 
 Vue.component('container', Container)
 Vue.component('FormItemLabel', FormItemLabel)
@@ -20,5 +21,6 @@ Vue.component('BtnEdit', BtnEdit)
 Vue.component('BtnRemove', BtnRemove)
 Vue.component('BtnSave', BtnSave)
 Vue.component('BtnBack', BtnBack)
+Vue.component('TipIcon', TipIcon)
 
 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="image-uploader">
     <div
       class="avatar-uploader"
       @click="input.click()"
@@ -13,9 +13,9 @@
       />
       <div v-else>
         <i class="el-icon-plus avatar-uploader-icon"></i>
-        <i>Dica: Tecle CTRL+V para colar uma imagem</i>
       </div>
     </div>
+    <span class="tip-message"><tip-icon /> Dica: CTRL+V cola imagem </span>
     <input
       style="display: none"
       type="file"
@@ -94,27 +94,39 @@ export default class ImageUploader extends Vue {
 }
 </script>
 <style lang="scss">
-.avatar-uploader {
-  display: flex;
-  align-content: center;
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  width: 280px;
-  height: 170px;
-  background-position: center !important;
-  background-size: cover !important;
+.image-uploader:hover {
+  .tip-message {
+    color: #999;
+  }
 }
-.avatar-uploader:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 100%;
-  height: 170px;
-  line-height: 170px;
-  text-align: center;
+.image-uploader {
+  .tip-message {
+    transition: color 300ms;
+    color: #ccc;
+  }
+  .avatar-uploader {
+    display: flex;
+    align-content: center;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    width: 260px;
+    height: 170px;
+    background-position: center !important;
+    background-size: cover !important;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .avatar-uploader:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    text-align: center;
+  }
 }
 </style>

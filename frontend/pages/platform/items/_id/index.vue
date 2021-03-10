@@ -102,11 +102,10 @@
                     <template v-slot:bar>
                       <el-button
                         @click="testOpenItem"
-                        type="text"
-                        style="padding: 0"
+                        type="success"
+                        icon="el-icon-video-play"
                         title="Testar item no ambiente do puzzle"
                       >
-                        <i class="el-icon-caret-right"></i>
                         Testar
                       </el-button>
                     </template>
