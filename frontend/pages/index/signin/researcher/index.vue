@@ -162,7 +162,10 @@ export default class UserSigninForm extends Vue {
   get formRules() {
     return {
       name: [{ required: true, message: "Informe o nome", trigger: "blur" }],
-      email: [{ required: true, message: "Informe o email", trigger: "blur" }],
+      email: [
+          { required: true, message: "Informe o email", trigger: ["blur","change"] },
+          { type: 'email', message: "Informe um email correto", trigger: ["blur","change"] }
+          ],
       birthDay: [
         {
           required: true,
