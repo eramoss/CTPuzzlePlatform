@@ -4,7 +4,7 @@
       v-model="applicationUrl"
       placeholder="Informe o nome da aplicação para gerar o link"
     />
-    <message-alert type="warning">
+    <message-alert type="warning" icon-position="top" icon-size="18pt" label="Informações sobre o link da aplicação">
         <div>
             <p>
                 O link da aplicação permite iniciar a comunicação entre a plataforma e o aplicativo responsável pela apresentação dos puzzles.
@@ -94,7 +94,7 @@ export default class TestApplicationUrlInput extends Vue {
   get dataUrl() {
     let hash = this.hash;
     let baseUrl = this.$axios.defaults.baseURL;
-    return `${baseUrl}/test-applications/data/${hash}/<user_uuid>`;
+    return `${baseUrl}/test-applications/public/data/${hash}/<user_uuid>`;
   }
 
   get applicationUrl(): string {

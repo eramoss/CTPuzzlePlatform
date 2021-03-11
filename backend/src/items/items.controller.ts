@@ -8,41 +8,37 @@ import { ItemsService } from './items.service';
 
 
 @Controller('items')
+@UseGuards(JwtAuthGuard)
 export class ItemsController {
 
     constructor(private itemService: ItemsService) { }
 
-    @UseGuards(JwtAuthGuard)
     @Get('byId/:id')
     getById(@Param('id') id: number): Promise<Item> {
         return this.itemService.getById(id);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Post()
     save(@Body() item: Item): Promise<Item> {
         return this.itemService.save(item);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Post('paginate')
     async paginate(@Body() pageRequest: PageRequest): Promise<PageResponse<Item>> {
         return this.itemService.paginate(pageRequest);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Delete('remove/:id')
     remove(@Param('id') id: number): Promise<DeleteResult> {
         return this.itemService.removeById(id);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('findAll')
     findAll(): Promise<Item[]> {
         return this.itemService.findAll()
     }
 
-    @Get('instantiate/:id')
+    @Get('public/instantiate/:id')
     instantiate(@Param('id') id: number): Promise<string> {
         return this.itemService.instantiateToGetJson(id);
     }

@@ -10,25 +10,22 @@ import { TestApplication } from './test-application.entity';
 import { TestApplicationsService } from './test-applications.service';
 
 @Controller('test-applications')
+@UseGuards(JwtAuthGuard)
 export class TestApplicationsController {
 
     constructor(private testApplicationsService: TestApplicationsService) {
-
     }
 
-    @UseGuards(JwtAuthGuard)
     @Post()
     save(@Body() testApplication: TestApplication): Promise<TestApplication> {
         return this.testApplicationsService.save(testApplication);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Delete('remove/:id')
     delete(@Param('id') id: number): Promise<DeleteResult> {
         return this.testApplicationsService.removeById(id);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('byId/:id')
     getById(@Param('id') id: number): Promise<TestApplication> {
         return this.testApplicationsService.getById(id);
@@ -39,13 +36,12 @@ export class TestApplicationsController {
         return this.testApplicationsService.getByHash(hash);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Post('paginate')
     paginate(@Body() pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {
         return this.testApplicationsService.paginate(pageRequest)
     }
 
-    @Get('data/:testApplicationHash/:userHash')
+    @Get('public/data/:testApplicationHash/:userHash')
     getApplicationData(
         @Param('testApplicationHash') testAplicationHash: string,
         @Param('userHash') userHash: string
@@ -54,7 +50,7 @@ export class TestApplicationsController {
         return this.testApplicationsService.getApplicationData(testAplicationHash, userHash);
     }
 
-    @Post('participate-in-the-test/:testApplicationHash')
+    @Post('public/participate-in-the-test/:testApplicationHash')
     participateInTheTest(
         @Param('testApplicationHash') testApplicationHash: string,
         @Body() user: User): Promise<Participation> {

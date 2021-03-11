@@ -1,6 +1,16 @@
 <template>
-  <div :class="`message-alert ${type}`">
-    <i class="icon" :class="`el-icon-warning-outline`"></i>
+  <div
+    :class="`message-alert ${type}`"
+    :style="{
+      'flex-flow': !!label ? 'column' : 'row',
+    }"
+  >
+    <div class="header-content">
+      <i v-show="!label" class="icon" :class="`el-icon-warning-outline`"></i>
+      <h3 class="message-label">
+        {{ label }}
+      </h3>
+    </div>
     <slot></slot>
   </div>
 </template>
@@ -12,6 +22,7 @@ import { Prop } from "vue-property-decorator";
 @Component
 export default class MessageAlert extends Vue {
   @Prop({ default: "info" }) type!: string;
+  @Prop() label!: string;
 }
 </script>
 <style lang="scss">
@@ -21,12 +32,12 @@ export default class MessageAlert extends Vue {
   line-height: 1.3em;
   padding: 15px;
   display: flex;
-  font-size: 12pt;
+  font-size: 14pt;
   align-items: center;
 
   i.icon {
     margin-right: 10px;
-    font-size: 25pt;
+    font-size: 20pt;
   }
 }
 
@@ -37,5 +48,15 @@ export default class MessageAlert extends Vue {
 .warning {
   background: #ffe5b8;
   color: #5c3a00;
+}
+.header-content {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  align-self: start;
+}
+.message-label {
+  font-size: 13pt;
+  margin-bottom: 15px;
 }
 </style>

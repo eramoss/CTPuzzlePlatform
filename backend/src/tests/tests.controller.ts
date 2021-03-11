@@ -8,11 +8,11 @@ import { TestService } from './tests.service';
 
 
 @Controller('tests')
+@UseGuards(JwtAuthGuard)
 export class TestController {
 
     constructor(private testService: TestService) { }
 
-    @UseGuards(JwtAuthGuard)
     @Post()
     save(@Body() test: Test): Promise<Test> {
         return this.testService.save(test)
@@ -28,13 +28,11 @@ export class TestController {
         return this.testService.findAll();
     }
 
-    @UseGuards(JwtAuthGuard)
     @Post('paginate')
     async paginate(@Body() pageRequest: PageRequest): Promise<PageResponse<Test>> {
         return this.testService.paginate(pageRequest);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Delete('remove/:id')
     remove(@Param('id') id: number): Promise<DeleteResult> {
         return this.testService.removeById(id);

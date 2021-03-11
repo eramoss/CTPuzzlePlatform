@@ -56,7 +56,12 @@
               prop="user.name"
               width="250"
             />
-            <el-table-column label="Progresso" prop="progress" />
+            <el-table-column></el-table-column>
+            <el-table-column width="220">
+              <template slot-scope="{ row }">
+                <btn-remove @click="confirmRemoveParticipation(row)" />
+              </template>
+            </el-table-column>
           </el-table>
         </el-row>
         <el-row>
@@ -76,10 +81,13 @@ import { Action, Component, Watch } from "nuxt-property-decorator";
 import { Context } from "@nuxt/types";
 import TestApplication from "~/types/TestApplication";
 import Test from "~/types/Test";
+import Participation from "~/types/Participation";
+import BtnRemove from "~/components/BtnRemove.vue";
 
 @Component({
   components: {
     TestApplicationUrlInput,
+    BtnRemove,
   },
 })
 export default class TestEditForm extends Vue {
@@ -116,6 +124,46 @@ export default class TestEditForm extends Vue {
   @Action("test-applications/save") saveTestApplication!: (
     testApplication: TestApplication
   ) => Promise<TestApplication>;
+
+  @Action("participations/removeById") removeParticipationById!: (
+    id: number
+  ) => Promise<TestApplication>;
+
+  async confirmRemoveParticipation(participation: Participation) {
+    try {
+      let option = await this.$confirm(
+        "Tem certeza de que deseja remover esta participação da aplicação? A participação do seguinte usuário será removida: " +
+          participation.user.name,
+        "Remover dados da participação?",
+        {
+          confirmButtonText: "Remover",
+          cancelButtonText: "Cancelar",
+          confirmButtonClass: "el-button--danger",
+        }
+      );
+      if (option === "confirm") {
+        try {
+          let index = this.testApplication.participations.indexOf(
+            participation
+          );
+          await this.removeParticipationById(participation.id);
+          this.testApplication.participations.splice(index, 1);
+          this.$notify({
+            type: "success",
+            title: "Sucesso ao remover",
+            message: "A participação foi removida",
+          });
+        } catch (e) {
+          console.error(e);
+          this.$notify({
+            type: "error",
+            title: "Não foi possível remover a participação da aplicação",
+            message: "Verifique se há algum erro ou pendência de utilização.",
+          });
+        }
+      }
+    } catch (cancel) {}
+  }
 
   async save() {
     try {

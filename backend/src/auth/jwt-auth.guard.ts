@@ -1,5 +1,20 @@
-import { Injectable } from "@nestjs/common";
+import { ExecutionContext, Injectable } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+import { IncomingMessage } from "http";
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt'){}
+export class JwtAuthGuard extends AuthGuard('jwt') {
+    canActivate(context: ExecutionContext) {
+        try {
+            let message = context.getArgs()[0] as IncomingMessage
+            let url = message.url
+            let secondPathPart = url.split('/')[2]
+            if (secondPathPart == 'public') {
+                return true;
+            }
+        } catch (e) {
+            console.error('Erro ao tentar pegar URL da rota')
+        }
+        return super.canActivate(context)
+    }
+}

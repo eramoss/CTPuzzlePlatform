@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TestApplication } from 'src/test-applications/test-application.entity';
 import { User } from 'src/users/user.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import Participation from './participation.entity';
 
 @Injectable()
@@ -21,6 +21,10 @@ export class ParticipationService {
 
     save(participation: Participation): Promise<Participation> {
         return this.participationRepository.save(participation)
+    }
+
+    removeById(id: number): Promise<DeleteResult> {
+        return this.participationRepository.delete({ id });
     }
 
     getNonFinishedParticipation(testApplication: TestApplication, user: User): Promise<Participation> {
