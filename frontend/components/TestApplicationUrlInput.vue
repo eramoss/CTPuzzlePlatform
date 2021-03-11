@@ -11,7 +11,7 @@
                 O desenvolvedor do aplicativo deve usar os parâmetros da URL para: <br>
                 <ol style="padding-left:2em">
                     <li> Buscar o teste: utilizando o parâmetro <b>dataUrl</b></li>
-                    <li> Enviar as respostas dos participantes: enviando o evento de resposta para a URL obtida ao chamar a <b>dataUrl</b></li>
+                    <li> Enviar as respostas dos participantes a partir da URL de resposta obtida pela primeira chamada</li>
                 </ol>
             </p>
             <p>

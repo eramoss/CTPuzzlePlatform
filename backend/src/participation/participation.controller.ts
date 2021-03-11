@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { DeleteResult } from 'typeorm';
 import Participation from './participation.entity';
@@ -16,9 +16,19 @@ export class ParticipationController {
         this.service.saveProgress(participation)
     }
 
-    @Delete('/remove/:id')
+    @Get('byId/:id')
+    getById(@Param('id') id: number): Promise<Participation> {
+        return this.service.getById(id);
+    }
+
+    @Delete('remove/:id')
     removeParticipation(@Param('id') id: number): Promise<DeleteResult> {
         return this.service.removeById(id);
+    }
+
+    @Post('public/respond/:participationId/:itemId')
+    saveResponse(@Param('participationId') participationId: number, @Param('itemId') itemId: number, @Body() response: any) {
+        return this.service.saveResponse(participationId, itemId, response);
     }
 
 }

@@ -143,6 +143,9 @@ import { ElInput } from "element-ui/types/input";
 import { ElForm } from "element-ui/types/form";
 
 @Component({
+  head: {
+    title: "Itens de teste",
+  },
   components: {
     CodeEditor,
   },

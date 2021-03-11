@@ -56,10 +56,16 @@
               prop="user.name"
               width="250"
             />
-            <el-table-column
-              label="Código do usuário"
-              prop="user.hash"
-            />
+            <el-table-column label="Código do usuário" prop="user.hash" />
+            <el-table-column label="Respostas" width="200">
+              <template slot-scope="{ row }">
+                <nuxt-link :to="`${$route.path}/responses/${row.id}`">
+                  <el-button type="text" v-show="row.itemResponses.length">
+                    {{ row.itemResponses.length }} respostas
+                  </el-button>
+                </nuxt-link>
+              </template>
+            </el-table-column>
             <el-table-column width="220">
               <template slot-scope="{ row }">
                 <btn-remove @click="confirmRemoveParticipation(row)" />
@@ -80,7 +86,7 @@
 <script lang="ts">
 import TestApplicationUrlInput from "~/components/TestApplicationUrlInput.vue";
 import Vue from "vue";
-import { Action, Component, Watch } from "nuxt-property-decorator";
+import { Action, Component, Ref, Watch } from "nuxt-property-decorator";
 import { Context } from "@nuxt/types";
 import TestApplication from "~/types/TestApplication";
 import Test from "~/types/Test";
@@ -88,6 +94,9 @@ import Participation from "~/types/Participation";
 import BtnRemove from "~/components/BtnRemove.vue";
 
 @Component({
+  head: {
+    title: "Aplicação de teste",
+  },
   components: {
     TestApplicationUrlInput,
     BtnRemove,

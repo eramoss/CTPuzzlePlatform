@@ -17,6 +17,7 @@ import { CodeInterpreterModule } from './code-interpreter/code-interpreter.modul
 import { ConfigModule } from '@nestjs/config';
 import { databaseConfig } from './databaseConfig'
 import { ParticipationModule } from './participation/participation.module';
+import { ItemResponsesModule } from './item-responses/item-responses.module';
 
 @Module({
     imports: [
@@ -35,6 +36,7 @@ import { ParticipationModule } from './participation/participation.module';
         ScoreFunctionTestModule,
         CodeInterpreterModule,
         ParticipationModule,
+        ItemResponsesModule,
     ],
     controllers: [AppController],
     providers: [AppService],

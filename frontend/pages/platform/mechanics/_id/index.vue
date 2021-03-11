@@ -161,6 +161,9 @@ import ScoreFunctionTestForm from "~/components/ScoreFunctionTestForm.vue";
 import User from "~/types/User";
 
 @Component({
+  head: {
+    title: "Mecânica e puzzle",
+  },
   components: { CodeEditor, ScoreFunctionTestForm },
 })
 export default class MechanicEditForm extends Vue {

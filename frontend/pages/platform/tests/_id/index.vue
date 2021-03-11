@@ -154,6 +154,9 @@ import ItemThumbnail from "~/components/ItemThumbnail.vue";
 import { ElForm } from "element-ui/types/form";
 
 @Component({
+  head: {
+    title: "Teste",
+  },
   components: {
     draggable,
     TestApplicationDialog,
@@ -190,7 +193,9 @@ export default class TestEditForm extends Vue {
       if (this.test.id) {
         this.generatingJson = true;
         let url =
-          this.$axios.defaults.baseURL + "/tests/public/generateJson/" + this.test.id;
+          this.$axios.defaults.baseURL +
+          "/tests/public/generateJson/" +
+          this.test.id;
         window.open(url, "_blank");
       }
     } catch (e) {

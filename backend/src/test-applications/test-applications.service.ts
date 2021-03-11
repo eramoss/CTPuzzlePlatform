@@ -37,6 +37,7 @@ export class TestApplicationsService {
             .leftJoinAndSelect('test-application.test', 'test')
             .leftJoinAndSelect('test-application.participations', 'participation')
             .leftJoinAndSelect('participation.user', 'user')
+            .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
             .getOne();
     }
 
@@ -80,7 +81,6 @@ export class TestApplicationsService {
         user.hash = userHash;
         if (userHash == '<user_uuid>') {
             userHash = uuidv4().substring(0, 7);
-            user.name = 'APP-USER' + userHash;
         }
         let participation = await this.participateInTheTest(applicationHash, user)
         let urlToSendResponses = this.configService.get('API_URL') + `/participations/public/respond/${participation.id}/<item_id>`

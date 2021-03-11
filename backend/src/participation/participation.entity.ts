@@ -1,6 +1,7 @@
+import { ItemResponse } from "src/item-responses/item-response.entity";
 import { TestApplication } from "src/test-applications/test-application.entity";
 import { User } from "src/users/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export default class Participation {
@@ -19,6 +20,14 @@ export default class Participation {
 
     @ManyToOne(type => TestApplication, { nullable: true, onDelete: 'CASCADE' })
     application: TestApplication;
+
+    @OneToMany(type => ItemResponse, itemResponse => itemResponse.participation, { cascade: true })
+    itemResponses: ItemResponse[]
+
+    addResponse(itemResponse: ItemResponse) {
+        itemResponse.participation = this;
+        this.itemResponses.push(itemResponse);
+    }
 
     @Column({ default: 0 })
     lastVisitedItemId: number
