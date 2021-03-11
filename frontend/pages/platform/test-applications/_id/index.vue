@@ -56,7 +56,10 @@
               prop="user.name"
               width="250"
             />
-            <el-table-column></el-table-column>
+            <el-table-column
+              label="Código do usuário"
+              prop="user.hash"
+            />
             <el-table-column width="220">
               <template slot-scope="{ row }">
                 <btn-remove @click="confirmRemoveParticipation(row)" />

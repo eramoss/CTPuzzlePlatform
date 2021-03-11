@@ -38,9 +38,10 @@
                     </tr>
                     <tr>
                         <td>dataUrl</td>
-                        <td>{{dataUrl}}</td>
+                        <td><a :href="dataUrl" style="margin-left:0" target="_blank">{{dataUrl}}</a></td>
                         <td>Endereço dos dados do teste em formato JSON.
-                             O parâmetro <b>&lt;user_uuid&gt;</b> deve ser gerado pelo sistema (aplicação que se comunica com a plataforma) e enviado a cada nova participação no teste</td>
+                             O parâmetro <b>&lt;user_uuid&gt;</b> identifica os participantes no teste.
+                             Deve ser gerado pelo aplicativo a cada nova participação.</td>
                     </tr>
 
                 </table>
