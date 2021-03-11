@@ -17,10 +17,6 @@ export const actions: ActionTree<any, any> = {
     return $axios.$delete('/tests/remove/' + id);
   },
 
-  async generateJson(state, test: Test): Promise<string> {
-    return $axios.$get('/tests/generateJson/' + test.id);
-  },
-
   async paginate(state, pageRequest: PageRequest): Promise<PageResponse<Test>> {
     return $axios.$post('/tests/paginate', pageRequest);
   },

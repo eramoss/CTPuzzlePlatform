@@ -13,7 +13,7 @@ export class TestService {
 
 
     constructor(
-        @InjectRepository(Test) 
+        @InjectRepository(Test)
         private testRepository: Repository<Test>,
         private itemService: ItemsService,
     ) { }
@@ -73,10 +73,14 @@ export class TestService {
             items: []
         };
         test.sortItemsByOrder();
-        let itemsJson = await Promise.all(test.items.map((testItem) => {
-            return this.itemService.instantiateToGetJson(testItem.item.id)
+        let itemsJson = await Promise.all(test.items.map(async (testItem) => {
+            let json = await this.itemService.instantiateToGetJson(testItem.item.id)
+            return {
+                item_id: testItem.id,
+                item: json
+            }
         }))
-        json.items = itemsJson.map(itemAsJsonString => JSON.parse(itemAsJsonString))
+        json.items = itemsJson
         return json;
     }
 

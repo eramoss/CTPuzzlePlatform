@@ -83,7 +83,7 @@ export class TestApplicationsService {
             user.name = 'APP-USER' + userHash;
         }
         let participation = await this.participateInTheTest(applicationHash, user)
-        let urlToSendResponses = this.configService.get('API_URL') + `/respond/${participation.id}`
+        let urlToSendResponses = this.configService.get('API_URL') + `/participations/public/respond/${participation.id}/<item_id>`
 
         let responseClassDefinition = ''
         try {
@@ -97,7 +97,9 @@ export class TestApplicationsService {
             urlToSendResponses: {
                 method: 'POST',
                 url: urlToSendResponses,
-                help: 'Envie as respostas de acordo com a classe de respostas definida ne macânica de cada item',
+                help: 'Envie as respostas em formato JSON e de acordo ' +
+                    'com a classe de respostas definida na macânica de cada item.' +
+                    'O valor \"responseClass"\ mostra um exemplo de classe de resposta',
                 responseClass: responseClassDefinition
             }
         } as PreparedParticipation

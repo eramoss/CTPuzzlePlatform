@@ -176,9 +176,6 @@ export default class TestEditForm extends Vue {
   @Ref("form") form!: ElForm;
 
   @Action("tests/save") saveTest!: (test: Test) => Promise<Test>;
-  @Action("tests/generateJson") generateJsonFromTest!: (
-    test: Test
-  ) => Promise<string>;
 
   get formRules() {
     return {
@@ -193,9 +190,8 @@ export default class TestEditForm extends Vue {
       if (this.test.id) {
         this.generatingJson = true;
         let url =
-          this.$axios.defaults.baseURL + "/tests/generateJson/" + this.test.id;
+          this.$axios.defaults.baseURL + "/tests/public/generateJson/" + this.test.id;
         window.open(url, "_blank");
-        //let json = await this.generateJsonFromTest(this.test);
       }
     } catch (e) {
       this.$notify({
