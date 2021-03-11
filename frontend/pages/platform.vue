@@ -1,11 +1,11 @@
 <template>
   <div>
     <el-container>
-      <el-header style="padding: 0">
+      <el-header class="custom-header shadow">
         <top-bar width="100%" />
       </el-header>
       <el-container>
-        <el-aside width="200px">
+        <el-aside width="200px" class="custom-aside">
           <el-menu
             :router="true"
             :default-active="activeLink"
@@ -40,7 +40,7 @@
             </el-menu-item>
           </el-menu>
         </el-aside>
-        <el-main>
+        <el-main class="custom-main">
           <div>
             <nuxt-child></nuxt-child>
           </div>
@@ -90,5 +90,22 @@ export default class Platform extends Vue {
   .el-menu-item {
     text-align: left;
   }
+}
+$height: 56px !important;
+.custom-aside {
+  margin-top: $height;
+}
+.custom-main {
+  margin-top: $height;
+}
+.custom-header {
+  padding: 0;
+  height: $height;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 10;
+  background: white;
+  margin-bottom: 60px;
 }
 </style>

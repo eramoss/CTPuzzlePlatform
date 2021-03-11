@@ -1,5 +1,5 @@
 <template>
-  <div class="top-bar shadow">
+  <div class="top-bar">
     <container class="container" :max-width="width">
       <div style="flex-grow: 1" class="img">
         <nuxt-link to="/">

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="Aplicar teste" :visible.sync="visible">
+  <el-dialog title="Aplicar teste" :visible.sync="visible" top="10px">
     <el-form label-position="left" label-width="130px">
       <el-form-item label="Teste">
         <el-select
