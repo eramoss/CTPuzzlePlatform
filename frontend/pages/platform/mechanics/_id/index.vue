@@ -98,16 +98,16 @@
               />
             </el-form-item>
 
-            <MessageAlert type="info">
+            <!-- <MessageAlert type="info">
               A função de cálculo de escore recebe o item e uma resposta. Deve
               calcular a nota e retorná-la junto com a nota máxima alcançável,
               no seguinte formato: { score: number, max: number }. Exemplo de
               acerto da metade do item: { score: 4, max: 8 }
-            </MessageAlert>
+            </MessageAlert> -->
 
             <el-form-item prop="scoreFunction">
               <FormItemLabel
-                label="Cálculo do escore"
+                label="Função de cálculo do escore"
                 :required="true"
                 style="flex-grow: 1"
               />

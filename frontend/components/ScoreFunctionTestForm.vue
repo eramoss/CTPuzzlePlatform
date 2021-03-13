@@ -163,6 +163,9 @@ export default class ScoreFunctionTestForm extends Vue {
     if (!this.mechanic.responseInstantiation) {
       this.clearSampleResponse();
     }
+    if (!this.mechanic.scoreFunction) {
+      this.clearSampleScoreFunction();
+    }
   }
 
   show() {
