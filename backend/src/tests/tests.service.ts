@@ -68,19 +68,19 @@ export class TestService {
 
     async generateJson(testId: number): Promise<any> {
         const test = await this.getById(testId);
-        let json = {
-            testId: test.id,
+        let testJson = {
+            id: test.id,
             name: test.name,
             items: []
         };
-        json.items = await Promise.all(test.items.map(async (testItem) => {
-            let json = await this.itemService.instantiateToGetJson(testItem.item.id)
+        testJson.items = await Promise.all(test.items.map(async (testItem) => {
+            let itemJson = await this.itemService.instantiateToGetJson(testItem.item.id)
             return {
-                item_id: testItem.id,
-                item: json
+                id: testItem.id,
+                item: itemJson
             }
         }))
-        return json;
+        return testJson;
     }
 
     getMechanicFromTestItem(testItem: TestItem): Promise<Mechanic> {

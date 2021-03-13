@@ -100,7 +100,7 @@ export class TestApplicationsService {
         let preparedParticipation = {
             participationId: participation.id,
             lastVisitedItemId: participation.lastVisitedItemId,
-            testAsJson: participation.testAsJson,
+            test: participation.test,
             urlToSendResponses: {
                 method: 'POST',
                 url: urlToSendResponses,
@@ -136,7 +136,7 @@ export class TestApplicationsService {
         if (!participation) {
             participation = new Participation();
         }
-        participation.testAsJson = testJson
+        participation.test = testJson
         participation.user = savedUser;
         participation.application = testApplication;
         participation = await this.participationService.save(participation);

@@ -33,6 +33,6 @@ export default class Participation {
     lastVisitedItemId: number
 
     @Column({ nullable: true })
-    testAsJson: string
+    test: string
 
 }

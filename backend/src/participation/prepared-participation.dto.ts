@@ -15,7 +15,7 @@ export default class PreparedParticipation {
 
     lastVisitedItemId:number
     participationId:number
-    testAsJson: string
+    test: string
     urlToSendResponses: UrlToSendResponses
     urlToSendProgress: UrlToSendProgress
 
