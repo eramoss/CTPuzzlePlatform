@@ -55,6 +55,7 @@ import Vue from "vue";
 import { Action, Component, Prop, Watch } from "nuxt-property-decorator";
 import TestApplication from "~/types/TestApplication";
 import CopyInput from "~/components/CopyInput.vue";
+import queryString from '~/utils/utils'
 
 @Component({
   components: {
@@ -66,11 +67,7 @@ export default class TestApplicationUrlInput extends Vue {
   @Prop({ default: "application" }) operation!: string;
   puzzleUrl: string = "";
 
-  queryString(params: any) {
-    return Object.keys(params)
-      .map((key) => `${key}=${params[key]}`)
-      .join("&");
-  }
+  
 
   @Action("tests/getPuzzleBaseUrl") getPuzzleBaseUrl!: (
     testId: number
@@ -112,7 +109,7 @@ export default class TestApplicationUrlInput extends Vue {
         baseUrl: this.baseUrl,
         dataUrl: this.dataUrl,
       };
-      url = `${this.puzzleUrl}?${this.queryString(params)}`;
+      url = `${this.puzzleUrl}?${queryString(params)}`;
     }
     return url;
   }

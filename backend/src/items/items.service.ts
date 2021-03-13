@@ -51,9 +51,17 @@ export class ItemsService {
 
     async instantiateToGetJson(testItemId: number): Promise<any> {
         let item = await this.getById(testItemId)
+        return this.getJsonFromItem(item);
+    }
+
+    async getJsonFromItem(item: Item) {
+        return this.instantiateItem(item.mechanic.classDefinition, item.itemDefinition);
+    }
+
+    async instantiateItem(classDefinition: string, itemDefinition: string) {
         let code = `
-        ${item.mechanic.classDefinition}
-        console.log(JSON.stringify(${item.itemDefinition}()))
+        ${classDefinition}
+        console.log(JSON.stringify(${itemDefinition}()))
         `
         let instantiatedItem = await this.codeInterpreterService.execute(code);
         return JSON.parse(instantiatedItem);

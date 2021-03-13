@@ -141,6 +141,7 @@ import Item, { createExampleItem } from "~/types/Item";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
 import { ElForm } from "element-ui/types/form";
+import queryString from "~/utils/utils";
 
 @Component({
   head: {
@@ -284,10 +285,9 @@ export default class ItemEditForm extends Vue {
     let appBaseUrl = this.item.mechanic.baseUrl;
     let serverBaseUrl = this.$axios.defaults.baseURL;
     let testItemNumber = this.item.id;
-    window.open(
-      `${appBaseUrl}?op=playground&testItemNumber=${testItemNumber}&baseUrl=${serverBaseUrl}`,
-      "_blank"
-    );
+    let urlToInstantiateItem = `${serverBaseUrl}/items/public/instantiate/${testItemNumber}`;
+    let qs = queryString({ op: "playground", urlToInstantiateItem });
+    window.open(`${appBaseUrl}?${qs}`, "_blank");
   }
 
   back() {

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ItemsService } from 'src/items/items.service';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import { TestItem } from 'src/tests/test-item.entity';
@@ -9,11 +10,10 @@ import { Mechanic } from './mechanic.entity';
 @Injectable()
 export class MechanicsService {
 
-
-
     constructor(
         @InjectRepository(Mechanic)
         private mechanicRepository: Repository<Mechanic>,
+        private itemService: ItemsService,
     ) { }
 
     save(mechanic: Mechanic): Promise<Mechanic> {
@@ -43,7 +43,10 @@ export class MechanicsService {
         return new PageResponse<Mechanic>(data)
     }
 
-
+    async instantiateToGetJson(mechanicId: number): Promise<string> {
+        const mechanic = await this.getById(mechanicId);
+        return this.itemService.instantiateItem(mechanic.classDefinition, mechanic.itemInstantiation);
+    }
 
     findAll(): Promise<Mechanic[]> {
         return this.mechanicRepository.find({});

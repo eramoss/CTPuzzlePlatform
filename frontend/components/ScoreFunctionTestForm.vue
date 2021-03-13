@@ -58,6 +58,12 @@
           >
             <template slot="bar">
               <el-button
+                type="warning"
+                icon="el-icon-video-play"
+                @click="testItem"
+                >Testar item</el-button
+              >
+              <el-button
                 type="text"
                 title="Resetar para exemplo inicial"
                 @click="clearSampleItem"
@@ -101,16 +107,19 @@
       </el-row>
       <el-row>
         <el-dialog
+          width="80%"
+          top="20px"
           title="Resultado do teste da função de escore"
           :visible.sync="responseDialogVisible"
           append-to-body
         >
           <code-editor
-            language="json"
+            language="none"
             v-model="response"
-            height="400px"
-          >
-          </code-editor>
+            height="500px"
+            :readonly="true"
+          />
+          <!-- <el-input type="textarea" v-model="response" rows="20"></el-input> -->
           <!-- <template slot="footer">
             <div>
               <el-button
@@ -139,6 +148,7 @@ import {
   Watch,
 } from "nuxt-property-decorator";
 import Mechanic from "~/types/Mechanic";
+import queryString from "~/utils/utils";
 
 @Component({
   components: {
@@ -232,6 +242,15 @@ function calculaScore(item: MeuItem, resposta: MinhaReposta){ //<-- Substitua os
     }
    return { score: nota, max: 10 }; //<-- O retorno deve ser nesse formato: { score: nota, max: nota máxima }
 }`;
+  }
+
+  testItem() {
+    let appBaseUrl = this.mechanic.baseUrl;
+    let serverBaseUrl = this.$axios.defaults.baseURL;
+    let mechanicId = this.mechanic.id;
+    let urlToInstantiateItem = `${serverBaseUrl}/mechanics/public/instantiate/${mechanicId}`;
+    let qs = queryString({ op: "playground", urlToInstantiateItem });
+    window.open(`${appBaseUrl}?${qs}`, "_blank");
   }
 
   @Action("score-function-test/execute") runScoreFunction!: (
