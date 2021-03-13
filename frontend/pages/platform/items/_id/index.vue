@@ -224,6 +224,19 @@ export default class ItemEditForm extends Vue {
   }
 
   duplicateItem() {
+    if (!this.item.id) {
+      this.$alert(
+        "Para duplicar o item, é necessário antes salvá-lo. <br>Dica: Para salvar, você pode utilizar o atalho <br><b><h2>Ctrl + S<h2></b>",
+        {
+          dangerouslyUseHTMLString: true,
+          title: "Salve o item para poder duplicá-lo.",
+          confirmButtonText: "Entendi",
+          showCancelButton: false,
+          type: "error",
+        }
+      );
+      return;
+    }
     this.item.id = 0;
     this.item.name = "Cópia " + this.item.name;
     this.$notify({

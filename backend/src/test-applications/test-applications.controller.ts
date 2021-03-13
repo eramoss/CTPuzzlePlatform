@@ -50,11 +50,4 @@ export class TestApplicationsController {
         return this.testApplicationsService.getApplicationData(testAplicationHash, userHash);
     }
 
-    @Post('public/participate-in-the-test/:testApplicationHash')
-    participateInTheTest(
-        @Param('testApplicationHash') testApplicationHash: string,
-        @Body() user: User): Promise<Participation> {
-        return this.testApplicationsService.participateInTheTest(testApplicationHash, user);
-    }
-
 }

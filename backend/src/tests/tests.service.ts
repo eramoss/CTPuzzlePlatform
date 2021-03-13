@@ -30,6 +30,7 @@ export class TestService {
             }
             test.sortItemsByOrder()
         }
+        test.sortItemsByOrder();
         return test;
     }
 
@@ -72,15 +73,13 @@ export class TestService {
             name: test.name,
             items: []
         };
-        test.sortItemsByOrder();
-        let itemsJson = await Promise.all(test.items.map(async (testItem) => {
+        json.items = await Promise.all(test.items.map(async (testItem) => {
             let json = await this.itemService.instantiateToGetJson(testItem.item.id)
             return {
                 item_id: testItem.id,
                 item: json
             }
         }))
-        json.items = itemsJson
         return json;
     }
 

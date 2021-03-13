@@ -2,83 +2,126 @@
   <el-dialog
     :visible.sync="visible"
     top="10px"
-    width="90%"
+    width="95%"
     title="Playground para teste de função de escore"
   >
     <div>
-      <MessageAlert type="info">
+      <!-- <MessageAlert type="info">
         Para testar a função de escore, instancie e retorne um objeto de item e
         um objeto de resposta resposta seguindo as funções de exemplo.
-      </MessageAlert>
+      </MessageAlert> -->
+      <el-button
+        icon="el-icon-video-play"
+        style="margin-bottom: 10px"
+        type="success"
+        size="small"
+        @click="executeScoreFunction"
+        title="Executar função de cálculo de escore"
+        >Executar</el-button
+      >
+      <el-row>
+        <code-editor
+          editorTitle="Função de escore"
+          height="300px"
+          v-model="mechanic.scoreFunction"
+        >
+          <template slot="bar">
+            <el-button
+              type="text"
+              title="Resetar para exemplo inicial"
+              @click="clearSampleScoreFunction"
+              >Exemplo</el-button
+            >
+            <el-button
+              type="text"
+              title="Versão editada"
+              :disabled="!bkpScoreFunction"
+              @click="redoSampleScoreFunction"
+              >Versão editada</el-button
+            >
+          </template>
+        </code-editor>
+      </el-row>
 
-      <el-row :gutter="20" v-if="mechanic">
+      <el-row
+        :gutter="20"
+        v-if="mechanic"
+        style="margin-top: 20px; margin-bottom: 20px"
+      >
         <el-col :span="12">
-          <form-item-label label="Instanciação do item" />
-          <el-button
-            type="text"
-            size="small"
-            title="Resetar para exemplo inicial"
-            icon="el-icon-refresh-left"
-            @click="clearSampleItem"
-          ></el-button>
-          <el-button
-            type="text"
-            title="Refazer"
-            size="small"
-            icon="el-icon-refresh-right"
-            :disabled="!bkpItem"
-            @click="redoSampleItem"
-          ></el-button>
-
           <code-editor
-            editorTitle="Função que retorna o item (siga o exemplo)"
-            height="200px"
+            editorTitle="Função de item"
+            height="250px"
+            :fontSize="15"
             language="typescript"
             v-model="mechanic.itemInstantiation"
           >
-            <template slot="bar"> </template>
+            <template slot="bar">
+              <el-button
+                type="text"
+                title="Resetar para exemplo inicial"
+                @click="clearSampleItem"
+                >Exemplo</el-button
+              >
+              <el-button
+                type="text"
+                title="Versão editada"
+                :disabled="!bkpItem"
+                @click="redoSampleItem"
+                >Versão editada</el-button
+              >
+            </template>
           </code-editor>
         </el-col>
         <el-col :span="12">
-          <form-item-label label="Instanciação da resposta " />
-          <el-button
-            type="text"
-            title="Resetar para exemplo inicial"
-            icon="el-icon-refresh-left"
-            @click="clearSampleResponse"
-          ></el-button>
-          <el-button
-            type="text"
-            title="Refazer"
-            icon="el-icon-refresh-right"
-            :disabled="!bkpResponse"
-            @click="redoSampleResponse"
-          ></el-button>
           <code-editor
-            editorTitle="Função que retorna a resposta (siga o exemplo)"
-            height="200px"
+            editorTitle="Função de resposta"
+            height="250px"
+            :fontSize="15"
             language="typescript"
             v-model="mechanic.responseInstantiation"
-          ></code-editor>
+          >
+            <template slot="bar">
+              <el-button
+                type="text"
+                title="Resetar para exemplo inicial"
+                @click="clearSampleResponse"
+                >Exemplo</el-button
+              >
+              <el-button
+                type="text"
+                title="Versão editada"
+                :disabled="!bkpResponse"
+                @click="redoSampleResponse"
+                >Versão editada</el-button
+              >
+            </template>
+          </code-editor>
         </el-col>
       </el-row>
       <el-row>
-        <el-button
-          icon="el-icon-video-play"
-          type="success"
-          size="small"
-          @click="executeScoreFunction"
-          title="Executar função de cálculo de escore"
-          >Executar</el-button
+        <el-dialog
+          title="Resultado do teste da função de escore"
+          :visible.sync="responseDialogVisible"
+          append-to-body
         >
-        <br />
-        <form-item-label label="Resposta" />
-        <el-input
-          type="textarea"
-          rows="10"
-          placeholder="A resposta aparecerá aqui..."
-          v-model="response"
-        />
+          <code-editor
+            language="json"
+            v-model="response"
+            height="400px"
+          >
+          </code-editor>
+          <!-- <template slot="footer">
+            <div>
+              <el-button
+                @click="responseDialogVisible = false"
+                type="primary"
+                icon="el-icon-close"
+                >Fechar</el-button
+              >
+            </div>
+          </template> -->
+        </el-dialog>
       </el-row>
     </div>
   </el-dialog>
@@ -106,6 +149,8 @@ export default class ScoreFunctionTestForm extends Vue {
   visible: boolean = false;
   bkpResponse: string = "";
   bkpItem: string = "";
+  bkpScoreFunction: string = "";
+  responseDialogVisible = false;
 
   response: string = "";
   @VModel() mechanic!: Mechanic;
@@ -133,24 +178,57 @@ export default class ScoreFunctionTestForm extends Vue {
     this.bkpItem = "";
   }
 
+  redoSampleScoreFunction() {
+    this.mechanic.scoreFunction = this.bkpScoreFunction;
+    this.bkpScoreFunction = "";
+  }
+
   clearSampleItem() {
     this.bkpItem = this.mechanic.itemInstantiation;
-    this.mechanic.itemInstantiation = `// function criarItem(): Item {
-//  let item = new Item();
-//  item.respostaEsperada = 'aaaa';
-//  ...
-//  return item;
-//}`;
+    this.mechanic.itemInstantiation = `// Este tutorial é bem curto. Então leia.
+// Codifique uma função para criar o item do teste. Exemplo:
+function criarItem(): MeuItem {//<-- Erro de sintaxe
+    let item = new MeuItem(); //<-- Erro de sintaxe
+    //Informe os atributos do item. Exemplo:
+    //item.tempoMaximoParaResponder = 60
+    return item; //<-- retorne o item!
+}
+// Há erros de sintaxe porque a classe MeuItem 
+// não é igual à definida na tela anterior.
+// Substitua "MeuItem" pelo nome da sua classe de item
+// e informe os atributos de acordo.`;
   }
 
   clearSampleResponse() {
     this.bkpResponse = this.mechanic.responseInstantiation;
-    this.mechanic.responseInstantiation = `// function criarResposta(): Resposta {
-//  let resposta = new Resposta();
-//  resposta.respostaInformada = 'aaab';
-//  ...
-//  return resposta;
-// }`;
+    this.mechanic.responseInstantiation = `// Esse exemplo é muito parecido com o anterior (do item). Veja:
+// Você precisa codificar uma função como esta, para retornar a resposta a ser testada:
+function criarResposta(): MinhaReposta { //<-- Erro de sintaxe
+    let resposta = new MinhaReposta(); //<-- Erro de sintaxe
+    //Informe os atributos da resposta. Exemplo:
+    //resposta.tempoQueLevouParaResponder = 55
+    return resposta; //<-- retorne a resposta!
+}
+// Se no exemplo há erros de sintaxe, é porque a classe 
+// não é igual às definidas na mecânica.
+// Por isso, substitua "MinhaReposta" pelo nome da sua classe de resposta
+// e informe valores para os atributos definidos lá.
+`;
+  }
+
+  clearSampleScoreFunction() {
+    this.bkpScoreFunction = this.mechanic.scoreFunction;
+    this.mechanic.scoreFunction = `// Defina a função de cálculo com os parâmetros de item e resposta:
+function calculaScore(item: MeuItem, resposta: MinhaReposta){ //<-- Substitua os tipos dos parâmetros com os tipos definidos na mecânica
+//  Implemente o cálculo da nota
+    let nota = 0;
+    if(item.respostaEsperada == resposta.valorInformado){
+        if(item.tempoParaResponser == 2 * resposta.tempoMaximo){
+            nota = 5;
+        }
+    }
+   return { score: nota, max: 10 }; //<-- O retorno deve ser nesse formato: { score: nota, max: nota máxima }
+}`;
   }
 
   @Action("score-function-test/execute") runScoreFunction!: (
@@ -164,9 +242,12 @@ export default class ScoreFunctionTestForm extends Vue {
     try {
       let result = await this.runScoreFunction(scoreFunctionTestDto);
       this.response = result.response;
+      this.responseDialogVisible = true;
     } catch (e) {
       this.response = e;
     }
   }
 }
 </script>
+<style lang="scss">
+</style>

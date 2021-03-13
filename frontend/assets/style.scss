@@ -109,3 +109,7 @@ input[readonly=readonly].el-input__inner{
     flex-flow: column;
     justify-content: center;
 }
+
+.el-dialog__body {
+    padding-top: 0 !important;
+}

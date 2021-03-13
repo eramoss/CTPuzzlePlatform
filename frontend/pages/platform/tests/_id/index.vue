@@ -96,23 +96,13 @@
                       </template>
                       <template slot="end">
                         <div>
-                          <el-button
-                            @click="editItem(testItem)"
-                            size="small"
-                            title="Editar item"
-                            icon="el-icon-edit"
-                            type="default"
+                          <nuxt-link
+                            target="_blank"
+                            :to="`/platform/items/${testItem.item.id}`"
                           >
-                            Editar
-                          </el-button>
-                          <el-button
-                            size="small"
-                            @click="removeItem(testItem)"
-                            title="Remover item"
-                            icon="el-icon-delete-solid"
-                            type="danger"
-                            >Remover</el-button
-                          >
+                            <btn-edit />
+                          </nuxt-link>
+                          <btn-remove @click="removeItem(testItem)" />
                         </div>
                       </template>
                     </item-thumbnail>
@@ -274,10 +264,6 @@ export default class TestEditForm extends Vue {
       title: "O item foi adicionado",
       message: "O item foi adicionado ao teste. Salve para registrar.",
     }); */
-  }
-
-  editItem(testItem: TestItem) {
-    this.$router.push("/platform/items/" + testItem.item.id);
   }
 
   removeItem(testItem: TestItem) {

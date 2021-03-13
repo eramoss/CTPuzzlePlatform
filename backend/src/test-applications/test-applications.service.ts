@@ -82,17 +82,24 @@ export class TestApplicationsService {
         if (userHash == '<user_uuid>') {
             userHash = uuidv4().substring(0, 7);
         }
-        let participation = await this.participateInTheTest(applicationHash, user)
-        let urlToSendResponses = this.configService.get('API_URL') + `/participations/public/respond/${participation.id}/<item_id>`
+        const participation = await this.participateInTheTest(applicationHash, user)
+        const apiUrl = this.configService.get('API_URL');
+        const urlToSendResponses = `${apiUrl}/participations/public/respond/${participation.id}/<item_id>`
+        const urlToSendProgress = `${apiUrl}/participations/public/save-progress`
+        //const urlToSendUserData = `${apiUrl}/participations/public/save-progress`
 
         let responseClassDefinition = ''
         try {
             let testItem = participation.application.test.items[0]
             let mechanic: Mechanic = await this.testService.getMechanicFromTestItem(testItem);
             responseClassDefinition = mechanic.responseClassDefinition
-        } catch { } finally { }
+        } catch (error) {
+            console.error('Não foi possível obter a classe de resposta para mostrar como exemplo. ', error);
+        }
 
         let preparedParticipation = {
+            participationId: participation.id,
+            lastVisitedItemId: participation.lastVisitedItemId,
             testAsJson: participation.testAsJson,
             urlToSendResponses: {
                 method: 'POST',
@@ -101,13 +108,18 @@ export class TestApplicationsService {
                     'com a classe de respostas definida na macânica de cada item.' +
                     'O valor \"responseClass"\ mostra um exemplo de classe de resposta',
                 responseClass: responseClassDefinition
+            },
+            urlToSendProgress: {
+                method: 'PUT',
+                url: urlToSendProgress,
+                help: "Ao acessar um item, chame essa url enviando um json no formato { id: id_da_participacao, lastVisitedItemId: id_do_ultimo_item_visitado } "
             }
         } as PreparedParticipation
 
         return preparedParticipation;
     }
 
-    async participateInTheTest(testApplicationHash: string, user: User): Promise<Participation> {
+    private async participateInTheTest(testApplicationHash: string, user: User): Promise<Participation> {
 
         if (!user.password)
             user.password = user.hash

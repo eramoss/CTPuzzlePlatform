@@ -46,20 +46,12 @@ export function createMechanicExample(user: User): Mechanic {
 //  comandosUtilizados: string[]
 //}`;
 
-    const scoreFunctionExample = `
-// Exemplo:
-// function calculaScore(item: ItemProgramacao, resposta: RespostaItem){
-//   implementar cálculo da nota...
-//   let nota = 9
-//   return { score: nota, max: 10 };
-//}`;
-
     const mechanicExample = new Mechanic(
         '',
         '',
         classDefinitionExample,
         responseClassExample,
-        scoreFunctionExample
+        ''
     );
     mechanicExample.user = user;
     return mechanicExample;
