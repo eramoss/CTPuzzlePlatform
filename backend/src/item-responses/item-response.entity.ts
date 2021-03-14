@@ -11,7 +11,7 @@ export class ItemResponse {
     @ManyToOne(type => TestItem)
     testItem: TestItem
 
-    @ManyToOne(type => Participation)
+    @ManyToOne(type => Participation, { onDelete: 'CASCADE' })
     participation: Participation;
 
     @Column()

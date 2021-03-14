@@ -9,6 +9,7 @@ import BtnEdit from '~/components/BtnEdit'
 import BtnRemove from '~/components/BtnRemove'
 import BtnSave from '~/components/BtnSave'
 import BtnBack from '~/components/BtnBack'
+import BtnRefresh from '~/components/BtnRefresh'
 import TipIcon from '~/components/TipIcon'
 import FiltersBox from '~/components/FiltersBox'
 import FiltersBoxItem from '~/components/FiltersBoxItem'
@@ -23,6 +24,7 @@ Vue.component('BtnEdit', BtnEdit)
 Vue.component('BtnRemove', BtnRemove)
 Vue.component('BtnSave', BtnSave)
 Vue.component('BtnBack', BtnBack)
+Vue.component('BtnRefresh', BtnRefresh)
 Vue.component('TipIcon', TipIcon)
 Vue.component('FiltersBox', FiltersBox)
 Vue.component('FiltersBoxItem', FiltersBoxItem)

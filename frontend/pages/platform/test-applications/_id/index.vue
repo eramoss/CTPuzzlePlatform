@@ -47,6 +47,7 @@
         </el-row>
         <el-row>
           <h3>Participantes ({{ testApplication.participations.length }})</h3>
+          <btn-refresh @click="loadData"></btn-refresh>
           <el-table
             :data="testApplication.participations"
             style="margin-bottom: 30px"
@@ -93,6 +94,8 @@ import Test from "~/types/Test";
 import Participation from "~/types/Participation";
 import BtnRemove from "~/components/BtnRemove.vue";
 
+const ACTION_GET_BY_ID = "test-applications/getById";
+
 @Component({
   head: {
     title: "Aplicação de teste",
@@ -109,7 +112,7 @@ export default class TestEditForm extends Vue {
   async asyncData(ctx: Context) {
     let testApplication!: TestApplication;
     let id = ctx.params.id;
-    testApplication = await ctx.store.dispatch("test-applications/getById", id);
+    testApplication = await ctx.store.dispatch(ACTION_GET_BY_ID, id);
     return {
       testApplication,
     };
@@ -132,6 +135,14 @@ export default class TestEditForm extends Vue {
   back() {
     this.$router.go(-1);
   }
+
+  async loadData() {
+    this.testApplication = await this.getApplicationById(this.$route.params.id);
+  }
+
+  @Action(ACTION_GET_BY_ID) getApplicationById!: (
+    id: any
+  ) => Promise<TestApplication>;
 
   @Action("test-applications/save") saveTestApplication!: (
     testApplication: TestApplication

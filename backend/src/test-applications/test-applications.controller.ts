@@ -44,8 +44,7 @@ export class TestApplicationsController {
     @Get('public/data/:testApplicationHash/:userHash')
     getApplicationData(
         @Param('testApplicationHash') testAplicationHash: string,
-        @Param('userHash') userHash: string
-        ): 
+        @Param('userHash') userHash: string):
         Promise<PreparedParticipation> {
         return this.testApplicationsService.getApplicationData(testAplicationHash, userHash);
     }
