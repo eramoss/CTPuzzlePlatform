@@ -29,6 +29,7 @@ export default class ItemThumbnail extends Vue {
   margin: 0 10px;
 }
 .item-thumbnail {
+  align-items: center;
   justify-content: center;
   line-height: 1.4em;
   display: flex;

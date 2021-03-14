@@ -42,7 +42,10 @@
                   :value="item"
                   value-key="id"
                 >
-                  <el-tooltip content="Clique para adicionar ao teste" effect="light">
+                  <el-tooltip
+                    content="Clique para adicionar ao teste"
+                    effect="light"
+                  >
                     <div @click="addItemToTest(item)">
                       <item-thumbnail :item="item" />
                     </div>
@@ -75,17 +78,16 @@
                     v-for="(testItem, index) in selectedItems"
                     :key="testItem.item.id"
                   >
-                    <item-thumbnail
-                      :item="testItem.item"
-                      title="Arraste para ordenar"
-                    >
+                    <item-thumbnail :item="testItem.item">
                       <div slot="headline">
                         Fase {{ index + 1 }}: {{ testItem.item.name }}
                       </div>
                       <template slot="start">
-                        <div class="drag-indicator" title="Mover">
-                          <img src="/dragger.svg" alt="Arrastar" />
-                        </div>
+                        <el-tooltip effect="light" content="Arraste para mover">
+                          <div class="drag-indicator" style="height: 100%">
+                            <img src="/dragger.svg" alt="Arrastar" />
+                          </div>
+                        </el-tooltip>
                       </template>
                       <template slot="end">
                         <div>
@@ -311,7 +313,7 @@ export default class TestEditForm extends Vue {
       height: 100%;
       //border: 1px solid red;
       display: flex;
-      visibility: hidden;
+      //visibility: hidden;
     }
   }
   .added-item:hover {

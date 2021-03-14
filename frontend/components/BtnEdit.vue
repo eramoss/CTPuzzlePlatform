@@ -1,15 +1,14 @@
 <template>
-  <el-tooltip content="Editar" effect="light">
-    <el-button
-      icon="el-icon-edit"
-      v-bind="$attrs"
-      size="small"
-      type="default"
-      :loading="loading"
-      @click="onClick"
-      >Editar</el-button
-    >
-  </el-tooltip>
+  <el-button
+    icon="el-icon-edit"
+    v-bind="$attrs"
+    size="small"
+    style="font-weight: bold; border: 1px solid #999"
+    type="default"
+    :loading="loading"
+    @click="onClick"
+    >Editar</el-button
+  >
 </template>
 <script>
 import { Component } from "nuxt-property-decorator";

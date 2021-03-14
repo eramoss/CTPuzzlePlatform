@@ -1,6 +1,7 @@
 <template>
   <el-tooltip :content="title" effect="light">
     <el-button
+      style="font-weight: bold"
       icon="el-icon-delete-solid"
       size="small"
       v-bind="$attrs"

@@ -18,7 +18,10 @@
       <h2>Respostas</h2>
       <div class="flex-row fill">
         <btn-refresh @click="loadData"></btn-refresh>
-        <btn-remove @click="confirmRemoveParticipation" title="Remover participação na aplicação do teste"></btn-remove>
+        <btn-remove
+          @click="confirmRemoveParticipation"
+          title="Remover participação na aplicação do teste"
+        ></btn-remove>
       </div>
       <div v-if="participation">
         <item-responses-screen :participation="participation" />
