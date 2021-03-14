@@ -1,8 +1,6 @@
 <template>
   <div class="item-thumbnail">
-    <div>
-      <slot name="start" />
-    </div>
+    <slot name="start" />
     <thumbnail :src="item.thumbnail" width="150px" height="100px" />
     <div class="item-infos">
       <p class="title">
@@ -13,9 +11,7 @@
       <p class="description">{{ item.description }}</p>
     </div>
     <!-- <thumbnail :src="item.thumbnail" /> -->
-    <div class="center-vertical">
-      <slot name="end" />
-    </div>
+    <slot name="end" class="center-vertical" />
   </div>
 </template>
 <script lang="ts">
@@ -52,6 +48,9 @@ export default class ItemThumbnail extends Vue {
       padding: 0;
       border: none;
       margin: 0;
+    }
+    .description {
+      word-break: keep-all;
     }
   }
 }

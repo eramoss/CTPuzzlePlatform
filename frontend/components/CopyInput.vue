@@ -3,14 +3,14 @@
     <el-input
       type="textarea"
       v-bind="$attrs"
-      rows="5"
+      rows="3"
       :readonly="!editable"
       @click="onFocusCopyInput"
       @focus="onFocusCopyInput"
       ref="copyInput"
       v-model="text"
     ></el-input>
-    <el-tooltip :content="copyBtnTitle">
+    <el-tooltip :content="copyBtnTitle" effect="light">
       <el-button
         style="margin-left: 10px"
         @click="onCopy"
@@ -21,6 +21,7 @@
         Copiar
       </el-button>
     </el-tooltip>
+    <slot name="more-buttons"/>
   </div>
 </template>
 <script lang="ts">

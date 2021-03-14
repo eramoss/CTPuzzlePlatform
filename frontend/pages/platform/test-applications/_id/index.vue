@@ -39,6 +39,7 @@
           <el-col :span="20">
             <el-form-item label="Link" label-width="100px">
               <test-application-url-input
+                :showAccessIcon="true"
                 :test-application="testApplication"
                 style="flex-grow: 1"
               />
@@ -137,7 +138,22 @@ export default class TestEditForm extends Vue {
   }
 
   async loadData() {
-    this.testApplication = await this.getApplicationById(this.$route.params.id);
+    try {
+      this.testApplication = await this.getApplicationById(
+        this.$route.params.id
+      );
+      this.$notify({
+        type: "success",
+        title: "As informações foram atualizadas",
+        message: "Os dados foram carregados",
+      });
+    } catch (e) {
+      console.error(e);
+      this.$notify({
+        title: "Não foi possível carregar as participações",
+        message: "Não foi possível carregar a os dados da aplicação do teste",
+      });
+    }
   }
 
   @Action(ACTION_GET_BY_ID) getApplicationById!: (
@@ -150,7 +166,7 @@ export default class TestEditForm extends Vue {
 
   @Action("participations/removeById") removeParticipationById!: (
     id: number
-  ) => Promise<TestApplication>;
+  ) => Promise<any>;
 
   async confirmRemoveParticipation(participation: Participation) {
     try {

@@ -1,7 +1,6 @@
 import { ActionTree } from 'vuex'
 import { $axios } from '~/utils/axios'
 import { AxiosResponse } from 'axios';
-import { PageRequest, PageResponse } from '~/types/pagination';
 import Participation from '~/types/Participation';
 export const actions: ActionTree<any, any> = {
 

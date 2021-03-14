@@ -3,7 +3,15 @@
     <copy-input
       v-model="applicationUrl"
       placeholder="Informe o nome da aplicação para gerar o link"
-    />
+    >
+    <template slot="more-buttons">
+        <el-tooltip content="Acessar" effect="light" v-show="showAccessIcon">
+            <a :href="applicationUrl" target="_blank">
+                <el-button type="text" icon="el-icon-top-right"> Acessar </el-button>
+            </a>
+        </el-tooltip>
+    </template>
+    </copy-input>
     <message-alert type="warning" icon-position="top" icon-size="18pt" label="Informações sobre o link da aplicação">
         <div>
             <p>
@@ -55,7 +63,7 @@ import Vue from "vue";
 import { Action, Component, Prop, Watch } from "nuxt-property-decorator";
 import TestApplication from "~/types/TestApplication";
 import CopyInput from "~/components/CopyInput.vue";
-import queryString from '~/utils/utils'
+import queryString from "~/utils/utils";
 
 @Component({
   components: {
@@ -65,9 +73,8 @@ import queryString from '~/utils/utils'
 export default class TestApplicationUrlInput extends Vue {
   @Prop() testApplication!: TestApplication;
   @Prop({ default: "application" }) operation!: string;
+  @Prop({ default: false }) showAccessIcon!: boolean;
   puzzleUrl: string = "";
-
-  
 
   @Action("tests/getPuzzleBaseUrl") getPuzzleBaseUrl!: (
     testId: number

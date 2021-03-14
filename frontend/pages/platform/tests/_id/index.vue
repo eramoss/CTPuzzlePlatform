@@ -42,18 +42,11 @@
                   :value="item"
                   value-key="id"
                 >
-                  <item-thumbnail :item="item">
-                    <template slot="end">
-                      <el-button
-                        class="add-button"
-                        size="large"
-                        @click="addItemToTest(item)"
-                      >
-                        <i class="el-icon-plus"></i>
-                        <p>Adicionar ao teste</p>
-                      </el-button>
-                    </template>
-                  </item-thumbnail>
+                  <el-tooltip content="Clique para adicionar ao teste" effect="light">
+                    <div @click="addItemToTest(item)">
+                      <item-thumbnail :item="item" />
+                    </div>
+                  </el-tooltip>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -346,15 +339,5 @@ export default class TestEditForm extends Vue {
 .ghost {
   border: 1px solid red;
   opacity: 1;
-}
-
-.add-button {
-  justify-content: center;
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  .el-icon-plus {
-    font-size: 30pt;
-  }
 }
 </style>

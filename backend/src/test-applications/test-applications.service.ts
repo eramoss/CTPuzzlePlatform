@@ -124,7 +124,7 @@ export class TestApplicationsService {
         if (!user.password)
             user.password = user.hash
         if (!user.name)
-            user.name = 'Participante ' + user.hash
+            user.name = user.hash
         if (!user.email)
             user.email = user.hash + '@mail.com'
 

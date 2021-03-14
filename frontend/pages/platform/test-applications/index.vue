@@ -66,7 +66,7 @@
         </el-table-column>
         <el-table-column label="Ações" width="300">
           <template slot-scope="{ row }">
-            <el-tooltip content="Ver andamento do teste">
+            <el-tooltip content="Ver andamento do teste" effect="light">
               <el-button
                 size="small"
                 icon="el-icon-view"

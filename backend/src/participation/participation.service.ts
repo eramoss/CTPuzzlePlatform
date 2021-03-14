@@ -29,8 +29,10 @@ export class ParticipationService {
         return this.participationRepository
             .createQueryBuilder('participation')
             .leftJoinAndSelect('participation.application', 'testApplication')
+            .leftJoinAndSelect('participation.user', 'user')
             .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
             .leftJoinAndSelect('itemResponse.testItem', 'testItem')
+            .leftJoinAndSelect('testItem.item', 'item')
             .where({ id })
             .getOne();
     }

@@ -1,5 +1,5 @@
 <template>
-  <el-tooltip content="Salvar (Ctrl + S)">
+  <el-tooltip content="Salvar (Ctrl + S)" effect="light">
     <el-button
       v-bind="$attrs"
       icon="el-icon-check"

@@ -1,11 +1,20 @@
 <template>
-  <el-button
-    title="Remover!"
-    icon="el-icon-delete-solid"
-    size="small"
-    v-bind="$attrs"
-    type="danger"
-    @click="$emit('click')"
-    >Remover</el-button
-  >
+  <el-tooltip :content="title" effect="light">
+    <el-button
+      icon="el-icon-delete-solid"
+      size="small"
+      v-bind="$attrs"
+      type="danger"
+      @click="$emit('click')"
+      ><slot>Remover</slot></el-button
+    >
+  </el-tooltip>
 </template>
+<script lang="ts">
+import Vue from "vue";
+import { Component, Prop } from "nuxt-property-decorator";
+@Component
+export default class BtnRemove extends Vue {
+  @Prop({ default: "Remover" }) title!: string;
+}
+</script>
