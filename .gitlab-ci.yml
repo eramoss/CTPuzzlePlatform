@@ -15,7 +15,7 @@ job-deploy:
     stage: deploy
     image: docker/compose:1.25.0-rc2
     services:
-        - docker:18.09.7-dind
+        - docker:latest-dind
     script:
         # - docker info
         - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
