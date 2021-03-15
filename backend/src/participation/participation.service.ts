@@ -28,7 +28,8 @@ export class ParticipationService {
     getById(id: number): Promise<Participation> {
         return this.participationRepository
             .createQueryBuilder('participation')
-            .leftJoinAndSelect('participation.application', 'testApplication')
+            .leftJoinAndSelect('participation.application', 'application')
+            .leftJoinAndSelect('application.test', 'test')
             .leftJoinAndSelect('participation.user', 'user')
             .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
             .leftJoinAndSelect('itemResponse.testItem', 'testItem')

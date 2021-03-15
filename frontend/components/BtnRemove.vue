@@ -1,5 +1,5 @@
 <template>
-  <el-tooltip :content="title" effect="light">
+  <el-tooltip :content="title" effect="light" :open-delay="250">
     <el-button
       style="font-weight: bold"
       icon="el-icon-delete-solid"

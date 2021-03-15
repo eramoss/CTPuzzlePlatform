@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { response } from 'express';
 import ScoreFunctionTestResult from 'score-function-test-result.dto';
-import scoreFunctionTestDto from 'score-function-test.dto';
+import ScoreFunctionTestDto from 'score-function-test.dto';
 import { CodeInterpreterService } from 'src/code-interpreter/code-interpreter.service';
+import { Mechanic } from 'src/mechanics/mechanic.entity';
 
 @Injectable()
 export class ScoreFunctionTestService {
@@ -11,22 +11,39 @@ export class ScoreFunctionTestService {
 
     }
 
-    async execute(scoreFunctionTestDto: scoreFunctionTestDto): Promise<ScoreFunctionTestResult> {
+    async execute(scoreFunctionTestDto: ScoreFunctionTestDto): Promise<ScoreFunctionTestResult> {
+
+        const item = `${scoreFunctionTestDto.mechanic.itemInstantiation}()`
+        const response = `${scoreFunctionTestDto.mechanic.responseInstantiation}()`
+
+        return this.calculateScore({
+            mechanic: scoreFunctionTestDto.mechanic,
+            item,
+            response
+        })
+    }
+
+    async calculateScore(args: {
+        mechanic: Mechanic,
+        item: string,
+        response: string
+    }): Promise<ScoreFunctionTestResult> {
+
+        let classDefinition = args.mechanic.classDefinition;
+        let responseClassDefinition = args.mechanic.responseClassDefinition;
+        let scoreFunction = args.mechanic.scoreFunction;
+
         let code = `
         //Definição da classe
-        ${scoreFunctionTestDto.mechanic.classDefinition}
+        ${classDefinition}
 
         //Função da resposta
-        ${scoreFunctionTestDto.mechanic.responseClassDefinition}
+        ${responseClassDefinition}
 
         //Função de cálculo
-        ${scoreFunctionTestDto.mechanic.scoreFunction}
+        let calculateScore = ${scoreFunction}
 
-        const item = ${scoreFunctionTestDto.mechanic.itemInstantiation}()
-        const resposta = ${scoreFunctionTestDto.mechanic.responseInstantiation}()
-
-        console.log(calculaScore(item, resposta))
-
+        console.log(calculateScore(${args.item}, ${args.response}))
         `
         let response: string = await this.codeInterpreterService.execute(code);
         const testResult = new ScoreFunctionTestResult();

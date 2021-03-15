@@ -16,12 +16,36 @@
     </el-breadcrumb>
     <div class="panel">
       <h2>Respostas</h2>
+      <div>
+        <table class="summary-table">
+          <tr>
+            <td>Teste</td>
+            <td>{{ participation.application.test.name }}</td>
+          </tr>
+          <tr>
+            <td>Aplicação</td>
+            <td>{{ participation.application.name }}</td>
+          </tr>
+          <tr>
+            <td>Participante</td>
+            <td>{{ participation.user.name }}</td>
+          </tr>
+          <tr>
+            <td>Respostas</td>
+            <td>{{ participation.itemResponses.length }}</td>
+          </tr>
+        </table>
+      </div>
       <div class="flex-row fill">
         <btn-refresh @click="loadData"></btn-refresh>
-        <btn-remove
-          @click="confirmRemoveParticipation"
-          title="Remover participação na aplicação do teste"
-        ></btn-remove>
+        <div>
+          <el-button size="small"> Calcular escores </el-button>
+          <btn-remove
+            @click="confirmRemoveParticipation"
+            title="Remover participação na aplicação do teste"
+          >
+          </btn-remove>
+        </div>
       </div>
       <div v-if="participation">
         <item-responses-screen :participation="participation" />

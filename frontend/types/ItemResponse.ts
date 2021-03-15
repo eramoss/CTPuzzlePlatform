@@ -1,5 +1,5 @@
 import Participation from "./Participation";
-import TestApplication from "./TestApplication";
+import Score from "./Score";
 import TestItem from "./TestItem";
 
 export default class ItemResponse {
@@ -7,4 +7,5 @@ export default class ItemResponse {
     participation!: Participation
     testItem!: TestItem
     response!: string
+    score!: Score
 }

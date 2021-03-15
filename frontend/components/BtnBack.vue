@@ -1,5 +1,5 @@
 <template>
-  <el-tooltip content="Voltar" effect="light">
+  <el-tooltip :open-delay="250" content="Voltar" effect="light">
     <el-button
       v-bind="$attrs"
       icon="el-icon-arrow-left"

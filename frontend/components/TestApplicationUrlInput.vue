@@ -5,7 +5,7 @@
       placeholder="Informe o nome da aplicação para gerar o link"
     >
     <template slot="more-buttons">
-        <el-tooltip content="Tenta abrir o link" effect="light" v-show="showAccessIcon">
+        <el-tooltip :open-delay="250" content="Tenta abrir o link" effect="light" v-show="showAccessIcon">
             <a :href="applicationUrl" target="_blank">
                 <el-button type="text" icon="el-icon-top-right"> Acessar </el-button>
             </a>
