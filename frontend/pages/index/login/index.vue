@@ -98,7 +98,7 @@ export default class LoginPage extends Vue {
       let response = await this.$auth.loginWith("local", {
         data: usernamePassword || this.user,
       });
-      sessionStorage.clear()
+      sessionStorage.clear();
       this.$router.push("/platform?op=login");
       console.log(response);
     } catch (err) {

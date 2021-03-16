@@ -38,7 +38,7 @@ export default class ItemResponseScoreCell extends Vue {
 
   format() {
     let score = this.itemResponse.score;
-    return `${score.score} / ${score.max}`;
+    return `${score.score}/${score.max}`;
   }
 
   get percentage() {
