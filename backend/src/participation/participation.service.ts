@@ -28,11 +28,13 @@ export class ParticipationService {
         }
     }
 
-    async recalculateAllResponseItems(participationId: number) {
+    async recalculateAllResponseItems(participationId: number): Promise<any> {
         let participation = await this.getById(participationId)
-        participation.itemResponses.forEach(itemResponse => {
-            this.itemResponseService.calculateScoreAndSave(itemResponse);
-        })
+        await Promise.all(participation.itemResponses.map(async itemResponse => {
+            let score = await this.itemResponseService.calculateScore(itemResponse);
+            itemResponse.score = score;
+        }))
+        return this.participationRepository.save(participation);
     }
 
     getById(id: number): Promise<Participation> {
@@ -62,16 +64,7 @@ export class ParticipationService {
         let itemResponse = new ItemResponse();
         itemResponse.testItem = testItem;
         itemResponse.response = JSON.stringify(response);
-        let score: Score;
-        try {
-            score = await this.itemResponseService.calculateScore(itemResponse)
-        } catch (e) {
-            score = new Score();
-            score.max = -1
-            score.score = -1
-            score.message = e.message;
-        }
-        itemResponse.score = score;
+        itemResponse.score = await this.itemResponseService.calculateScore(itemResponse);
         participation.addResponse(itemResponse);
         this.participationRepository.save(participation);
     }

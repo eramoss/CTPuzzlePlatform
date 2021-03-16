@@ -92,6 +92,7 @@
                 </el-col>
                 <el-col :span="16">
                   <code-editor
+                    id="instantiate"
                     editor-title="Instanciação do item"
                     :disabled="!item.mechanic"
                     language="typescript"
@@ -100,14 +101,19 @@
                     @input="form.validateField('itemDefinition')"
                   >
                     <template v-slot:bar>
-                      <el-button
-                        @click="testOpenItem"
-                        type="success"
-                        icon="el-icon-video-play"
-                        title="Testar item no ambiente do puzzle"
+                      <el-tooltip
+                        effect="light"
+                        :open-delay="300"
+                        content="Testar item no ambiente do puzzzle"
                       >
-                        Testar
-                      </el-button>
+                        <el-button
+                          @click="testOpenItem"
+                          type="success"
+                          icon="el-icon-video-play"
+                        >
+                          Testar
+                        </el-button>
+                      </el-tooltip>
                     </template>
                   </code-editor>
                 </el-col>

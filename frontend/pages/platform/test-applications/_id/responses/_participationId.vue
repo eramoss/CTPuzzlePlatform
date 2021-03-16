@@ -45,7 +45,7 @@
           />
           <el-tooltip
             content="Recalcula o escore para todos os itens"
-            open-delay="400"
+            :open-delay="400"
             effect="light"
           >
             <el-button
@@ -117,13 +117,14 @@ export default class ItemResponsesList extends Vue {
     }
   }
 
+  @Action("participations/recalculateAllResponseItems") recalculateAll!: (
+    id: number
+  ) => Promise<any>;
+
   async recalculateAllResponseItems() {
     this.loading = true;
     try {
-      await this.$store.dispatch(
-        "participations/recalculateAllResponseItems",
-        this.participation.id
-      );
+      await this.recalculateAll(this.participation.id);
       this.loadData();
     } catch (e) {
       this.$notify({

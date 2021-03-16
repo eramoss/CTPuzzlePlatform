@@ -22,8 +22,8 @@ export class ParticipationController {
     }
 
     @Get('recalculateAllResponseItems/:participationId')
-    async recalculateAll(@Param('participationId') participationId: number) {
-        this.service.recalculateAllResponseItems(participationId)
+    recalculateAll(@Param('participationId') participationId: number): Promise<any> {
+        return this.service.recalculateAllResponseItems(participationId)
     }
 
     @Delete('remove/:id')

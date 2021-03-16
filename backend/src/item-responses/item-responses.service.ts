@@ -17,8 +17,6 @@ export class ItemResponsesService {
         private itemsService: ItemsService) {
     }
 
-    
-
     async calculateScoreAndSave(itemResponse: ItemResponse): Promise<Score> {
         itemResponse.score = await this.calculateScore(itemResponse)
         this.itemResponseRepository.save(itemResponse);
@@ -28,11 +26,23 @@ export class ItemResponsesService {
     async calculateScore(itemResponse: ItemResponse): Promise<Score> {
         let item = await this.itemsService.getById(itemResponse.testItem.item.id);
         let mechanic = item.mechanic
-        let scoreFnTestResult = await this.scoreFnService.calculateScore({
-            mechanic,
-            item: `${item.itemDefinition}()`,
-            response: itemResponse.response,
-        })
-        return JSON.parse(scoreFnTestResult.response) as Score
+
+        let score: Score;
+        let text = ""
+        try {
+            let scoreFunctionResult = await this.scoreFnService.calculateScore({
+                mechanic,
+                item: `${item.itemDefinition}()`,
+                response: itemResponse.response,
+            })
+            text = scoreFunctionResult.response
+            score = JSON.parse(scoreFunctionResult.response) as Score
+        } catch (e) {
+            score = new Score();
+            score.max = -1
+            score.score = -1
+            score.message = text;
+        }
+        return score
     }
 }

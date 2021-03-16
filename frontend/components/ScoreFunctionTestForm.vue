@@ -57,12 +57,18 @@
             v-model="mechanic.itemInstantiation"
           >
             <template slot="bar">
-              <el-button
-                type="warning"
-                icon="el-icon-video-play"
-                @click="testItem"
-                >Testar item</el-button
+              <el-tooltip
+                effect="light"
+                :open-delay="300"
+                content="Testar item no ambiente do puzzzle"
               >
+                <el-button
+                  type="success"
+                  icon="el-icon-video-play"
+                  @click="testItem"
+                  >Testar</el-button
+                >
+              </el-tooltip>
               <el-button
                 type="text"
                 title="Resetar para exemplo inicial"

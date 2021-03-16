@@ -2,21 +2,32 @@
   <div>
     <el-table :data="participation.itemResponses" v-loading="loading">
       <el-table-column label="Código" prop="id" width="70"></el-table-column>
-      <el-table-column label="Item" width="150" prop="testItem.item.name" />
-      <el-table-column label="Resposta" prop="response" />
-      <el-table-column label="Escore" prop="score" width="250">
+      <el-table-column label="Item" width="150">
         <template slot-scope="{ row }">
           <div>
-            {{ row.score }}
+            <nuxt-link
+              target="_blank"
+              :to="`/platform/items/${row.testItem.item.id}#instantiate`"
+            >
+              <el-button type="text">
+                {{ row.testItem.item.name }}
+              </el-button>
+            </nuxt-link>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="Resposta" prop="response" width="180">
+      <el-table-column label="Resposta" prop="response" />
+      <el-table-column label="Escore" prop="score" width="150">
+        <template slot-scope="{ row }">
+          <item-response-score-cell :item-response="row" />
+        </template>
+      </el-table-column>
+      <el-table-column label="Ações" prop="response" width="180">
         <template slot-scope="{ row }">
           <div>
             <el-tooltip
               content="Recalcula o escore para esse item"
-              open-delay="400"
+              :open-delay="400"
               effect="light"
             >
               <el-button
@@ -38,11 +49,13 @@ import Vue from "vue";
 import { Component, Prop, Action } from "nuxt-property-decorator";
 import Participation from "~/types/Participation";
 import ItemThumbnail from "~/components/ItemThumbnail.vue";
+import ItemResponseScoreCell from "~/components/ItemResponseScoreCell";
 import ItemResponse from "~/types/ItemResponse";
 
 @Component({
   components: {
     ItemThumbnail,
+    ItemResponseScoreCell,
   },
 })
 export default class ItemResponsesScreen extends Vue {
