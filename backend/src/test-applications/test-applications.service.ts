@@ -51,6 +51,7 @@ export class TestApplicationsService {
     async generateItemResponsesCsv(testApplicationId: number): Promise<string> {
         const testApplication = await this.getById(testApplicationId);
         const rows: any[] = []
+        let responseProperties: string[] = []
         testApplication.participations.map((participation: Participation) => {
             participation.itemResponses.forEach((itemResponse: ItemResponse) => {
                 let row = {
@@ -60,6 +61,13 @@ export class TestApplicationsService {
                     escore_max: itemResponse.score.max,
                     escore_obtido: itemResponse.score.score
                 }
+                let responseJson = JSON.parse(itemResponse.response);
+                if (!responseProperties.length) {
+                    responseProperties = Object.keys(responseJson)
+                }
+                responseProperties.forEach((key: string) => {
+                    row[key] = responseJson[key]
+                })
                 rows.push(row);
             })
         })
@@ -68,9 +76,16 @@ export class TestApplicationsService {
             { label: 'usuario', value: 'usuario' },
             { label: 'item_id', value: 'item_id' },
             { label: 'resposta', value: 'resposta' },
+        ]
+
+        responseProperties.forEach(prop => {
+            labels.push({ label: prop, value: prop })
+        });
+
+        [
             { label: 'escore_max', value: 'escore_max' },
             { label: 'escore_obtido', value: 'escore_obtido' },
-        ];
+        ].forEach(item => labels.push(item))
 
         return buildCsv(labels, rows)
     }

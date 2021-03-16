@@ -7,8 +7,10 @@ import { downloadWithAxios } from '~/utils/utils';
 export const actions: ActionTree<any, any> = {
 
     generateItemResponsesCsv(state, testApplicationId: number) {
+        let date = new Date();
+        let dateString = `${date.getFullYear()}_${date.getMonth()}_${date.getDate()}_${date.getHours()}_${date.getMinutes()}`;
         let url = '/test-applications/generateItemResponsesCsv/' + testApplicationId;
-        downloadWithAxios($axios, url, `respostas_aplicacao_${testApplicationId}.csv`)
+        downloadWithAxios($axios, url, `respostas_aplicacao_${testApplicationId}___${dateString}.csv`)
     },
 
     save(state, testApplication: TestApplication): Promise<TestApplication> {
