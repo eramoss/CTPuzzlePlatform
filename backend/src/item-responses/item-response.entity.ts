@@ -18,7 +18,7 @@ export class ItemResponse {
     @Column()
     response: string;
 
-    @OneToOne(type => Score)
+    @ManyToOne(type => Score, { cascade: true })
     score: Score;
 
 }

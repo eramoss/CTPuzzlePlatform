@@ -1,15 +1,31 @@
 <template>
   <div>
-    <el-table :data="participation.itemResponses">
+    <el-table :data="participation.itemResponses" v-loading="loading">
       <el-table-column label="Código" prop="id" width="70"></el-table-column>
-      <el-table-column label="Item" width="200" prop="testItem.item.name" />
+      <el-table-column label="Item" width="150" prop="testItem.item.name" />
       <el-table-column label="Resposta" prop="response" />
-      <el-table-column label="Escore" prop="escore" />
-      <el-table-column label="Resposta" prop="response" width="150">
+      <el-table-column label="Escore" prop="score" width="250">
         <template slot-scope="{ row }">
           <div>
-            <el-button size="small" type="primary" @click="calculateScore(row)"
-              >Calcular escore</el-button
+            {{ row.score }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="Resposta" prop="response" width="180">
+        <template slot-scope="{ row }">
+          <div>
+            <el-tooltip
+              content="Recalcula o escore para esse item"
+              open-delay="400"
+              effect="light"
+            >
+              <el-button
+                size="small"
+                icon="el-icon-video-play"
+                type="warning"
+                @click="calculateScore(row)"
+                >Recalcular</el-button
+              ></el-tooltip
             >
           </div>
         </template>
@@ -31,14 +47,15 @@ import ItemResponse from "~/types/ItemResponse";
 })
 export default class ItemResponsesScreen extends Vue {
   @Prop() participation!: Participation;
+  @Prop({ default: false }) loading!: boolean;
 
   @Action("item-responses/calculateScoreFromItem") calculateScoreFromItem!: (
     itemResponse: ItemResponse
   ) => Promise<string>;
 
   async calculateScore(itemResponse: ItemResponse) {
-    let score = await this.calculateScoreFromItem(itemResponse);
-    alert(score);
+    await this.calculateScoreFromItem(itemResponse);
+    this.$emit("request-update");
   }
 }
 </script>

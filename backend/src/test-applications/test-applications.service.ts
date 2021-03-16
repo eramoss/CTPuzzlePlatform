@@ -46,10 +46,10 @@ export class TestApplicationsService {
             .createQueryBuilder('test-application')
             .leftJoinAndSelect('test-application.test', 'test')
             .leftJoinAndSelect('test.items', 'testItem')
+            .orderBy('testItem.order', 'ASC')
             .leftJoinAndSelect('testItem.item', 'item')
             .where({ hash })
             .getOne();
-        testApplication.test.sortItemsByOrder()
         return testApplication;
     }
 
@@ -151,7 +151,6 @@ export class TestApplicationsService {
         if (itemsToPlay.length) {
             testApplication.test.items = itemsToPlay
         }
-        participation.application.test.sortItemsByOrder();
         return participation;
     }
 }

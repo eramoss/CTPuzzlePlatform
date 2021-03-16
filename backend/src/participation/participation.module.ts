@@ -5,9 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import Participation from './participation.entity';
 import { TestItem } from 'src/tests/test-item.entity';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
+import { ItemResponsesModule } from 'src/item-responses/item-responses.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Participation, TestItem, ItemResponse])],
+    imports: [
+        TypeOrmModule.forFeature([Participation, TestItem, ItemResponse]),
+        ItemResponsesModule
+    ],
     providers: [ParticipationService],
     controllers: [ParticipationController],
     exports: [ParticipationService]

@@ -23,7 +23,5 @@ export class Test {
     @Column({ default: TestStatus.Closed })
     status: TestStatus
 
-    sortItemsByOrder() {
-        this.items.sort((a, b) => a.order - b.order)
-    }
+    
 }

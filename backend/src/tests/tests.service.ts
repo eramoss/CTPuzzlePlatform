@@ -23,14 +23,11 @@ export class TestService {
     }
 
     async getById(id: number): Promise<Test> {
-        let test = await this.testRepository.findOne({ id }, { relations: ['items', 'items.item'] })
-        if (test) {
-            if (!test.items) {
-                test.items = []
-            }
-            test.sortItemsByOrder()
-        }
-        test.sortItemsByOrder();
+        let test = await this.testRepository.createQueryBuilder('test')
+            .leftJoinAndSelect('test.items', 'testItem')
+            .leftJoinAndSelect('testItem.item', 'item')
+            .orderBy('testItem.order', 'ASC')
+            .getOne();
         return test;
     }
 

@@ -43,7 +43,7 @@ export class ScoreFunctionTestService {
         //Função de cálculo
         let calculateScore = ${scoreFunction}
 
-        console.log(calculateScore(${args.item}, ${args.response}))
+        console.log(JSON.stringify(calculateScore(${args.item}, ${args.response})))
         `
         let response: string = await this.codeInterpreterService.execute(code);
         const testResult = new ScoreFunctionTestResult();

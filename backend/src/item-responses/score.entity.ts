@@ -11,4 +11,7 @@ export class Score {
 
     @Column()
     max: number
+
+    @Column({ nullable: true })
+    message: string
 }

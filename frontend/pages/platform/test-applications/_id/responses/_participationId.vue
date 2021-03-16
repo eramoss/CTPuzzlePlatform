@@ -39,16 +39,34 @@
       <div class="flex-row fill">
         <btn-refresh @click="loadData"></btn-refresh>
         <div>
-          <el-button size="small"> Calcular escores </el-button>
           <btn-remove
             @click="confirmRemoveParticipation"
             title="Remover participação na aplicação do teste"
+          />
+          <el-tooltip
+            content="Recalcula o escore para todos os itens"
+            open-delay="400"
+            effect="light"
           >
-          </btn-remove>
+            <el-button
+              :loading="loading"
+              size="small"
+              type="warning"
+              style="font-weight: bold"
+              icon="el-icon-video-play"
+              @click="recalculateAllResponseItems"
+            >
+              Recalcular escores
+            </el-button>
+          </el-tooltip>
         </div>
       </div>
       <div v-if="participation">
-        <item-responses-screen :participation="participation" />
+        <item-responses-screen
+          :loading="loading"
+          :participation="participation"
+          @request-update="loadData"
+        />
       </div>
     </div>
   </div>
@@ -68,6 +86,7 @@ const ACTION_GET_BY_ID = "participations/getById";
 })
 export default class ItemResponsesList extends Vue {
   participation!: Participation;
+  loading = false;
 
   @Action(ACTION_GET_BY_ID) getById!: (id: any) => Promise<Participation>;
   @Action("participations/removeById") removeParticipationById!: (
@@ -98,6 +117,25 @@ export default class ItemResponsesList extends Vue {
     }
   }
 
+  async recalculateAllResponseItems() {
+    this.loading = true;
+    try {
+      await this.$store.dispatch(
+        "participations/recalculateAllResponseItems",
+        this.participation.id
+      );
+      this.loadData();
+    } catch (e) {
+      this.$notify({
+        title: "A operação de cálculo fahou",
+        message: e,
+        type: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
+  }
+
   async removeParticipation() {
     try {
       await this.removeParticipationById(this.participation.id);
@@ -117,6 +155,7 @@ export default class ItemResponsesList extends Vue {
 
   async loadData() {
     try {
+      this.loading = true;
       this.participation = await this.getById(
         this.$route.params.participationId
       );
@@ -133,6 +172,8 @@ export default class ItemResponsesList extends Vue {
         message:
           "Não foi possível carregar os detalhes da participação no testes",
       });
+    } finally {
+      this.loading = false;
     }
   }
 

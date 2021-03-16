@@ -21,6 +21,11 @@ export class ParticipationController {
         return this.service.getById(id);
     }
 
+    @Get('recalculateAllResponseItems/:participationId')
+    async recalculateAll(@Param('participationId') participationId: number) {
+        this.service.recalculateAllResponseItems(participationId)
+    }
+
     @Delete('remove/:id')
     removeParticipation(@Param('id') id: number): Promise<DeleteResult> {
         return this.service.removeById(id);

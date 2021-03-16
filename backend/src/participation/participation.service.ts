@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
+import { ItemResponsesService } from 'src/item-responses/item-responses.service';
+import { Score } from 'src/item-responses/score.entity';
 import { TestApplication } from 'src/test-applications/test-application.entity';
 import { TestItem } from 'src/tests/test-item.entity';
 import { User } from 'src/users/user.entity';
@@ -13,7 +15,8 @@ export class ParticipationService {
 
     constructor(
         @InjectRepository(Participation) private participationRepository: Repository<Participation>,
-        @InjectRepository(TestItem) private itemRepository: Repository<TestItem>
+        @InjectRepository(TestItem) private testItemRepository: Repository<TestItem>,
+        private itemResponseService: ItemResponsesService
     ) { }
 
     async saveProgress(participation: Participation) {
@@ -25,6 +28,13 @@ export class ParticipationService {
         }
     }
 
+    async recalculateAllResponseItems(participationId: number) {
+        let participation = await this.getById(participationId)
+        participation.itemResponses.forEach(itemResponse => {
+            this.itemResponseService.calculateScoreAndSave(itemResponse);
+        })
+    }
+
     getById(id: number): Promise<Participation> {
         return this.participationRepository
             .createQueryBuilder('participation')
@@ -32,21 +42,36 @@ export class ParticipationService {
             .leftJoinAndSelect('application.test', 'test')
             .leftJoinAndSelect('participation.user', 'user')
             .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
+            .orderBy('itemResponse.id', 'ASC')
             .leftJoinAndSelect('itemResponse.testItem', 'testItem')
+            .leftJoinAndSelect('itemResponse.score', 'score')
             .leftJoinAndSelect('testItem.item', 'item')
             .where({ id })
             .getOne();
     }
 
     async saveResponse(participationId: number, itemId: number, response: any) {
-        let item = await this.itemRepository.findOne({ id: itemId });
+        let testItem = await this.testItemRepository.createQueryBuilder('testItem')
+            .leftJoinAndSelect('testItem.item', 'item')
+            .where({ id: itemId })
+            .getOne();
         let participation = await this.participationRepository.createQueryBuilder('participation')
             .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
             .where({ id: participationId })
             .getOne();
         let itemResponse = new ItemResponse();
-        itemResponse.testItem = item;
-        itemResponse.response = response;
+        itemResponse.testItem = testItem;
+        itemResponse.response = JSON.stringify(response);
+        let score: Score;
+        try {
+            score = await this.itemResponseService.calculateScore(itemResponse)
+        } catch (e) {
+            score = new Score();
+            score.max = -1
+            score.score = -1
+            score.message = e.message;
+        }
+        itemResponse.score = score;
         participation.addResponse(itemResponse);
         this.participationRepository.save(participation);
     }
