@@ -49,7 +49,7 @@ import Vue from "vue";
 import { Component, Prop, Action } from "nuxt-property-decorator";
 import Participation from "~/types/Participation";
 import ItemThumbnail from "~/components/ItemThumbnail.vue";
-import ItemResponseScoreCell from "~/components/ItemResponseScoreCell";
+import ItemResponseScoreCell from "~/components/ItemResponseScoreCell.vue";
 import ItemResponse from "~/types/ItemResponse";
 
 @Component({
