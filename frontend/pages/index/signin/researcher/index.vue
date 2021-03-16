@@ -115,9 +115,9 @@
           </fieldset>
 
           <div class="flex-end">
-            <el-button type="primary" :loading="saving" @click="register"
-              >Registrar-se</el-button
-            >
+            <el-button type="primary" :loading="saving" @click="register">
+              Registrar-se
+            </el-button>
           </div>
         </el-form>
       </div>
@@ -244,6 +244,8 @@ export default class UserSigninForm extends Vue {
     if (formValid) {
       this.saving = true;
       try {
+        sessionStorage.setItem("user_email", this.user.email);
+        sessionStorage.setItem("user_pass", this.user.password);
         await this.saveUser(this.user);
         this.$router.push({
           name: "index-signin-confirm-code",

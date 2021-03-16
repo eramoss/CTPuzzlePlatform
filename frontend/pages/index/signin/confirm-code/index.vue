@@ -101,7 +101,7 @@ export default class ConfirmCodeForm extends Vue {
             type: "success",
           }
         );
-        this.$router.push("/platform");
+        this.$router.push("/login?authorized=true");
       }
     } catch (e) {
       console.error(e);

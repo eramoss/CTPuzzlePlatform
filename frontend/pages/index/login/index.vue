@@ -1,6 +1,7 @@
 <template>
   <div>
     <container>
+      {{ user }}
       <div
         class="panel register shadow"
         v-loading="loading"
@@ -33,9 +34,9 @@
           </el-form-item>
 
           <div class="flex-end">
-            <el-button type="primary" class="fill" @click="login"
-              >Entrar</el-button
-            >
+            <el-button type="primary" class="fill" @click="login">
+              Entrar
+            </el-button>
           </div>
           <div>
             <el-button type="text" @click="recoverPassword">
@@ -85,14 +86,19 @@ export default class LoginPage extends Vue {
     };
   }
 
-  async login() {
-    if (!(await this.form.validate())) {
-      return;
+  async login(usernamePassword?: UsernamePassword) {
+    if (!usernamePassword) {
+      if (!(await this.form.validate())) {
+        return;
+      }
     }
     this.loading = true;
     this.loadingText = "Validando credenciais...";
     try {
-      let response = await this.$auth.loginWith("local", { data: this.user });
+      let response = await this.$auth.loginWith("local", {
+        data: usernamePassword || this.user,
+      });
+      sessionStorage.clear()
       this.$router.push("/platform?op=login");
       console.log(response);
     } catch (err) {
@@ -139,6 +145,12 @@ export default class LoginPage extends Vue {
 
   mounted() {
     this.inputEmail.focus();
+    if (this.$route.query.authorized == "true") {
+      this.login({
+        username: sessionStorage.getItem("user_email") || "",
+        password: sessionStorage.getItem("user_pass") || "",
+      });
+    }
   }
 }
 </script>
