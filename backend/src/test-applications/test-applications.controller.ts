@@ -1,13 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Head, Header, Param, Post, Res, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
-import Participation from 'src/participation/participation.entity';
 import PreparedParticipation from 'src/participation/prepared-participation.dto';
-import { User } from 'src/users/user.entity';
 import { DeleteResult } from 'typeorm';
 import { TestApplication } from './test-application.entity';
 import { TestApplicationsService } from './test-applications.service';
+import { Response } from 'express';
 
 @Controller('test-applications')
 @UseGuards(JwtAuthGuard)
@@ -34,6 +33,11 @@ export class TestApplicationsController {
     @Get('byHash/:hash')
     getByHash(@Param('hash') hash: string): Promise<TestApplication> {
         return this.testApplicationsService.getByHash(hash);
+    }
+
+    @Get('generateItemResponsesCsv/:testApplicationId')
+    generateItemResponsesCsv(@Param('testApplicationId') testApplicationId: number): Promise<string> {
+        return this.testApplicationsService.generateItemResponsesCsv(testApplicationId);
     }
 
     @Post('paginate')

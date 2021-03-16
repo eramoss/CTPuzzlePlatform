@@ -48,7 +48,18 @@
         </el-row>
         <el-row>
           <h3>Participantes ({{ testApplication.participations.length }})</h3>
-          <btn-refresh @click="loadData"></btn-refresh>
+          <div class="flex-row">
+            <btn-refresh @click="loadData"></btn-refresh>
+            <el-button
+              type="primary"
+              icon="el-icon-download"
+              size="small"
+              :loading="downloading"
+              @click="download"
+            >
+              Baixar respostas
+            </el-button>
+          </div>
           <el-table
             :data="testApplication.participations"
             style="margin-bottom: 30px"
@@ -109,6 +120,7 @@ const ACTION_GET_BY_ID = "test-applications/getById";
 export default class TestEditForm extends Vue {
   loading: boolean = false;
   testApplication: TestApplication = new TestApplication();
+  downloading: boolean = false;
 
   async asyncData(ctx: Context) {
     let testApplication!: TestApplication;
@@ -202,6 +214,24 @@ export default class TestEditForm extends Vue {
         }
       }
     } catch (cancel) {}
+  }
+
+  @Action("test-applications/generateItemResponsesCsv") generateItemResponsesCsv!: (
+    testApplicationId: number
+  ) => Promise<any>;
+
+  async download() {
+    try {
+      this.downloading = true;
+      await this.generateItemResponsesCsv(this.testApplication.id);
+    } catch (e) {
+      this.$notify.error({
+        title: "Não foi possível gerar o arquivo",
+        message: "Ocorreu um erro interno durante a geração",
+      });
+    } finally {
+      this.downloading = false;
+    }
   }
 
   async save() {

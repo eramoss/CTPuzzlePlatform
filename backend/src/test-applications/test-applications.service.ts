@@ -13,9 +13,13 @@ import { v4 as uuidv4 } from "uuid";
 import { ConfigService } from '@nestjs/config';
 import PreparedParticipation from 'src/participation/prepared-participation.dto';
 import { Mechanic } from 'src/mechanics/mechanic.entity';
+import { buildCsv } from 'src/util/download';
+import { Response } from 'express';
+import { ItemResponse } from 'src/item-responses/item-response.entity';
 
 @Injectable()
 export class TestApplicationsService {
+
 
     constructor(
         @InjectRepository(TestApplication)
@@ -23,7 +27,7 @@ export class TestApplicationsService {
         private usersService: UsersService,
         private participationService: ParticipationService,
         private testService: TestService,
-        private configService: ConfigService
+        private configService: ConfigService,
     ) {
     }
 
@@ -36,9 +40,39 @@ export class TestApplicationsService {
             .where({ id })
             .leftJoinAndSelect('test-application.test', 'test')
             .leftJoinAndSelect('test-application.participations', 'participation')
-            .leftJoinAndSelect('participation.user', 'user')
             .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
+            .leftJoinAndSelect('itemResponse.testItem', 'testItem')
+            .leftJoinAndSelect('itemResponse.score', 'score')
+            .leftJoinAndSelect('testItem.item', 'item')
+            .leftJoinAndSelect('participation.user', 'user')
             .getOne();
+    }
+
+    async generateItemResponsesCsv(testApplicationId: number): Promise<string> {
+        const testApplication = await this.getById(testApplicationId);
+        const rows: any[] = []
+        testApplication.participations.map((participation: Participation) => {
+            participation.itemResponses.forEach((itemResponse: ItemResponse) => {
+                let row = {
+                    usuario: participation.user.id,
+                    item_id: itemResponse.testItem.item.id,
+                    resposta: itemResponse.response,
+                    escore_max: itemResponse.score.max,
+                    escore_obtido: itemResponse.score.score
+                }
+                rows.push(row);
+            })
+        })
+
+        const labels = [
+            { label: 'usuario', value: 'usuario' },
+            { label: 'item_id', value: 'item_id' },
+            { label: 'resposta', value: 'resposta' },
+            { label: 'escore_max', value: 'escore_max' },
+            { label: 'escore_obtido', value: 'escore_obtido' },
+        ];
+
+        return buildCsv(labels, rows)
     }
 
     async getByHash(hash: string): Promise<TestApplication> {
