@@ -1,7 +1,6 @@
 <template>
   <div>
     <container>
-      {{ user }}
       <div
         class="panel register shadow"
         v-loading="loading"
@@ -18,13 +17,13 @@
               autofocus
               v-model="user.username"
               title="Nome"
-              @keydown.enter.native="login"
+              @keydown.enter.native="login(user)"
             ></el-input>
           </el-form-item>
 
           <el-form-item label="Senha" required prop="password">
             <el-input
-              @keydown.enter.native="login"
+              @keydown.enter.native="login(user)"
               placeholder="********"
               v-model="user.password"
               autofocus
@@ -34,7 +33,7 @@
           </el-form-item>
 
           <div class="flex-end">
-            <el-button type="primary" class="fill" @click="login">
+            <el-button type="primary" class="fill" @click="login(user)">
               Entrar
             </el-button>
           </div>
@@ -86,8 +85,8 @@ export default class LoginPage extends Vue {
     };
   }
 
-  async login(usernamePassword?: UsernamePassword) {
-    if (!usernamePassword) {
+  async login(usernamePassword?: UsernamePassword, validate: boolean = true) {
+    if (validate) {
       if (!(await this.form.validate())) {
         return;
       }
@@ -96,7 +95,7 @@ export default class LoginPage extends Vue {
     this.loadingText = "Validando credenciais...";
     try {
       let response = await this.$auth.loginWith("local", {
-        data: usernamePassword || this.user,
+        data: usernamePassword,
       });
       sessionStorage.clear();
       this.$router.push("/platform?op=login");
@@ -146,10 +145,13 @@ export default class LoginPage extends Vue {
   mounted() {
     this.inputEmail.focus();
     if (this.$route.query.authorized == "true") {
-      this.login({
-        username: sessionStorage.getItem("user_email") || "",
-        password: sessionStorage.getItem("user_pass") || "",
-      });
+      this.login(
+        {
+          username: sessionStorage.getItem("user_email") || "",
+          password: sessionStorage.getItem("user_pass") || "",
+        },
+        false
+      );
     }
   }
 }

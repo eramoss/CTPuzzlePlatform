@@ -187,5 +187,13 @@ export default class ItemResponsesList extends Vue {
       participation,
     };
   }
+
+  mounted() {
+    document.addEventListener("focus", this.loadData);
+  }
+
+  destroyed() {
+    document.removeEventListener("focus", this.loadData);
+  }
 }
 </script>
