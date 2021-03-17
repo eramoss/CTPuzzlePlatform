@@ -28,12 +28,10 @@ export const databaseConfig = {
     port: process.env.TYPEORM_PORT as unknown as number,
     username: process.env.TYPEORM_USERNAME,
     password: process.env.TYPEORM_PASSWORD,
-    logging: process.env.TYPEORM_LOGGING,
-
+    logging: bool(process.env.TYPEORM_LOGGING),
     synchronize: bool(process.env.TYPEORM_SYNCHRONIZE),
     // Automaticaly run migrations
     migrationsRun: bool(process.env.TYPEORM_MIGRATIONS_RUN),
-
     migrationsTableName: "custom_migration_table",
     migrations: ["dist/migration/*.js"],
     cli: {

@@ -1,3 +1,5 @@
+import ResearchGroup from "./ResearchGroup"
+
 export default class User {
     id!: number
     name!: string
@@ -5,6 +7,7 @@ export default class User {
     gender!: string
     email!: string
     password!: string
+    researchGroup!: ResearchGroup
 
     birthDay: string = "";
     birthMonth: string = "";

@@ -216,7 +216,10 @@ export default class MechanicEditForm extends Vue {
     let id = ctx.params.id;
     if (id == "new") {
       let ctxUser = ctx.$auth.user;
-      let user = { id: ctxUser?.userId } as User;
+      let user = {
+        id: ctxUser?.userId,
+        researchGroup: ctxUser?.researchGroup,
+      } as User;
       mechanic = createMechanicExample(user);
     }
     if (id != "new") {

@@ -90,13 +90,10 @@ export default class ItemsList extends Vue {
   mechanics: Mechanic[] = [];
 
   async asyncData(ctx: Context) {
-    let pageResponse = await ctx.store.dispatch(
-      "items/paginate",
-      new PageRequest()
-    );
+    let pageRequest = new PageRequest();
+    let pageResponse = await ctx.store.dispatch("items/paginate", pageRequest);
     let mechanics = await ctx.store.dispatch("mechanics/findAll");
-
-    return { pageResponse, mechanics };
+    return { pageResponse, pageRequest, mechanics };
   }
 
   edit(row: Item) {

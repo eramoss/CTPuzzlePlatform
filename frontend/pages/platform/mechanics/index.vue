@@ -112,11 +112,13 @@ export default class MechanicsList extends Vue {
   }
 
   async asyncData(ctx: Context) {
+    let researchGroup = ctx.$auth.user?.researchGroup;
+    let pageRequest = new PageRequest({ researchGroup });
     let pageResponse: PageResponse<Mechanic> = await ctx.store.dispatch(
       "mechanics/paginate",
-      new PageRequest()
+      pageRequest
     );
-    return { pageResponse };
+    return { pageResponse, pageRequest };
   }
 }
 </script>

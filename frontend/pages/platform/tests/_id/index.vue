@@ -137,6 +137,7 @@ import TestItem from "~/types/TestItem";
 import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
 import ItemThumbnail from "~/components/ItemThumbnail.vue";
 import { ElForm } from "element-ui/types/form";
+import ResearchGroup from "~/types/ResearchGroup";
 
 @Component({
   head: {
@@ -281,6 +282,7 @@ export default class TestEditForm extends Vue {
     }
     let selectedItems = test.items || [];
     let availableItems = await ctx.store.dispatch("items/findAll");
+    test.researchGroup = ctx.$auth.user?.researchGroup as ResearchGroup;
     return {
       test,
       availableItems,

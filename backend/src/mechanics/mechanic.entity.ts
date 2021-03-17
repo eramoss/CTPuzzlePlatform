@@ -38,7 +38,7 @@ export class Mechanic {
     @ManyToOne(type => User, { nullable: false })
     user: User
 
-    @ManyToOne(type => ResearchGroup, { nullable: true })
+    @ManyToOne(type => ResearchGroup, { nullable: false })
     researchGroup: ResearchGroup
 
 

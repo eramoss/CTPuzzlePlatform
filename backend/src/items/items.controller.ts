@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards, Request } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
+import { getResearchGroupId } from 'src/util/getClaim';
 import { DeleteResult } from 'typeorm';
 import { Item } from './item.entity';
 import { ItemsService } from './items.service';
@@ -24,8 +25,10 @@ export class ItemsController {
     }
 
     @Post('paginate')
-    async paginate(@Body() pageRequest: PageRequest): Promise<PageResponse<Item>> {
-        return this.itemService.paginate(pageRequest);
+    async paginate(
+        @Body() pageRequest: PageRequest, @Request() req: any): Promise<PageResponse<Item>> {
+        const researchGroupId = getResearchGroupId(req);
+        return this.itemService.paginate(researchGroupId, pageRequest);
     }
 
     @Delete('remove/:id')
@@ -34,8 +37,9 @@ export class ItemsController {
     }
 
     @Get('findAll')
-    findAll(): Promise<Item[]> {
-        return this.itemService.findAll()
+    findAll(@Request() req: any): Promise<Item[]> {
+        const researchGroupId = getResearchGroupId(req);
+        return this.itemService.findAll(researchGroupId)
     }
 
     @Get('public/instantiate/:id')

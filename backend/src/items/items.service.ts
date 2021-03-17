@@ -29,7 +29,7 @@ export class ItemsService {
         return this.itemRepository.delete({ id })
     }
 
-    async paginate(pageRequest: PageRequest): Promise<PageResponse<Item>> {
+    async paginate(researchGroupId: number, pageRequest: PageRequest): Promise<PageResponse<Item>> {
         let filter = pageRequest.filter
         let search = pageRequest.search
         const data = await this.itemRepository.createQueryBuilder('item')
@@ -39,14 +39,18 @@ export class ItemsService {
                 qb.where("mechanic.name like :search", { search: `%${search}%` })
                     .orWhere("item.name like :search", { search: `%${search}%` })
             }))
+            .andWhere("mechanic.researchGroup.id = :id", {id:researchGroupId})
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .getMany()
         return new PageResponse(data);
     }
 
-    findAll(): Promise<Item[]> {
-        return this.itemRepository.find({});
+    findAll(researchGroupId: number): Promise<Item[]> {
+        return this.itemRepository.createQueryBuilder('item')
+            .leftJoinAndSelect('item.mechanic', 'mechanic')
+            .where("mechanic.researchGroup.id = :id", { id: researchGroupId })
+            .getMany();
     }
 
     async instantiateToGetJson(testItemId: number): Promise<any> {

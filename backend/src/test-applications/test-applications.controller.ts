@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Head, Header, Param, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Head, Request, Param, Post, Res, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
@@ -7,6 +7,7 @@ import { DeleteResult } from 'typeorm';
 import { TestApplication } from './test-application.entity';
 import { TestApplicationsService } from './test-applications.service';
 import { Response } from 'express';
+import { getResearchGroupId } from 'src/util/getClaim';
 
 @Controller('test-applications')
 @UseGuards(JwtAuthGuard)
@@ -41,8 +42,9 @@ export class TestApplicationsController {
     }
 
     @Post('paginate')
-    paginate(@Body() pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {
-        return this.testApplicationsService.paginate(pageRequest)
+    paginate(@Body() pageRequest: PageRequest, @Request() req: any): Promise<PageResponse<TestApplication>> {
+        let researchGroupId = getResearchGroupId(req)
+        return this.testApplicationsService.paginate(researchGroupId, pageRequest)
     }
 
     @Get('public/data/:testApplicationHash/:userHash')

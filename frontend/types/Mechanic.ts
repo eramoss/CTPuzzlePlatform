@@ -56,6 +56,7 @@ export function createMechanicExample(user: User): Mechanic {
         ''
     );
     mechanicExample.user = user;
+    mechanicExample.researchGroup = user.researchGroup
     return mechanicExample;
 
 }

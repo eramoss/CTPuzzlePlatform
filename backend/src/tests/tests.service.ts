@@ -31,8 +31,12 @@ export class TestService {
         return test;
     }
 
-    findAll(): Promise<Test[]> {
-        return this.testRepository.createQueryBuilder('test').getMany();
+    findAll(researchGroupId: number): Promise<Test[]> {
+        return this.testRepository.createQueryBuilder('test').where({
+            researchGroup: {
+                id: researchGroupId
+            }
+        }).getMany();
     }
 
     removeById(id: number): Promise<DeleteResult> {
@@ -43,6 +47,7 @@ export class TestService {
         const data = await this.testRepository.createQueryBuilder('test')
             .skip(pageRequest.start)
             .take(pageRequest.limit)
+            .where(pageRequest.filter)
             .leftJoinAndSelect('test.items', 'item')
             .leftJoinAndSelect('test.applications', 'application')
             .getMany()

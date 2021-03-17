@@ -3,6 +3,7 @@ import { Body, Controller, Get, Param, Post, UseGuards, Request } from '@nestjs/
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
+import { getResearchGroupId } from 'src/util/getClaim';
 import { DeleteResult } from 'typeorm';
 import { Mechanic } from './mechanic.entity';
 import { MechanicsService } from './mechanics.service';
@@ -11,7 +12,8 @@ import { MechanicsService } from './mechanics.service';
 @Controller('mechanics')
 export class MechanicsController {
 
-    constructor(private mechanicsService: MechanicsService) { }
+    constructor(
+        private mechanicsService: MechanicsService) { }
 
     @Post()
     saveMechanic(@Body() mechanic: Mechanic): Promise<Mechanic> {
@@ -30,7 +32,8 @@ export class MechanicsController {
 
     @Get('findAll')
     async findAll(@Request() req: any): Promise<Mechanic[]> {
-        return this.mechanicsService.findAll();
+        const researchGroupId = getResearchGroupId(req);
+        return this.mechanicsService.findAll(researchGroupId);
     }
 
     @Delete('remove/:id')

@@ -139,11 +139,14 @@ export default class TestsList extends Vue {
   }
 
   async asyncData(ctx: Context) {
+    let pageRequest = new PageRequest({
+      researchGroup: ctx?.$auth?.user?.researchGroup
+    });
     let pageResponse: PageResponse<Test> = await ctx.store.dispatch(
       "tests/paginate",
-      new PageRequest()
+      pageRequest
     );
-    return { pageResponse };
+    return { pageResponse, pageRequest };
   }
 }
 </script>

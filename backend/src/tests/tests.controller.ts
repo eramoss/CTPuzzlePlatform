@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Header, Param, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, Param, Post, Res, UseGuards, Request } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
+import { getResearchGroupId } from 'src/util/getClaim';
 import { DeleteResult } from 'typeorm';
 import { Test } from './test.entity';
 import { TestService } from './tests.service';
@@ -24,8 +25,9 @@ export class TestController {
     }
 
     @Get('findAll')
-    findAll(): Promise<Test[]> {
-        return this.testService.findAll();
+    findAll(@Request() req:any): Promise<Test[]> {
+        const researchGroupId = getResearchGroupId(req);
+        return this.testService.findAll(researchGroupId);
     }
 
     @Post('paginate')
