@@ -1,8 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import ResearchGroup from 'src/research-group/research-group.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+
+export enum UserRole {
+    ADMIN, STUDENT,
+}
 
 @Entity()
 export class User {
-    
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -26,5 +31,22 @@ export class User {
 
     @Column({ nullable: true })
     recoverPasswordHash: string
+
+    @ManyToOne(type => ResearchGroup, { cascade: ['insert'] })
+    researchGroup: ResearchGroup
+
+    @Column({
+        type: 'jsonb',
+        array: false,
+        default: () => "'[]'",
+        nullable: false,
+    })
+    roles: UserRole[] = [];
+
+    addRole(userRole: UserRole) {
+        if (this.roles.indexOf(userRole) == -1) {
+            this.roles.push(userRole)
+        }
+    }
 
 }

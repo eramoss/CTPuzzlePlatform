@@ -189,11 +189,15 @@ export default class ItemResponsesList extends Vue {
   }
 
   mounted() {
-    document.addEventListener("focus", this.loadData);
-  }
-
-  destroyed() {
-    document.removeEventListener("focus", this.loadData);
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (!document.hidden) {
+          this.loadData();
+        }
+      },
+      false
+    );
   }
 }
 </script>

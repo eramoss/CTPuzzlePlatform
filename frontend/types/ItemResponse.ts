@@ -8,4 +8,5 @@ export default class ItemResponse {
     testItem!: TestItem
     response!: string
     score!: Score
+    message!: string
 }

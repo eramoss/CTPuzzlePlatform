@@ -5,7 +5,7 @@
         :class="{ 'progress-empty': percentage == 0 }"
         :text-inside="true"
         :stroke-width="26"
-        :status="`${percentage == 100 ? 'success' : ''}`"
+        :color="`${percentage == 100 ? '#67c23a' : '#409eff'}`"
         :percentage="percentage"
         :format="format"
       ></el-progress>

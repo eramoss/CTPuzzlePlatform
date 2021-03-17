@@ -1,3 +1,4 @@
+import ResearchGroup from "./ResearchGroup";
 import User from "./User"
 
 export default class Mechanic {
@@ -16,6 +17,7 @@ export default class Mechanic {
     itemInstantiation: string = ''
     responseInstantiation: string = ''
     user!: User
+    researchGroup!: ResearchGroup
 
     constructor(name: string, description: string, classDefinition: string, responseClassDefinition: string, scoreFunction: string) {
         this.name = name;

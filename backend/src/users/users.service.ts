@@ -1,10 +1,11 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from 'typeorm';
-import { User } from "src/users/user.entity";
+import { User, UserRole } from "src/users/user.entity";
 import { GeneratorService } from "src/generators/generators.service";
 import { MailerService } from "src/mailer/mailer.service";
 import { v4 as uuidV4 } from 'uuid';
+import ResearchGroup from "src/research-group/research-group.entity";
 
 @Injectable()
 export class UsersService {
@@ -17,13 +18,27 @@ export class UsersService {
         private mailer: MailerService
     ) { }
 
-    async save(user: User, sendMail: boolean = true): Promise<User> {
+    async save(userPayload: User, sendMail: boolean = true): Promise<User> {
+        let user = Object.assign(new User(), userPayload);
         if (sendMail) {
             let confirmCodeLength = 5;
             let confirmCode = this.sendMailWithConfirmationCode(user, confirmCodeLength);
             user.confirmationCode = confirmCode;
         }
+
+        if (!user.researchGroup) {
+            this.createReseachGroupToUser(user);
+        }
         return this.userRepository.save(user)
+    }
+
+    createReseachGroupToUser(user: User) {
+        if (!user.hash) {
+            user.hash = uuidV4()
+        }
+        user.addRole(UserRole.ADMIN);
+        user.researchGroup = new ResearchGroup();
+        user.researchGroup.name = "Grupo Pesquisa " + user.hash.substr(0, 5);
     }
 
     sendMailWithConfirmationCode(user: User, confirmCodeLength: number): string {
@@ -60,7 +75,14 @@ export class UsersService {
     }
 
     async findByUsername(username: string): Promise<User> {
-        return this.userRepository.findOne({ email: username });
+        let user = await this.userRepository.createQueryBuilder('user')
+            .leftJoinAndSelect('user.researchGroup', 'researchGroup')
+            .where({ email: username })
+            .getOne();
+        if (!user.researchGroup) {
+            this.createReseachGroupToUser(user);
+        }
+        return user
     }
 
     async validateRecoveryLink(hash: string): Promise<boolean> {

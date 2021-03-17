@@ -21,17 +21,15 @@
             "command": "docker-compose --file docker-compose.prod.local.yml up -d"
         },
         {
-            "label": "run dev",
+            "label": "Generate Migrations",
             "type": "shell",
-            "command": "npm run dev",
+            "command": "npx typeorm migration:create -n FillResearchGroupInfoToEntities",
             "options": {
-                "cwd": "${workspaceFolder}/frontend"
-            },
-            "presentation": {
-                "group": "a",
-                "panel": "new"
-            },
-            "problemMatcher": []
+                "env": {
+                    "file": "${workspaceFolder}/.env.dev",
+                    "cwd": "${workspaceFolder}/backend"
+                }
+            }
         },
         {
             "label": "npm install",

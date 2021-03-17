@@ -1,3 +1,4 @@
+import ResearchGroup from 'src/research-group/research-group.entity';
 import { User } from 'src/users/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
@@ -36,5 +37,9 @@ export class Mechanic {
 
     @ManyToOne(type => User, { nullable: false })
     user: User
+
+    @ManyToOne(type => ResearchGroup, { nullable: true })
+    researchGroup: ResearchGroup
+
 
 }

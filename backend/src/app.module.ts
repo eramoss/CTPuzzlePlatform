@@ -18,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
 import { databaseConfig } from './databaseConfig'
 import { ParticipationModule } from './participation/participation.module';
 import { ItemResponsesModule } from './item-responses/item-responses.module';
+import { ResearchGroupModule } from './research-group/research-group.module';
 
 @Module({
     imports: [
@@ -37,6 +38,7 @@ import { ItemResponsesModule } from './item-responses/item-responses.module';
         CodeInterpreterModule,
         ParticipationModule,
         ItemResponsesModule,
+        ResearchGroupModule,
     ],
     controllers: [AppController],
     providers: [AppService],

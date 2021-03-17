@@ -1,5 +1,4 @@
 import Participation from "./Participation"
-import Respondent from "./Respondent"
 import Test from "./Test"
 
 export default class TestApplication {

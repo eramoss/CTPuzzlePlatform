@@ -37,6 +37,7 @@ export class MechanicsService {
                 qb.where("mechanic.name like :search", { search: `%${search}%` })
                     .orWhere("mechanic.description like :search", { search: `%${search}%` })
             }))
+            .andWhere("mechanic.researchGroup.id = :id", { id: pageRequest.filter.researchGroupId })
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .getMany();

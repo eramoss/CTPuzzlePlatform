@@ -85,7 +85,7 @@ export default class LoginPage extends Vue {
     };
   }
 
-  async login(usernamePassword?: UsernamePassword, validate: boolean = true) {
+  async login(usernamePassword?: UsernamePassword, validate: boolean = false) {
     if (validate) {
       if (!(await this.form.validate())) {
         return;
