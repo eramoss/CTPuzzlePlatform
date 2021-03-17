@@ -9,7 +9,4 @@ export default class ResearchGroup {
     @Column()
     name: string
 
-    /* @Column({ nullable: true })
-    institution: string */
-
 }

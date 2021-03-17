@@ -6,8 +6,19 @@ import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 // npx typeorm migration:run
 // npx typeorm migration:revert
 
+function bool(any: string) {
+    let result = true;
+    if (any == 'false') {
+        result = false;
+    }
+    if (!any) {
+        result = false;
+    }
+    console.log(`Converting to boolean ${any}: `, result)
+    return result
+}
+
 export const databaseConfig = {
-    synchronize: false,
     database: process.env.TYPEORM_DATABASE,
     type: "postgres",
     entities: [
@@ -19,9 +30,10 @@ export const databaseConfig = {
     password: process.env.TYPEORM_PASSWORD,
     logging: process.env.TYPEORM_LOGGING,
 
+    synchronize: bool(process.env.TYPEORM_SYNCHRONIZE),
     // Automaticaly run migrations
-    migrationsRun: true,
-    
+    migrationsRun: bool(process.env.TYPEORM_MIGRATIONS_RUN),
+
     migrationsTableName: "custom_migration_table",
     migrations: ["dist/migration/*.js"],
     cli: {
