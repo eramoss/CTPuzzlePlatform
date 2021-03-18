@@ -100,11 +100,11 @@ import RoleChecker from "~/utils/RoleChecker";
             "/platform/tests",
             "/platform/test-applications",
             "/platform/users",
-          ].forEach(menu=>{
-              if(menu.startsWith(path)){
-                  //@ts-ignore
-                  this.activeLink = path;
-              }
+          ].forEach((menu) => {
+            if (menu.startsWith(path)) {
+              //@ts-ignore
+              this.activeLink = path;
+            }
           });
         }
       },
