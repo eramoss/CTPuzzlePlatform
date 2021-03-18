@@ -13,6 +13,7 @@ import BtnRefresh from '~/components/BtnRefresh'
 import TipIcon from '~/components/TipIcon'
 import FiltersBox from '~/components/FiltersBox'
 import FiltersBoxItem from '~/components/FiltersBoxItem'
+import Icon from '~/components/Icon'
 
 Vue.component('container', Container)
 Vue.component('FormItemLabel', FormItemLabel)
@@ -28,5 +29,7 @@ Vue.component('BtnRefresh', BtnRefresh)
 Vue.component('TipIcon', TipIcon)
 Vue.component('FiltersBox', FiltersBox)
 Vue.component('FiltersBoxItem', FiltersBoxItem)
+Vue.component('Icon', Icon)
+
 
 

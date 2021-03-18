@@ -5,45 +5,62 @@
         <top-bar width="100%" />
       </el-header>
       <el-container>
-        <el-aside width="200px" class="custom-aside">
+        <el-aside :width="width" class="custom-aside">
           <el-menu
+            :collapse-transition="false"
+            :collapse="isCollapsed"
             :router="true"
             :default-active="activeLink"
+            :style="{ width: width }"
             id="platform-menu"
           >
+            <el-menu-item index="/platform" route="/platform">
+              <icon name="dashboard" />
+              <span slot="title"> Dashboard </span>
+            </el-menu-item>
             <el-menu-item
               index="/platform/mechanics"
               route="/platform/mechanics"
             >
-              <i class="el-icon-s-operation"></i>
-              <span> Mecânicas </span>
+              <icon name="tune" />
+              <span slot="title"> Mecânicas </span>
             </el-menu-item>
             <el-menu-item index="/platform/items" route="/platform/items">
-              <i class="el-icon-files"></i>
-              <span> Itens </span>
+              <icon name="format_list_numbered" />
+              <span slot="title"> Itens </span>
             </el-menu-item>
 
             <el-menu-item index="/platform/tests" route="/platform/tests">
-              <i class="el-icon-document"></i>
-              <span> Testes </span>
+              <icon name="assignment"></icon>
+              <span slot="title"> Testes </span>
             </el-menu-item>
             <el-menu-item
               index="/platform/test-applications"
               route="/platform/test-applications"
             >
-              <i class="el-icon-video-play"></i>
-              <span> Aplicações </span>
+              <icon name="play_circle" />
+              <span slot="title"> Aplicações </span>
             </el-menu-item>
             <el-menu-item index="/platform/statistics">
-              <i class="el-icon-s-data"></i>
-              <span> Estatísticas </span>
+              <icon name="analytics" />
+              <!-- <i class="el-icon-s-data"> -->
+              <span slot="title"> Estatísticas </span>
             </el-menu-item>
             <el-menu-item
               index="/platform/users"
               v-show="roleChecker.userHasRoles('sysadmin')"
             >
-              <i class="el-icon-user"></i>
-              <span> Usuários </span>
+              <icon name="people" />
+              <span slot="title"> Usuários </span>
+            </el-menu-item>
+            <el-menu-item
+              @click="isCollapsed = !isCollapsed"
+            >
+              <icon v-show="isCollapsed" name="arrow_forward" />
+              <icon v-show="!isCollapsed" name="arrow_back" />
+              <span slot="title">
+                {{ isCollapsed ? "Abrir menu" : "Fechar menu" }}
+              </span>
             </el-menu-item>
           </el-menu>
         </el-aside>
@@ -59,7 +76,7 @@
 
 <script lang="ts">
 import TopBar from "~/components/TopBar.vue";
-import { Component } from "nuxt-property-decorator";
+import { Component, Watch } from "nuxt-property-decorator";
 import Vue from "vue";
 import RoleChecker from "~/utils/RoleChecker";
 
@@ -83,7 +100,24 @@ import RoleChecker from "~/utils/RoleChecker";
 export default class Platform extends Vue {
   activeLink = "";
   roleChecker: RoleChecker = new RoleChecker(this);
+  isCollapsed = false;
+
+  get width() {
+    let width = "200px";
+    if (this.isCollapsed) {
+      width = "60px";
+    }
+    return width;
+  }
+
+  @Watch("isCollapsed")
+  onChangeCollapse() {
+    localStorage.setItem("collapsed", this.isCollapsed + "");
+  }
+
   mounted() {
+    this.isCollapsed =
+      localStorage.getItem("collapsed") == "true" ? true : false;
     if (this.$route.query.op == "login") {
       this.$notify.success({
         message: `Olá, ${this.$auth.user?.name}`,
@@ -95,10 +129,14 @@ export default class Platform extends Vue {
 </script>
 <style lang="scss">
 #platform-menu {
+  height: 100vh;
   position: fixed;
-  width: 200px;
   .el-menu-item {
     text-align: left;
+    span {
+      font-weight: bold;
+      color: #666;
+    }
   }
 }
 $height: 56px !important;
