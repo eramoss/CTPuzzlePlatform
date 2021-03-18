@@ -48,14 +48,13 @@
             </el-menu-item>
             <el-menu-item
               index="/platform/users"
+              route="/platform/users"
               v-show="roleChecker.userHasRoles('sysadmin')"
             >
               <icon name="people" />
               <span slot="title"> Usuários </span>
             </el-menu-item>
-            <el-menu-item
-              @click="isCollapsed = !isCollapsed"
-            >
+            <el-menu-item class="toggle-icon" @click="toggleCollapse">
               <icon v-show="isCollapsed" name="arrow_forward" />
               <icon v-show="!isCollapsed" name="arrow_back" />
               <span slot="title">
@@ -78,6 +77,7 @@
 import TopBar from "~/components/TopBar.vue";
 import { Component, Watch } from "nuxt-property-decorator";
 import Vue from "vue";
+import eventBus from "~/utils/eventBus";
 import RoleChecker from "~/utils/RoleChecker";
 
 @Component({
@@ -91,8 +91,22 @@ import RoleChecker from "~/utils/RoleChecker";
     $route: {
       immediate: true,
       handler() {
-        //@ts-ignore
-        this.activeLink = this.$route.path;
+        let path = this.$route.path;
+        if (path) {
+          [
+            "/platform",
+            "/platform/mechanics",
+            "/platform/items",
+            "/platform/tests",
+            "/platform/test-applications",
+            "/platform/users",
+          ].forEach(menu=>{
+              if(menu.startsWith(path)){
+                  //@ts-ignore
+                  this.activeLink = path;
+              }
+          });
+        }
       },
     },
   },
@@ -101,6 +115,11 @@ export default class Platform extends Vue {
   activeLink = "";
   roleChecker: RoleChecker = new RoleChecker(this);
   isCollapsed = false;
+
+  toggleCollapse() {
+    this.isCollapsed = !this.isCollapsed;
+    eventBus.$emit("resize");
+  }
 
   get width() {
     let width = "200px";
@@ -137,6 +156,9 @@ export default class Platform extends Vue {
       font-weight: bold;
       color: #666;
     }
+  }
+  .toggle-icon {
+    color: #909399;
   }
 }
 $height: 56px !important;

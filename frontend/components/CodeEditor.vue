@@ -16,7 +16,7 @@
       @editorWillMount="prepareEditor"
       ref="editor"
       :options="options"
-      :style="{ width: width, height: height }"
+      :style="{ height: height }"
     />
     <!-- <no-ssr>
       <div ref="container"></div>
@@ -29,6 +29,7 @@ import Vue from "vue";
 //@ts-ignore
 import MonacoEditor from "vue-monaco";
 import { Component, Prop, Ref, VModel } from "nuxt-property-decorator";
+import eventBus from "~/utils/eventBus";
 
 @Component({
   components: {
@@ -68,7 +69,14 @@ export default class CodeEditor extends Vue {
   @Ref("container")
   container!: HTMLElement;
 
+  resize() {
+    this.$nextTick(() => {
+      this.editor?.editor?.layout();
+    });
+  }
+
   mounted() {
+    eventBus.$on("resize", this.resize);
     if (process.browser) {
       /* monaco.editor.create(this.container, {
         value: "function hello() {\n\talert('Hello world!');\n}",
