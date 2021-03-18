@@ -24,6 +24,7 @@ export class TestService {
 
     async getById(id: number): Promise<Test> {
         let test = await this.testRepository.createQueryBuilder('test')
+            .where({ id })
             .leftJoinAndSelect('test.items', 'testItem')
             .leftJoinAndSelect('testItem.item', 'item')
             .orderBy('testItem.order', 'ASC')

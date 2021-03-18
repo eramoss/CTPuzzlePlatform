@@ -2,7 +2,7 @@ import ResearchGroup from 'src/research-group/research-group.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 export enum UserRole {
-    ADMIN, STUDENT,
+    ADMIN = 'admin', STUDENT = 'student', SYSADMIN = 'sysadmin'
 }
 
 @Entity()

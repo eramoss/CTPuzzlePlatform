@@ -38,6 +38,13 @@
               <i class="el-icon-s-data"></i>
               <span> Estatísticas </span>
             </el-menu-item>
+            <el-menu-item
+              index="/platform/users"
+              v-show="roleChecker.userHasRoles('sysadmin')"
+            >
+              <i class="el-icon-user"></i>
+              <span> Usuários </span>
+            </el-menu-item>
           </el-menu>
         </el-aside>
         <el-main class="custom-main">
@@ -50,10 +57,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import TopBar from "~/components/TopBar.vue";
 import { Component } from "nuxt-property-decorator";
 import Vue from "vue";
+import RoleChecker from "~/utils/RoleChecker";
 
 @Component({
   head() {
@@ -66,6 +74,7 @@ import Vue from "vue";
     $route: {
       immediate: true,
       handler() {
+        //@ts-ignore
         this.activeLink = this.$route.path;
       },
     },
@@ -73,10 +82,11 @@ import Vue from "vue";
 })
 export default class Platform extends Vue {
   activeLink = "";
+  roleChecker: RoleChecker = new RoleChecker(this);
   mounted() {
     if (this.$route.query.op == "login") {
       this.$notify.success({
-        message: `Olá, ${this.$auth.user.name}`,
+        message: `Olá, ${this.$auth.user?.name}`,
         title: "Bem-vindo",
       });
     }
