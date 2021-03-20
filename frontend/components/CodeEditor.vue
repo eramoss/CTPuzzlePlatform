@@ -49,6 +49,7 @@ import Vue from "vue";
 import MonacoEditor from "vue-monaco";
 import { Component, Prop, Ref, VModel, Watch } from "nuxt-property-decorator";
 import eventBus from "~/utils/eventBus";
+import { CompilerOptions } from "vue-template-compiler";
 
 @Component({
   components: {
@@ -72,6 +73,8 @@ export default class CodeEditor extends Vue {
   @Prop({ default: 17 }) fontSize!: number;
 
   // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorminimapoptions.html
+
+
   get options() {
     return {
       scrollBeyondLastLine: false,
@@ -139,22 +142,18 @@ export default class CodeEditor extends Vue {
   }
 
   prepareEditor(monaco: any) {
-    /* monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+    // validation settings
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: false,
       noSyntaxValidation: false,
     });
-    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-      target: "ES2018",
-      module: "ESNext",
-      moduleResolution: "Node",
-      lib: ["ESNext", "ESNext.AsyncIterable", "DOM"],
-      experimentalDecorators: true,
-      esModuleInterop: true,
-      allowJs: true,
-      sourceMap: true,
+
+    // compiler options
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      target: "es2017",
       strict: true,
-      noEmit: true,
-    }); */
+      allowNonTsExtensions: true,
+    });
   }
 }
 </script>
