@@ -12,10 +12,12 @@
       >
         {{ participation.application.name }}
       </el-breadcrumb-item>
-      <el-breadcrumb-item> Respostas </el-breadcrumb-item>
+      <el-breadcrumb-item>
+        Respostas
+      </el-breadcrumb-item>
     </el-breadcrumb>
     <div class="panel">
-      <h2>Respostas</h2>
+      <h2>Respostas {{ participation.itemResponses.length }}</h2>
       <div>
         <table class="summary-table">
           <tr>

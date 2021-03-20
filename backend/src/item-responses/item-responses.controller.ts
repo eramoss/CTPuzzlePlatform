@@ -13,11 +13,14 @@ export class ItemResponsesController {
         return this.itemResponseService.calculateScoreAndSave(itemResponse)
     }
 
-    @Delete('remove/:id')
-    removeItemById(@Param('id') itemResponseId: number): Promise<any> {
-        return this.itemResponseService.removeById(itemResponseId)
+    @Delete('softDelete/:id')
+    softDelete(@Param('id') itemResponseId: number): Promise<any> {
+        return this.itemResponseService.softDelete(itemResponseId)
     }
 
-
+    @Get('restore/:id')
+    restore(@Param('id') itemResponseId: number): Promise<any> {
+        return this.itemResponseService.restore(itemResponseId)
+    }
 
 }

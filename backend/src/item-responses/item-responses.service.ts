@@ -9,7 +9,7 @@ import { Score } from './score.entity';
 
 @Injectable()
 export class ItemResponsesService {
-    
+
 
     constructor(
         @InjectRepository(ItemResponse)
@@ -24,9 +24,13 @@ export class ItemResponsesService {
         return itemResponse.score
     }
 
-    
-    removeById(itemResponseId: number):Promise<any> {
-        return this.itemResponseRepository.softDelete({id:itemResponseId})
+
+    softDelete(itemResponseId: number): Promise<any> {
+        return this.itemResponseRepository.softDelete({ id: itemResponseId })
+    }
+
+    restore(itemResponseId: number): Promise<any> {
+        return this.itemResponseRepository.restore({ id: itemResponseId })
     }
 
     async calculateScore(itemResponse: ItemResponse): Promise<Score> {

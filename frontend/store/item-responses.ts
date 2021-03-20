@@ -7,8 +7,12 @@ export const actions: ActionTree<any, any> = {
         return $axios.$post('/item-responses/calculateScoreFromItem', itemResponse);
     },
 
-    async removeById(state, id: number): Promise<string> {
-        return $axios.$delete('/item-responses/remove/'+id);
+    async removeById(state, id: number): Promise<any> {
+        return $axios.$delete('/item-responses/softDelete/'+id);
+    },
+
+    async restoreById(state, id: number): Promise<any> {
+        return $axios.$get('/item-responses/restore/'+id);
     },
 
 }
