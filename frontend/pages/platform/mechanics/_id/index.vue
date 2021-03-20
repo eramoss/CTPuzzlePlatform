@@ -72,7 +72,7 @@
               <code-editor
                 editorTitle="Especificação da mecânica"
                 :required="true"
-                uniqueId="mechanicClassDefinition"
+                :uniqueId="`mechanicClassDefinition${mechanic.id}`"
                 v-model="mechanic.classDefinition"
                 @input="mechanicForm.validateField('classDefinition')"
                 height="300px"
@@ -86,6 +86,7 @@
 
             <el-form-item prop="responseClassDefinition">
               <code-editor
+                :uniqueId="`mechanicResponseClassDefinition${mechanic.id}`"
                 editorTitle="Especificação da resposta"
                 :required="true"
                 @input="mechanicForm.validateField('responseClassDefinition')"

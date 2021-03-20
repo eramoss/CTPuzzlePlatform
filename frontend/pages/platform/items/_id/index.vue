@@ -83,7 +83,7 @@
               <el-row :gutter="10">
                 <el-col :span="8" v-if="item.mechanic">
                   <code-editor
-                    uniqueId="mechanicClassDefinition"
+                    :uniqueId="`mechanicClassDefinition${item.id}`"
                     editor-title="Classe da mecânica"
                     :font-size="13"
                     :readonly="true"
@@ -93,7 +93,7 @@
                 </el-col>
                 <el-col :span="16">
                   <code-editor
-                    uniqueId="item.itemDefinition"
+                    :uniqueId="`item.itemDefinition${item.id}`"
                     id="instantiate"
                     editor-title="Instanciação do item"
                     :disabled="!item.mechanic"

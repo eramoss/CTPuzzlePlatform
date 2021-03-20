@@ -21,7 +21,7 @@
       >
       <el-row>
         <code-editor
-            uniqueId="scoreFunction"
+          :uniqueId="`scoreFunction${mechanic.id}`"
           editorTitle="Função de escore"
           height="300px"
           v-model="mechanic.scoreFunction"
@@ -51,7 +51,7 @@
       >
         <el-col :span="12">
           <code-editor
-           uniqueId="itemInstantiation"
+            :uniqueId="`itemInstantiation${mechanic.id}`"
             editorTitle="Função de item"
             height="250px"
             :fontSize="15"
@@ -89,7 +89,7 @@
         </el-col>
         <el-col :span="12">
           <code-editor
-           uniqueId="responseInstantiation"
+            :uniqueId="`responseInstantiation${mechanic.id}`"
             editorTitle="Função de resposta"
             height="250px"
             :fontSize="15"

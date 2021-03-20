@@ -1,6 +1,7 @@
 import User from '~/types/User';
 
 export default class RoleChecker {
+    
 
     userHasSomeOfThisRoles(userArg: any, rolesToCheck: string[]) {
         let user = Object.assign(new User(), userArg);
