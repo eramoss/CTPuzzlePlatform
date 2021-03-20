@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="Aplicar teste" :visible.sync="visible" top="10px">
+  <el-dialog title="Aplicar teste" :visible.sync="visible">
     <el-form label-position="left" label-width="130px">
       <el-form-item label="Teste">
         <el-select
@@ -24,7 +24,7 @@
           ref="firstInput"
         />
       </el-form-item>
-      <el-form-item label="Link da aplicação">
+      <el-form-item label="Link da aplicação" v-show="false">
         <test-application-url-input
           ref="applicationUrlInput"
           :test-application="this.testApplication"
