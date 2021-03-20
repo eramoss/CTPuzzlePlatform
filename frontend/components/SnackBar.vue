@@ -18,7 +18,7 @@ export default class SnackBar extends Vue {
   interval!: NodeJS.Timeout;
 
   show() {
-    this.timer = parseInt(this.timeout / 1000);
+    this.timer = this.timeout / 1000;
     if (this.interval) {
       clearInterval(this.interval);
     }
