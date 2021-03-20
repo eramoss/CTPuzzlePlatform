@@ -12,6 +12,7 @@ export default class User {
     birthDay: string = "";
     birthMonth: string = "";
     birthYear: string = "";
+    roles: string[] = []
 
     get birthDate() {
         return `${this.birthDay}/${this.birthMonth}/${this.birthYear}`;

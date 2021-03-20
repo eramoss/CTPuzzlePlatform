@@ -49,7 +49,12 @@
             <el-menu-item
               index="/platform/users"
               route="/platform/users"
-              v-show="roleChecker.userHasRoles('sysadmin')"
+              v-show="
+                roleChecker.userHasSomeOfThisRoles($auth.user, [
+                  'sysadmin',
+                  'admin',
+                ])
+              "
             >
               <icon name="people" />
               <span slot="title"> Usuários </span>
@@ -58,7 +63,7 @@
               <icon v-show="isCollapsed" name="arrow_forward" />
               <icon v-show="!isCollapsed" name="arrow_back" />
               <span slot="title">
-                {{ isCollapsed ? "Abrir menu" : "Fechar menu" }}
+                {{ isCollapsed ? "Expandir Menu" : "Recolher Menu" }}
               </span>
             </el-menu-item>
           </el-menu>
@@ -79,6 +84,8 @@ import { Component, Watch } from "nuxt-property-decorator";
 import Vue from "vue";
 import eventBus from "~/utils/eventBus";
 import RoleChecker from "~/utils/RoleChecker";
+import { Context } from "@nuxt/types";
+import User from "~/types/User";
 
 @Component({
   head() {
@@ -113,7 +120,7 @@ import RoleChecker from "~/utils/RoleChecker";
 })
 export default class Platform extends Vue {
   activeLink = "";
-  roleChecker: RoleChecker = new RoleChecker(this);
+  roleChecker: RoleChecker = new RoleChecker();
   isCollapsed = false;
 
   toggleCollapse() {

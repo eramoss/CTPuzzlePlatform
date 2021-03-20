@@ -1,14 +1,18 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from 'typeorm';
+import { Brackets, DeleteResult, Repository } from 'typeorm';
 import { User, UserRole } from "src/users/user.entity";
 import { GeneratorService } from "src/generators/generators.service";
 import { MailerService } from "src/mailer/mailer.service";
 import { v4 as uuidV4 } from 'uuid';
 import ResearchGroup from "src/research-group/research-group.entity";
+import { PageRequest } from "src/pagination/pagerequest.dto";
+import { PageResponse } from "src/pagination/pageresponse.dto";
 
 @Injectable()
 export class UsersService {
+
+
 
 
     constructor(
@@ -17,6 +21,24 @@ export class UsersService {
         private generator: GeneratorService,
         private mailer: MailerService
     ) { }
+
+    async paginate(pageRequest: PageRequest): Promise<PageResponse<User>> {
+        let search = pageRequest.search;
+        let filter = pageRequest.filter;
+        let data = await this.userRepository.createQueryBuilder("user")
+            .where(filter)
+            .andWhere(new Brackets(qb => {
+                qb.where("user.name like :search", { search: `%${search}%` })
+            }))
+            .skip(pageRequest.start)
+            .take(pageRequest.limit)
+            .getMany();
+        return new PageResponse<User>(data);
+    }
+
+    removeUserById(id: number): Promise<DeleteResult> {
+        return this.userRepository.softDelete({ id })
+    }
 
     async save(userPayload: User, sendMail: boolean = true): Promise<User> {
         let user = Object.assign(new User(), userPayload);
@@ -80,7 +102,9 @@ export class UsersService {
             .where({ email: username })
             .getOne();
         if (!user.researchGroup) {
-            this.createReseachGroupToUser(user);
+            if(!user.isSysAdmin()){
+                this.createReseachGroupToUser(user);
+            }
         }
         return user
     }

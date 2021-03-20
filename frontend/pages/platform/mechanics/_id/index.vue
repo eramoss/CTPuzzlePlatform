@@ -69,11 +69,10 @@
             </MessageAlert>
 
             <el-form-item prop="classDefinition">
-              <FormItemLabel
-                label="Especificação da mecânica"
-                :required="true"
-              />
               <code-editor
+                editorTitle="Especificação da mecânica"
+                :required="true"
+                uniqueId="mechanicClassDefinition"
                 v-model="mechanic.classDefinition"
                 @input="mechanicForm.validateField('classDefinition')"
                 height="300px"
@@ -86,12 +85,9 @@
             </MessageAlert>
 
             <el-form-item prop="responseClassDefinition">
-              <FormItemLabel
-                label="Especificação da resposta"
-                :required="true"
-              />
-
               <code-editor
+                editorTitle="Especificação da resposta"
+                :required="true"
                 @input="mechanicForm.validateField('responseClassDefinition')"
                 v-model="mechanic.responseClassDefinition"
                 height="200px"

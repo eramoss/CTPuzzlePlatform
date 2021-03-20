@@ -103,7 +103,7 @@ export class TestApplicationsService {
     }
 
     removeById(id: number): Promise<DeleteResult> {
-        return this.testApplicationRepository.delete({ id })
+        return this.testApplicationRepository.softDelete({ id })
     }
 
     async paginate(researchGroupId: number, pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {
@@ -155,7 +155,7 @@ export class TestApplicationsService {
                 method: 'POST',
                 url: urlToSendResponses,
                 help: 'Envie as respostas em formato JSON e de acordo ' +
-                    'com a classe de respostas definida na macânica de cada item.' +
+                    'com a classe de respostas definida na mecânica de cada item.' +
                     'O valor \"responseClass"\ mostra um exemplo de classe de resposta',
                 responseClass: responseClassDefinition
             },

@@ -1,27 +1,18 @@
-import Vue from 'vue';
+import User from '~/types/User';
 
 export default class RoleChecker {
-    component: Vue;
 
-    constructor(component: Vue) {
-        this.component = component;
-    }
-
-    userHasRoles(...rolesList: string[]) {
-        let user = this.component.$auth.user;
+    userHasSomeOfThisRoles(userArg: any, rolesToCheck: string[]) {
+        let user = Object.assign(new User(), userArg);
         let has = false;
         if (user) {
-            let roles = user.roles as string[];
-            if (roles) {
-                if (roles.length) {
-                    let count = 0;
-                    rolesList.forEach(r => {
-                        if (roles.indexOf(r) >= 0) {
-                            count++;
-                        }
-                    })
-                    has = count === rolesList.length
-                }
+            let userRoles = user.roles;
+            if (userRoles.length) {
+                userRoles.forEach((userRole: string) => {
+                    if (rolesToCheck.indexOf(userRole) > -1) {
+                        has = true;
+                    }
+                });
             }
         }
         return has;

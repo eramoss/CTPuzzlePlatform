@@ -44,6 +44,7 @@ export default {
         '@/plugins/index',
         '@/plugins/element-ui',
         '@/plugins/axios-accessors',
+        '@/plugins/extends',
     ],
     /*
     ** Nuxt.js dev-modules
