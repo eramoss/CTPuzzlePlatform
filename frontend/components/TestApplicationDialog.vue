@@ -90,6 +90,7 @@ export default class TestApplicationDialog extends Vue {
   }
 
   async open(test: Test = new Test()) {
+    this.tests = await this.findAllTests();
     this.testApplication = new TestApplication();
     this.testApplication.hash = uuidv4();
     this.testApplication.test = test;
