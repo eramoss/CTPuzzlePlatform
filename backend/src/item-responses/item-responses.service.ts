@@ -23,17 +23,26 @@ export class ItemResponsesService {
         return itemResponse.score
     }
 
-    async calculateScore(itemResponse: ItemResponse): Promise<Score> {
-        let item = await this.itemsService.getById(itemResponse.testItem.item.id);
-        let mechanic = item.mechanic
+    
 
+    async calculateScore(itemResponse: ItemResponse): Promise<Score> {
         let score: Score;
         let text = ""
+
         try {
+
+            let item = await this.itemsService.getById(itemResponse.testItem.item.id);
+            let mechanic = item.mechanic
+
+            const responseClassName = mechanic.getResponseClassName();
+            const createResponseFromJson = `function(){
+                return Object.assign(new ${responseClassName}(), ${itemResponse.response})
+            }`;
+
             let scoreFunctionResult = await this.scoreFnService.calculateScore({
                 mechanic,
                 item: `${item.itemDefinition}()`,
-                response: itemResponse.response,
+                response: `${createResponseFromJson}()`,
             })
             text = scoreFunctionResult.response
             score = JSON.parse(scoreFunctionResult.response) as Score

@@ -3,6 +3,7 @@
     <!-- <textarea v-model="code" :style="{ width: width, height: height }"/> -->
     <span class="editorTitle-editor" v-show="editorTitle">
       <div>
+        <b style="font-size: 9pt; color #defffe">{{ language }}</b>
         <form-item-label :label="editorTitle" :required="required" />
         <i v-if="readonly">(apenas leitura)</i>
       </div>
@@ -74,7 +75,6 @@ export default class CodeEditor extends Vue {
 
   // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorminimapoptions.html
 
-
   get options() {
     return {
       scrollBeyondLastLine: false,
@@ -83,6 +83,7 @@ export default class CodeEditor extends Vue {
       //theme: "vs-dark",
       readOnly: this.readonly,
       roundedSelection: true,
+      automaticLayout: true,
       language: this.language,
       fontSize: this.fontSize,
       minimap: {

@@ -50,6 +50,7 @@ export default class ItemResponseScoreCell extends Vue {
 <style lang="scss">
 .error-message-popper {
   //border: 1px solid red;
+  font-size: 13pt;
 }
 .error-indicator {
   color: red;

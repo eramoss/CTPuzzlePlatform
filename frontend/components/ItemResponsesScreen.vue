@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-table :data="participation.itemResponses" v-loading="loading">
+    <el-table :data="participation.itemResponses">
       <el-table-column label="Código" prop="id" width="70"></el-table-column>
       <el-table-column label="Item" width="150">
         <template slot-scope="{ row }">
-          <div>
+          <div v-if="row.testItem">
             <nuxt-link
               target="_blank"
               :to="`/platform/items/${row.testItem.item.id}#instantiate`"
