@@ -40,7 +40,7 @@ export class TestApplicationsService {
             .where({ id })
             .leftJoinAndSelect('test-application.test', 'test')
             .leftJoinAndSelect('test-application.participations', 'participation')
-            .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
+            .leftJoinAndSelect('participation.itemResponses', 'itemResponse', `"itemResponse"."deletedAt" is null`)
             .leftJoinAndSelect('itemResponse.testItem', 'testItem')
             .leftJoinAndSelect('itemResponse.score', 'score')
             .leftJoinAndSelect('testItem.item', 'item')

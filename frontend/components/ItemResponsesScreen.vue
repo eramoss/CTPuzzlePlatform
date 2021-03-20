@@ -22,9 +22,10 @@
           <item-response-score-cell :item-response="row" />
         </template>
       </el-table-column>
-      <el-table-column label="Ações" prop="response" width="180">
+      <el-table-column label="Ações" prop="response" width="280">
         <template slot-scope="{ row }">
           <div>
+            <btn-remove @click="removeResponse(row)" title="Remover item da participação"></btn-remove>
             <el-tooltip
               content="Recalcula o escore para esse item"
               :open-delay="400"
@@ -35,9 +36,10 @@
                 icon="el-icon-video-play"
                 type="warning"
                 @click="calculateScore(row)"
-                >Recalcular</el-button
-              ></el-tooltip
-            >
+              >
+                Recalcular
+              </el-button>
+            </el-tooltip>
           </div>
         </template>
       </el-table-column>
@@ -66,9 +68,22 @@ export default class ItemResponsesScreen extends Vue {
     itemResponse: ItemResponse
   ) => Promise<string>;
 
+  @Action("item-responses/removeById") removeItemResponse!: (
+    id: number
+  ) => Promise<string>;
+
+  requestUpdate() {
+    this.$emit("request-update");
+  }
+
   async calculateScore(itemResponse: ItemResponse) {
     await this.calculateScoreFromItem(itemResponse);
-    this.$emit("request-update");
+    this.requestUpdate();
+  }
+
+  async removeResponse(itemResponse: ItemResponse) {
+    await this.removeItemResponse(itemResponse.id);
+    this.requestUpdate();
   }
 }
 </script>

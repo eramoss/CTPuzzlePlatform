@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post } from '@nestjs/common';
 import { ItemResponse } from './item-response.entity';
 import { ItemResponsesService } from './item-responses.service';
 import { Score } from './score.entity';
@@ -13,6 +13,11 @@ export class ItemResponsesController {
         return this.itemResponseService.calculateScoreAndSave(itemResponse)
     }
 
-    
+    @Delete('remove/:id')
+    removeItemById(@Param('id') itemResponseId: number): Promise<any> {
+        return this.itemResponseService.removeById(itemResponseId)
+    }
+
+
 
 }

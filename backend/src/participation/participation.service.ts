@@ -43,7 +43,7 @@ export class ParticipationService {
             .leftJoinAndSelect('participation.application', 'application')
             .leftJoinAndSelect('application.test', 'test')
             .leftJoinAndSelect('participation.user', 'user')
-            .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
+            .leftJoinAndSelect('participation.itemResponses', 'itemResponse', `"itemResponse"."deletedAt" is null`)
             .orderBy('itemResponse.id', 'ASC')
             .leftJoinAndSelect('itemResponse.testItem', 'testItem')
             .leftJoinAndSelect('itemResponse.score', 'score')
