@@ -27,8 +27,7 @@ export class ItemsController {
     @Post('paginate')
     async paginate(
         @Body() pageRequest: PageRequest, @Request() req: any): Promise<PageResponse<Item>> {
-        const researchGroupId = getResearchGroupId(req);
-        return this.itemService.paginate(researchGroupId, pageRequest);
+        return this.itemService.paginate(pageRequest);
     }
 
     @Delete('softDelete/:id')

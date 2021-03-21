@@ -162,6 +162,13 @@ export default class ApplicationsList extends Vue {
     }
 
     let pageRequest = new PageRequest(filter);
+
+    let researchGroup = ctx.$auth.user?.researchGroup;
+    if (ctx.$auth.user?.researchGroup) {
+      //@ts-ignore
+      pageRequest.andWhere = "test.researchGroup.id = " + researchGroup.id;
+    }
+
     let pageResponse: PageResponse<Test> = await ctx.store.dispatch(
       ACTION_PAGINATE_NAME,
       pageRequest

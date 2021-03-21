@@ -88,7 +88,11 @@ export default class MechanicsList extends Vue {
 
   async asyncData(ctx: Context) {
     let researchGroup = ctx.$auth.user?.researchGroup;
-    let pageRequest = new PageRequest({ researchGroup });
+    let filter = {};
+    if (ctx.$auth.user?.researchGroup) {
+      filter = { researchGroup };
+    }
+    let pageRequest = new PageRequest(filter);
     let pageResponse: PageResponse<Mechanic> = await ctx.store.dispatch(
       "mechanics/paginate",
       pageRequest

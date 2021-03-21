@@ -33,17 +33,16 @@ export class ItemsService {
         return this.itemRepository.restore({ id })
     }
 
-    async paginate(researchGroupId: number, pageRequest: PageRequest): Promise<PageResponse<Item>> {
-        let filter = pageRequest.filter
+    async paginate(pageRequest: PageRequest): Promise<PageResponse<Item>> {
         let search = pageRequest.search
         const data = await this.itemRepository.createQueryBuilder('item')
             .leftJoinAndSelect('item.mechanic', 'mechanic')
-            .where(filter)
+            .where(pageRequest.filter)
             .andWhere(new Brackets(qb => {
                 qb.where("mechanic.name like :search", { search: `%${search}%` })
                     .orWhere("item.name like :search", { search: `%${search}%` })
             }))
-            .andWhere("mechanic.researchGroup.id = :id", { id: researchGroupId })
+            .andWhere(pageRequest.andWhere)
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .getMany()

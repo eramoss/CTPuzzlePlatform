@@ -3,7 +3,7 @@ export class PageRequest {
     limit: number = 10000
     search: string = ''
     filter: any = {}
-    //andWhere: string = '1=1'
+    andWhere: string = '1=1'
     constructor(filter: any = {}) {
         this.filter = filter;
     }

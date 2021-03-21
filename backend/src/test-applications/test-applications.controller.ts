@@ -48,8 +48,7 @@ export class TestApplicationsController {
 
     @Post('paginate')
     paginate(@Body() pageRequest: PageRequest, @Request() req: any): Promise<PageResponse<TestApplication>> {
-        let researchGroupId = getResearchGroupId(req)
-        return this.testApplicationsService.paginate(researchGroupId, pageRequest)
+        return this.testApplicationsService.paginate(pageRequest)
     }
 
     @Get('public/data/:testApplicationHash/:userHash')

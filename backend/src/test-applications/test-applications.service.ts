@@ -110,7 +110,7 @@ export class TestApplicationsService {
         return this.testApplicationRepository.restore({ id })
     }
 
-    async paginate(researchGroupId: number, pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {
+    async paginate(pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {
         let where = pageRequest.filter
         const searchLike = { search: `%${pageRequest.search.toString()}%` };
         let data = await this.testApplicationRepository.createQueryBuilder('test-application')
@@ -122,7 +122,7 @@ export class TestApplicationsService {
                 qb.where("test-application.name like :search", searchLike)
                     .orWhere("test.name like :search", searchLike)
             }))
-            .andWhere('test.researchGroup.id = :id', { id: researchGroupId })
+            .andWhere(pageRequest.andWhere)
             .getMany();
         return new PageResponse(data);
     }

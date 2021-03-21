@@ -30,7 +30,7 @@ export class UsersService {
         let data = await this.userRepository.createQueryBuilder("user")
             .where(filter)
             .andWhere(new Brackets(qb => {
-                qb.where("user.name like :search", { search: `%${search}%` })
+                qb.where("lower(user.name) like :search", { search: `%${search}%` })
             }))
             .skip(pageRequest.start)
             .take(pageRequest.limit)
@@ -58,6 +58,8 @@ export class UsersService {
         if (!user.researchGroup) {
             this.createReseachGroupToUser(user);
         }
+        if (!user.roles.length)
+            user.addRole(UserRole.ADMIN);
         return this.userRepository.save(user)
     }
 
@@ -65,7 +67,6 @@ export class UsersService {
         if (!user.hash) {
             user.hash = uuidV4()
         }
-        user.addRole(UserRole.ADMIN);
         user.researchGroup = new ResearchGroup();
         user.researchGroup.name = "Grupo Pesquisa " + user.hash.substr(0, 5);
     }

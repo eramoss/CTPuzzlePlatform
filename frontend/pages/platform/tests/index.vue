@@ -116,9 +116,12 @@ export default class TestsList extends Vue {
   }
 
   async asyncData(ctx: Context) {
-    let pageRequest = new PageRequest({
-      researchGroup: ctx?.$auth?.user?.researchGroup,
-    });
+    let researchGroup = ctx.$auth.user?.researchGroup;
+    let filter = {};
+    if (ctx.$auth.user?.researchGroup) {
+      filter = { researchGroup };
+    }
+    let pageRequest = new PageRequest(filter);
     let pageResponse: PageResponse<Test> = await ctx.store.dispatch(
       "tests/paginate",
       pageRequest

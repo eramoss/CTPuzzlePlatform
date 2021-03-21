@@ -18,26 +18,58 @@
           ref="userForm"
           label-width="120px"
         >
-          <el-row>
-            <el-col :span="20">
-              <el-form-item label="Nome" prop="name">
-                <el-input v-model="user.name" />
-              </el-form-item>
-              <el-form-item label="E-mail" prop="email">
-                <el-input v-model="user.email" />
-              </el-form-item>
-              <el-form-item label="Dt. Nascimento" prop="birthDate">
-                <date-input v-model="user.birthDate" />
-              </el-form-item>
-              <el-form-item label="Senha" prop="password">
-                <el-input v-model="user.password" type="password" />
-              </el-form-item>
-              <el-form-item label="Gênero" label-width="160px">
-                <el-radio v-model="user.gender" label="M">Masculino</el-radio>
-                <el-radio v-model="user.gender" label="F">Feminino</el-radio>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <fieldset>
+            <legend>Identificação</legend>
+            <el-row>
+              <el-col :span="10">
+                <el-form-item label="Nome" prop="name">
+                  <el-input v-model="user.name" ref="firstInput" />
+                </el-form-item>
+                <el-form-item label="Dt. Nascimento" prop="birthDate">
+                  <date-input v-model="user.birthDate" />
+                </el-form-item>
+                <el-form-item label="Gênero">
+                  <el-radio v-model="user.gender" label="M">Masculino</el-radio>
+                  <el-radio v-model="user.gender" label="F">Feminino</el-radio>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </fieldset>
+          <fieldset>
+            <legend>Credenciais</legend>
+            <el-row>
+              <el-col :span="10">
+                <el-form-item label="E-mail" prop="email">
+                  <el-input v-model="user.email" />
+                </el-form-item>
+                <el-form-item label="Senha" prop="password">
+                  <el-input v-model="user.password" type="password" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </fieldset>
+          <fieldset>
+            <legend>Autorização</legend>
+            <el-row>
+              <el-col>
+                <el-form-item label="Autorizações">
+                  <el-select
+                    v-model="user.roles"
+                    multiple
+                    placeholder="Selecione"
+                  >
+                    <el-option
+                      v-for="item in roles"
+                      :key="item"
+                      :label="label(item)"
+                      :value="item"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </fieldset>
           <el-row>
             <el-col>
               <btn-save @click="save" :loading="saving" />
@@ -53,18 +85,28 @@
 import Vue from "vue";
 
 import { Component, Action, Ref } from "nuxt-property-decorator";
-import User from "~/types/User";
+import User, { getLabel, UserRole, userRoles } from "~/types/User";
 import { Context } from "@nuxt/types";
 import { ElForm } from "element-ui/types/form";
+import { ElInput } from "element-ui/types/input";
 
 @Component
 export default class UserForm extends Vue {
   user: User = new User();
   saving = false;
+  @Ref() firstInput!: ElInput;
 
   @Ref() userForm!: ElForm;
 
   @Action("users/saveUser") saveUser!: (user: User) => Promise<any>;
+
+  label(key: UserRole) {
+    return getLabel(key);
+  }
+
+  get roles() {
+    return userRoles;
+  }
 
   async asyncData(ctx: Context) {
     let user = new User();
@@ -89,7 +131,7 @@ export default class UserForm extends Vue {
         duration: 7000,
         type: "success",
         title: "Sucesso ao salvar o usuário!",
-        message: "Agora você já pode criar itens com esso usuário",
+        message: "Os dados do usuário foram salvos no banco de dados",
       });
       this.$router.push({ params: { id: data.id } });
     } catch (e) {
@@ -103,7 +145,7 @@ export default class UserForm extends Vue {
   }
 
   back() {
-    this.$router.go(-1);
+    this.$router.push("/platform/users");
   }
 
   get formRules() {
@@ -140,6 +182,10 @@ export default class UserForm extends Vue {
         },
       ],
     };
+  }
+
+  mounted() {
+    this.firstInput.focus();
   }
 }
 </script>

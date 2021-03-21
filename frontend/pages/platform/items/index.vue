@@ -103,6 +103,11 @@ export default class ItemsList extends Vue {
 
   async asyncData(ctx: Context) {
     let pageRequest = new PageRequest();
+    let researchGroup = ctx.$auth.user?.researchGroup;
+    if (ctx.$auth.user?.researchGroup) {
+      //@ts-ignore
+      pageRequest.andWhere = "mechanic.researchGroup.id = " + researchGroup.id;
+    }
     let pageResponse = await ctx.store.dispatch("items/paginate", pageRequest);
     let mechanics = await ctx.store.dispatch("mechanics/findAll");
     return { pageResponse, pageRequest, mechanics };

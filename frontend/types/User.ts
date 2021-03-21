@@ -1,5 +1,24 @@
 import ResearchGroup from "./ResearchGroup"
 
+export enum UserRole {
+    ADMIN = 'admin', STUDENT = 'student', SYSADMIN = 'sysadmin'
+}
+
+export const userRoles = [
+    UserRole.ADMIN,
+    UserRole.STUDENT,
+    UserRole.SYSADMIN,
+]
+
+export function getLabel(key: UserRole): string {
+    let names = {
+        admin: 'Administrador',
+        student: 'Aluno',
+        sysadmin: 'Administrador do systema',
+    }
+    return names[key]
+}
+
 export default class User {
     id!: number
     name!: string

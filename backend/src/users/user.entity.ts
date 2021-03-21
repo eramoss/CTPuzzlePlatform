@@ -7,6 +7,7 @@ export enum UserRole {
 
 @Entity()
 export class User {
+    
     isSysAdmin(): boolean {
         return this.roles.length == 1 && this.roles[0] == UserRole.SYSADMIN
     }
