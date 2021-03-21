@@ -5,7 +5,7 @@ import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import { TestItem } from 'src/tests/test-item.entity';
-import { Brackets, DeleteResult, Repository } from 'typeorm';
+import { Brackets, DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Item } from './item.entity';
 
 @Injectable()
@@ -25,8 +25,12 @@ export class ItemsService {
         return this.itemRepository.findOne({ id }, { relations: ['mechanic'] })
     }
 
-    removeById(id: number): Promise<DeleteResult> {
-        return this.itemRepository.delete({ id })
+    softDeleteById(id: number): Promise<DeleteResult> {
+        return this.itemRepository.softDelete({ id })
+    }
+
+    restore(id: number): Promise<UpdateResult> {
+        return this.itemRepository.restore({ id })
     }
 
     async paginate(researchGroupId: number, pageRequest: PageRequest): Promise<PageResponse<Item>> {
@@ -39,7 +43,7 @@ export class ItemsService {
                 qb.where("mechanic.name like :search", { search: `%${search}%` })
                     .orWhere("item.name like :search", { search: `%${search}%` })
             }))
-            .andWhere("mechanic.researchGroup.id = :id", {id:researchGroupId})
+            .andWhere("mechanic.researchGroup.id = :id", { id: researchGroupId })
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .getMany()

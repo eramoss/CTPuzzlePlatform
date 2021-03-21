@@ -82,6 +82,12 @@
       </el-table>
     </div>
     <test-application-dialog ref="applicationDialog" />
+    <snack-bar-remove
+      remove-action="test-applications/softDeleteById"
+      restore-action="test-applications/restore"
+      ref="snackBar"
+      @onRestore="loadData"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -94,11 +100,12 @@ import { Context } from "@nuxt/types";
 import BtnRemove from "~/components/BtnRemove.vue";
 import TestApplication from "~/types/TestApplication";
 import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
+import SnackBarRemove from "~/components/SnackBarRemove.vue";
 
 const ACTION_PAGINATE_NAME = "test-applications/paginate";
 
 @Component({
-  components: { BtnRemove, TestApplicationDialog },
+  components: { BtnRemove, TestApplicationDialog, SnackBarRemove },
   head() {
     return {
       title: "Aplicações",
@@ -111,14 +118,11 @@ export default class ApplicationsList extends Vue {
   pageRequest!: PageRequest;
   tests: Test[] = [];
   @Ref("applicationDialog") testApplicationDialog!: TestApplicationDialog;
+  @Ref() snackBar!: SnackBarRemove;
 
   @Action(ACTION_PAGINATE_NAME) paginate!: (
     pageRequest: PageRequest
   ) => Promise<PageResponse<Test>>;
-
-  @Action("test-applications/removeById") removeById!: (
-    id: number
-  ) => Promise<any>;
 
   @Watch("pageRequest", { deep: true })
   async onChangePageRequest() {
@@ -173,36 +177,8 @@ export default class ApplicationsList extends Vue {
   }
 
   async remove(testApplication: TestApplication) {
-    try {
-      let option = await this.$confirm(
-        "Tem certeza de que deseja remover a aplicação? A seguinte aplicação será removida: " +
-          testApplication.name,
-        "Remover aplicação?",
-        {
-          confirmButtonText: "Remover",
-          cancelButtonText: "Cancelar",
-          confirmButtonClass: "el-button--danger",
-        }
-      );
-      if (option === "confirm") {
-        try {
-          await this.removeById(testApplication.id);
-          this.$notify({
-            type: "success",
-            title: "Sucesso ao remover",
-            message: "A aplicação foi removida",
-          });
-          await this.loadData();
-        } catch (e) {
-          console.error(e);
-          this.$notify({
-            type: "error",
-            title: "Não foi possível remover a aplicação",
-            message: "Verifique se a aplicação não está sendo utilizada.",
-          });
-        }
-      }
-    } catch (cancel) {}
+    await this.snackBar.remove(testApplication.id);
+    this.loadData();
   }
 }
 </script>

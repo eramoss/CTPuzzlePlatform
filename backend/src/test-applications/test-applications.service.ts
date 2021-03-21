@@ -7,7 +7,7 @@ import { ParticipationService } from 'src/participation/participation.service';
 import { TestService } from 'src/tests/tests.service';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { Brackets, DeleteResult, Repository } from 'typeorm';
+import { Brackets, DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { TestApplication } from './test-application.entity';
 import { v4 as uuidv4 } from "uuid";
 import { ConfigService } from '@nestjs/config';
@@ -102,8 +102,12 @@ export class TestApplicationsService {
         return testApplication;
     }
 
-    removeById(id: number): Promise<DeleteResult> {
+    softDeleteById(id: number): Promise<DeleteResult> {
         return this.testApplicationRepository.softDelete({ id })
+    }
+
+    restore(id: number): Promise<UpdateResult> {
+        return this.testApplicationRepository.restore({ id })
     }
 
     async paginate(researchGroupId: number, pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {

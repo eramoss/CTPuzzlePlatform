@@ -21,10 +21,6 @@ export const actions: ActionTree<any, any> = {
         return $axios.$get('/test-applications/byId/' + id);
     },
 
-    /* removeById(state, id: number): Promise<AxiosResponse> {
-      return $axios.$delete('/test-applications/remove/' + id);
-    }, */
-
     paginate(state, pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {
         return $axios.$post('/test-applications/paginate', pageRequest);
     },
@@ -33,8 +29,12 @@ export const actions: ActionTree<any, any> = {
         return $axios.$get('/test-applications/findAll');
     },
 
-    removeById(state, id: number): Promise<AxiosResponse> {
-        return $axios.$delete('/test-applications/remove/' + id);
+    softDeleteById(state, id: number): Promise<AxiosResponse> {
+        return $axios.$delete('/test-applications/softDelete/' + id);
+    },
+
+    restore(state, id: number): Promise<AxiosResponse> {
+        return $axios.$get('/test-applications/restore/' + id);
     },
 
 }

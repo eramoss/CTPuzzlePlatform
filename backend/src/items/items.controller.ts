@@ -3,7 +3,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import { getResearchGroupId } from 'src/util/getClaim';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 import { Item } from './item.entity';
 import { ItemsService } from './items.service';
 
@@ -31,9 +31,14 @@ export class ItemsController {
         return this.itemService.paginate(researchGroupId, pageRequest);
     }
 
-    @Delete('remove/:id')
-    remove(@Param('id') id: number): Promise<DeleteResult> {
-        return this.itemService.removeById(id);
+    @Delete('softDelete/:id')
+    softDelete(@Param('id') id: number): Promise<DeleteResult> {
+        return this.itemService.softDeleteById(id);
+    }
+
+    @Get('restore/:id')
+    restore(@Param('id') id: number): Promise<UpdateResult> {
+        return this.itemService.restore(id);
     }
 
     @Get('findAll')

@@ -38,19 +38,28 @@
         </el-table-column>
       </el-table>
     </div>
+    <snack-bar-remove
+      remove-action="users/softDeleteById"
+      restore-action="users/restore"
+      ref="snackBar"
+      @onRestore="loadData"
+    />
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Watch, Component } from "nuxt-property-decorator";
+import { Watch, Component, Ref } from "nuxt-property-decorator";
 import { PageRequest, PageResponse } from "@/types/pagination";
 import User from "~/types/User";
-import { AxiosResponse } from "axios";
 import { Action } from "vuex-class";
 import { Context } from "@nuxt/types";
 import RoleChecker from "~/utils/RoleChecker";
+import SnackBarRemove from "~/components/SnackBarRemove.vue";
 
 @Component({
+  components: {
+    SnackBarRemove,
+  },
   head() {
     return {
       title: "Usuários",
@@ -61,6 +70,7 @@ export default class UsersList extends Vue {
   openingForm: boolean = false;
   pageResponse: PageResponse<User> = new PageResponse<User>();
   pageRequest: PageRequest = new PageRequest();
+  @Ref() snackBar!: SnackBarRemove;
 
   create() {
     this.openingForm = true;
@@ -72,45 +82,14 @@ export default class UsersList extends Vue {
   }
 
   async remove(row: User) {
-    try {
-      let option = await this.$confirm(
-        "Tem certeza de que deseja remover o usuário? A segunte mecânica será removido: " +
-          row.name,
-        "Remover usuário?",
-        {
-          confirmButtonText: "Remover",
-          cancelButtonText: "Cancelar",
-          confirmButtonClass: "el-button--danger",
-        }
-      );
-      if (option === "confirm") {
-        try {
-          await this.removeById(row.id);
-          this.$notify({
-            type: "success",
-            title: "Sucesso ao remover",
-            message: "O usuário foi removido",
-          });
-          await this.loadData();
-        } catch (e) {
-          console.error(e);
-          this.$notify({
-            type: "error",
-            title: "Erro ao remover",
-            message: "O usuário não foi removido",
-          });
-        }
-      }
-    } catch (cancel) {}
+    this.snackBar.text = `Desfazer a exclusão do usuário ${row.name}?`;
+    await this.snackBar.remove(row.id);
+    this.loadData();
   }
 
   @Action("users/paginate") paginate!: (
     pageRequest: PageRequest
   ) => Promise<PageResponse<User>>;
-
-  @Action("users/removeById") removeById!: (
-    id: number
-  ) => Promise<AxiosResponse>;
 
   @Watch("pageRequest", { deep: true })
   async onChangePageRequest() {

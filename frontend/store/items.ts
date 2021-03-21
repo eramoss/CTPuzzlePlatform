@@ -13,8 +13,12 @@ export const actions: ActionTree<any, any> = {
     return $axios.$get('/items/byId/' + id);
   },
 
-  async removeById(state, id: number): Promise<AxiosResponse> {
-    return $axios.$delete('/items/remove/' + id);
+  async softDeleteById(state, id: number): Promise<AxiosResponse> {
+    return $axios.$delete('/items/softDelete/' + id);
+  },
+
+  async restore(state, id: number): Promise<AxiosResponse> {
+    return $axios.$get('/items/restore/' + id);
   },
 
   async paginate(state, pageRequest: PageRequest): Promise<PageResponse<Item>> {

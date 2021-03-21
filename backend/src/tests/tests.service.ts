@@ -4,7 +4,7 @@ import { ItemsService } from 'src/items/items.service';
 import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { TestItem } from './test-item.entity';
 import { Test } from './test.entity';
 
@@ -40,8 +40,12 @@ export class TestService {
         }).getMany();
     }
 
-    removeById(id: number): Promise<DeleteResult> {
-        return this.testRepository.delete({ id })
+    softDeleteById(id: number): Promise<DeleteResult> {
+        return this.testRepository.softDelete({ id })
+    }
+
+    restore(id: number): Promise<UpdateResult> {
+        return this.testRepository.restore({ id })
     }
 
     async paginate(pageRequest: PageRequest): Promise<PageResponse<Test>> {

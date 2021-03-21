@@ -12,28 +12,32 @@ import { Component, Prop } from "nuxt-property-decorator";
 
 @Component
 export default class SnackBar extends Vue {
-  @Prop({ default: 5000 }) timeout!: number;
+  @Prop({ default: 10000 }) timeout!: number;
   timer = 0;
   visible = false;
   interval!: NodeJS.Timeout;
+  hideTimeout!: NodeJS.Timeout;
 
   show() {
     this.timer = this.timeout / 1000;
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+    }
     if (this.interval) {
       clearInterval(this.interval);
     }
     this.interval = setInterval(() => {
       this.timer = this.timer - 1;
-      console.log(this.timer);
     }, 1000);
     this.visible = true;
-    setTimeout(() => {
+    this.hideTimeout = setTimeout(() => {
       this.hide();
     }, this.timeout);
   }
 
   hide() {
     this.visible = false;
+    clearInterval(this.interval);
   }
 }
 </script>

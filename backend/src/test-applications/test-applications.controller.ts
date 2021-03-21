@@ -3,7 +3,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import PreparedParticipation from 'src/participation/prepared-participation.dto';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 import { TestApplication } from './test-application.entity';
 import { TestApplicationsService } from './test-applications.service';
 import { Response } from 'express';
@@ -21,9 +21,14 @@ export class TestApplicationsController {
         return this.testApplicationsService.save(testApplication);
     }
 
-    @Delete('remove/:id')
-    delete(@Param('id') id: number): Promise<DeleteResult> {
-        return this.testApplicationsService.removeById(id);
+    @Delete('softDelete/:id')
+    softDelete(@Param('id') id: number): Promise<DeleteResult> {
+        return this.testApplicationsService.softDeleteById(id);
+    }
+
+    @Get('restore/:id')
+    restore(@Param('id') id: number): Promise<UpdateResult> {
+        return this.testApplicationsService.restore(id);
     }
 
     @Get('byId/:id')

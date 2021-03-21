@@ -1,7 +1,7 @@
 <template>
-  <i style="max-width: 50px" v-if="visible" class="material-icons-outlined">{{
-    name
-  }}</i>
+  <i style="max-width: 50px" 
+     v-if="visible" 
+    class="material-icons-outlined">{{name}}</i>
 </template>
 <script lang="ts">
 import Vue from "vue";

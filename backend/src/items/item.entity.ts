@@ -1,25 +1,28 @@
 import { Mechanic } from "src/mechanics/mechanic.entity";
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn } from "typeorm";
 
 @Entity()
 export class Item {
 
-  @PrimaryGeneratedColumn()
-  id: number
+    @PrimaryGeneratedColumn()
+    id: number
 
-  @Column()
-  name: string
+    @Column()
+    name: string
 
-  @Column({ nullable: true })
-  thumbnail: string
+    @Column({ nullable: true })
+    thumbnail: string
 
-  @Column()
-  description: string
+    @Column()
+    description: string
 
-  @Column()
-  itemDefinition: string
+    @Column()
+    itemDefinition: string
 
-  @ManyToOne(type => Mechanic)
-  mechanic: Mechanic
+    @ManyToOne(type => Mechanic)
+    mechanic: Mechanic
+
+    @DeleteDateColumn()
+    deletedAt: Date
 
 }

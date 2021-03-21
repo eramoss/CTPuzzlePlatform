@@ -4,7 +4,7 @@ import { ItemsService } from 'src/items/items.service';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import { TestItem } from 'src/tests/test-item.entity';
-import { Brackets, DeleteResult, Repository } from 'typeorm';
+import { Brackets, DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Mechanic } from './mechanic.entity';
 
 @Injectable()
@@ -24,8 +24,12 @@ export class MechanicsService {
         return this.mechanicRepository.findOne({ id });
     }
 
-    removeById(id: number): Promise<DeleteResult> {
-        return this.mechanicRepository.delete({ id });
+    softDelete(id: number): Promise<DeleteResult> {
+        return this.mechanicRepository.softDelete({ id });
+    }
+
+    restore(id: number): Promise<UpdateResult> {
+        return this.mechanicRepository.restore({ id });
     }
 
     async paginate(pageRequest: PageRequest): Promise<PageResponse<Mechanic>> {

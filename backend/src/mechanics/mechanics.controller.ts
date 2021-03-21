@@ -36,10 +36,16 @@ export class MechanicsController {
         return this.mechanicsService.findAll(researchGroupId);
     }
 
-    @Delete('remove/:id')
-    async delete(@Param('id') id: number): Promise<DeleteResult> {
-        return this.mechanicsService.removeById(id);
+    @Delete('softDelete/:id')
+    async softDelete(@Param('id') id: number): Promise<DeleteResult> {
+        return this.mechanicsService.softDelete(id);
     }
+
+    @Get('restore/:id')
+    async restore(@Param('id') id: number): Promise<any> {
+        return this.mechanicsService.restore(id);
+    }
+
 
     @Get('public/instantiate/:id')
     instantiate(@Param('id') id: number): Promise<string> {

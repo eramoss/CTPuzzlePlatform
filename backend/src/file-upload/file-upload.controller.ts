@@ -17,6 +17,9 @@ export class FileUploadController {
 
     @Get('view/:filename')
     viewFile(@Param('filename') filename: string, @Res() res) {
+        if (filename == 'null') {
+            res.status(404).end();
+        }
         if (filename != 'null') {
             res.sendFile(filename, { root: this.multerConfigService.destConfigDirectory })
         }

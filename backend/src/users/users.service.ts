@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Brackets, DeleteResult, Repository } from 'typeorm';
+import { Brackets, DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { User, UserRole } from "src/users/user.entity";
 import { GeneratorService } from "src/generators/generators.service";
 import { MailerService } from "src/mailer/mailer.service";
@@ -29,12 +29,17 @@ export class UsersService {
             }))
             .skip(pageRequest.start)
             .take(pageRequest.limit)
+            .orderBy("user.name", "DESC")
             .getMany();
         return new PageResponse<User>(data);
     }
 
-    removeUserById(id: number): Promise<DeleteResult> {
+    softDeleteById(id: number): Promise<DeleteResult> {
         return this.userRepository.softDelete({ id })
+    }
+
+    restore(id: number): Promise<UpdateResult> {
+        return this.userRepository.restore({ id })
     }
 
     async save(userPayload: User, sendMail: boolean = true): Promise<User> {
@@ -99,7 +104,7 @@ export class UsersService {
             .where({ email: username })
             .getOne();
         if (!user.researchGroup) {
-            if(!user.isSysAdmin()){
+            if (!user.isSysAdmin()) {
                 this.createReseachGroupToUser(user);
             }
         }

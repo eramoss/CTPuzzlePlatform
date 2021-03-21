@@ -25,7 +25,7 @@ export class TestController {
     }
 
     @Get('findAll')
-    findAll(@Request() req:any): Promise<Test[]> {
+    findAll(@Request() req: any): Promise<Test[]> {
         const researchGroupId = getResearchGroupId(req);
         return this.testService.findAll(researchGroupId);
     }
@@ -35,10 +35,16 @@ export class TestController {
         return this.testService.paginate(pageRequest);
     }
 
-    @Delete('remove/:id')
+    @Delete('softDelete/:id')
     remove(@Param('id') id: number): Promise<DeleteResult> {
-        return this.testService.removeById(id);
+        return this.testService.softDeleteById(id);
     }
+
+    @Get('restore/:id')
+    restore(@Param('id') id: number): Promise<DeleteResult> {
+        return this.testService.restore(id);
+    }
+
 
     @Get('getPuzzleBaseUrl/:id')
     async getPuzzleBaseUrl(@Param('id') id: number): Promise<string> {

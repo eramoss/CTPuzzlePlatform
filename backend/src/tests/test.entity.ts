@@ -1,6 +1,6 @@
 import ResearchGroup from "src/research-group/research-group.entity";
 import { TestApplication } from "src/test-applications/test-application.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { TestItem } from "./test-item.entity";
 import { TestStatus } from './test-status-enum'
 
@@ -26,4 +26,7 @@ export class Test {
 
     @ManyToOne(type => ResearchGroup, { nullable: false })
     researchGroup: ResearchGroup
+
+    @DeleteDateColumn()
+    deletedAt: Date
 }

@@ -1,6 +1,6 @@
 import ResearchGroup from 'src/research-group/research-group.entity';
 import { User } from 'src/users/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn } from 'typeorm';
 
 @Entity()
 export class Mechanic {
@@ -50,6 +50,9 @@ export class Mechanic {
 
     @ManyToOne(type => ResearchGroup, { nullable: false })
     researchGroup: ResearchGroup
+
+    @DeleteDateColumn()
+    deletedAt: Date
 
 
 }

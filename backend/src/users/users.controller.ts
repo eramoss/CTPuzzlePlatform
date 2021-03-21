@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, Inject, Param, Post } from '@nestjs/common';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 import { User } from './user.entity'
 import { UsersService } from './users.service';
 
@@ -40,10 +40,14 @@ export class UsersController {
         return this.userService.paginate(pageRequest);
     }
 
-    @Delete('/remove/:id')
-    removeUser(@Param('id') id :number):Promise<DeleteResult>{
-        return this.userService.removeUserById(id);
+    @Delete('/softDelete/:id')
+    softDelete(@Param('id') id: number): Promise<DeleteResult> {
+        return this.userService.softDeleteById(id);
     }
 
+    @Get('/restore/:id')
+    restore(@Param('id') id: number): Promise<UpdateResult> {
+        return this.userService.restore(id);
+    }
 
 }

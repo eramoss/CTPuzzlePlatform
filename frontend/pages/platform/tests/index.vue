@@ -54,6 +54,12 @@
         </el-table-column>
       </el-table>
     </div>
+    <snack-bar-remove
+      remove-action="tests/softDeleteById"
+      restore-action="tests/restore"
+      ref="snackBar"
+      @onRestore="loadData"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -61,11 +67,14 @@ import Vue from "vue";
 import { Watch, Component, Ref } from "nuxt-property-decorator";
 import { PageRequest, PageResponse } from "@/types/pagination";
 import Test from "~/types/Test";
-import { AxiosResponse } from "axios";
 import { Action } from "vuex-class";
 import { Context } from "@nuxt/types";
+import SnackBarRemove from "~/components/SnackBarRemove.vue";
 
 @Component({
+  components: {
+    SnackBarRemove,
+  },
   head() {
     return {
       title: "Testes",
@@ -74,6 +83,7 @@ import { Context } from "@nuxt/types";
 })
 export default class TestsList extends Vue {
   goingCreate = false;
+  @Ref() snackBar!: SnackBarRemove;
 
   pageResponse: PageResponse<Test> = new PageResponse<Test>();
   pageRequest: PageRequest = new PageRequest();
@@ -88,46 +98,13 @@ export default class TestsList extends Vue {
   }
 
   async remove(row: Test) {
-    try {
-      let option = await this.$confirm(
-        "Tem certeza de que deseja remover o teste? O segunte teste será removido: " +
-          row.name,
-        "Remover teste?",
-        {
-          confirmButtonText: "Remover",
-          cancelButtonText: "Cancelar",
-          confirmButtonClass: "el-button--danger",
-        }
-      );
-      if (option === "confirm") {
-        try {
-          await this.removeById(row.id);
-          this.$notify({
-            type: "success",
-            title: "Sucesso ao remover",
-            message: "O teste foi removido",
-          });
-          await this.loadData();
-        } catch (e) {
-          console.error(e);
-          this.$notify({
-            type: "error",
-            title: "Não foi possível remover o teste",
-            message:
-              "Verifique se o teste não está sendo utilizado em alguma aplicação.",
-          });
-        }
-      }
-    } catch (cancel) {}
+    await this.snackBar.remove(row.id);
+    this.loadData();
   }
 
   @Action("tests/paginate") paginate!: (
     pageRequest: PageRequest
   ) => Promise<PageResponse<Test>>;
-
-  @Action("tests/removeById") removeById!: (
-    id: number
-  ) => Promise<AxiosResponse>;
 
   @Watch("pageRequest", { deep: true })
   async onChangePageRequest() {
@@ -140,7 +117,7 @@ export default class TestsList extends Vue {
 
   async asyncData(ctx: Context) {
     let pageRequest = new PageRequest({
-      researchGroup: ctx?.$auth?.user?.researchGroup
+      researchGroup: ctx?.$auth?.user?.researchGroup,
     });
     let pageResponse: PageResponse<Test> = await ctx.store.dispatch(
       "tests/paginate",

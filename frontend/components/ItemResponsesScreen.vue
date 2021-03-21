@@ -47,12 +47,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <snack-bar ref="snackBar">
-      <span>Desfazer exclusão?</span>
-      <el-button type="danger" @click="restoreSoftRemovedItem">
-        Desfazer
-      </el-button>
-    </snack-bar>
+    <snack-bar-remove
+      @onRestore="requestUpdate"
+      ref="snackBar"
+      remove-action="item-responses/removeById"
+      restore-action="item-responses/restoreById"
+    >
+    </snack-bar-remove>
   </div>
 </template>
 <script lang="ts">
@@ -61,32 +62,23 @@ import { Component, Prop, Action, Ref } from "nuxt-property-decorator";
 import Participation from "~/types/Participation";
 import ItemThumbnail from "~/components/ItemThumbnail.vue";
 import ItemResponseScoreCell from "~/components/ItemResponseScoreCell.vue";
-import SnackBar from "~/components/SnackBar.vue";
 import ItemResponse from "~/types/ItemResponse";
+import SnackBarRemove from "./SnackBarRemove.vue";
 
 @Component({
   components: {
     ItemThumbnail,
-    SnackBar,
+    SnackBarRemove,
     ItemResponseScoreCell,
   },
 })
 export default class ItemResponsesScreen extends Vue {
   @Prop() participation!: Participation;
-  @Ref("snackBar") snackBar!: SnackBar;
+  @Ref("snackBar") snackBar!: SnackBarRemove;
   @Prop({ default: false }) loading!: boolean;
-  removedIds: number[] = [];
 
   @Action("item-responses/calculateScoreFromItem") calculateScoreFromItem!: (
     itemResponse: ItemResponse
-  ) => Promise<string>;
-
-  @Action("item-responses/removeById") removeItemResponse!: (
-    id: number
-  ) => Promise<string>;
-
-  @Action("item-responses/restoreById") restoreItemResponse!: (
-    id: number
   ) => Promise<string>;
 
   requestUpdate() {
@@ -99,22 +91,8 @@ export default class ItemResponsesScreen extends Vue {
   }
 
   async removeResponse(itemResponse: ItemResponse) {
-    this.removedIds.push(itemResponse.id);
-    await this.removeItemResponse(this.removedIds[this.removedIds.length - 1]);
+    await this.snackBar.remove(itemResponse.id);
     this.requestUpdate();
-    this.showUndoRemoveMessage();
-  }
-
-  showUndoRemoveMessage() {
-    this.snackBar.show();
-  }
-
-  async restoreSoftRemovedItem() {
-    let id = this.removedIds.pop();
-    if (id) {
-      await this.restoreItemResponse(id);
-      this.requestUpdate();
-    }
   }
 }
 </script>

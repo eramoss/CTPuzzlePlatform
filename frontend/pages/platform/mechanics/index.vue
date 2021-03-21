@@ -29,18 +29,29 @@
         </el-table-column>
       </el-table>
     </div>
+    <snack-bar-remove
+      remove-action="mechanics/softDeleteById"
+      restore-action="mechanics/restore"
+      ref="snackBar"
+      @onRestore="loadData"
+    >
+    </snack-bar-remove>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Watch, Component } from "nuxt-property-decorator";
+import { Watch, Component, Ref } from "nuxt-property-decorator";
 import { PageRequest, PageResponse } from "@/types/pagination";
 import Mechanic from "~/types/Mechanic";
 import { AxiosResponse } from "axios";
 import { Action } from "vuex-class";
 import { Context } from "@nuxt/types";
+import SnackBarRemove from "~/components/SnackBarRemove.vue";
 
 @Component({
+  components: {
+    SnackBarRemove,
+  },
   head() {
     return {
       title: "Mecânicas",
@@ -51,6 +62,11 @@ export default class MechanicsList extends Vue {
   goingCreate: boolean = false;
   pageResponse: PageResponse<Mechanic> = new PageResponse<Mechanic>();
   pageRequest: PageRequest = new PageRequest();
+  @Ref() snackBar!: SnackBarRemove;
+
+  @Action("mechanics/paginate") paginate!: (
+    pageRequest: PageRequest
+  ) => Promise<PageResponse<Mechanic>>;
 
   create() {
     this.goingCreate = true;
@@ -62,48 +78,7 @@ export default class MechanicsList extends Vue {
   }
 
   async remove(row: Mechanic) {
-    try {
-      let option = await this.$confirm(
-        "Tem certeza de que deseja remover a mecânica? A segunte mecânica será removida: " +
-          row.name,
-        "Remover mecânica?",
-        {
-          confirmButtonText: "Remover",
-          cancelButtonText: "Cancelar",
-          confirmButtonClass: "el-button--danger",
-        }
-      );
-      if (option === "confirm") {
-        try {
-          await this.removeById(row.id);
-          this.$notify({
-            type: "success",
-            title: "Sucesso ao remover",
-            message: "A mecânica foi removida",
-          });
-          await this.loadData();
-        } catch (e) {
-          console.error(e);
-          this.$notify({
-            type: "error",
-            title: "Erro ao remover",
-            message: "A mecânica não foi removida",
-          });
-        }
-      }
-    } catch (cancel) {}
-  }
-
-  @Action("mechanics/paginate") paginate!: (
-    pageRequest: PageRequest
-  ) => Promise<PageResponse<Mechanic>>;
-
-  @Action("mechanics/removeById") removeById!: (
-    id: number
-  ) => Promise<AxiosResponse>;
-
-  @Watch("pageRequest", { deep: true })
-  async onChangePageRequest() {
+    await this.snackBar.remove(row.id);
     this.loadData();
   }
 
@@ -119,6 +94,11 @@ export default class MechanicsList extends Vue {
       pageRequest
     );
     return { pageResponse, pageRequest };
+  }
+
+  @Watch("pageRequest", { deep: true })
+  async onChangePageRequest() {
+    this.loadData();
   }
 }
 </script>
