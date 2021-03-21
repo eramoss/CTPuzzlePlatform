@@ -18,6 +18,9 @@ export class User {
     name: string
 
     @Column({ nullable: true })
+    birthDate: Date
+
+    @Column({ nullable: true })
     hash: string
 
     @Column()

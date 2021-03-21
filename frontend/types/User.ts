@@ -9,13 +9,11 @@ export default class User {
     password!: string
     researchGroup!: ResearchGroup
 
-    birthDay: string = "";
-    birthMonth: string = "";
-    birthYear: string = "";
+    
     roles: string[] = []
 
-    get birthDate() {
-        return `${this.birthDay}/${this.birthMonth}/${this.birthYear}`;
-    }
+    birthDate:Date
+
+    
 
 }

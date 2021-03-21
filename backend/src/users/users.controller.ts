@@ -30,6 +30,11 @@ export class UsersController {
         return this.userService.validateRecoveryLink(hash);
     }
 
+    @Get('byId/:id')
+    getUserById(@Param('id') id: number):Promise<User> {
+        return this.userService.getById(id);
+    }
+
     @Post('updatePassword')
     updatePassword(@Body() updatePasswordInfo: { hash: string, newPassword: string }): Promise<any> {
         return this.userService.updatePassword(updatePasswordInfo);

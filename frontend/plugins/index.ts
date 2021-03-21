@@ -16,6 +16,7 @@ import FiltersBox from '~/components/FiltersBox.vue'
 import FiltersBoxItem from '~/components/FiltersBoxItem.vue'
 import Icon from '~/components/Icon.vue'
 import SnackBar from '~/components/SnackBar.vue'
+import DateInput from '~/components/DateInput.vue'
 
 Vue.component('container', Container)
 Vue.component('FormItemLabel', FormItemLabel)
@@ -34,4 +35,10 @@ Vue.component('FiltersBox', FiltersBox)
 Vue.component('FiltersBoxItem', FiltersBoxItem)
 Vue.component('Icon', Icon)
 Vue.component('SnackBar', SnackBar)
+Vue.component('DateInput', DateInput)
+
+// Global
+import VueTheMask from 'vue-the-mask'
+Vue.use(VueTheMask)
+
 

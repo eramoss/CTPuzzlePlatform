@@ -29,6 +29,11 @@
 
       <el-table :data="pageResponse.data">
         <el-table-column prop="id" label="Código" width="100"></el-table-column>
+        <el-table-column
+          prop="createdAt"
+          label="Dt. Cadastro"
+          width="100"
+        ></el-table-column>
         <el-table-column prop="name" label="Nome"></el-table-column>
         <el-table-column label="Ações" width="240">
           <template slot-scope="{ row }">
@@ -102,12 +107,15 @@ export default class UsersList extends Vue {
 
   async asyncData(ctx: Context) {
     const user = Object.assign(new User(), ctx.$auth.user);
-    const researchGroup = user.researchGroup;
+    let filter = {};
     const roleChecker = new RoleChecker();
-    const pageRequest = new PageRequest({ researchGroup });
     if (roleChecker.userHasSomeOfThisRoles(user, ["admin"])) {
-      pageRequest.filter.researchGroup = { id: researchGroup.id };
+      if (user.researchGroup && user.researchGroup.id) {
+        filter = { researchGroup: user.researchGroup };
+      }
     }
+    const pageRequest = new PageRequest(filter);
+
     const pageResponse: PageResponse<User> = await ctx.store.dispatch(
       "users/paginate",
       pageRequest

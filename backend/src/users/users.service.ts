@@ -11,6 +11,11 @@ import { PageResponse } from "src/pagination/pageresponse.dto";
 
 @Injectable()
 export class UsersService {
+    getById(id: number): Promise<User> {
+        return this.userRepository.createQueryBuilder('user')
+            .where({ id })
+            .getOne()
+    }
 
     constructor(
         @InjectRepository(User)

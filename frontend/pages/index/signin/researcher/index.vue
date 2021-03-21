@@ -18,56 +18,12 @@
               ></el-input>
             </el-form-item>
 
-            <el-form-item label="Data de nascimento" label-width="160px">
-              <el-row :gutter="10" type="flex">
-                <el-col :span="6">
-                  <el-form-item prop="birthDay">
-                    <selector
-                      class="fill"
-                      @change="form.clearValidate('birthDay')"
-                      v-model="user.birthDay"
-                      placeholder="Dia"
-                    >
-                      <option v-for="day in days" :value="day" :key="day">
-                        {{ day }}
-                      </option>
-                    </selector>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item prop="birthMonth">
-                    <selector
-                      @change="form.clearValidate('birthMonth')"
-                      v-model="user.birthMonth"
-                      class="fill"
-                      placeholder="Mês"
-                    >
-                      <option
-                        v-for="m in months"
-                        :value="m.index"
-                        :label="m.name"
-                        :key="m.index"
-                      >
-                        {{ m.name }}
-                      </option>
-                    </selector>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item prop="birthYear">
-                    <selector
-                      @change="form.clearValidate('birthYear')"
-                      v-model="user.birthYear"
-                      class="fill"
-                      placeholder="Ano"
-                    >
-                      <option v-for="year in years" :value="year" :key="year">
-                        {{ year }}
-                      </option>
-                    </selector>
-                  </el-form-item>
-                </el-col>
-              </el-row>
+            <el-form-item
+              label="Data de nascimento"
+              label-width="160px"
+              prop="birthDate"
+            >
+              <date-input v-model="user.birthDate"></date-input>
             </el-form-item>
             <el-form-item label="Gênero" label-width="160px">
               <el-radio v-model="user.gender" label="M">Masculino</el-radio>
@@ -129,16 +85,8 @@ import Vue from "vue";
 import User from "~/types/User";
 import { AxiosResponse } from "axios";
 
-import { Provide, Ref } from "vue-property-decorator";
-import { Action } from "vuex-class";
-
-import Component from "vue-class-component";
+import { Ref, Action, Component } from "nuxt-property-decorator";
 import { ElForm } from "element-ui/types/form";
-
-class Month {
-  index!: string;
-  name!: string;
-}
 
 @Component({
   auth: false,
@@ -161,7 +109,8 @@ export default class UserSigninForm extends Vue {
 
   get formRules() {
     return {
-      name: [{ required: true, message: "Informe o nome", trigger: "blur" }],
+      name: [{ required: true, message: "Informe o nome", trigger: ["blur",'change'] }],
+      birthDate:[{required: true, message: 'Informe a data de nascimetno', trigger: ['blur','change']}],
       email: [
         {
           required: true,
@@ -174,70 +123,14 @@ export default class UserSigninForm extends Vue {
           trigger: ["blur", "change"],
         },
       ],
-      birthDay: [
-        {
-          required: true,
-          message: "Informe o dia de nascimento",
-          trigger: "change",
-        },
-      ],
-      birthMonth: [
-        {
-          required: true,
-          message: "Informe o mês de nascimento",
-          trigger: "change",
-        },
-      ],
-      birthYear: [
-        {
-          required: true,
-          message: "Informe o ano de nascimento",
-          trigger: "change",
-        },
-      ],
+
       password: [
         { required: true, message: "Informe a senha", trigger: "blur" },
       ],
     };
   }
 
-  @Provide() months: Month[] = [
-    { index: "01", name: "Janeiro" },
-    { index: "02", name: "Fevereiro" },
-    { index: "03", name: "Março" },
-    { index: "04", name: "Abril" },
-    { index: "05", name: "Maio" },
-    { index: "06", name: "Junho" },
-    { index: "07", name: "Julho" },
-    { index: "08", name: "Agosto" },
-    { index: "09", name: "Setembro" },
-    { index: "10", name: "Outubro" },
-    { index: "11", name: "Novembro" },
-    { index: "12", name: "Dezembro" },
-  ];
-
   @Action("users/saveUser") saveUser!: (user: User) => Promise<AxiosResponse>;
-
-  get days() {
-    let days = [];
-    for (let i = 1; i <= 31; i++) {
-      let day = i + "";
-      if (i < 10) {
-        day = "0" + i;
-      }
-      days.push(day);
-    }
-    return days;
-  }
-
-  get years() {
-    let years = [];
-    let lastYear = new Date().getFullYear() - 10;
-    for (let x = lastYear; x >= 1970; x--) {
-      years.push(x);
-    }
-    return years;
-  }
 
   async register() {
     let formValid = await this.form.validate();
