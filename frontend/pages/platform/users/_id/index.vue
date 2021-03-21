@@ -26,8 +26,15 @@
               <el-form-item label="E-mail" prop="email">
                 <el-input v-model="user.email" />
               </el-form-item>
-              <el-form-item label="Dt. Nascimento">
+              <el-form-item label="Dt. Nascimento" prop="birthDate">
                 <date-input v-model="user.birthDate" />
+              </el-form-item>
+              <el-form-item label="Senha" prop="password">
+                <el-input v-model="user.password" type="password" />
+              </el-form-item>
+              <el-form-item label="Gênero" label-width="160px">
+                <el-radio v-model="user.gender" label="M">Masculino</el-radio>
+                <el-radio v-model="user.gender" label="F">Feminino</el-radio>
               </el-form-item>
             </el-col>
           </el-row>
@@ -106,12 +113,32 @@ export default class UserForm extends Vue {
         message: "Informe o nome",
         trigger: ["change", "blur"],
       },
-      email: {
-        type: "email",
-        required: true,
-        message: "Informe um email válido",
-        trigger: ["change", "blur"],
-      },
+      birthDate: [
+        {
+          required: true,
+          message: "Informe a data de nascimetno",
+          trigger: ["blur", "change"],
+        },
+      ],
+      password: [
+        {
+          required: true,
+          message: "Informe a senha",
+          trigger: ["blur", "change"],
+        },
+      ],
+      email: [
+        {
+          required: true,
+          message: "Informe o email",
+          trigger: ["blur", "change"],
+        },
+        {
+          type: "email",
+          message: "Informe um email correto",
+          trigger: ["blur", "change"],
+        },
+      ],
     };
   }
 }

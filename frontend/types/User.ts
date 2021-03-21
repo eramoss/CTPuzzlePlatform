@@ -8,12 +8,6 @@ export default class User {
     email!: string
     password!: string
     researchGroup!: ResearchGroup
-
-    
     roles: string[] = []
-
-    birthDate:Date
-
-    
-
+    birthDate!: Date
 }

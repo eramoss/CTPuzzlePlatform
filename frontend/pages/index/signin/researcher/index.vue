@@ -28,7 +28,6 @@
             <el-form-item label="Gênero" label-width="160px">
               <el-radio v-model="user.gender" label="M">Masculino</el-radio>
               <el-radio v-model="user.gender" label="F">Feminino</el-radio>
-              <el-radio v-model="user.gender" label="O">Outro</el-radio>
             </el-form-item>
           </fieldset>
 
@@ -109,8 +108,20 @@ export default class UserSigninForm extends Vue {
 
   get formRules() {
     return {
-      name: [{ required: true, message: "Informe o nome", trigger: ["blur",'change'] }],
-      birthDate:[{required: true, message: 'Informe a data de nascimetno', trigger: ['blur','change']}],
+      name: [
+        {
+          required: true,
+          message: "Informe o nome",
+          trigger: ["blur", "change"],
+        },
+      ],
+      birthDate: [
+        {
+          required: true,
+          message: "Informe a data de nascimetno",
+          trigger: ["blur", "change"],
+        },
+      ],
       email: [
         {
           required: true,
