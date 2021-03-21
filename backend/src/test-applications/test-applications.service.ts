@@ -39,7 +39,7 @@ export class TestApplicationsService {
         return this.testApplicationRepository.createQueryBuilder('test-application')
             .where({ id })
             .leftJoinAndSelect('test-application.test', 'test')
-            .leftJoinAndSelect('test-application.participations', 'participation')
+            .leftJoinAndSelect('test-application.participations', 'participation', `"participation"."deletedAt" is null`)
             .leftJoinAndSelect('participation.itemResponses', 'itemResponse', `"itemResponse"."deletedAt" is null`)
             .leftJoinAndSelect('itemResponse.testItem', 'testItem')
             .leftJoinAndSelect('itemResponse.score', 'score')

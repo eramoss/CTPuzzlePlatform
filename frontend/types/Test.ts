@@ -10,5 +10,8 @@ export default class Test {
     items: TestItem[] = []
     applications: TestApplication[] = []
     researchGroup!: ResearchGroup
+    createdAt!:Date
+    deletedAt!:Date
+    updatedAt!:Date
 
 }

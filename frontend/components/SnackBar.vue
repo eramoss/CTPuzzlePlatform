@@ -1,8 +1,10 @@
 <template>
   <div class="snack-bar-container" :class="{ visible: visible }">
     <div class="snack-bar">
-      ({{ timer }})
-      <slot></slot>
+      <div class="snack-bar-flex">
+        <div class="snack-bar-timer">({{ timer }})</div>
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -58,15 +60,24 @@ export default class SnackBar extends Vue {
   top: 20px;
 }
 .snack-bar {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
   border-radius: 5px;
-  width: 35%;
-  background: #555;
-  color: white;
+  width: 25%;
+  background: white;
+  color: #555;
   padding: 10px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+  .snack-bar-flex {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .snack-bar-timer {
+    /* font-size: 8pt;
+    font-weight: bold;
+    color: #666; */
+  }
 }
 </style>

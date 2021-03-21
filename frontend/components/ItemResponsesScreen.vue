@@ -2,6 +2,13 @@
   <div>
     <el-table :data="participation.itemResponses">
       <el-table-column label="Código" prop="id" width="70"></el-table-column>
+      <el-table-column label="Hora" prop="createdAt" width="170">
+        <template slot-scope="{ row }">
+          <div>
+            {{ dateFormat.format(row.createdAt) }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="Item" width="150">
         <template slot-scope="{ row }">
           <div v-if="row.testItem">
@@ -64,6 +71,7 @@ import ItemThumbnail from "~/components/ItemThumbnail.vue";
 import ItemResponseScoreCell from "~/components/ItemResponseScoreCell.vue";
 import ItemResponse from "~/types/ItemResponse";
 import SnackBarRemove from "./SnackBarRemove.vue";
+import { DateFormat } from "~/utils/DateFormat";
 
 @Component({
   components: {
@@ -76,6 +84,7 @@ export default class ItemResponsesScreen extends Vue {
   @Prop() participation!: Participation;
   @Ref("snackBar") snackBar!: SnackBarRemove;
   @Prop({ default: false }) loading!: boolean;
+  dateFormat = new DateFormat();
 
   @Action("item-responses/calculateScoreFromItem") calculateScoreFromItem!: (
     itemResponse: ItemResponse

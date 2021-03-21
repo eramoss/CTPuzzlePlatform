@@ -1,6 +1,6 @@
 import Participation from "src/participation/participation.entity";
 import { TestItem } from "src/tests/test-item.entity";
-import { Column, DeleteDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Score } from "./score.entity";
 
 @Entity()
@@ -23,5 +23,11 @@ export class ItemResponse {
 
     @DeleteDateColumn()
     deletedAt: Date
+
+    @CreateDateColumn()
+    createdAt:Date
+
+    @UpdateDateColumn()
+    updatedAt:Date
 
 }

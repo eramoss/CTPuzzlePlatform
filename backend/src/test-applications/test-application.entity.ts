@@ -1,5 +1,5 @@
 import { Test } from "../tests/test.entity";
-import { Column, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import Participation from "src/participation/participation.entity";
 
 @Entity()
@@ -25,5 +25,11 @@ export class TestApplication {
 
     @DeleteDateColumn()
     deletedAt: Date
+
+    @CreateDateColumn()
+    createdAt:Date
+
+    @UpdateDateColumn()
+    updatedAt:Date
 
 }

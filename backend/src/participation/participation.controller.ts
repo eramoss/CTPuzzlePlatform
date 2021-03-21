@@ -26,10 +26,16 @@ export class ParticipationController {
         return this.service.recalculateAllResponseItems(participationId)
     }
 
-    @Delete('remove/:id')
-    removeParticipation(@Param('id') id: number): Promise<DeleteResult> {
-        return this.service.removeById(id);
+    @Delete('softDelete/:id')
+    softDelete(@Param('id') id: number): Promise<DeleteResult> {
+        return this.service.softDeleteById(id);
     }
+
+    @Get('/restore/:id')
+    restore(@Param('id') id:number):Promise<any> {
+        return this.service.restore(id);
+    }
+
 
     @Post('public/respond/:participationId/:itemId')
     saveResponse(@Param('participationId') participationId: number, @Param('itemId') itemId: number, @Body() response: any) {

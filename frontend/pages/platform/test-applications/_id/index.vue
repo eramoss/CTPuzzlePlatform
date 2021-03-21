@@ -81,7 +81,7 @@
             </el-table-column>
             <el-table-column width="220">
               <template slot-scope="{ row }">
-                <btn-remove @click="confirmRemoveParticipation(row)" />
+                <btn-remove @click="removeParticipation(row)" />
               </template>
             </el-table-column>
           </el-table>
@@ -93,6 +93,12 @@
           </el-col>
         </el-row>
       </el-form>
+      <snack-bar-remove
+        ref="snackBar"
+        remove-action="participations/softDeleteById"
+        restore-action="participations/restore"
+        @onRestore="loadData"
+      />
     </div>
   </div>
 </template>
@@ -105,6 +111,7 @@ import TestApplication from "~/types/TestApplication";
 import Test from "~/types/Test";
 import Participation from "~/types/Participation";
 import BtnRemove from "~/components/BtnRemove.vue";
+import SnackBarRemove from "~/components/SnackBarRemove.vue";
 
 const ACTION_GET_BY_ID = "test-applications/getById";
 
@@ -113,6 +120,7 @@ const ACTION_GET_BY_ID = "test-applications/getById";
     title: "Aplicação de teste",
   },
   components: {
+    SnackBarRemove,
     TestApplicationUrlInput,
     BtnRemove,
   },
@@ -121,6 +129,18 @@ export default class TestEditForm extends Vue {
   loading: boolean = false;
   testApplication: TestApplication = new TestApplication();
   downloading: boolean = false;
+  @Ref() snackBar!: SnackBarRemove;
+
+  @Action(ACTION_GET_BY_ID) getApplicationById!: (
+    id: any
+  ) => Promise<TestApplication>;
+
+  @Action("test-applications/save") saveTestApplication!: (
+    testApplication: TestApplication
+  ) => Promise<TestApplication>;
+
+  @Action("test-applications/generateItemResponsesCsv")
+  generateItemResponsesCsv!: (testApplicationId: number) => Promise<any>;
 
   async asyncData(ctx: Context) {
     let testApplication!: TestApplication;
@@ -168,57 +188,10 @@ export default class TestEditForm extends Vue {
     }
   }
 
-  @Action(ACTION_GET_BY_ID) getApplicationById!: (
-    id: any
-  ) => Promise<TestApplication>;
-
-  @Action("test-applications/save") saveTestApplication!: (
-    testApplication: TestApplication
-  ) => Promise<TestApplication>;
-
-  @Action("participations/removeById") removeParticipationById!: (
-    id: number
-  ) => Promise<any>;
-
-  async confirmRemoveParticipation(participation: Participation) {
-    try {
-      let option = await this.$confirm(
-        "Tem certeza de que deseja remover esta participação da aplicação? A participação do seguinte usuário será removida: " +
-          participation.user.name,
-        "Remover dados da participação?",
-        {
-          confirmButtonText: "Remover",
-          cancelButtonText: "Cancelar",
-          confirmButtonClass: "el-button--danger",
-        }
-      );
-      if (option === "confirm") {
-        try {
-          let index = this.testApplication.participations.indexOf(
-            participation
-          );
-          await this.removeParticipationById(participation.id);
-          this.testApplication.participations.splice(index, 1);
-          this.$notify({
-            type: "success",
-            title: "Sucesso ao remover",
-            message: "A participação foi removida",
-          });
-        } catch (e) {
-          console.error(e);
-          this.$notify({
-            type: "error",
-            title: "Não foi possível remover a participação da aplicação",
-            message: "Verifique se há algum erro ou pendência de utilização.",
-          });
-        }
-      }
-    } catch (cancel) {}
+  async removeParticipation(participation: Participation) {
+    await this.snackBar.remove(participation.id);
+    this.loadData();
   }
-
-  @Action("test-applications/generateItemResponsesCsv") generateItemResponsesCsv!: (
-    testApplicationId: number
-  ) => Promise<any>;
 
   async download() {
     try {

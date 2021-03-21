@@ -1,7 +1,7 @@
 import { ItemResponse } from "src/item-responses/item-response.entity";
 import { TestApplication } from "src/test-applications/test-application.entity";
 import { User } from "src/users/user.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export default class Participation {
@@ -11,6 +11,12 @@ export default class Participation {
 
     @ManyToOne(type => User, { nullable: false })
     user: User
+
+    @CreateDateColumn()
+    createdAt:Date
+
+    @UpdateDateColumn()
+    updatedAt:Date
 
     @Column({ nullable: true })
     finishedAt: Date
@@ -34,5 +40,8 @@ export default class Participation {
 
     @Column({ nullable: true })
     test: string
+
+    @DeleteDateColumn()
+    deletedAt: Date
 
 }

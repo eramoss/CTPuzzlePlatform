@@ -1,5 +1,5 @@
 import { Mechanic } from "src/mechanics/mechanic.entity";
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Item {
@@ -24,5 +24,11 @@ export class Item {
 
     @DeleteDateColumn()
     deletedAt: Date
+
+    @CreateDateColumn()
+    createdAt:Date
+
+    @UpdateDateColumn()
+    updatedAt:Date
 
 }

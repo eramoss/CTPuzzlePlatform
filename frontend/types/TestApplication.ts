@@ -11,5 +11,8 @@ export default class TestApplication {
     hash!: string
 
     participations: Participation[] = []
+    createdAt!:Date
+    deletedAt!:Date
+    updatedAt!:Date
 
 }

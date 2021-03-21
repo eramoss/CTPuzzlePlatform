@@ -9,5 +9,7 @@ export default class ItemResponse {
     response!: string
     score!: Score
     message!: string
-    deletedAt!: Date
+    createdAt!:Date
+    deletedAt!:Date
+    updatedAt!:Date
 }

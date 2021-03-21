@@ -7,6 +7,9 @@ export default class Item {
     mechanic!: Mechanic
     thumbnail!: string
     itemDefinition: string = ''
+    createdAt!:Date
+    deletedAt!:Date
+    updatedAt!:Date
 }
 
 export function createExampleItem(): Item {

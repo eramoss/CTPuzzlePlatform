@@ -12,8 +12,12 @@ export const actions: ActionTree<any, any> = {
         return $axios.$get('/participations/recalculateAllResponseItems/' + id);
     },
 
-    async removeById(state, id: number): Promise<AxiosResponse> {
-        return $axios.$delete('/participations/remove/' + id);
+    async softDeleteById(state, id: number): Promise<AxiosResponse> {
+        return $axios.$delete('/participations/softDelete/' + id);
+    },
+
+    async restore(state, id: number): Promise<AxiosResponse> {
+        return $axios.$get('/participations/restore/' + id);
     },
 
 }

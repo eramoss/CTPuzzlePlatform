@@ -1,6 +1,6 @@
 import ResearchGroup from "src/research-group/research-group.entity";
 import { TestApplication } from "src/test-applications/test-application.entity";
-import { Column, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { TestItem } from "./test-item.entity";
 import { TestStatus } from './test-status-enum'
 
@@ -29,4 +29,10 @@ export class Test {
 
     @DeleteDateColumn()
     deletedAt: Date
+
+    @CreateDateColumn()
+    createdAt:Date
+
+    @UpdateDateColumn()
+    updatedAt:Date
 }

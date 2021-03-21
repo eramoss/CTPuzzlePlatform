@@ -55,6 +55,7 @@ export class TestService {
             .where(pageRequest.filter)
             .leftJoinAndSelect('test.items', 'item')
             .leftJoinAndSelect('test.applications', 'application')
+            .orderBy("test.id", "DESC")
             .getMany()
         return new PageResponse(data);
     }

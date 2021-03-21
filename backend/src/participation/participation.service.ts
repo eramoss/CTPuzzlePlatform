@@ -12,7 +12,6 @@ import Participation from './participation.entity';
 @Injectable()
 export class ParticipationService {
 
-
     constructor(
         @InjectRepository(Participation) private participationRepository: Repository<Participation>,
         @InjectRepository(TestItem) private testItemRepository: Repository<TestItem>,
@@ -73,8 +72,12 @@ export class ParticipationService {
         return this.participationRepository.save(participation)
     }
 
-    removeById(id: number): Promise<DeleteResult> {
-        return this.participationRepository.delete({ id });
+    softDeleteById(id: number): Promise<DeleteResult> {
+        return this.participationRepository.softDelete({ id });
+    }
+
+    restore(id: number): Promise<any> {
+        return this.participationRepository.restore({ id });
     }
 
     getNonFinishedParticipation(testApplication: TestApplication, user: User): Promise<Participation> {
