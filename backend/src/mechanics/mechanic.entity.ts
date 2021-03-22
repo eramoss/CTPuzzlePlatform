@@ -12,7 +12,16 @@ export class Mechanic {
         responseClassDefinition = responseClassDefinition.replace('class', '');
         //Remove \n
         responseClassDefinition = responseClassDefinition.replace(/\n|\s/g, '');
+
+        responseClassDefinition.split('class').filter(it => it).map(clazz => clazz.substring(0, clazz.indexOf("{")))
         return responseClassDefinition;
+    }
+
+    getDeclaredClassesNames(): string[] {
+        return this.responseClassDefinition
+            .split('class')
+            .filter(it => it)
+            .map(clazz => clazz.substring(0, clazz.indexOf("{")).trim());
     }
 
     @PrimaryGeneratedColumn()
@@ -55,10 +64,10 @@ export class Mechanic {
     deletedAt: Date
 
     @CreateDateColumn()
-    createdAt:Date
+    createdAt: Date
 
     @UpdateDateColumn()
-    updatedAt:Date
+    updatedAt: Date
 
 
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CodeInterpreterService } from 'src/code-interpreter/code-interpreter.service';
 import { ItemsService } from 'src/items/items.service';
-import { ParticipationService } from 'src/participation/participation.service';
 import { ScoreFunctionTestService } from 'src/score-function-test/score-function-test.service';
 import { Repository } from 'typeorm';
 import { ItemResponse } from './item-response.entity';
@@ -15,6 +15,7 @@ export class ItemResponsesService {
         @InjectRepository(ItemResponse)
         private itemResponseRepository: Repository<ItemResponse>,
         private scoreFnService: ScoreFunctionTestService,
+        private codeInterpreterService: CodeInterpreterService,
         private itemsService: ItemsService) {
     }
 
@@ -42,15 +43,27 @@ export class ItemResponsesService {
             let item = await this.itemsService.getById(itemResponse.testItem.item.id);
             let mechanic = item.mechanic
 
-            const responseClassName = mechanic.getResponseClassName();
-            const createResponseFromJson = `function(){
-                return Object.assign(new ${responseClassName}(), ${itemResponse.response})
-            }`;
+            const classesNames: string[] = mechanic.getDeclaredClassesNames();
+
+            let classThatCouldBeInstantiated = ""
+            await Promise.all(classesNames.map(async responseClass => {
+                let fnAssignJsonToClass =
+                    `function(){
+                        return Object.assign(new ${responseClass}(), ${itemResponse.response})
+                    }`;
+                let isValidCode = await this.codeInterpreterService.isExecutable(
+                    `${mechanic.responseClassDefinition}
+                        console.log(${fnAssignJsonToClass}())
+                    `);
+                if (isValidCode) {
+                    classThatCouldBeInstantiated = fnAssignJsonToClass;
+                }
+            }))
 
             let scoreFunctionResult = await this.scoreFnService.calculateScore({
                 mechanic,
                 item: `${item.itemDefinition}()`,
-                response: `${createResponseFromJson}()`,
+                response: `${classThatCouldBeInstantiated}()`,
             })
             text = scoreFunctionResult.response
             score = JSON.parse(scoreFunctionResult.response) as Score
