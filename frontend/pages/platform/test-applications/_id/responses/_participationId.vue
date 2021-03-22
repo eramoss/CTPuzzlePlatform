@@ -12,9 +12,7 @@
       >
         {{ participation.application.name }}
       </el-breadcrumb-item>
-      <el-breadcrumb-item>
-        Respostas
-      </el-breadcrumb-item>
+      <el-breadcrumb-item> Respostas </el-breadcrumb-item>
     </el-breadcrumb>
     <div class="panel">
       <h2>Respostas ({{ participation.itemResponses.length }})</h2>
@@ -190,16 +188,21 @@ export default class ItemResponsesList extends Vue {
     };
   }
 
+  loadDataIfNotHidden() {
+    if (!document.hidden) {
+      this.loadData();
+    }
+  }
+
   mounted() {
     document.addEventListener(
       "visibilitychange",
-      () => {
-        if (!document.hidden) {
-          this.loadData();
-        }
-      },
+      this.loadDataIfNotHidden,
       false
     );
+  }
+  destroyed() {
+    document.removeEventListener("visibilitychange", this.loadDataIfNotHidden);
   }
 }
 </script>

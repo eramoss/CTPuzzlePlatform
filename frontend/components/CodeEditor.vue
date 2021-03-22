@@ -18,9 +18,9 @@
       @editorWillMount="prepareEditor"
       ref="editor"
       :options="options"
-      :style="{ height: `${heightPixels}px` }"
+      :style="{ height: `${calculedHeight}px` }"
     />
-    <div class="height-btns">
+    <div class="height-btns" v-if="useHeightControls">
       <el-button
         title="Adicionar linhas"
         @click="increaseHeight"
@@ -64,6 +64,7 @@ export default class CodeEditor extends Vue {
   @Prop({ default: "typescript" }) language!: string;
   @Prop({ default: "Editor" }) editorTitle!: string;
   @Prop() uniqueId!: string;
+  @Prop({ default: false }) useHeightControls!: boolean;
   @Prop({ default: false }) required!: boolean;
   @VModel({ default: "const code = {}" }) code!: string;
 
@@ -94,6 +95,14 @@ export default class CodeEditor extends Vue {
 
   @Ref("container")
   container!: HTMLElement;
+
+  get calculedHeight() {
+    let height = (this.code.split("\n").length + 2) * this.fontSize * 1.328;
+    if (this.useHeightControls) {
+      height = this.heightPixels;
+    }
+    return height;
+  }
 
   resize() {
     this.$nextTick(() => {
@@ -165,7 +174,7 @@ export default class CodeEditor extends Vue {
     border: 1px solid #ccc;
   }
   .editor:hover {
-    border-bottom: 2px solid #999;
+    //border: 2px solid #999;
   }
   .height-btns {
     width: 100%;
