@@ -57,6 +57,7 @@ export class TestApplicationsService {
             participation.itemResponses.forEach((itemResponse: ItemResponse) => {
                 let row = {
                     usuario: participation.user.id,
+                    dadosUsuario: participation.user.data,
                     item_id: itemResponse.testItem.item.id,
                     resposta: itemResponse.response,
                     escore_max: itemResponse.score.max,
