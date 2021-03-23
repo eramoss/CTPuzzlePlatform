@@ -20,30 +20,30 @@ export class ScoreFunctionTestService {
             mechanic: scoreFunctionTestDto.mechanic,
             item,
             response
-        })
+        });
     }
 
     async calculateScore(args: {
         mechanic: Mechanic,
         item: string,
-        response: string
-    }): Promise<ScoreFunctionTestResult> {
+        response: string}
+    ): Promise<ScoreFunctionTestResult> {
 
         let classDefinition = args.mechanic.classDefinition;
         let responseClassDefinition = args.mechanic.responseClassDefinition;
         let scoreFunction = args.mechanic.scoreFunction;
 
         let code = `
-        //Definição da classe
-        ${classDefinition}
+            //Definição da classe
+            ${classDefinition}
 
-        //Função da resposta
-        ${responseClassDefinition}
+            //Função da resposta
+            ${responseClassDefinition}
 
-        //Função de cálculo
-        let calculateScore = ${scoreFunction}
+            //Função de cálculo
+            let calculateScore = ${scoreFunction}
 
-        console.log(JSON.stringify(calculateScore(${args.item}, ${args.response})))
+            console.log(JSON.stringify(calculateScore(${args.item}, ${args.response})))
         `
         let response: string = await this.codeInterpreterService.execute(code);
         const testResult = new ScoreFunctionTestResult();

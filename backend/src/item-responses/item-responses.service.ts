@@ -50,8 +50,12 @@ export class ItemResponsesService {
                 item: `${item.itemDefinition}()`,
                 response: `${classThatCouldBeInstantiated}()`,
             })
-            text = scoreFunctionResult.response
-            score = JSON.parse(scoreFunctionResult.response) as Score
+            let response = scoreFunctionResult.response
+            text = response
+            let lines = response.split('\n').filter(line => !!line)
+            let scoreJson = lines[lines.length - 1]
+            console.warn('scoreJson', scoreJson)
+            score = JSON.parse(scoreJson) as Score
         } catch (e) {
             score = new Score();
             score.max = -1

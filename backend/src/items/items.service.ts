@@ -67,8 +67,8 @@ export class ItemsService {
 
     async instantiateItem(classDefinition: string, itemDefinition: string) {
         let code = `
-        ${classDefinition}
-        console.log(JSON.stringify(${itemDefinition}()))
+            ${classDefinition}
+            console.log(JSON.stringify(${itemDefinition}()))
         `
         let instantiatedItem = await this.codeInterpreterService.execute(code);
         return JSON.parse(instantiatedItem);

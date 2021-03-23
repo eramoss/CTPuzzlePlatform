@@ -35,19 +35,37 @@
                   label-width="170px"
                   prop="mechanic"
                 >
-                  <el-select
-                    value-key="id"
-                    v-model="item.mechanic"
-                    class="fill"
-                    filterable
-                  >
-                    <el-option
-                      v-for="m in availableMechanics"
-                      :key="m.id"
-                      :value="m"
-                      :label="m.name"
-                    ></el-option>
-                  </el-select>
+                  <el-row>
+                    <el-col :span="item.mechanic ? 21 : 24">
+                      <el-select
+                        value-key="id"
+                        v-model="item.mechanic"
+                        class="fill"
+                        filterable
+                      >
+                        <el-option
+                          v-for="m in availableMechanics"
+                          :key="m.id"
+                          :value="m"
+                          :label="m.name"
+                        ></el-option>
+                      </el-select>
+                    </el-col>
+                    <el-col :span="3" v-if="item.mechanic">
+                      <nuxt-link
+                        target="_blank"
+                        :to="`/platform/mechanics/${item.mechanic.id}`"
+                      >
+                        <el-button
+                          :disabled="!item.mechanic"
+                          type="text"
+                          icon="el-icon-top-right"
+                        >
+                          Acessar
+                        </el-button>
+                      </nuxt-link>
+                    </el-col>
+                  </el-row>
                 </el-form-item>
                 <el-form-item
                   prop="description"

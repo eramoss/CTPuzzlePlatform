@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { ChildProcess, spawn } from 'child_process';
+import { ChildProcess, spawn, spawnSync, SpawnSyncReturns } from 'child_process';
+
+const fs = require('fs')
 
 @Injectable()
 export class CodeInterpreterService {
@@ -23,27 +25,29 @@ export class CodeInterpreterService {
     }
 
     execute(script: string, rejectOnError: boolean = false): Promise<string> {
-        console.info(`running code:\n ${script}`)
-        return new Promise<string>((resolve, reject) => {
-            let deno: ChildProcess = spawn(this.denoLocation, ['run', '-'], { env: { 'NO_COLOR': 'true' } })
-            deno.stdout.setEncoding('utf8');
-            deno.stdout.on('data', (data: Buffer) => {
-                Logger.log('Resultado da execução:' + data)
-                resolve(data.toString('utf8'));
-            })
-            deno.stderr.on('data', (data: Buffer) => {
-                Logger.log('Resultado da falha:' + data)
-                let result = data.toString('utf8');
-                console.log(result)
-                if (!result.startsWith('Check file')) {
-                    if (rejectOnError) {
-                        reject(result);
-                    }
-                    resolve(result);
+        //console.info(`running code:\n ${script}`)
+        return this.executeSync(script, rejectOnError);
+    }
+
+    executeSync(script: string, rejectOnError: boolean): Promise<string> {
+        let path = __dirname + '/test.ts';
+        fs.writeFileSync(path, script);
+        let deno: SpawnSyncReturns<Buffer> = spawnSync(this.denoLocation, ['run', path], { env: { 'NO_COLOR': 'true' } });
+        let stderr = deno.stderr.toString()
+        if (rejectOnError) {
+            if (stderr) {
+                Promise.reject(stderr);
+            }
+        }
+        let result = deno.output.toString().split('\n')
+            .map(line => {
+                if (line.startsWith(',')) {
+                    return line.substring(1, line.length)
                 }
+                return line
             })
-            deno.stdin.write(script);
-            deno.stdin.end();
-        })
+            .filter(line => !line.startsWith('Check file:///'))
+            .join('\n')
+        return Promise.resolve(result);
     }
 }

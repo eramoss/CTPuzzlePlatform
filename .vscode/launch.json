@@ -6,6 +6,10 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "outFiles": [
+                "${workspaceFolder}/**/*.js",
+                "!**/node_modules/**"
+            ],
             "name": "Backend",
             "request": "launch",
             "type": "node-terminal",

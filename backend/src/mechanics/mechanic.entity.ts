@@ -21,7 +21,8 @@ export class Mechanic {
         return this.responseClassDefinition
             .split('class')
             .filter(it => it)
-            .map(clazz => clazz.substring(0, clazz.indexOf("{")).trim());
+            .map(clazz => clazz.substring(0, clazz.indexOf("{")).trim())
+            .filter(name => !!name.length);
     }
 
     @PrimaryGeneratedColumn()

@@ -47,7 +47,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <h3>Participantes ({{ testApplication.participations.length }})</h3>
+          <h3>Participações ({{ testApplication.participations.length }})</h3>
           <div class="flex-row">
             <btn-refresh @click="loadData"></btn-refresh>
             <el-button
@@ -69,6 +69,7 @@
               prop="user.name"
               width="250"
             />
+            
             <el-table-column label="Código do usuário" prop="user.hash" />
             <el-table-column label="Respostas" width="200">
               <template slot-scope="{ row }">
