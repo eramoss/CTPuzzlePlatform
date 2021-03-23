@@ -11,6 +11,8 @@ import { PageResponse } from "src/pagination/pageresponse.dto";
 
 @Injectable()
 export class UsersService {
+
+
     getById(id: number): Promise<User> {
         return this.userRepository.createQueryBuilder('user')
             .where({ id })
@@ -30,7 +32,7 @@ export class UsersService {
         let data = await this.userRepository.createQueryBuilder("user")
             .where(filter)
             .andWhere(new Brackets(qb => {
-                qb.where("lower(user.name) like :search", { search: `%${search}%` })
+                qb.where("lower(user.name) like :search", { search: `%${search.toLowerCase()}%` })
             }))
             .skip(pageRequest.start)
             .take(pageRequest.limit)
@@ -39,8 +41,19 @@ export class UsersService {
         return new PageResponse<User>(data);
     }
 
+    setResearchGroup(user: User, researchGroup: ResearchGroup): Promise<User> {
+        user.researchGroup = researchGroup;
+        return this.userRepository.save(user);
+    }
+
     softDeleteById(id: number): Promise<DeleteResult> {
         return this.userRepository.softDelete({ id })
+    }
+
+    async saveData(userHash: string, userData: any): Promise<any> {
+        let user = await this.userRepository.findOne({ hash: userHash })
+        user.data = userData;
+        return this.userRepository.save(user);
     }
 
     restore(id: number): Promise<UpdateResult> {

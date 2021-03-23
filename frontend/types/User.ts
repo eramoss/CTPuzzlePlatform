@@ -29,4 +29,8 @@ export default class User {
     researchGroup!: ResearchGroup
     roles: string[] = []
     birthDate!: Date
+    createdAt!: Date
+    updatedAt!: Date
+    deletedAt!: Date
+    data!: any
 }

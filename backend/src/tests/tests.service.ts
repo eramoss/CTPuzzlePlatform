@@ -28,6 +28,7 @@ export class TestService {
             .leftJoinAndSelect('test.items', 'testItem')
             .leftJoinAndSelect('testItem.item', 'item')
             .orderBy('testItem.order', 'ASC')
+            .withDeleted()
             .getOne();
         return test;
     }
@@ -66,10 +67,13 @@ export class TestService {
             .leftJoinAndSelect("test.items", 'testItem')
             .leftJoinAndSelect("testItem.item", 'item')
             .leftJoinAndSelect("item.mechanic", 'mechanic')
+            .withDeleted()
             .where({ id })
             .getOne()
-        if (test.items.length) {
-            baseUrl = test.items[0].item.mechanic.baseUrl
+        if (test) {
+            if (test.items.length) {
+                baseUrl = test.items[0].item.mechanic.baseUrl
+            }
         }
         return baseUrl;
     }

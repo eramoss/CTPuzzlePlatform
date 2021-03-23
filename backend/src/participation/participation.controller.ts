@@ -16,6 +16,11 @@ export class ParticipationController {
         this.service.saveProgress(participation)
     }
 
+    @Post('public/save-user/:userHash')
+    saveUser(@Param('userHash') userHash:string, @Body() user: any) {
+        this.service.saveUserData(userHash, user)
+    }
+
     @Get('byId/:id')
     getById(@Param('id') id: number): Promise<Participation> {
         return this.service.getById(id);

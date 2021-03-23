@@ -21,7 +21,7 @@
           <fieldset>
             <legend>Identificação</legend>
             <el-row>
-              <el-col :span="10">
+              <el-col :span="12">
                 <el-form-item label="Nome" prop="name">
                   <el-input v-model="user.name" ref="firstInput" />
                 </el-form-item>
@@ -38,7 +38,7 @@
           <fieldset>
             <legend>Credenciais</legend>
             <el-row>
-              <el-col :span="10">
+              <el-col :span="12">
                 <el-form-item label="E-mail" prop="email">
                   <el-input v-model="user.email" />
                 </el-form-item>
@@ -47,11 +47,8 @@
                 </el-form-item>
               </el-col>
             </el-row>
-          </fieldset>
-          <fieldset>
-            <legend>Autorização</legend>
             <el-row>
-              <el-col>
+              <el-col :span="12">
                 <el-form-item label="Autorizações">
                   <el-select
                     v-model="user.roles"
@@ -66,6 +63,24 @@
                     >
                     </el-option>
                   </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </fieldset>
+          <fieldset>
+            <legend>Dados</legend>
+            <el-row>
+              <el-col>
+                <el-form-item label="">
+                  <el-table size="small" :data="userData">
+                    <el-table-column
+                      label="Propriedade"
+                      prop="key"
+                      width="200"
+                    ></el-table-column>
+                    <el-table-column label="Valor" prop="data">
+                    </el-table-column>
+                  </el-table>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -100,12 +115,22 @@ export default class UserForm extends Vue {
 
   @Action("users/saveUser") saveUser!: (user: User) => Promise<any>;
 
+  get userData(): Object[] {
+    let userData: Array<{}> = [];
+    if (this.user) {
+      Object.keys(this.user.data).forEach((key: string) => {
+        userData.push({ key: key, data: this.user.data[key] });
+      });
+    }
+    return userData;
+  }
+
   label(key: UserRole) {
     return getLabel(key);
   }
 
   get roles() {
-    return userRoles;
+    return userRoles.filter((it) => it != UserRole.SYSADMIN);
   }
 
   async asyncData(ctx: Context) {

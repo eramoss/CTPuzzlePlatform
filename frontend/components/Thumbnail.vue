@@ -29,6 +29,7 @@ export default class Thumbnail extends Vue {
 </script>
 <style lang="scss">
 .image-thumbnail {
+  background-color: #eee;
   background-position: center !important;
   background-size: cover !important;
 }

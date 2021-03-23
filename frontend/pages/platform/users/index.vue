@@ -29,11 +29,11 @@
 
       <el-table :data="pageResponse.data">
         <el-table-column prop="id" label="Código" width="100"></el-table-column>
-        <el-table-column
-          prop="createdAt"
-          label="Dt. Cadastro"
-          width="100"
-        ></el-table-column>
+        <el-table-column label="Dt. Cadastro" width="200">
+          <template slot-scope="{ row }">
+            {{ dateFormat.format(row.createdAt) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="Nome"></el-table-column>
         <el-table-column label="Ações" width="240">
           <template slot-scope="{ row }">
@@ -60,6 +60,7 @@ import { Action } from "vuex-class";
 import { Context } from "@nuxt/types";
 import RoleChecker from "~/utils/RoleChecker";
 import SnackBarRemove from "~/components/SnackBarRemove.vue";
+import { DateFormat } from "~/utils/DateFormat";
 
 @Component({
   components: {
@@ -72,6 +73,7 @@ import SnackBarRemove from "~/components/SnackBarRemove.vue";
   },
 })
 export default class UsersList extends Vue {
+  dateFormat = new DateFormat();
   openingForm: boolean = false;
   pageResponse: PageResponse<User> = new PageResponse<User>();
   pageRequest: PageRequest = new PageRequest();

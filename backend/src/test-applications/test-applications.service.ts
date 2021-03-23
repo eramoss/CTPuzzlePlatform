@@ -45,6 +45,7 @@ export class TestApplicationsService {
             .leftJoinAndSelect('itemResponse.score', 'score')
             .leftJoinAndSelect('testItem.item', 'item')
             .leftJoinAndSelect('participation.user', 'user')
+            .withDeleted()
             .getOne();
     }
 
@@ -94,6 +95,7 @@ export class TestApplicationsService {
         const testApplication = await this.testApplicationRepository
             .createQueryBuilder('test-application')
             .leftJoinAndSelect('test-application.test', 'test')
+            .leftJoinAndSelect('test.researchGroup', 'researchGroup')
             .leftJoinAndSelect('test.items', 'testItem')
             .orderBy('testItem.order', 'ASC')
             .leftJoinAndSelect('testItem.item', 'item')
@@ -140,7 +142,7 @@ export class TestApplicationsService {
         const apiUrl = this.configService.get('API_URL');
         const urlToSendResponses = `${apiUrl}/participations/public/respond/${participation.id}/<item_id>`
         const urlToSendProgress = `${apiUrl}/participations/public/save-progress`
-        //const urlToSendUserData = `${apiUrl}/participations/public/save-progress`
+        const urlToSendUserData = `${apiUrl}/participations/public/save-user/${userHash}`
 
         let responseClassDefinition = ''
         try {
@@ -158,16 +160,24 @@ export class TestApplicationsService {
             urlToSendResponses: {
                 method: 'POST',
                 url: urlToSendResponses,
-                help: 'Envie as respostas em formato JSON e de acordo ' +
-                    'com a classe de respostas definida na mecânica de cada item.' +
-                    'O valor \"responseClass"\ mostra um exemplo de classe de resposta',
+                help: `Envie as respostas em formato JSON e de acordo 
+com a classe de respostas definida na mecânica de cada item.
+O valor \"responseClass"\ mostra um exemplo de classe de resposta`,
                 responseClass: responseClassDefinition
             },
             urlToSendProgress: {
                 method: 'PUT',
                 url: urlToSendProgress,
-                help: "Ao acessar um item, chame essa url enviando um json no formato { id: id_da_participacao, lastVisitedItemId: id_do_ultimo_item_visitado } "
-            }
+                help: `Ao acessar um item,
+chame essa url enviando um JSON no formato { id: id_da_participacao, lastVisitedItemId: id_do_ultimo_item_visitado }. Exemplo:
+curl -X PUT --header 'Content-Type: application/json' -d '{"id": ${participation.id}, "lastVisitedItemId": ${participation.lastVisitedItemId}}' ${urlToSendProgress}`
+            },
+            urlToSendUserData: {
+                method: 'POST',
+                url: urlToSendUserData,
+                help: `Envie um JSON com as informações do usuário. Exemplo:
+curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "idade": 10}' ${urlToSendUserData}`
+            },
         } as PreparedParticipation
 
         return preparedParticipation;
@@ -183,7 +193,11 @@ export class TestApplicationsService {
             user.email = user.hash + '@mail.com'
 
         const testApplication: TestApplication = await this.getByHash(testApplicationHash);
+
         const savedUser = await this.usersService.saveOrGetByHash(user);
+        if (!savedUser.researchGroup) {
+            this.usersService.setResearchGroup(savedUser, testApplication.test.researchGroup);
+        }
 
         let participation = await this.participationService.getNonFinishedParticipation(testApplication, savedUser);
         let testJson = await this.testService.generateJson(testApplication.test.id)

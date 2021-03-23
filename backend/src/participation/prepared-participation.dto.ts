@@ -11,6 +11,12 @@ export class UrlToSendResponses {
     responseClass: string
 }
 
+export class UrlToSendUserData {
+    method: string
+    url: string
+    help: string
+}
+
 export default class PreparedParticipation {
 
     lastVisitedItemId:number
@@ -18,5 +24,6 @@ export default class PreparedParticipation {
     test: string
     urlToSendResponses: UrlToSendResponses
     urlToSendProgress: UrlToSendProgress
+    urlToSendUserData: UrlToSendUserData
 
 }

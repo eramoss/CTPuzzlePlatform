@@ -111,14 +111,14 @@
           <el-col>
             <btn-save @click="save" :loading="saving" />
             <btn-back @click="back" />
-            <el-button
+            <!-- <el-button
               type="primary"
               @click="genereateTestJson"
               icon=""
               :disabled="!test.id"
             >
               Gerar JSON
-            </el-button>
+            </el-button> -->
           </el-col>
         </el-row>
       </el-form>
@@ -279,6 +279,9 @@ export default class TestEditForm extends Vue {
     }
     if (id != "new") {
       test = await ctx.store.dispatch("tests/getById", id);
+    }
+    if (!test) {
+      test = new Test();
     }
     let selectedItems = test.items || [];
     let availableItems = await ctx.store.dispatch("items/findAll");

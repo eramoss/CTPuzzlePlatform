@@ -6,17 +6,24 @@ import { Score } from 'src/item-responses/score.entity';
 import { TestApplication } from 'src/test-applications/test-application.entity';
 import { TestItem } from 'src/tests/test-item.entity';
 import { User } from 'src/users/user.entity';
+import { UsersService } from 'src/users/users.service';
 import { DeleteResult, Repository } from 'typeorm';
 import Participation from './participation.entity';
 
 @Injectable()
 export class ParticipationService {
 
+
     constructor(
         @InjectRepository(Participation) private participationRepository: Repository<Participation>,
         @InjectRepository(TestItem) private testItemRepository: Repository<TestItem>,
-        private itemResponseService: ItemResponsesService
+        private itemResponseService: ItemResponsesService,
+        private userService: UsersService,
     ) { }
+
+    saveUserData(userHash: string, user: any): Promise<any> {
+        return this.userService.saveData(userHash, user)
+    }
 
     async saveProgress(participation: Participation) {
         let id = participation.id;

@@ -1,5 +1,5 @@
 import ResearchGroup from 'src/research-group/research-group.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export enum UserRole {
     ADMIN = 'admin', STUDENT = 'student', SYSADMIN = 'sysadmin'
@@ -7,7 +7,8 @@ export enum UserRole {
 
 @Entity()
 export class User {
-    
+
+
     isSysAdmin(): boolean {
         return this.roles.length == 1 && this.roles[0] == UserRole.SYSADMIN
     }
@@ -56,8 +57,21 @@ export class User {
         }
     }
 
+    @CreateDateColumn()
+    createdAt: Date
+
+    @UpdateDateColumn()
+    updatedAt: Date
+
     @DeleteDateColumn()
     deletedAt: Date
+
+    @Column({
+        type: 'jsonb',
+        default: () => "'{}'",
+        nullable: false,
+    })
+    data: Object;
 
 }
 
