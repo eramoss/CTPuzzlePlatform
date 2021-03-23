@@ -14,7 +14,7 @@ import { ConfigService } from '@nestjs/config';
 import PreparedParticipation from 'src/participation/prepared-participation.dto';
 import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { buildCsv } from 'src/util/download';
-import { Response } from 'express';
+import { response, Response } from 'express';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
 
 @Injectable()
@@ -53,11 +53,27 @@ export class TestApplicationsService {
         const testApplication = await this.getById(testApplicationId);
         const rows: any[] = []
         let responseProperties: string[] = []
+        let userProperties: string[] = []
+        const labels = [
+            { label: 'usuario', value: 'usuario' },
+            //{ label: 'data', value: 'data' },
+            { label: 'item_id', value: 'item_id' },
+            { label: 'resposta', value: 'resposta' },
+        ]
+
         testApplication.participations.map((participation: Participation) => {
+            if (participation.user.data) {
+                userProperties = Object.keys(participation.user.data)
+                userProperties.forEach(prop => {
+                    if (!labels.some(l => l.label == prop)) {
+                        labels.splice(1, 0, { label: prop, value: prop })
+                    }
+                });
+            }
             participation.itemResponses.forEach((itemResponse: ItemResponse) => {
                 let row = {
                     usuario: participation.user.id,
-                    dadosUsuario: participation.user.data,
+                    //data: participation.user.data,
                     item_id: itemResponse.testItem.item.id,
                     resposta: itemResponse.response,
                     escore_max: itemResponse.score.max,
@@ -67,6 +83,9 @@ export class TestApplicationsService {
                 if (!responseProperties.length) {
                     responseProperties = Object.keys(responseJson)
                 }
+                userProperties.forEach((key: string) => {
+                    row[key] = participation.user.data[key]
+                })
                 responseProperties.forEach((key: string) => {
                     row[key] = responseJson[key]
                 })
@@ -74,11 +93,8 @@ export class TestApplicationsService {
             })
         })
 
-        const labels = [
-            { label: 'usuario', value: 'usuario' },
-            { label: 'item_id', value: 'item_id' },
-            { label: 'resposta', value: 'resposta' },
-        ]
+
+
 
         responseProperties.forEach(prop => {
             labels.push({ label: prop, value: prop })
