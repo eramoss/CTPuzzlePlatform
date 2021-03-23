@@ -53,7 +53,6 @@
                     </el-col>
                     <el-col :span="3" v-if="item.mechanic">
                       <nuxt-link
-                        target="_blank"
                         :to="`/platform/mechanics/${item.mechanic.id}`"
                       >
                         <el-button

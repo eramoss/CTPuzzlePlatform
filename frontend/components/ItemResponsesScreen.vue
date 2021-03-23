@@ -13,7 +13,6 @@
         <template slot-scope="{ row }">
           <div v-if="row.testItem">
             <nuxt-link
-              target="_blank"
               :to="`/platform/items/${row.testItem.item.id}#instantiate`"
             >
               <el-button type="text">

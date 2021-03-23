@@ -60,8 +60,8 @@ export class ItemResponsesService {
             score = new Score();
             score.max = -1
             score.score = -1
-            score.message = text;
         }
+        score.message = text;
         return score
     }
 
