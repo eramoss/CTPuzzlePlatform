@@ -116,7 +116,15 @@
                   icon="el-icon-video-play"
                   @click="openTestDialog"
                 >
-                  Editar função de cálculo de escore
+                  1 - Editar função de cálculo de escore
+                </el-button>
+                <el-button
+                  :disabled="!mechanic.id"
+                  type="warning"
+                  icon="el-icon-document-checked"
+                  @click="createScoreFunctionTestCases"
+                >
+                  2 - Criar casos de teste para função de escore
                 </el-button>
               </div>
               <!-- <code-editor
@@ -127,8 +135,8 @@
               >
                 <template slot="bar"> </template>
               </code-editor> -->
-              <score-function-test-form
-                ref="scoreFunctionTestForm"
+              <score-function-test-dialog
+                ref="scoreFunctionTestDialog"
                 v-model="mechanic"
               />
             </el-form-item>
@@ -155,21 +163,21 @@ import { AxiosResponse } from "axios";
 import { ElForm } from "element-ui/types/form";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
-import ScoreFunctionTestForm from "~/components/ScoreFunctionTestForm.vue";
+import ScoreFunctionTestDialog from "~/components/ScoreFunctionTestDialog.vue";
 import User from "~/types/User";
 
 @Component({
   head: {
     title: "Mecânica e puzzle",
   },
-  components: { CodeEditor, ScoreFunctionTestForm },
+  components: { CodeEditor, ScoreFunctionTestDialog },
 })
 export default class MechanicEditForm extends Vue {
   saving: boolean = false;
   mechanic!: Mechanic;
   @Ref("mechanicForm") mechanicForm!: ElForm;
   @Ref("nameInput") nameInput!: ElInput;
-  @Ref() scoreFunctionTestForm!: ScoreFunctionTestForm;
+  @Ref() scoreFunctionTestDialog!: ScoreFunctionTestDialog;
 
   get formRules() {
     return {
@@ -205,7 +213,7 @@ export default class MechanicEditForm extends Vue {
   }
 
   openTestDialog() {
-    this.scoreFunctionTestForm.show();
+    this.scoreFunctionTestDialog.show();
   }
 
   async asyncData(ctx: Context) {
@@ -252,6 +260,11 @@ export default class MechanicEditForm extends Vue {
     } finally {
       this.saving = false;
     }
+  }
+
+  async createScoreFunctionTestCases() {
+    await this.save();
+    this.$router.push("/platform/mechanics/scoreFunctionTestCases/"+this.mechanic.id);
   }
 
   back() {

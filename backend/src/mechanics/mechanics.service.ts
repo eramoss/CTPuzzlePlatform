@@ -21,7 +21,11 @@ export class MechanicsService {
     }
 
     getById(id: number): Promise<Mechanic> {
-        return this.mechanicRepository.findOne({ id });
+        return this.mechanicRepository.createQueryBuilder('mechanic')
+            .leftJoinAndSelect('mechanic.itemTestCases', 'itemTestCase')
+            .leftJoinAndSelect('itemTestCase.responseTestCases', 'responseTestCase')
+            .where({ id })
+            .getOne();
     }
 
     softDelete(id: number): Promise<DeleteResult> {

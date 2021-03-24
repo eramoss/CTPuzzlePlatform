@@ -1,6 +1,7 @@
 import ResearchGroup from 'src/research-group/research-group.entity';
+import { ItemTestCase } from 'src/score-function-test/item-test-case.entity';
 import { User } from 'src/users/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class Mechanic {
@@ -54,6 +55,9 @@ export class Mechanic {
 
     @Column()
     responseInstantiation: string
+
+    @OneToMany(type => ItemTestCase, itemTestCase => itemTestCase.mechanic, { cascade: true })
+    itemTestCases: ItemTestCase[]
 
     @ManyToOne(type => User, { nullable: false })
     user: User

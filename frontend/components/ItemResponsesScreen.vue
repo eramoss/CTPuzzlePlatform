@@ -25,7 +25,7 @@
       <el-table-column label="Resposta" prop="response" />
       <el-table-column label="Escore" prop="score" width="150">
         <template slot-scope="{ row }">
-          <item-response-score-cell :item-response="row" />
+          <item-response-score-cell :score="row.score" />
         </template>
       </el-table-column>
       <el-table-column label="Ações" prop="response" width="280">

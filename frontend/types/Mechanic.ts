@@ -1,3 +1,4 @@
+import { ItemTestCase } from "./ItemTestCase";
 import ResearchGroup from "./ResearchGroup";
 import User from "./User"
 
@@ -18,9 +19,10 @@ export default class Mechanic {
     responseInstantiation: string = ''
     user!: User
     researchGroup!: ResearchGroup
-    createdAt!:Date
-    deletedAt!:Date
-    updatedAt!:Date
+    itemTestCases: ItemTestCase[] = []
+    createdAt!: Date
+    deletedAt!: Date
+    updatedAt!: Date
 
     constructor(name: string, description: string, classDefinition: string, responseClassDefinition: string, scoreFunction: string) {
         this.name = name;
