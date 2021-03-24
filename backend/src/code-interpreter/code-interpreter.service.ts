@@ -39,7 +39,11 @@ export class CodeInterpreterService {
                 Promise.reject(stderr);
             }
         }
-        let result = deno.output.toString().split('\n')
+        let result = this.removeUndesiredLines(deno)
+        return Promise.resolve(result);
+    }
+    removeUndesiredLines(deno: SpawnSyncReturns<Buffer>): string {
+        return deno.output.toString().split('\n')
             .map(line => {
                 if (line.startsWith(',')) {
                     return line.substring(1, line.length)
@@ -48,6 +52,5 @@ export class CodeInterpreterService {
             })
             .filter(line => !line.startsWith('Check file:///'))
             .join('\n')
-        return Promise.resolve(result);
     }
 }
