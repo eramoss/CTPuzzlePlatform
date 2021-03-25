@@ -5,18 +5,6 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn, Cr
 
 @Entity()
 export class Mechanic {
-    getResponseClassName(): string {
-        let responseClassDefinition = this.responseClassDefinition;
-        //Remove all between {}
-        responseClassDefinition = responseClassDefinition.replace(/\{(.|\n)*\}/gm, '')
-        //Remove class token
-        responseClassDefinition = responseClassDefinition.replace('class', '');
-        //Remove \n
-        responseClassDefinition = responseClassDefinition.replace(/\n|\s/g, '');
-
-        responseClassDefinition.split('class').filter(it => it).map(clazz => clazz.substring(0, clazz.indexOf("{")))
-        return responseClassDefinition;
-    }
 
     getDeclaredClassesNames(): string[] {
         return this.responseClassDefinition

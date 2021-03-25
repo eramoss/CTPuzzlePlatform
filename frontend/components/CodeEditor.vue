@@ -89,6 +89,9 @@ export default class CodeEditor extends Vue {
       minimap: {
         enabled: false,
       },
+      scrollbar: {
+        alwaysConsumeMouseWheel: false,
+      },
     };
   }
 

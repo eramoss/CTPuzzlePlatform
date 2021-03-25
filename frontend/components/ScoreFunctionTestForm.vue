@@ -124,17 +124,6 @@
         height="500px"
         :readonly="true"
       />
-      <!-- <el-input type="textarea" v-model="response" rows="20"></el-input> -->
-      <!-- <template slot="footer">
-        <div>
-            <el-button
-            @click="responseDialogVisible = false"
-            type="primary"
-            icon="el-icon-close"
-            >Fechar</el-button
-            >
-        </div>
-        </template> -->
     </el-dialog>
 
     <div v-if="showTestCases">
@@ -169,131 +158,124 @@
               <h3>Caso de teste {{ index + 1 }}</h3>
             </div>
           </template> -->
-          <el-row class="test-case" :gutter="20" :key="itemTestCase.id"
-          v-for="(itemTestCase, index) in mechanic.itemTestCases">
-            <el-col :span="12">
-              <code-editor
-                :uniqueId="`itemInstantiation${itemTestCase.id}_${mechanic.id}`"
-                :editorTitle="`Função de item ${index + 1}`"
-                height="250px"
-                :fontSize="15"
-                language="typescript"
-                v-model="itemTestCase.itemInstantiation"
+      <el-row
+        class="test-case"
+        :gutter="20"
+        :key="itemTestCase.id"
+        v-for="(itemTestCase, index) in mechanic.itemTestCases"
+      >
+        <el-col :span="12">
+          <code-editor
+            :uniqueId="`itemInstantiation${itemTestCase.id}_${mechanic.id}`"
+            :editorTitle="`Função de item ${index + 1}`"
+            height="250px"
+            :fontSize="15"
+            language="typescript"
+            v-model="itemTestCase.itemInstantiation"
+          >
+            <div slot="bar">
+              <el-button
+                type="danger"
+                icon="el-icon-close"
+                title="Remover caso de teste"
+                @click="removeItemTestCase(index)"
+                >Remover</el-button
               >
-                <div slot="bar">
-                  <span>
-                    <el-button @click="showItemClass">Ver classe</el-button>
-                  </span>
-                  <el-button
-                    type="danger"
-                    icon="el-icon-close"
-                    title="Remover caso de teste"
-                    @click="removeItemTestCase(index)"
-                    >Remover</el-button
-                  >
-                </div>
-              </code-editor>
-            </el-col>
-            <el-col :span="12">
-              <div
-                :key="itemResponseTestCase.id"
-                v-for="(
-                  itemResponseTestCase, itemRespIndex
-                ) in itemTestCase.responseTestCases"
-              >
-                <el-row :gutter="20">
-                  <el-col :span="16">
-                    <code-editor
-                      :uniqueId="`responseInstantiation${mechanic.id}`"
-                      :editorTitle="`Função de resposta ${itemRespIndex + 1}`"
-                      height="250px"
-                      :fontSize="15"
-                      language="typescript"
-                      v-model="itemResponseTestCase.responseInstantiation"
-                    >
-                      <div slot="bar">
-                        <span>
-                          <el-button @click="showResponseClass"
-                            >Ver classe</el-button
-                          >
-                        </span>
-                        <el-button
-                          type="danger"
-                          icon="el-icon-close"
-                          title="Remover função de resposta do caso de teste"
-                          @click="
-                            removeResponseTestCase(itemTestCase, itemRespIndex)
-                          "
-                          >Remover</el-button
-                        >
-                      </div>
-                    </code-editor>
-                  </el-col>
-                  <el-col :span="8" class="score-area">
-                    <div>
-                      <div class="item">
-                        <form-item-label class="label" label="Valor esperado" />
-                        <el-input
-                          size="large"
-                          v-model="itemResponseTestCase.expectedScore"
-                        ></el-input>
-                      </div>
-                      <div class="item">
-                        <form-item-label class="label" label="Valor obtido" />
-                        <item-response-score-cell
-                          :score="itemResponseTestCase.score"
-                        />
-                      </div>
-
-                      <div
-                        v-if="itemResponseTestCase.score"
-                        class="item score-test-indicator"
-                      >
-                        <form-item-label
-                          class="label"
-                          label="Passou no teste?"
-                        />
-                        <div
-                          v-if="
-                            itemResponseTestCase.score.score ==
-                            itemResponseTestCase.expectedScore
-                          "
-                        >
-                          <i
-                            title="Passou no teste"
-                            class="el-icon-success green"
-                          ></i>
-                        </div>
-                        <div v-else>
-                          <i
-                            title="Não passou no teste"
-                            class="el-icon-error red"
-                          ></i>
-                        </div>
-                      </div>
-                    </div>
-                  </el-col>
-                </el-row>
-              </div>
-              <el-tooltip
-                effect="light"
-                :open-delay="400"
-                content="Adiciona uma resposta ao caso de teste"
-              >
-                <el-button
-                  icon="el-icon-plus"
-                  class="add-item-btn"
-                  type="primary"
-                  size="small"
-                  @click="addResponseTestCase(itemTestCase)"
+            </div>
+          </code-editor>
+        </el-col>
+        <el-col :span="12">
+          <div
+            :key="itemResponseTestCase.id"
+            v-for="(
+              itemResponseTestCase, itemRespIndex
+            ) in itemTestCase.responseTestCases"
+          >
+            <el-row :gutter="20">
+              <el-col :span="16">
+                <code-editor
+                  :uniqueId="`responseInstantiation${mechanic.id}`"
+                  :editorTitle="`Função de resposta ${itemRespIndex + 1}`"
+                  height="250px"
+                  :fontSize="15"
+                  language="typescript"
+                  v-model="itemResponseTestCase.responseInstantiation"
                 >
-                  Adicionar resposta
-                </el-button>
-              </el-tooltip>
-            </el-col>
-            <el-col> </el-col>
-          </el-row>
-        <!-- </el-collapse-item>
+                  <div slot="bar">
+                    <el-button
+                      type="danger"
+                      icon="el-icon-close"
+                      title="Remover função de resposta do caso de teste"
+                      @click="
+                        removeResponseTestCase(itemTestCase, itemRespIndex)
+                      "
+                      >Remover</el-button
+                    >
+                  </div>
+                </code-editor>
+              </el-col>
+              <el-col :span="8" class="score-area">
+                <div>
+                  <div class="item">
+                    <form-item-label class="label" label="Valor esperado" />
+                    <el-input
+                      size="large"
+                      v-model="itemResponseTestCase.expectedScore"
+                    ></el-input>
+                  </div>
+                  <div class="item">
+                    <form-item-label class="label" label="Valor obtido" />
+                    <item-response-score-cell
+                      :score="itemResponseTestCase.score"
+                    />
+                  </div>
+
+                  <div
+                    v-if="itemResponseTestCase.score"
+                    class="item score-test-indicator"
+                  >
+                    <form-item-label class="label" label="Passou no teste?" />
+                    <div
+                      v-if="
+                        itemResponseTestCase.score.score ==
+                        itemResponseTestCase.expectedScore
+                      "
+                    >
+                      <i
+                        title="Passou no teste"
+                        class="el-icon-success green"
+                      ></i>
+                    </div>
+                    <div v-else>
+                      <i
+                        title="Não passou no teste"
+                        class="el-icon-error red"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+          </div>
+          <el-tooltip
+            effect="light"
+            :open-delay="400"
+            content="Adiciona uma resposta ao caso de teste"
+          >
+            <el-button
+              icon="el-icon-plus"
+              class="add-item-btn"
+              type="primary"
+              size="small"
+              @click="addResponseTestCase(itemTestCase)"
+            >
+              Adicionar resposta
+            </el-button>
+          </el-tooltip>
+        </el-col>
+        <el-col> </el-col>
+      </el-row>
+      <!-- </el-collapse-item>
       </el-collapse> -->
 
       <div>
@@ -311,6 +293,19 @@
           >
         </el-tooltip>
         <div :class="{ 'floating big-shadow': showTestCases }">
+          <b>Testes</b>
+          <el-tooltip content="Testes OK!">
+            <span>
+              <i title="Passou no teste" class="el-icon-success green"></i>
+              {{ qtdOkTests }}
+            </span>
+          </el-tooltip>
+          <el-tooltip content="Testes com falha">
+            <span>
+              <i title="Não passou no teste" class="el-icon-error red"></i>
+              {{ qtdErrorTests }}
+            </span>
+          </el-tooltip>
           <el-button
             icon="el-icon-video-play"
             style="font-weight: bold"
@@ -356,11 +351,12 @@ import {
 } from "nuxt-property-decorator";
 import Mechanic from "~/types/Mechanic";
 import queryString from "~/utils/utils";
-import { itemInstantiationExample, ItemTestCase } from "~/types/ItemTestCase";
 import {
-  responseInstantiationExample,
-  ResponseTestCase,
-} from "~/types/ResponseTestCase";
+  createCleanInstantiationFunctionCode,
+  createScoreFunctionCode,
+  ItemTestCase,
+} from "~/types/ItemTestCase";
+import { ResponseTestCase } from "~/types/ResponseTestCase";
 
 @Component({
   components: {
@@ -373,22 +369,12 @@ export default class ScoreFunctionTestForm extends Vue {
   bkpItem: string = "";
   bkpScoreFunction: string = "";
   responseDialogVisible = false;
-  itemClassVisible = false;
-  responseClassVisible = false;
   @Prop({ default: false }) showTestFunction!: boolean;
   @Prop({ default: false }) showTestCases!: boolean;
 
   response: string = "";
   @VModel() mechanic!: Mechanic;
   runningTests = false;
-
-  showItemClass() {
-    this.itemClassVisible = true;
-  }
-
-  showResponseClass() {
-    this.responseClassVisible = true;
-  }
 
   @Watch("mechanic", { immediate: true })
   onChangeMechanic() {
@@ -403,8 +389,33 @@ export default class ScoreFunctionTestForm extends Vue {
     }
   }
 
+  get responses(): ResponseTestCase[] {
+    return this.mechanic.itemTestCases.flatMap(
+      (testCase) => testCase.responseTestCases
+    );
+  }
+
+  isTestPassed(itemResponse: ResponseTestCase): boolean {
+    let passed = false;
+    if (itemResponse.score) {
+      if (itemResponse.expectedScore) {
+        passed = itemResponse.score.score == itemResponse.expectedScore;
+      }
+    }
+    return passed;
+  }
+
+  get qtdOkTests(): number {
+    return this.responses.filter((response) => this.isTestPassed(response))
+      .length;
+  }
+
+  get qtdErrorTests(): number {
+    return this.responses.length - this.qtdOkTests;
+  }
+
   addItemTestCase() {
-    this.mechanic.itemTestCases.push(new ItemTestCase());
+    this.mechanic.itemTestCases.push(new ItemTestCase(this.mechanic));
     this.showItemTestHelp();
   }
 
@@ -428,17 +439,7 @@ export default class ScoreFunctionTestForm extends Vue {
   }
 
   addResponseTestCase(itemTestCase: ItemTestCase) {
-    let lastResponse =
-      itemTestCase.responseTestCases[itemTestCase.responseTestCases.length - 1];
-    let responseInstantiation = undefined;
-    if (lastResponse) {
-      responseInstantiation = lastResponse.responseInstantiation;
-    }
-    const responseTestCase = new ResponseTestCase();
-    if (responseInstantiation) {
-      responseTestCase.responseInstantiation = `//Cópia. Alterar!
-${responseInstantiation}`;
-    }
+    const responseTestCase = new ResponseTestCase(this.mechanic);
     itemTestCase.responseTestCases.push(responseTestCase);
   }
 
@@ -453,9 +454,12 @@ ${responseInstantiation}`;
       const testCases = await this.runTestCases(this.mechanic);
       this.mechanic.itemTestCases = testCases;
       this.$notify({
-        title: "Sucesso ao rodar testes",
-        message: "Os casos de teste foram executados",
-        type: "success",
+        title: "Os testes foram executados",
+        message:
+          this.qtdErrorTests > 0
+            ? "Alguns testes falharam"
+            : "Todos os testes passaram",
+        type: this.qtdErrorTests > 0 ? "error" : "success",
       });
     } catch (e) {
       this.$notify.error("Não foi possível rodar os casos de teste");
@@ -476,27 +480,27 @@ ${responseInstantiation}`;
 
   clearSampleItem() {
     this.bkpItem = this.mechanic.itemInstantiation;
-    this.mechanic.itemInstantiation = itemInstantiationExample();
+    this.mechanic.itemInstantiation = createCleanInstantiationFunctionCode(
+      this.mechanic.classDefinition,
+      "criarItem"
+    );
   }
 
   clearSampleResponse() {
     this.bkpResponse = this.mechanic.responseInstantiation;
-    this.mechanic.responseInstantiation = responseInstantiationExample();
+    this.mechanic.responseInstantiation = createCleanInstantiationFunctionCode(
+      this.mechanic.responseClassDefinition,
+      "criarResposta",
+      "resposta"
+    );
   }
 
   clearSampleScoreFunction() {
     this.bkpScoreFunction = this.mechanic.scoreFunction;
-    this.mechanic.scoreFunction = `// Defina a função de cálculo com os parâmetros de item e resposta:
-function calculaScore(item: MeuItem, resposta: MinhaReposta){ //<-- Substitua os tipos dos parâmetros com os tipos definidos na mecânica
-//  Implemente o cálculo da nota
-    let nota = 0;
-    if(item.respostaEsperada == resposta.valorInformado){
-        if(item.tempoParaResponser == 2 * resposta.tempoMaximo){
-            nota = 5;
-        }
-    }
-   return { score: nota, max: 10 }; //<-- O retorno deve ser nesse formato: { score: nota, max: nota máxima }
-}`;
+    this.mechanic.scoreFunction = createScoreFunctionCode(
+      this.mechanic.classDefinition,
+      this.mechanic.responseClassDefinition
+    );
   }
 
   testItem() {

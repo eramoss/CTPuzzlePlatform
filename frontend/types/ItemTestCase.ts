@@ -1,33 +1,42 @@
 import Mechanic from "./Mechanic"
 import { ResponseTestCase } from "./ResponseTestCase"
-import { v4 as uuidV4 } from 'uuid';
+import { getDeclaredClassesNames } from "~/utils/utils";
 
 export class ItemTestCase {
-
 
     id!: number
     itemInstantiation!: string
     mechanic!: Mechanic
     responseTestCases: ResponseTestCase[] = []
 
-    constructor() {
-        this.itemInstantiation = itemInstantiationExample()
-        this.responseTestCases.push(new ResponseTestCase());
+    constructor(mechanic: Mechanic) {
+        this.itemInstantiation = createCleanInstantiationFunctionCode(mechanic.classDefinition);
+        this.responseTestCases.push(new ResponseTestCase(mechanic));
     }
-
 }
 
-export const itemInstantiationExample = function (uniqueId: any = uuidV4().substr(0, 4)) {
-    return `// Este tutorial é bem curto. Então leia.
-// Codifique uma função para criar o item do teste. Exemplo:
-function criarItem_${uniqueId}(): MeuItem {//<-- Erro de sintaxe
-    let item = new MeuItem(); //<-- Erro de sintaxe
-    //Informe os atributos do item. Exemplo:
-    //item.tempoMaximoParaResponder = 60
-    return item; //<-- retorne o item!
+export const createCleanInstantiationFunctionCode = function (classDefinition: string, fnName: string = 'criarItem', objectName:string = 'item') {
+    let clazz = getDeclaredClassesNames(classDefinition)[0]
+    return `function ${fnName}(): ${clazz} {
+    let ${objectName} = new ${clazz}();
+    ${objectName}.atributo = "valor";
+    return ${objectName};
+}`
 }
-// Há erros de sintaxe porque a classe MeuItem 
-// não é igual à definida na tela anterior.
-// Substitua "MeuItem" pelo nome da sua classe de item
-// e informe os atributos de acordo.`
+
+export const createScoreFunctionCode = function (classDefinition: string, responseDefinition:string) {
+    let itemClassName = getDeclaredClassesNames(classDefinition)[0]
+    let responseClassName = getDeclaredClassesNames(responseDefinition)[0]
+    return `function calculaScore(item: ${itemClassName}, resposta: ${responseClassName}){
+    let nota = 0;
+    // Exemplos com atributos X e Y
+    if(resposta.atributoInformadoX == item.atributoEsperadoX){
+        nota++;
+        if(resposta.atributoInformadoY == item.atributoEsperadoY){
+            nota++;
+        }
+    }
+    // Formato esperado: { score, max }
+    return { score: nota, max: 2 };
+}`
 }

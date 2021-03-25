@@ -21,3 +21,11 @@ export function downloadWithAxios(axios: NuxtAxiosInstance, url: string, filenam
         link.click();
     });
 }
+
+export function getDeclaredClassesNames(classCode: string): string[] {
+    return classCode
+        .split('class')
+        .filter(it => it)
+        .map(clazz => clazz.substring(0, clazz.indexOf("{")).trim())
+        .filter(name => !!name.length);
+}
