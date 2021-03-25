@@ -15,8 +15,9 @@
         <i class="el-icon-chat-line-square"></i>
         Mensagem
       </b>
-      <span v-if="!isError">
+      <span v-if="!isError" class="flex-row">
         <el-progress
+          style="flex-grow: 1;font-weight:bold"
           :class="{ 'progress-empty': percentage == 0 }"
           :text-inside="true"
           :stroke-width="26"
@@ -24,6 +25,7 @@
           :percentage="percentage"
           :format="format"
         ></el-progress>
+        <i class="el-icon-chat-line-square" style="color:#666; font-size:20pt"></i>
       </span>
     </el-tooltip>
   </div>
