@@ -1,9 +1,9 @@
 <template>
   <div style="width: 100%" class="editor-container">
     <!-- <textarea v-model="code" :style="{ width: width, height: height }"/> -->
+    <b class="editor-lang">{{ language }}</b>
     <span class="editorTitle-editor" v-show="editorTitle">
       <div>
-        <b style="font-size: 9pt; color #defffe">{{ language }}</b>
         <form-item-label :label="editorTitle" :required="required" />
         <i v-if="readonly">(apenas leitura)</i>
       </div>
@@ -50,7 +50,6 @@ import Vue from "vue";
 import MonacoEditor from "vue-monaco";
 import { Component, Prop, Ref, VModel, Watch } from "nuxt-property-decorator";
 import eventBus from "~/utils/eventBus";
-import { CompilerOptions } from "vue-template-compiler";
 
 @Component({
   components: {
@@ -62,7 +61,7 @@ export default class CodeEditor extends Vue {
   @Prop({ default: "100%" }) width!: string;
   @Prop({ default: "500px" }) height!: string;
   @Prop({ default: "typescript" }) language!: string;
-  @Prop({ default: "Editor" }) editorTitle!: string;
+  @Prop({}) editorTitle!: string;
   @Prop() uniqueId!: string;
   @Prop({ default: false }) useHeightControls!: boolean;
   @Prop({ default: false }) required!: boolean;
@@ -170,11 +169,20 @@ export default class CodeEditor extends Vue {
 
 <style lang="scss">
 .editor-container {
+  position: relative;
   .editor {
-    border: 1px solid #ccc;
+    border: 2px solid #ccc;
   }
   .editor:hover {
     //border: 2px solid #999;
+  }
+  .editor-lang {
+    font-size: 12pt;
+    color: rgba(0, 0, 0, 0.3);
+    position: absolute;
+    z-index: 100;
+    right: 10px;
+    bottom: 10px;
   }
   .height-btns {
     width: 100%;

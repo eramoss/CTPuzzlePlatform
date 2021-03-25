@@ -5,7 +5,7 @@
     width="95%"
     title="Playground para teste de função de escore"
   >
-    <score-function-test-form v-model="mechanic" />
+    <score-function-test-form v-model="mechanic" :showTestFunction="true" />
   </el-dialog>
 </template>
 <script lang="ts">

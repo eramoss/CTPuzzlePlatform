@@ -15,11 +15,7 @@
       </el-breadcrumb>
       <div class="panel">
         <h2>Casos de teste</h2>
-        <div style="display: none">
-          <code-editor v-model="mechanic.classDefinition" />
-          <code-editor v-model="mechanic.responseClassDefinition" />
-        </div>
-        <score-function-test-form v-model="mechanic" />
+        <score-function-test-form v-model="mechanic" :showTestCases="true" />
         <btn-save @click="save" :loading="saving"></btn-save>
       </div>
     </div>

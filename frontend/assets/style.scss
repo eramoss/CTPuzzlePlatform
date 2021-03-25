@@ -15,6 +15,10 @@ src: ~/assets/segoeui/Segoe UI Bold.ttf */
   box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px 0px !important;
 }
 
+.big-shadow {
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 40px 0px !important;
+  }
+
 .btn-big {
   border: 1px solid red;
   padding: 15px !important;
@@ -130,4 +134,12 @@ input[readonly=readonly].el-input__inner{
 }
 .red{
     color:#ff5959
+}
+
+.floating {
+    background: white;
+    padding: 10px;
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
 }
