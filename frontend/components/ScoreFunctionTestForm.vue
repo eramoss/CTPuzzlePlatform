@@ -207,14 +207,14 @@
               <el-col :span="6" class="score-area">
                 <div>
                   <div class="item">
-                    <form-item-label class="label" label="Valor esperado" />
+                    <form-item-label label="Valor esperado" />
                     <el-input
                       size="large"
                       v-model="itemResponseTestCase.expectedScore"
                     ></el-input>
                   </div>
                   <div class="item">
-                    <form-item-label class="label" label="Valor obtido" />
+                    <form-item-label label="Valor obtido" />
                     <item-response-score-cell
                       :score="itemResponseTestCase.score"
                     />
@@ -224,23 +224,23 @@
                     v-if="itemResponseTestCase.score"
                     class="item score-test-indicator"
                   >
-                    <form-item-label class="label" label="Passou no teste?" />
+                    <form-item-label label="Passou no teste?" />
                     <div
                       v-if="
                         itemResponseTestCase.score.score ==
                         itemResponseTestCase.expectedScore
                       "
                     >
+                     <el-tooltip content="Passou no teste">
                       <i
-                        title="Passou no teste"
                         class="el-icon-success green"
                       ></i>
+                     </el-tooltip>
                     </div>
                     <div v-else>
-                      <i
-                        title="Não passou no teste"
-                        class="el-icon-error red"
-                      ></i>
+                      <el-tooltip content="Não passou no teste">
+                        <i class="el-icon-error red"></i>
+                      </el-tooltip>
                     </div>
                   </div>
                 </div>
@@ -283,34 +283,44 @@
           </el-tooltip>
         </div>
         <div :class="{ 'floating big-shadow': showTestCases }">
-          <b>Testes</b>
-          <el-tooltip content="Testes OK!">
-            <span>
-              <i title="Passou no teste" class="el-icon-success green"></i>
-              {{ qtdOkTests }}
-            </span>
-          </el-tooltip>
-          <el-tooltip content="Testes com falha">
-            <span>
-              <i title="Não passou no teste" class="el-icon-error red"></i>
-              {{ qtdErrorTests }}
-            </span>
-          </el-tooltip>
-          <el-tooltip
-            effect="light"
-            content="Rodar casos de teste"
-            :open-delay="500"
-          >
-            <el-button
-              icon="el-icon-video-play"
-              style="font-weight: bold"
-              type="success"
-              @click="runTests"
-              :loading="runningTests"
+          <div>
+            <b>Testes</b>
+            <el-tooltip content="Testes OK!">
+              <span>
+                <i title="Passou no teste" class="el-icon-success green"></i>
+                {{ qtdOkTests }}
+              </span>
+            </el-tooltip>
+            <el-tooltip content="Testes com falha">
+              <span>
+                <i title="Não passou no teste" class="el-icon-error red"></i>
+                {{ qtdErrorTests }}
+              </span>
+            </el-tooltip>
+            <el-tooltip
+              effect="light"
+              content="Rodar casos de teste"
+              :open-delay="500"
             >
-              Rodar casos de teste
-            </el-button>
-          </el-tooltip>
+              <el-button
+                icon="el-icon-video-play"
+                style="font-weight: bold"
+                type="success"
+                @click="runTests"
+                :loading="runningTests"
+              >
+                Rodar casos de teste
+              </el-button>
+            </el-tooltip>
+          </div>
+          <div>
+            <span
+              class="fill green label"
+              v-show="qtdOkTests > 0 && qtdErrorTests == 0"
+            >
+              Todos os teste passaram
+            </span>
+          </div>
         </div>
       </div>
     </div>

@@ -10,13 +10,13 @@ export class ItemTestCase {
     responseTestCases: ResponseTestCase[] = []
 
     constructor(mechanic: Mechanic) {
-        this.itemInstantiation = createCleanInstantiationFunctionCode(mechanic.classDefinition);
+        this.itemInstantiation = createCleanInstantiationFunctionCode(mechanic.classDefinition, 'resp');
         this.responseTestCases.push(new ResponseTestCase(mechanic));
     }
 }
 
-export const createCleanInstantiationFunctionCode = function (classDefinition: string, fnName: string = 'criarItem', objectName:string = 'item') {
-    let clazz = getDeclaredClassesNames(classDefinition)[0]
+export const createCleanInstantiationFunctionCode = function (classDefinition: string, fnName: string = 'criarItem', objectName: string = 'item', classNamePart: string = '') {
+    let clazz = getDeclaredClassesNames(classDefinition, classNamePart)[0]
     return `function ${fnName}(): ${clazz} {
     let ${objectName} = new ${clazz}();
     ${objectName}.atributo = "valor";
@@ -24,9 +24,9 @@ export const createCleanInstantiationFunctionCode = function (classDefinition: s
 }`
 }
 
-export const createScoreFunctionCode = function (classDefinition: string, responseDefinition:string) {
+export const createScoreFunctionCode = function (classDefinition: string, responseDefinition: string) {
     let itemClassName = getDeclaredClassesNames(classDefinition)[0]
-    let responseClassName = getDeclaredClassesNames(responseDefinition)[0]
+    let responseClassName = getDeclaredClassesNames(responseDefinition, 'resp')[0]
     return `function calculaScore(item: ${itemClassName}, resposta: ${responseClassName}){
     let nota = 0;
     // Exemplos com atributos X e Y

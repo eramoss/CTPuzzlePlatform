@@ -12,6 +12,10 @@ export class ResponseTestCase {
     expectedScore!: number
 
     constructor(mechanic: Mechanic) {
-        this.responseInstantiation = createCleanInstantiationFunctionCode(mechanic.responseClassDefinition, 'criarResposta', 'resposta')
+        this.responseInstantiation = createCleanInstantiationFunctionCode(
+            mechanic.responseClassDefinition,
+            'criarResposta',
+            'resposta',
+            'resp')
     }
 }

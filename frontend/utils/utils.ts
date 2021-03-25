@@ -22,10 +22,14 @@ export function downloadWithAxios(axios: NuxtAxiosInstance, url: string, filenam
     });
 }
 
-export function getDeclaredClassesNames(classCode: string): string[] {
-    return classCode
+export function getDeclaredClassesNames(classCode: string, classWitName: string = ''): string[] {
+    let classes = classCode
         .split('class')
         .filter(it => it)
         .map(clazz => clazz.substring(0, clazz.indexOf("{")).trim())
         .filter(name => !!name.length);
+    if (classWitName.length) {
+        classes = classes.filter(it => it.toLowerCase().indexOf(classWitName.toLowerCase()) > -1)
+    }
+    return classes;
 }

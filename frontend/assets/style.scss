@@ -129,14 +129,34 @@ input[readonly=readonly].el-input__inner{
     }
 }
 
+$green:#67c23a;
+$red:#ff5959;
+
 .green{
-    color: #67c23a
+    color: $green
 }
+
+.label{
+    display: block;
+    text-align: center;
+    color: white;
+    padding: 4px;
+    border-radius: 4px;
+    margin:3px;
+}
+.label.green{
+    background: $green;
+}
+.label.red{
+    background: $red;
+}
+
 .red{
-    color:#ff5959
+    color:$red
 }
 
 .floating {
+    z-index: 40;
     background: white;
     padding: 10px;
     position: fixed;

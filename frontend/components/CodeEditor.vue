@@ -183,7 +183,7 @@ export default class CodeEditor extends Vue {
     font-size: 12pt;
     color: rgba(0, 0, 0, 0.3);
     position: absolute;
-    z-index: 100;
+    z-index: 1;
     right: 10px;
     bottom: 10px;
   }
@@ -202,7 +202,7 @@ export default class CodeEditor extends Vue {
   }
   .el-form-item.is-error {
     .editor {
-      border: 1px solid red;
+      //border: 1px solid red;
     }
   }
   .suggest-widget {
