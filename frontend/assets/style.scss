@@ -142,4 +142,9 @@ input[readonly=readonly].el-input__inner{
     position: fixed;
     right: 10px;
     bottom: 10px;
+    border-radius: 3px;
+}
+
+.bordered-bottom{
+    border-bottom: 2px solid #ddd; margin-bottom: 20px;
 }

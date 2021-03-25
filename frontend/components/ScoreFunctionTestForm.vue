@@ -148,16 +148,6 @@
         </el-col>
       </el-row>
 
-      <!-- <el-collapse>
-        <el-collapse-item
-          :key="itemTestCase.id"
-          v-for="(itemTestCase, index) in mechanic.itemTestCases"
-        >
-          <template slot="title">
-            <div class="flex-row">
-              <h3>Caso de teste {{ index + 1 }}</h3>
-            </div>
-          </template> -->
       <el-row
         class="test-case"
         :gutter="20"
@@ -192,7 +182,7 @@
             ) in itemTestCase.responseTestCases"
           >
             <el-row :gutter="20">
-              <el-col :span="16">
+              <el-col :span="18">
                 <code-editor
                   :uniqueId="`responseInstantiation${mechanic.id}`"
                   :editorTitle="`Função de resposta ${itemRespIndex + 1}`"
@@ -214,7 +204,7 @@
                   </div>
                 </code-editor>
               </el-col>
-              <el-col :span="8" class="score-area">
+              <el-col :span="6" class="score-area">
                 <div>
                   <div class="item">
                     <form-item-label class="label" label="Valor esperado" />
@@ -275,23 +265,23 @@
         </el-col>
         <el-col> </el-col>
       </el-row>
-      <!-- </el-collapse-item>
-      </el-collapse> -->
 
       <div>
-        <el-tooltip
-          effect="light"
-          :open-delay="400"
-          content="Adiciona um caso de teste de item para validar função de escore"
-        >
-          <el-button
-            icon="el-icon-plus"
-            class="add-item-btn"
-            type="primary"
-            @click="addItemTestCase"
-            >Adicionar caso de teste</el-button
+        <div class="bordered-bottom">
+          <el-tooltip
+            effect="light"
+            :open-delay="400"
+            content="Adiciona um caso de teste de item para validar função de escore"
           >
-        </el-tooltip>
+            <el-button
+              icon="el-icon-plus"
+              class="add-item-btn"
+              type="primary"
+              @click="addItemTestCase"
+              >Adicionar caso de teste</el-button
+            >
+          </el-tooltip>
+        </div>
         <div :class="{ 'floating big-shadow': showTestCases }">
           <b>Testes</b>
           <el-tooltip content="Testes OK!">
@@ -306,34 +296,24 @@
               {{ qtdErrorTests }}
             </span>
           </el-tooltip>
-          <el-button
-            icon="el-icon-video-play"
-            style="font-weight: bold"
-            type="success"
-            @click="runTests"
-            :loading="runningTests"
-            title="Rodar casos de teste"
+          <el-tooltip
+            effect="light"
+            content="Rodar casos de teste"
+            :open-delay="500"
           >
-            Rodar casos de teste
-          </el-button>
+            <el-button
+              icon="el-icon-video-play"
+              style="font-weight: bold"
+              type="success"
+              @click="runTests"
+              :loading="runningTests"
+            >
+              Rodar casos de teste
+            </el-button>
+          </el-tooltip>
         </div>
       </div>
     </div>
-
-    <!-- <el-dialog
-      append-to-body
-      title="Definição de classe da mecânica"
-      :visible.sync="itemClassVisible"
-    >
-      <code-editor v-model="mechanic.classDefinition"> </code-editor>
-    </el-dialog>
-    <el-dialog
-      append-to-body
-      title="Definição de classe de resposta"
-      :visible.sync="responseClassVisible"
-    >
-      <code-editor v-model="mechanic.responseClassDefinition"> </code-editor>
-    </el-dialog> -->
   </div>
 </template>
 <script lang="ts">
@@ -461,6 +441,7 @@ export default class ScoreFunctionTestForm extends Vue {
             : "Todos os testes passaram",
         type: this.qtdErrorTests > 0 ? "error" : "success",
       });
+      this.$emit("requestSave");
     } catch (e) {
       this.$notify.error("Não foi possível rodar os casos de teste");
     } finally {

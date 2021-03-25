@@ -45,8 +45,8 @@ export class CodeInterpreterService {
     removeUndesiredLines(deno: SpawnSyncReturns<Buffer>): string {
         return deno.output.toString().split('\n')
             .map(line => {
-                if (line.startsWith(',')) {
-                    return line.substring(1, line.length)
+                while(line.startsWith(',')){
+                    line = line.substring(1, line.length)
                 }
                 return line
             })

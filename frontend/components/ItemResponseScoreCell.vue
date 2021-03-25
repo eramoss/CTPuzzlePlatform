@@ -6,27 +6,32 @@
       placement="left"
     >
       <div slot="content">
-        <span style="padding-bottom: 20px; color: red">
-          <i>Execução da função de cálculo do escore: </i>
+        <span style="margin-bottom:5px;display:block; font-size:10pt">
+          Execução do cálculo de escore:
         </span>
         <pre>{{ score && score.message }}</pre>
       </div>
-      <b v-if="isError" class="error-indicator">
-        <i class="el-icon-chat-line-square"></i>
-        Mensagem
-      </b>
-      <span v-if="!isError" class="flex-row">
-        <el-progress
-          style="flex-grow: 1;font-weight:bold"
-          :class="{ 'progress-empty': percentage == 0 }"
-          :text-inside="true"
-          :stroke-width="26"
-          :color="`${percentage == 100 ? '#67c23a' : '#409eff'}`"
-          :percentage="percentage"
-          :format="format"
-        ></el-progress>
-        <i class="el-icon-chat-line-square" style="color:#666; font-size:20pt"></i>
-      </span>
+      <div>
+        <b v-show="isError" class="error-indicator">
+          <i class="el-icon-chat-line-square"></i>
+          Mensagem
+        </b>
+        <span v-show="!isError" class="flex-row">
+          <el-progress
+            style="flex-grow: 1; font-weight: bold"
+            :class="{ 'progress-empty': percentage == 0 }"
+            :text-inside="true"
+            :stroke-width="26"
+            :color="`${percentage == 100 ? '#67c23a' : '#409eff'}`"
+            :percentage="percentage"
+            :format="format"
+          ></el-progress>
+          <i
+            class="el-icon-chat-line-square"
+            style="color: #666; font-size: 20pt"
+          ></i>
+        </span>
+      </div>
     </el-tooltip>
   </div>
 </template>
