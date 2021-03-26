@@ -28,7 +28,7 @@
           ></el-progress>
           <i
             class="el-icon-chat-line-square"
-            style="color: #666; font-size: 20pt"
+            style="color: #cc6633; font-size: 20pt"
           ></i>
         </span>
       </div>

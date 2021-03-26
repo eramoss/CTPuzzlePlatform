@@ -22,7 +22,7 @@
         v-model="mechanic.scoreFunction"
       >
         <template slot="bar">
-          <el-button
+          <!-- <el-button
             type="text"
             title="Resetar para exemplo inicial"
             @click="clearSampleScoreFunction"
@@ -34,81 +34,12 @@
             :disabled="!bkpScoreFunction"
             @click="redoSampleScoreFunction"
             >Versão editada</el-button
-          >
+          > -->
+          <helper-functions
+            @onSelectFunction="addCodeToExistentScoreFunction"
+          />
         </template>
       </code-editor>
-    </el-row>
-
-    <el-row
-      :gutter="20"
-      v-if="mechanic"
-      v-show="showTestFunction"
-      style="margin-top: 20px; margin-bottom: 20px"
-    >
-      <el-col :span="12">
-        <code-editor
-          :uniqueId="`itemInstantiation${mechanic.id}`"
-          editorTitle="Função de item"
-          height="250px"
-          :fontSize="15"
-          language="typescript"
-          v-model="mechanic.itemInstantiation"
-        >
-          <template slot="bar">
-            <el-tooltip
-              effect="light"
-              :open-delay="300"
-              content="Testar item no ambiente do puzzzle"
-            >
-              <el-button
-                type="success"
-                icon="el-icon-video-play"
-                @click="testItem"
-                >Testar</el-button
-              >
-            </el-tooltip>
-            <el-button
-              type="text"
-              title="Resetar para exemplo inicial"
-              @click="clearSampleItem"
-              >Exemplo</el-button
-            >
-            <el-button
-              type="text"
-              title="Versão editada"
-              :disabled="!bkpItem"
-              @click="redoSampleItem"
-              >Versão editada</el-button
-            >
-          </template>
-        </code-editor>
-      </el-col>
-      <el-col :span="12">
-        <code-editor
-          :uniqueId="`responseInstantiation${mechanic.id}`"
-          editorTitle="Função de resposta"
-          height="250px"
-          :fontSize="15"
-          language="typescript"
-          v-model="mechanic.responseInstantiation"
-        >
-          <template slot="bar">
-            <el-button
-              type="text"
-              title="Resetar para exemplo inicial"
-              @click="clearSampleResponse"
-              >Exemplo</el-button
-            >
-            <el-button
-              type="text"
-              title="Versão editada"
-              :disabled="!bkpResponse"
-              @click="redoSampleResponse"
-              >Versão editada</el-button
-            >
-          </template>
-        </code-editor>
-      </el-col>
     </el-row>
 
     <el-dialog
@@ -126,7 +57,7 @@
       />
     </el-dialog>
 
-    <div v-if="showTestCases">
+    <div>
       <el-row style="display: none">
         <el-col :span="12">
           <code-editor
@@ -270,12 +201,11 @@
             title="Adiciona um caso de teste de item para validar função de escore"
             icon="el-icon-plus"
             class="add-item-btn"
-            type="primary"
+            type="warning"
             @click="addItemTestCase"
             >Adicionar caso de teste</el-button
           >
         </div>
-        
       </div>
     </div>
   </div>
@@ -309,28 +239,25 @@ import { ResponseTestCase } from "~/types/ResponseTestCase";
   },
 })
 export default class ScoreFunctionTestForm extends Vue {
-  bkpResponse: string = "";
-  bkpItem: string = "";
-  bkpScoreFunction: string = "";
   responseDialogVisible = false;
   @Prop({ default: false }) showTestFunction!: boolean;
-  @Prop({ default: false }) showTestCases!: boolean;
 
   response: string = "";
   @VModel() mechanic!: Mechanic;
   runningTests = false;
 
-  @Watch("mechanic", { immediate: true })
-  onChangeMechanic() {
-    if (!this.mechanic.itemInstantiation) {
-      this.clearSampleItem();
-    }
-    if (!this.mechanic.responseInstantiation) {
-      this.clearSampleResponse();
-    }
-    if (!this.mechanic.scoreFunction) {
-      this.clearSampleScoreFunction();
-    }
+  bkpScoreFunction: string = "";
+  clearSampleScoreFunction() {
+    this.bkpScoreFunction = this.mechanic.scoreFunction;
+    this.mechanic.scoreFunction = createScoreFunctionCode(
+      this.mechanic.classDefinition,
+      this.mechanic.responseClassDefinition
+    );
+  }
+
+  redoSampleScoreFunction() {
+    this.mechanic.scoreFunction = this.bkpScoreFunction;
+    this.bkpScoreFunction = "";
   }
 
   addItemTestCase() {
@@ -361,11 +288,6 @@ export default class ScoreFunctionTestForm extends Vue {
     itemTestCase.responseTestCases.push(responseTestCase);
   }
 
-  redoSampleResponse() {
-    this.mechanic.responseInstantiation = this.bkpResponse;
-    this.bkpResponse = "";
-  }
-
   async runTests() {
     this.runningTests = true;
     try {
@@ -377,50 +299,6 @@ export default class ScoreFunctionTestForm extends Vue {
     } finally {
       this.runningTests = false;
     }
-  }
-
-  redoSampleItem() {
-    this.mechanic.itemInstantiation = this.bkpItem;
-    this.bkpItem = "";
-  }
-
-  redoSampleScoreFunction() {
-    this.mechanic.scoreFunction = this.bkpScoreFunction;
-    this.bkpScoreFunction = "";
-  }
-
-  clearSampleItem() {
-    this.bkpItem = this.mechanic.itemInstantiation;
-    this.mechanic.itemInstantiation = createCleanInstantiationFunctionCode(
-      this.mechanic.classDefinition,
-      "criarItem"
-    );
-  }
-
-  clearSampleResponse() {
-    this.bkpResponse = this.mechanic.responseInstantiation;
-    this.mechanic.responseInstantiation = createCleanInstantiationFunctionCode(
-      this.mechanic.responseClassDefinition,
-      "criarResposta",
-      "resposta"
-    );
-  }
-
-  clearSampleScoreFunction() {
-    this.bkpScoreFunction = this.mechanic.scoreFunction;
-    this.mechanic.scoreFunction = createScoreFunctionCode(
-      this.mechanic.classDefinition,
-      this.mechanic.responseClassDefinition
-    );
-  }
-
-  testItem() {
-    let appBaseUrl = this.mechanic.baseUrl;
-    let serverBaseUrl = this.$axios.defaults.baseURL;
-    let mechanicId = this.mechanic.id;
-    let urlToInstantiateItem = `${serverBaseUrl}/mechanics/public/instantiate/${mechanicId}`;
-    let qs = queryString({ op: "playground", urlToInstantiateItem });
-    window.open(`${appBaseUrl}?${qs}`, "_blank");
   }
 
   @Action("score-function-test/execute") runScoreFunction!: (
@@ -442,6 +320,19 @@ export default class ScoreFunctionTestForm extends Vue {
     } catch (e) {
       this.response = e;
     }
+  }
+
+  @Watch("mechanic", { immediate: true })
+  onChangeMechanic() {
+    if (!this.mechanic.scoreFunction) {
+      this.clearSampleScoreFunction();
+    }
+  }
+
+  addCodeToExistentScoreFunction(fn: { name: string; code: string }) {
+    this.mechanic.scoreFunction = `${this.mechanic.scoreFunction}
+//${fn.name}
+${fn.code}`;
   }
 }
 </script>

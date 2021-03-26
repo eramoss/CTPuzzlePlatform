@@ -7,13 +7,8 @@
     id="score-fn-dialog"
     title="Playground para teste de função de escore"
   >
-    <div style="height: 10px; width: 100px"></div>
-    <score-function-test-form
-      v-model="mechanic"
-      :showTestCases="true"
-      ref="scoreFunctionForm"
-    />
-    <template slot="title">
+    <score-function-test-form v-model="mechanic" ref="scoreFunctionForm" />
+    <div slot="title">
       <div class="fill flex-row">
         <span>Função de cálculo de escore</span>
         <score-function-tests-summary
@@ -27,16 +22,17 @@
             Todos os testes passaram!
           </span>
           <span class="red label" v-show="hasTests && !allPassed()">
-            {{qtdNotOk()}} teste(s) não passaram
+            {{ qtdNotOk() }} teste(s) não passaram
           </span>
           <span class="yellow label" v-show="!hasTests">
             Não há testes declarados
           </span>
-          <el-button size="small" class="bold" @click="visible = false">Fechar</el-button
+          <el-button size="small" class="bold" @click="visible = false"
+            >Fechar</el-button
           >
         </div>
       </div>
-    </template>
+    </div>
   </el-dialog>
 </template>
 <script lang="ts">
@@ -71,8 +67,8 @@ export default class ScoreFunctionTestDialog extends Vue {
     return this.scoreFunctionTestsSummary?.allPassed;
   }
 
-  qtdNotOk(){
-      return this.scoreFunctionTestsSummary?.qtdErrorTests;
+  qtdNotOk() {
+    return this.scoreFunctionTestsSummary?.qtdErrorTests;
   }
 
   get hasTests() {
@@ -91,13 +87,12 @@ export default class ScoreFunctionTestDialog extends Vue {
 </script>
 <style lang="scss">
 #score-fn-dialog {
-  //border: 1px solid green;
   .el-dialog__header {
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px 0px !important;
-    z-index: 1;
+    padding-top: 10px;
+    border-bottom:1px solid #ddd;
   }
   .el-dialog__body {
-    max-height: 77vh;
+    max-height: 82.5vh;
     overflow-y: scroll;
   }
 }

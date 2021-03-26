@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-top: 10px">
+  <div>
     <div>
       <b>Testes</b>
       <el-tooltip content="Testes OK!">
@@ -59,8 +59,8 @@ export default class ScoreFunctionTestsSummary extends Vue {
     );
   }
 
-  get allPassed(){
-      return this.qtdOkTests > 0 && this.qtdErrorTests == 0
+  get allPassed() {
+    return this.qtdOkTests > 0 && this.qtdErrorTests == 0;
   }
 
   isTestPassed(itemResponse: ResponseTestCase): boolean {
@@ -87,6 +87,7 @@ export default class ScoreFunctionTestsSummary extends Vue {
           ? "Alguns testes falharam"
           : "Todos os testes passaram",
       type: this.qtdErrorTests > 0 ? "error" : "success",
+      position: "bottom-right",
     });
   }
 
