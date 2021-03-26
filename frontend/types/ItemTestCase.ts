@@ -27,7 +27,7 @@ export const createCleanInstantiationFunctionCode = function (classDefinition: s
 export const createScoreFunctionCode = function (classDefinition: string, responseDefinition: string) {
     let itemClassName = getDeclaredClassesNames(classDefinition)[0]
     let responseClassName = getDeclaredClassesNames(responseDefinition, 'resp')[0]
-    return `function calculaScore(item: ${itemClassName}, resposta: ${responseClassName}){
+    return `function calcularEscore(item: ${itemClassName}, resposta: ${responseClassName}){
     let nota = 0;
     // Exemplos com atributos X e Y
     if(resposta.atributoInformadoX == item.atributoEsperadoX){
