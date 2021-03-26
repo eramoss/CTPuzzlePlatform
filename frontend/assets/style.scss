@@ -131,12 +131,18 @@ input[readonly=readonly].el-input__inner{
 
 $green:#67c23a;
 $red:#ff5959;
+$yellow:#fba700;
 
 .green{
     color: $green
 }
 
+.bold{
+    font-weight: bold;
+}
+
 .label{
+    font-weight: bold;
     display: block;
     text-align: center;
     color: white;
@@ -147,7 +153,11 @@ $red:#ff5959;
 .label.green{
     background: $green;
 }
+.label.yellow{
+    background:$yellow;
+}
 .label.red{
+    color:white;
     background: $red;
 }
 
@@ -167,4 +177,8 @@ $red:#ff5959;
 
 .bordered-bottom{
     border-bottom: 2px solid #ddd; margin-bottom: 20px;
+}
+
+.bordered-top{
+    border-top: 2px solid #ddd; margin-bottom: 20px;
 }

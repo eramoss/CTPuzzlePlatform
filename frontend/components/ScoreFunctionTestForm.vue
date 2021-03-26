@@ -231,11 +231,9 @@
                         itemResponseTestCase.expectedScore
                       "
                     >
-                     <el-tooltip content="Passou no teste">
-                      <i
-                        class="el-icon-success green"
-                      ></i>
-                     </el-tooltip>
+                      <el-tooltip content="Passou no teste">
+                        <i class="el-icon-success green"></i>
+                      </el-tooltip>
                     </div>
                     <div v-else>
                       <el-tooltip content="Não passou no teste">
@@ -268,60 +266,16 @@
 
       <div>
         <div class="bordered-bottom">
-          <el-tooltip
-            effect="light"
-            :open-delay="400"
-            content="Adiciona um caso de teste de item para validar função de escore"
+          <el-button
+            title="Adiciona um caso de teste de item para validar função de escore"
+            icon="el-icon-plus"
+            class="add-item-btn"
+            type="primary"
+            @click="addItemTestCase"
+            >Adicionar caso de teste</el-button
           >
-            <el-button
-              icon="el-icon-plus"
-              class="add-item-btn"
-              type="primary"
-              @click="addItemTestCase"
-              >Adicionar caso de teste</el-button
-            >
-          </el-tooltip>
         </div>
-        <div :class="{ 'floating big-shadow': showTestCases }">
-          <div>
-            <b>Testes</b>
-            <el-tooltip content="Testes OK!">
-              <span>
-                <i title="Passou no teste" class="el-icon-success green"></i>
-                {{ qtdOkTests }}
-              </span>
-            </el-tooltip>
-            <el-tooltip content="Testes com falha">
-              <span>
-                <i title="Não passou no teste" class="el-icon-error red"></i>
-                {{ qtdErrorTests }}
-              </span>
-            </el-tooltip>
-            <el-tooltip
-              effect="light"
-              content="Rodar casos de teste"
-              :open-delay="500"
-            >
-              <el-button
-                icon="el-icon-video-play"
-                style="font-weight: bold"
-                type="success"
-                @click="runTests"
-                :loading="runningTests"
-              >
-                Rodar casos de teste
-              </el-button>
-            </el-tooltip>
-          </div>
-          <div>
-            <span
-              class="fill green label"
-              v-show="qtdOkTests > 0 && qtdErrorTests == 0"
-            >
-              Todos os teste passaram
-            </span>
-          </div>
-        </div>
+        
       </div>
     </div>
   </div>
@@ -379,31 +333,6 @@ export default class ScoreFunctionTestForm extends Vue {
     }
   }
 
-  get responses(): ResponseTestCase[] {
-    return this.mechanic.itemTestCases.flatMap(
-      (testCase) => testCase.responseTestCases
-    );
-  }
-
-  isTestPassed(itemResponse: ResponseTestCase): boolean {
-    let passed = false;
-    if (itemResponse.score) {
-      if (itemResponse.expectedScore) {
-        passed = itemResponse.score.score == itemResponse.expectedScore;
-      }
-    }
-    return passed;
-  }
-
-  get qtdOkTests(): number {
-    return this.responses.filter((response) => this.isTestPassed(response))
-      .length;
-  }
-
-  get qtdErrorTests(): number {
-    return this.responses.length - this.qtdOkTests;
-  }
-
   addItemTestCase() {
     this.mechanic.itemTestCases.push(new ItemTestCase(this.mechanic));
     this.showItemTestHelp();
@@ -442,14 +371,6 @@ export default class ScoreFunctionTestForm extends Vue {
     try {
       const testCases = await this.runTestCases(this.mechanic);
       this.mechanic.itemTestCases = testCases;
-      this.$notify({
-        title: "Os testes foram executados",
-        message:
-          this.qtdErrorTests > 0
-            ? "Alguns testes falharam"
-            : "Todos os testes passaram",
-        type: this.qtdErrorTests > 0 ? "error" : "success",
-      });
       this.$emit("requestSave");
     } catch (e) {
       this.$notify.error("Não foi possível rodar os casos de teste");

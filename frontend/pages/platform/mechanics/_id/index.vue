@@ -116,15 +116,7 @@
                   icon="el-icon-video-play"
                   @click="openTestDialog"
                 >
-                  1 - Editar função de cálculo de escore
-                </el-button>
-                <el-button
-                  :disabled="!mechanic.id"
-                  type="warning"
-                  icon="el-icon-document-checked"
-                  @click="createScoreFunctionTestCases"
-                >
-                  2 - Criar casos de teste para função de escore
+                  Editar função de cálculo de escore
                 </el-button>
               </div>
               <!-- <code-editor
@@ -135,10 +127,6 @@
               >
                 <template slot="bar"> </template>
               </code-editor> -->
-              <score-function-test-dialog
-                ref="scoreFunctionTestDialog"
-                v-model="mechanic"
-              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -150,6 +138,10 @@
         </el-row>
       </el-form>
     </div>
+    <score-function-test-dialog
+      ref="scoreFunctionTestDialog"
+      v-model="mechanic"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -264,7 +256,9 @@ export default class MechanicEditForm extends Vue {
 
   async createScoreFunctionTestCases() {
     await this.save();
-    this.$router.push("/platform/mechanics/scoreFunctionTestCases/"+this.mechanic.id);
+    this.$router.push(
+      "/platform/mechanics/scoreFunctionTestCases/" + this.mechanic.id
+    );
   }
 
   back() {
