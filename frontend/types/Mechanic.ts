@@ -34,24 +34,13 @@ export default class Mechanic {
 }
 
 export function createMechanicExample(user: User): Mechanic {
-    const classDefinitionExample = `
-// Exemplo:
-// class ItemProgramacao {
-//  mapa: string[][];
-//  obstaculos: string[][];
-//  solucaoEsperada: Array<{x:number, y:number}>;
-//  comandosEsperados: Array<string>;
-//  face: string;
-//  x: number;
-//  y: number;
-//}`;
+    const classDefinitionExample = `class Item {
+  esperado: string[] = [];
+}`;
 
-    const responseClassExample = `
-// Exemplo:
-// class RespostaItem {
-//  caminhoPercorrido: Array<{x:number, y:number}>
-//  comandosUtilizados: string[]
-//}`;
+    const responseClassExample = `class RespostaItem {
+  informado: string[] = []
+}`;
 
     const mechanicExample = new Mechanic(
         '',

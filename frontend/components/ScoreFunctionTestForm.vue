@@ -411,11 +411,10 @@ export default class ScoreFunctionTestForm extends Vue {
 
   showItemTestHelp() {
     this.$alert(
-      "Um novo caso de teste foi adicionado. Agora você precisa ajustar a função do item de teste e adicionar respostas para validar o resultado da função de escore.",
+      "Um novo caso de teste foi adicionado. Ajuste as funções de itens e de respostas para validar o cálculo de escore",
       "Edite o caso de teste",
       {
-        confirmButtonText: "Entendi",
-        type: "warning",
+        confirmButtonText: "Entendi!",
       }
     );
   }

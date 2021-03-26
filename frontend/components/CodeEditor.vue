@@ -99,7 +99,7 @@ export default class CodeEditor extends Vue {
   container!: HTMLElement;
 
   get calculedHeight() {
-    let height = (this.code.split("\n").length + 2) * this.fontSize * 1.328;
+    let height = (this.code.split("\n").length + 1) * this.fontSize * 1.328;
     if (this.useHeightControls) {
       height = this.heightPixels;
     }
@@ -174,18 +174,18 @@ export default class CodeEditor extends Vue {
 .editor-container {
   position: relative;
   .editor {
-    border: 2px solid #ccc;
+    border: 1px solid #ccc;
   }
   .editor:hover {
     //border: 2px solid #999;
   }
   .editor-lang {
-    font-size: 12pt;
+    font-size: 10pt;
     color: rgba(0, 0, 0, 0.3);
     position: absolute;
     z-index: 1;
-    right: 10px;
-    bottom: 10px;
+    right: 25px;
+    bottom: 0px;
   }
   .height-btns {
     width: 100%;

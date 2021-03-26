@@ -10,7 +10,7 @@ export class ItemTestCase {
     responseTestCases: ResponseTestCase[] = []
 
     constructor(mechanic: Mechanic) {
-        this.itemInstantiation = createCleanInstantiationFunctionCode(mechanic.classDefinition, 'resp');
+        this.itemInstantiation = createCleanInstantiationFunctionCode(mechanic.classDefinition);
         this.responseTestCases.push(new ResponseTestCase(mechanic));
     }
 }
