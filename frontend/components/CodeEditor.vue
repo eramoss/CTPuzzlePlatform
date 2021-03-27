@@ -1,6 +1,5 @@
 <template>
   <div style="width: 100%" class="editor-container">
-    <!-- <textarea v-model="code" :style="{ width: width, height: height }"/> -->
     <b class="editor-lang">{{ language }}</b>
     <span class="editorTitle-editor" v-show="editorTitle">
       <div>

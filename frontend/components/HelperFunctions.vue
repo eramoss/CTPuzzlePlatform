@@ -5,12 +5,12 @@
       @click="showDialogAddFn"
       icon="el-icon-s-tools"
       type="warning"
-      >Adicionar função utilitária</el-button
+      >Adicionar função auxiliar</el-button
     >
     <el-dialog
       top="10px"
       append-to-body
-      title="Escolha a função utilitária"
+      title="Escolha a função auxiliar"
       :visible.sync="dialogVisible"
     >
       <el-select v-model="value" value-key="name" placeholder="Selecionar">
@@ -28,7 +28,8 @@
           {{ value.description }}
         </p>
         <p>
-          <b>Referência:</b><a target="_blank" :href="value.reference">{{ value.reference }}</a>
+          <b>Referência:</b
+          ><a target="_blank" :href="value.reference">{{ value.reference }}</a>
         </p>
       </div>
 
@@ -93,6 +94,40 @@ export default class HelperFunctions extends Vue {
       }
    }
    return track[str2.length][str1.length];
+};`,
+    },
+    {
+      name: "Similaridade de palavras entre 0 e 1 (Variação de Levenshtein)",
+      description: `Esta função é a mesma que a Levenshtein, com a diferença de que o retorno varia entre 0 (pouco similar) e 1 (totalmente similar). `,
+      reference:
+        "https://stackoverflow.com/questions/10405440/percentage-rank-of-matches-using-levenshtein-distance-matching",
+      code: `//1 = Totalmente similar
+      //0.5 = Metade similar
+      function stringsSimilarity(str1 = '', str2 = ''){
+   const track = Array(str2.length + 1).fill(null).map(() =>
+   Array(str1.length + 1).fill(null));
+   for (let i = 0; i <= str1.length; i += 1) {
+      track[0][i] = i;
+   }
+   for (let j = 0; j <= str2.length; j += 1) {
+      track[j][0] = j;
+   }
+   for (let j = 1; j <= str2.length; j += 1) {
+      for (let i = 1; i <= str1.length; i += 1) {
+         const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
+         track[j][i] = Math.min(
+            track[j][i - 1] + 1, // deletion
+            track[j - 1][i] + 1, // insertion
+            track[j - 1][i - 1] + indicator, // substitution
+         );
+      }
+   }
+   let lev = track[str2.length][str1.length]
+   let bigger = str1;
+   if(str2.length > bigger.length){
+      bigger = str2
+   }
+   return (bigger.length - lev) / bigger.length;
 };`,
     },
   ];

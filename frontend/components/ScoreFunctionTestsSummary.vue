@@ -1,19 +1,34 @@
 <template>
-  <div>
+  <div class="flex-row fill">
+    <slot></slot>
+    <div class="flex-row">
+      <span style="margin-right: 10px">
+        <span class="green label" v-show="allPassed">
+          Todos os testes passaram!
+        </span>
+        <span class="red label" v-show="hasTests && !allPassed">
+          {{ qtdErrorTests }} teste(s) não passaram
+        </span>
+        <span class="yellow label" v-show="!hasTests">
+          Não há testes declarados
+        </span>
+      </span>
+      <span>
+        <el-tooltip content="Testes OK!">
+          <span>
+            <i title="Passou no teste" class="el-icon-success green"></i>
+            {{ qtdOkTests }}
+          </span>
+        </el-tooltip>
+        <el-tooltip content="Testes com falha">
+          <span>
+            <i title="Não passou no teste" class="el-icon-error red"></i>
+            {{ qtdErrorTests }}
+          </span>
+        </el-tooltip>
+      </span>
+    </div>
     <div>
-      <b>Testes</b>
-      <el-tooltip content="Testes OK!">
-        <span>
-          <i title="Passou no teste" class="el-icon-success green"></i>
-          {{ qtdOkTests }}
-        </span>
-      </el-tooltip>
-      <el-tooltip content="Testes com falha">
-        <span>
-          <i title="Não passou no teste" class="el-icon-error red"></i>
-          {{ qtdErrorTests }}
-        </span>
-      </el-tooltip>
       <el-tooltip
         effect="light"
         content="Rodar casos de teste"
@@ -21,8 +36,8 @@
       >
         <el-button
           icon="el-icon-video-play"
-          class="bold"
-          type="success"
+          style="font-weight: bold"
+          type="primary"
           @click="runTests"
           :loading="runningTests"
         >
@@ -87,8 +102,11 @@ export default class ScoreFunctionTestsSummary extends Vue {
           ? "Alguns testes falharam"
           : "Todos os testes passaram",
       type: this.qtdErrorTests > 0 ? "error" : "success",
-      position: "bottom-right",
     });
+  }
+
+  get hasTests() {
+    return this.qtdOkTests || this.qtdErrorTests;
   }
 
   get qtdErrorTests(): number {

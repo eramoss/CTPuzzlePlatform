@@ -11,10 +11,10 @@
       type="success"
       size="small"
       @click="executeScoreFunction"
-      title="Executar função de cálculo de escore">
-      Executar
-      </el-button
+      title="Executar função de cálculo de escore"
     >
+      Executar
+    </el-button>
     <el-row>
       <code-editor
         :uniqueId="`scoreFunction${mechanic.id}`"
@@ -24,7 +24,6 @@
         v-model="mechanic.scoreFunction"
       >
         <template slot="bar">
-          
           <helper-functions
             @onSelectFunction="addCodeToExistentScoreFunction"
           />
@@ -161,21 +160,7 @@
             </el-button>
           </el-tooltip>
         </el-col>
-        <el-col> </el-col>
       </el-row>
-
-      <div>
-        <div class="bordered-bottom">
-          <el-button
-            title="Adiciona um caso de teste de item para validar função de escore"
-            icon="el-icon-plus"
-            class="add-item-btn"
-            type="warning"
-            @click="addItemTestCase"
-            >Adicionar caso de teste</el-button
-          >
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -185,20 +170,9 @@ import CodeEditor from "~/components/CodeEditor.vue";
 import ScoreFunctionTestDto from "~/types/ScoreFunctionTestDto";
 import ScoreFunctionTestResult from "~/types/ScoreFunctionTestResult";
 import ItemResponseScoreCell from "~/components/ItemResponseScoreCell.vue";
-import {
-  Action,
-  Component,
-  Prop,
-  VModel,
-  Watch,
-} from "nuxt-property-decorator";
+import { Action, Component, Prop, VModel } from "nuxt-property-decorator";
 import Mechanic from "~/types/Mechanic";
-import queryString from "~/utils/utils";
-import {
-  createCleanInstantiationFunctionCode,
-  createScoreFunctionCode,
-  ItemTestCase,
-} from "~/types/ItemTestCase";
+import { ItemTestCase } from "~/types/ItemTestCase";
 import { ResponseTestCase } from "~/types/ResponseTestCase";
 
 @Component({

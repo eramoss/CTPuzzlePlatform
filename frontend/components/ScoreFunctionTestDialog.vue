@@ -1,38 +1,34 @@
 <template>
   <el-dialog
-    :show-close="false"
     :visible.sync="visible"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
     top="10px"
     width="95%"
     id="score-fn-dialog"
     title="Playground para teste de função de escore"
   >
     <score-function-test-form v-model="mechanic" ref="scoreFunctionForm" />
-    <div slot="title">
-      <div class="fill flex-row">
-        <span>Função de cálculo de escore</span>
+    <template slot="footer">
+      <div class="flex-row">
         <score-function-tests-summary
           ref="scoreFunctionTestsSummary"
           :mechanic="mechanic"
           :runningTests="runningTests"
           :fnRunTests="runTests"
-        />
-        <div class="flex-row">
-          <span class="green label" v-show="allPassed()">
-            Todos os testes passaram!
-          </span>
-          <span class="red label" v-show="hasTests && !allPassed()">
-            {{ qtdNotOk() }} teste(s) não passaram
-          </span>
-          <span class="yellow label" v-show="!hasTests">
-            Não há testes declarados
-          </span>
-          <el-button size="small" class="bold" @click="visible = false"
-            >Fechar</el-button
+        >
+          <el-button
+            title="Adiciona um caso de teste de item para validar função de escore"
+            icon="el-icon-plus"
+            class="add-item-btn"
+            type="warning"
+            @click="addItemTestCase"
           >
-        </div>
+            Adicionar caso de teste
+          </el-button>
+        </score-function-tests-summary>
       </div>
-    </div>
+    </template>
   </el-dialog>
 </template>
 <script lang="ts">
@@ -63,6 +59,10 @@ export default class ScoreFunctionTestDialog extends Vue {
     this.visible = true;
   }
 
+  addItemTestCase() {
+    this.scoreFunctionForm.addItemTestCase();
+  }
+
   allPassed() {
     return this.scoreFunctionTestsSummary?.allPassed;
   }
@@ -87,13 +87,16 @@ export default class ScoreFunctionTestDialog extends Vue {
 </script>
 <style lang="scss">
 #score-fn-dialog {
-  .el-dialog__header {
-    padding-top: 10px;
-    border-bottom:1px solid #ddd;
-  }
   .el-dialog__body {
-    max-height: 82.5vh;
+    max-height: 71vh;
     overflow-y: scroll;
+  }
+  .el-dialog__header {
+      border-bottom: 1px solid #ccc;
+  }
+  .el-dialog__footer {
+    border-top: 1px solid #ccc;
+    padding: 10px 20px;
   }
 }
 </style>
