@@ -13,7 +13,7 @@
       <h2>Aplicação de teste</h2>
       <el-form>
         <el-row>
-          <el-col :span="20">
+          <el-col :span="22">
             <el-form-item label-width="100px" label="Nome">
               <el-input
                 v-model="testApplication.name"
@@ -36,7 +36,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="20">
+          <el-col :span="22">
             <el-form-item label="Link" label-width="100px">
               <test-application-url-input
                 :showAccessIcon="true"
@@ -68,7 +68,7 @@
             :data="testApplication.participations"
             style="margin-bottom: 30px"
           >
-            <el-table-column label="Dt.Criação" width="150">
+            <el-table-column label="Quando" width="150">
               <template slot-scope="{ row }">
                 {{ dateFormat.fromNow(row.createdAt) }}
               </template>
@@ -125,7 +125,7 @@ import { DateFormat } from "~/utils/DateFormat";
 import ItemResponse from "~/types/ItemResponse";
 
 const ACTION_GET_BY_ID = "test-applications/getById";
-const ACTION_GET_LAST_RESPONSE = "test-applications/getLastResponse";
+export const ACTION_GET_LAST_RESPONSE = "test-applications/getLastResponse";
 
 @Component({
   head: {
@@ -159,6 +159,7 @@ export default class TestEditForm extends Vue {
 
   @Action("test-applications/generateItemResponsesCsv")
   generateItemResponsesCsv!: (testApplicationId: number) => Promise<any>;
+  intervalBringLastResponse!: NodeJS.Timeout;
 
   async asyncData(ctx: Context) {
     let testApplication!: TestApplication;
@@ -249,6 +250,21 @@ export default class TestEditForm extends Vue {
     } finally {
       this.loading = false;
     }
+  }
+
+  mounted() {
+    let blinkAudio = new Audio("/audios/blink.mp3");
+    this.intervalBringLastResponse = setInterval(async () => {
+      let id = this.$route.params.id;
+      let lastResponse = await this.getLastResponse(id);
+      if (!this.lastResponse || lastResponse.id != this.lastResponse.id) {
+        blinkAudio.play();
+        this.loadData();
+      }
+    }, 2000);
+  }
+  destroyed() {
+    clearTimeout(this.intervalBringLastResponse);
   }
 }
 </script>

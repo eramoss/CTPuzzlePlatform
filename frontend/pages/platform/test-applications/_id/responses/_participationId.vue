@@ -77,6 +77,8 @@ import { Component, Action } from "nuxt-property-decorator";
 import { Context } from "@nuxt/types";
 import Participation from "~/types/Participation";
 import ItemResponsesScreen from "~/components/ItemResponsesScreen.vue";
+import { ACTION_GET_LAST_RESPONSE } from "../index.vue";
+import ItemResponse from "~/types/ItemResponse";
 const ACTION_GET_BY_ID = "participations/getById";
 
 @Component({
@@ -87,6 +89,9 @@ const ACTION_GET_BY_ID = "participations/getById";
 export default class ItemResponsesList extends Vue {
   participation!: Participation;
   loading = false;
+
+  intervalBringLastResponse!: NodeJS.Timeout;
+  lastResponse!: ItemResponse;
 
   @Action(ACTION_GET_BY_ID) getById!: (id: any) => Promise<Participation>;
   @Action("participations/removeById") removeParticipationById!: (
@@ -160,6 +165,9 @@ export default class ItemResponsesList extends Vue {
       this.participation = await this.getById(
         this.$route.params.participationId
       );
+      this.lastResponse = await this.getLastResponse(
+        this.participation.application.id
+      );
       this.$notify({
         type: "success",
         title: "As informações foram atualizadas",
@@ -194,15 +202,23 @@ export default class ItemResponsesList extends Vue {
     }
   }
 
+  @Action(ACTION_GET_LAST_RESPONSE) getLastResponse!: (
+    tetApplicationId: any
+  ) => Promise<ItemResponse>;
+
   mounted() {
-    document.addEventListener(
-      "visibilitychange",
-      this.loadDataIfNotHidden,
-      false
-    );
+    let blinkAudio = new Audio("/audios/blink.mp3");
+    this.intervalBringLastResponse = setInterval(async () => {
+      let applicationId = this.participation.application.id;
+      let lastResponse = await this.getLastResponse(applicationId);
+      if (!this.lastResponse || lastResponse.id != this.lastResponse.id) {
+        blinkAudio.play();
+        this.loadData();
+      }
+    }, 2000);
   }
   destroyed() {
-    document.removeEventListener("visibilitychange", this.loadDataIfNotHidden);
+    clearTimeout(this.intervalBringLastResponse);
   }
 }
 </script>

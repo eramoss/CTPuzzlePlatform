@@ -11,8 +11,8 @@ export class DateFormat {
     }
 
     format(date: Date, format: string = DEFAULT_FORMAT): string {
-        return this.fromNow(date);
-        //return moment(date).format(format)
+        //return this.fromNow(date);
+        return moment(date).format(format)
     }
 
     fromNow(date: Date): string {

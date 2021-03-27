@@ -5,7 +5,7 @@
       <el-table-column label="Hora" prop="createdAt" width="170">
         <template slot-scope="{ row }">
           <div>
-            {{ dateFormat.format(row.createdAt) }}
+            {{ dateFormat.fromNow(row.createdAt) }}
           </div>
         </template>
       </el-table-column>

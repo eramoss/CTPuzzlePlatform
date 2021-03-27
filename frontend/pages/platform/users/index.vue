@@ -31,7 +31,7 @@
         <el-table-column prop="id" label="Código" width="100"></el-table-column>
         <el-table-column label="Dt. Cadastro" width="200">
           <template slot-scope="{ row }">
-            {{ dateFormat.format(row.createdAt) }}
+            {{ dateFormat.fromNow(row.createdAt) }}
           </template>
         </el-table-column>
         <el-table-column prop="name" label="Nome"></el-table-column>
