@@ -11,30 +11,20 @@
       type="success"
       size="small"
       @click="executeScoreFunction"
-      title="Executar função de cálculo de escore"
-      >Executar</el-button
+      title="Executar função de cálculo de escore">
+      Executar
+      </el-button
     >
     <el-row>
       <code-editor
         :uniqueId="`scoreFunction${mechanic.id}`"
         editorTitle="Função de escore"
+        :useHeightControls="true"
         height="300px"
         v-model="mechanic.scoreFunction"
       >
         <template slot="bar">
-          <!-- <el-button
-            type="text"
-            title="Resetar para exemplo inicial"
-            @click="clearSampleScoreFunction"
-            >Exemplo</el-button
-          >
-          <el-button
-            type="text"
-            title="Versão editada"
-            :disabled="!bkpScoreFunction"
-            @click="redoSampleScoreFunction"
-            >Versão editada</el-button
-          > -->
+          
           <helper-functions
             @onSelectFunction="addCodeToExistentScoreFunction"
           />
@@ -58,27 +48,6 @@
     </el-dialog>
 
     <div>
-      <el-row style="display: none">
-        <el-col :span="12">
-          <code-editor
-            editorTitle="Classe de item"
-            :readonly="true"
-            :fontSize="12"
-            v-model="mechanic.classDefinition"
-          >
-          </code-editor>
-        </el-col>
-        <el-col :span="12">
-          <code-editor
-            editorTitle="Classe de resposta"
-            :readonly="true"
-            :fontSize="12"
-            v-model="mechanic.responseClassDefinition"
-          >
-          </code-editor>
-        </el-col>
-      </el-row>
-
       <el-row
         class="test-case"
         :gutter="20"
@@ -246,20 +215,6 @@ export default class ScoreFunctionTestForm extends Vue {
   @VModel() mechanic!: Mechanic;
   runningTests = false;
 
-  bkpScoreFunction: string = "";
-  clearSampleScoreFunction() {
-    this.bkpScoreFunction = this.mechanic.scoreFunction;
-    this.mechanic.scoreFunction = createScoreFunctionCode(
-      this.mechanic.classDefinition,
-      this.mechanic.responseClassDefinition
-    );
-  }
-
-  redoSampleScoreFunction() {
-    this.mechanic.scoreFunction = this.bkpScoreFunction;
-    this.bkpScoreFunction = "";
-  }
-
   addItemTestCase() {
     this.mechanic.itemTestCases.push(new ItemTestCase(this.mechanic));
     this.showItemTestHelp();
@@ -319,13 +274,6 @@ export default class ScoreFunctionTestForm extends Vue {
       this.responseDialogVisible = true;
     } catch (e) {
       this.response = e;
-    }
-  }
-
-  @Watch("mechanic", { immediate: true })
-  onChangeMechanic() {
-    if (!this.mechanic.scoreFunction) {
-      this.clearSampleScoreFunction();
     }
   }
 

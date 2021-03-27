@@ -1,6 +1,10 @@
 <template>
   <div>
-    <el-button size="small" @click="showDialogAddFn" icon="el-icon-s-tools" type="warning"
+    <el-button
+      size="small"
+      @click="showDialogAddFn"
+      icon="el-icon-s-tools"
+      type="warning"
       >Adicionar função utilitária</el-button
     >
     <el-dialog
@@ -9,7 +13,7 @@
       title="Escolha a função utilitária"
       :visible.sync="dialogVisible"
     >
-      <el-select v-model="value" value-key="name">
+      <el-select v-model="value" value-key="name" placeholder="Selecionar">
         <el-option
           :key="fn.name"
           v-for="fn in functions"
@@ -18,13 +22,15 @@
         ></el-option>
       </el-select>
 
-      <message-alert
-        label="Descrição da função"
-        v-show="value.description.length"
-      >
-        {{ value.description }}
-        <a target="_blank" :href="value.reference">{{ value.reference }}</a>
-      </message-alert>
+      <div v-show="value.description.length" class="fn-explanation">
+        <b>{{ value.name }}</b>
+        <p>
+          {{ value.description }}
+        </p>
+        <p>
+          <b>Referência:</b><a target="_blank" :href="value.reference">{{ value.reference }}</a>
+        </p>
+      </div>
 
       <code-editor
         v-if="dialogVisible"
@@ -101,3 +107,9 @@ export default class HelperFunctions extends Vue {
   }
 }
 </script>
+<style lang="scss">
+.fn-explanation {
+  word-break: keep-all;
+  margin: 10px auto;
+}
+</style>

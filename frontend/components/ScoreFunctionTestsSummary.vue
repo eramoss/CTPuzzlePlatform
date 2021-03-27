@@ -21,7 +21,7 @@
       >
         <el-button
           icon="el-icon-video-play"
-          style="font-weight: bold"
+          class="bold"
           type="success"
           @click="runTests"
           :loading="runningTests"
