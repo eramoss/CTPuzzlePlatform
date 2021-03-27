@@ -14,7 +14,6 @@ import { ConfigService } from '@nestjs/config';
 import PreparedParticipation from 'src/participation/prepared-participation.dto';
 import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { buildCsv } from 'src/util/download';
-import { response, Response } from 'express';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
 
 @Injectable()
@@ -24,6 +23,8 @@ export class TestApplicationsService {
     constructor(
         @InjectRepository(TestApplication)
         private testApplicationRepository: Repository<TestApplication>,
+        @InjectRepository(ItemResponse)
+        private itemResponseRepository: Repository<ItemResponse>,
         private usersService: UsersService,
         private participationService: ParticipationService,
         private testService: TestService,
@@ -33,6 +34,18 @@ export class TestApplicationsService {
 
     save(testApplication: TestApplication): Promise<TestApplication> {
         return this.testApplicationRepository.save(testApplication);
+    }
+
+    async getLastResponse(applicationId: number): Promise<ItemResponse> {
+        let itemResponse = await this.itemResponseRepository.createQueryBuilder('itemResponse')
+            .leftJoinAndSelect('itemResponse.participation', 'participation')
+            .leftJoinAndSelect('participation.user', 'user')
+            .leftJoinAndSelect('participation.application', 'testApplication')
+            .where('testApplication.id = :id', { id: applicationId })
+            .andWhere("itemResponse.deletedAt is null")
+            .orderBy("itemResponse.createdAt", "DESC")
+            .getOne();
+        return itemResponse
     }
 
     getById(id: number): Promise<TestApplication> {
@@ -45,6 +58,8 @@ export class TestApplicationsService {
             .leftJoinAndSelect('itemResponse.score', 'score')
             .leftJoinAndSelect('testItem.item', 'item')
             .leftJoinAndSelect('participation.user', 'user')
+            .orderBy("itemResponse.createdAt", "DESC")
+            .orderBy("participation.createdAt", "DESC")
             .withDeleted()
             .getOne();
     }

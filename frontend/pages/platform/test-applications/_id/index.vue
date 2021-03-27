@@ -48,6 +48,10 @@
         </el-row>
         <el-row>
           <h3>Participações ({{ testApplication.participations.length }})</h3>
+          <h3 v-if="lastResponse">
+            Última resposta: {{ lastResponse.participation.user.name }} às
+            {{ dateFormat.format(lastResponse.createdAt) }}
+          </h3>
           <div class="flex-row">
             <btn-refresh @click="loadData"></btn-refresh>
             <el-button
@@ -64,12 +68,16 @@
             :data="testApplication.participations"
             style="margin-bottom: 30px"
           >
+            <el-table-column label="Dt.Criação">
+              <template slot-scope="{ row }">
+                {{ dateFormat.format(row.createdAt) }}
+              </template>
+            </el-table-column>
             <el-table-column
               label="Participante"
               prop="user.name"
               width="250"
             />
-            
             <el-table-column label="Código do usuário" prop="user.hash" />
             <el-table-column label="Respostas" width="200">
               <template slot-scope="{ row }">
@@ -113,8 +121,11 @@ import Test from "~/types/Test";
 import Participation from "~/types/Participation";
 import BtnRemove from "~/components/BtnRemove.vue";
 import SnackBarRemove from "~/components/SnackBarRemove.vue";
+import { DateFormat } from "~/utils/DateFormat";
+import ItemResponse from "~/types/ItemResponse";
 
 const ACTION_GET_BY_ID = "test-applications/getById";
+const ACTION_GET_LAST_RESPONSE = "test-applications/getLastResponse";
 
 @Component({
   head: {
@@ -129,12 +140,18 @@ const ACTION_GET_BY_ID = "test-applications/getById";
 export default class TestEditForm extends Vue {
   loading: boolean = false;
   testApplication: TestApplication = new TestApplication();
+  lastResponse: ItemResponse = new ItemResponse();
   downloading: boolean = false;
   @Ref() snackBar!: SnackBarRemove;
+  dateFormat = new DateFormat();
 
   @Action(ACTION_GET_BY_ID) getApplicationById!: (
     id: any
   ) => Promise<TestApplication>;
+
+  @Action(ACTION_GET_LAST_RESPONSE) getLastResponse!: (
+    id: any
+  ) => Promise<ItemResponse>;
 
   @Action("test-applications/save") saveTestApplication!: (
     testApplication: TestApplication
@@ -145,10 +162,13 @@ export default class TestEditForm extends Vue {
 
   async asyncData(ctx: Context) {
     let testApplication!: TestApplication;
+    let lastResponse!: ItemResponse;
     let id = ctx.params.id;
     testApplication = await ctx.store.dispatch(ACTION_GET_BY_ID, id);
+    lastResponse = await ctx.store.dispatch(ACTION_GET_LAST_RESPONSE, id);
     return {
       testApplication,
+      lastResponse,
     };
   }
 
@@ -172,9 +192,9 @@ export default class TestEditForm extends Vue {
 
   async loadData() {
     try {
-      this.testApplication = await this.getApplicationById(
-        this.$route.params.id
-      );
+      let id = this.$route.params.id;
+      this.testApplication = await this.getApplicationById(id);
+      this.lastResponse = await this.getLastResponse(id);
       this.$notify({
         type: "success",
         title: "As informações foram atualizadas",

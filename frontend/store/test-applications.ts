@@ -4,6 +4,7 @@ import { PageRequest, PageResponse } from '~/types/pagination';
 import { AxiosResponse } from 'axios'
 import TestApplication from '~/types/TestApplication';
 import { downloadWithAxios } from '~/utils/utils';
+import ItemResponse from '~/types/ItemResponse';
 export const actions: ActionTree<any, any> = {
 
     generateItemResponsesCsv(state, testApplicationId: number) {
@@ -19,6 +20,10 @@ export const actions: ActionTree<any, any> = {
 
     getById(state, id: number): Promise<TestApplication> {
         return $axios.$get('/test-applications/byId/' + id);
+    },
+
+    getLastResponse(state, id: number): Promise<ItemResponse> {
+        return $axios.$get('/test-applications/getLastResponse/' + id);
     },
 
     paginate(state, pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {
