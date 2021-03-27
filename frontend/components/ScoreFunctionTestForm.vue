@@ -170,9 +170,9 @@ import CodeEditor from "~/components/CodeEditor.vue";
 import ScoreFunctionTestDto from "~/types/ScoreFunctionTestDto";
 import ScoreFunctionTestResult from "~/types/ScoreFunctionTestResult";
 import ItemResponseScoreCell from "~/components/ItemResponseScoreCell.vue";
-import { Action, Component, Prop, VModel } from "nuxt-property-decorator";
+import { Action, Component, Prop, VModel, Watch } from "nuxt-property-decorator";
 import Mechanic from "~/types/Mechanic";
-import { ItemTestCase } from "~/types/ItemTestCase";
+import { createScoreFunctionCode, ItemTestCase } from "~/types/ItemTestCase";
 import { ResponseTestCase } from "~/types/ResponseTestCase";
 
 @Component({
@@ -248,6 +248,20 @@ export default class ScoreFunctionTestForm extends Vue {
       this.responseDialogVisible = true;
     } catch (e) {
       this.response = e;
+    }
+  }
+
+  clearSampleScoreFunction() {
+    this.mechanic.scoreFunction = createScoreFunctionCode(
+      this.mechanic.classDefinition,
+      this.mechanic.responseClassDefinition
+    );
+  }
+
+  @Watch("mechanic", { immediate: true })
+  onChangeMechanic() {
+    if (!this.mechanic.scoreFunction) {
+      this.clearSampleScoreFunction();
     }
   }
 

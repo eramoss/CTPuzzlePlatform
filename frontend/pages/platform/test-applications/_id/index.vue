@@ -49,8 +49,8 @@
         <el-row>
           <h3>Participações ({{ testApplication.participations.length }})</h3>
           <h3 v-if="lastResponse">
-            Última resposta: {{ lastResponse.participation.user.name }} às
-            {{ dateFormat.format(lastResponse.createdAt) }}
+            Última resposta: {{ lastResponse.participation.user.name }},
+            {{ dateFormat.fromNow(lastResponse.createdAt) }}
           </h3>
           <div class="flex-row">
             <btn-refresh @click="loadData"></btn-refresh>
@@ -68,9 +68,9 @@
             :data="testApplication.participations"
             style="margin-bottom: 30px"
           >
-            <el-table-column label="Dt.Criação">
+            <el-table-column label="Dt.Criação" width="150">
               <template slot-scope="{ row }">
-                {{ dateFormat.format(row.createdAt) }}
+                {{ dateFormat.fromNow(row.createdAt) }}
               </template>
             </el-table-column>
             <el-table-column
