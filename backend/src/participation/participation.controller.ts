@@ -16,8 +16,14 @@ export class ParticipationController {
         this.service.saveProgress(participation)
     }
 
+    @Post()
+    saveParticipation(@Body() participation: Participation): Promise<Participation> {
+        return this.service.save(participation);
+    }
+
+
     @Post('public/save-user/:userHash')
-    saveUser(@Param('userHash') userHash:string, @Body() user: any) {
+    saveUser(@Param('userHash') userHash: string, @Body() user: any) {
         this.service.saveUserData(userHash, user)
     }
 
@@ -37,7 +43,7 @@ export class ParticipationController {
     }
 
     @Get('/restore/:id')
-    restore(@Param('id') id:number):Promise<any> {
+    restore(@Param('id') id: number): Promise<any> {
         return this.service.restore(id);
     }
 

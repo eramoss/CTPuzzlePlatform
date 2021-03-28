@@ -10,7 +10,7 @@ export default class ErrorPage extends Vue {
       title: "Ocorreu um erro",
       message: "Redirecionando para o início",
     });
-    this.$router.push("/platform");
+    //this.$router.push("/platform");
   }
 }
 </script>

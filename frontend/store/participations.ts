@@ -16,6 +16,10 @@ export const actions: ActionTree<any, any> = {
         return $axios.$delete('/participations/softDelete/' + id);
     },
 
+    async save(state, participation:Participation): Promise<Participation>{
+        return $axios.$post('/participations', participation);
+    },
+
     async restore(state, id: number): Promise<AxiosResponse> {
         return $axios.$get('/participations/restore/' + id);
     },

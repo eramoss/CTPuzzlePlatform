@@ -22,15 +22,30 @@
           <el-input :ref="`input${index}`" v-model="userDataVariable.name" />
         </td>
         <td>
-          <el-select v-model="userDataVariable.variableType" value-key="id">
-            <el-option
-              :key="variableType.id"
-              v-for="variableType in variableTypes"
-              :value="variableType"
-              :label="variableType.varTypeName"
+          <div class="flex-row">
+            <el-select
+              v-model="userDataVariable.variableType"
+              value-key="id"
+              @change="handleChange(userDataVariable)"
             >
-            </el-option>
-          </el-select>
+              <el-option
+                :key="variableType.id"
+                v-for="variableType in variableTypes"
+                :value="variableType"
+                :label="variableType.varTypeName"
+              >
+              </el-option>
+            </el-select>
+            <el-button
+              v-show="userDataVariable.variableType.varType == 'options'"
+              @click="handleChange(userDataVariable)"
+              style="margin-left: 5px"
+              type="warning"
+              size="small"
+              icon="el-icon-edit"
+              >Editar</el-button
+            >
+          </div>
         </td>
         <td style="text-align: center">
           <el-switch v-model="userDataVariable.required" />
@@ -55,6 +70,42 @@
         </td>
       </tr>
     </table>
+    <el-dialog
+      :visible.sync="optionsListDialogVisible"
+      title="Definir opções de resposta"
+    >
+      <template>
+        <div v-if="questionBeingEditted">
+          <div
+            :key="option.id"
+            v-for="option in questionBeingEditted.options"
+            style="margin-bottom: 10px"
+          >
+            <div class="flex-row">
+              <el-input
+                :ref="`optionInput${option.id}`"
+                v-model="option.name"
+              ></el-input>
+              <btn-remove
+                style="margin-left: 10px"
+                @click="removeOption(questionBeingEditted, option)"
+              ></btn-remove>
+            </div>
+          </div>
+          <el-button
+            type="primary"
+            size="small"
+            style="margin-top: 20px"
+            icon="el-icon-plus"
+            @click="addVarOption"
+            >Adicionar opção</el-button
+          >
+        </div>
+        <div slot="footer">
+          <el-button type="primary" @click="saveOptions">Salvar</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -62,30 +113,25 @@ import Vue from "vue";
 import { Component, VModel } from "nuxt-property-decorator";
 import { ElInput } from "element-ui/types/input";
 
-type VarType = "number" | "string" | "date" | "boolean";
-
-class UserDataType {
-  id!: number;
-  varTypeName!: string;
-  varType!: VarType;
-}
-
-class UserDataVariable {
-  id!: number;
-  name!: string;
-  variableType!: UserDataType;
-  required!: boolean;
-}
+import {
+  UserDataType,
+  UserDataQuestion,
+  VarType,
+  VarOption,
+} from "~/types/UserDataQuiz";
 
 @Component
 export default class UserDataToRequestFormBuilder extends Vue {
-  @VModel() userDataList!: UserDataVariable[];
+  @VModel() userDataList!: UserDataQuestion[];
+  optionsListDialogVisible: boolean = false;
+  questionBeingEditted: UserDataQuestion = new UserDataQuestion();
 
   get variableTypes(): UserDataType[] {
     return [
       { id: 1, varTypeName: "Número", varType: "number" },
       { id: 2, varTypeName: "Texto", varType: "string" },
-      { id: 4, varTypeName: "Sim ou não", varType: "boolean" },
+      { id: 3, varTypeName: "Sim ou não", varType: "boolean" },
+      { id: 4, varTypeName: "Opções", varType: "options" },
     ];
   }
 
@@ -93,13 +139,54 @@ export default class UserDataToRequestFormBuilder extends Vue {
     return this.variableTypes.filter((it) => it.varType == varType)[0];
   }
 
-  removeVariable(userDataVariable: UserDataVariable) {
+  removeOption(question: UserDataQuestion, option: VarOption) {
+    const options = question.options;
+    options.splice(options.indexOf(option), 1);
+  }
+
+  addVarOption() {
+    const newOption = new VarOption();
+    if (!this.questionBeingEditted.options) {
+      Vue.set(this.questionBeingEditted, "options", []);
+    }
+    const options = this.questionBeingEditted.options;
+    newOption.name = `Opção ${options.length}`;
+    newOption.id = (options[options.length - 1]?.id || 0) + 1;
+    options.push(newOption);
+    this.$nextTick(() => {
+      let elements = this.$refs[`optionInput${newOption.id}`] as any[];
+      if (elements.length) {
+        const optionInput = elements[0] as ElInput;
+        if (optionInput) {
+          optionInput.focus();
+          optionInput.select();
+        }
+      }
+    });
+  }
+
+  removeVariable(userDataVariable: UserDataQuestion) {
     let index = this.userDataList.indexOf(userDataVariable);
     this.userDataList.splice(index, 1);
   }
 
+  handleChange(userDataVariable: UserDataQuestion) {
+    if (userDataVariable.variableType.varType == "options") {
+      this.showOptionsListBuilder();
+      this.questionBeingEditted = userDataVariable;
+    }
+  }
+
+  showOptionsListBuilder() {
+    this.optionsListDialogVisible = true;
+  }
+
+  saveOptions() {
+    this.optionsListDialogVisible = false;
+  }
+
   addVariable() {
-    let variable = new UserDataVariable();
+    let variable = new UserDataQuestion();
     let lastVariable = this.userDataList[this.userDataList.length];
     if (lastVariable) {
       variable.id = lastVariable.id + 1;
@@ -144,24 +231,32 @@ export default class UserDataToRequestFormBuilder extends Vue {
           name: "Nome",
           variableType: this.getVarType("string"),
           required: false,
+          answer: "",
+          options: [],
         },
         {
           id: 2,
           name: "Idade",
           variableType: this.getVarType("number"),
           required: false,
+          answer: "",
+          options: [],
         },
         {
           id: 3,
           name: "Já programou alguma vez?",
           variableType: this.getVarType("boolean"),
           required: false,
+          answer: "",
+          options: [],
         },
         {
           id: 4,
           name: "O que achou do teste?",
           variableType: this.getVarType("string"),
           required: false,
+          answer: "",
+          options: [],
         },
       ];
   }

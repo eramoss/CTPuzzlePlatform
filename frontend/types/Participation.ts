@@ -8,7 +8,8 @@ export default class Participation {
     application!: TestApplication
     progress!: number
     itemResponses!: ItemResponse[]
-    createdAt!:Date
-    deletedAt!:Date
-    updatedAt!:Date
+    createdAt!: Date
+    deletedAt!: Date
+    updatedAt!: Date
+    userDataToRequest!: Object
 }

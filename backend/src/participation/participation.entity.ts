@@ -44,4 +44,12 @@ export default class Participation {
     @DeleteDateColumn()
     deletedAt: Date
 
+    @Column({
+        type: 'jsonb',
+        array: false,
+        default: () => "'{}'",
+        nullable: true,
+    })
+    userDataToRequest!:Object
+
 }
