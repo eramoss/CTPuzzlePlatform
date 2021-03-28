@@ -55,7 +55,7 @@ export class TestService {
             .take(pageRequest.limit)
             .where(pageRequest.filter)
             .leftJoinAndSelect('test.items', 'item')
-            .leftJoinAndSelect('test.applications', 'application')
+            .leftJoinAndSelect('test.applications', 'application','application."deletedAt" is null')
             .orderBy("test.id", "DESC")
             .getMany()
         return new PageResponse(data);

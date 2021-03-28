@@ -35,4 +35,13 @@ export class Test {
 
     @UpdateDateColumn()
     updatedAt:Date
+
+    @Column({
+        type: 'jsonb',
+        array: false,
+        default: () => "'{}'",
+        nullable: true,
+    })
+    userDataToRequest!:Object
 }
+

@@ -108,6 +108,9 @@
           </el-col>
         </el-row>
         <el-row>
+          <user-data-to-request-form-builder v-model="test.userDataToRequest" />
+        </el-row>
+        <el-row>
           <el-col>
             <btn-save @click="save" :loading="saving" />
             <btn-back @click="back" />
@@ -138,6 +141,7 @@ import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
 import ItemThumbnail from "~/components/ItemThumbnail.vue";
 import { ElForm } from "element-ui/types/form";
 import ResearchGroup from "~/types/ResearchGroup";
+import UserDataToRequestFormBuilder from "~/components/UserDataToRequestFormBuilder.vue";
 
 @Component({
   head: {
@@ -147,6 +151,7 @@ import ResearchGroup from "~/types/ResearchGroup";
     draggable,
     TestApplicationDialog,
     ItemThumbnail,
+    UserDataToRequestFormBuilder,
   },
   data() {
     return {

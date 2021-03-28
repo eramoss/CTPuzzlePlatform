@@ -77,7 +77,10 @@ import { Component, Action } from "nuxt-property-decorator";
 import { Context } from "@nuxt/types";
 import Participation from "~/types/Participation";
 import ItemResponsesScreen from "~/components/ItemResponsesScreen.vue";
-import { ACTION_GET_LAST_RESPONSE } from "../index.vue";
+import {
+  ACTION_GET_LAST_RESPONSE,
+  mustRefreshLastItemResponse,
+} from "../index.vue";
 import ItemResponse from "~/types/ItemResponse";
 const ACTION_GET_BY_ID = "participations/getById";
 
@@ -89,12 +92,19 @@ const ACTION_GET_BY_ID = "participations/getById";
 export default class ItemResponsesList extends Vue {
   participation!: Participation;
   loading = false;
-
   intervalBringLastResponse!: NodeJS.Timeout;
   lastResponse!: ItemResponse;
 
   @Action(ACTION_GET_BY_ID) getById!: (id: any) => Promise<Participation>;
   @Action("participations/removeById") removeParticipationById!: (
+    id: number
+  ) => Promise<any>;
+
+  @Action(ACTION_GET_LAST_RESPONSE) getLastResponse!: (
+    tetApplicationId: any
+  ) => Promise<ItemResponse>;
+
+  @Action("participations/recalculateAllResponseItems") recalculateAll!: (
     id: number
   ) => Promise<any>;
 
@@ -121,10 +131,6 @@ export default class ItemResponsesList extends Vue {
       console.error(e);
     }
   }
-
-  @Action("participations/recalculateAllResponseItems") recalculateAll!: (
-    id: number
-  ) => Promise<any>;
 
   async recalculateAllResponseItems() {
     this.loading = true;
@@ -187,12 +193,17 @@ export default class ItemResponsesList extends Vue {
   }
 
   async asyncData(ctx: Context) {
-    let participation = await ctx.store.dispatch(
-      "participations/getById",
+    let participation: Participation = await ctx.store.dispatch(
+      ACTION_GET_BY_ID,
       ctx.params.participationId
+    );
+    let lastResponse = await ctx.store.dispatch(
+      ACTION_GET_LAST_RESPONSE,
+      participation.application.id
     );
     return {
       participation,
+      lastResponse,
     };
   }
 
@@ -202,23 +213,31 @@ export default class ItemResponsesList extends Vue {
     }
   }
 
-  @Action(ACTION_GET_LAST_RESPONSE) getLastResponse!: (
-    tetApplicationId: any
-  ) => Promise<ItemResponse>;
-
   mounted() {
-    let blinkAudio = new Audio("/audios/blink.mp3");
-    this.intervalBringLastResponse = setInterval(async () => {
-      let applicationId = this.participation.application.id;
-      let lastResponse = await this.getLastResponse(applicationId);
-      if (!this.lastResponse || lastResponse.id != this.lastResponse.id) {
-        blinkAudio.play();
-        this.loadData();
-      }
-    }, 2000);
+    this.startIntervalUpdateLastResponse();
   }
+
   destroyed() {
-    clearTimeout(this.intervalBringLastResponse);
+    clearInterval(this.intervalBringLastResponse);
+  }
+
+  startIntervalUpdateLastResponse() {
+    this.intervalBringLastResponse = setInterval(
+      this.refreshLastResponse,
+      2000
+    );
+  }
+
+  async refreshLastResponse() {
+    if (
+      await mustRefreshLastItemResponse({
+        lastResponse: this.lastResponse,
+        applicationId: this.$route.params.id,
+        getLastResponse: this.getLastResponse,
+      })
+    ) {
+      this.loadData();
+    }
   }
 }
 </script>

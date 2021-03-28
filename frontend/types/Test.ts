@@ -13,5 +13,5 @@ export default class Test {
     createdAt!:Date
     deletedAt!:Date
     updatedAt!:Date
-
+    userDataToRequest!:Object
 }

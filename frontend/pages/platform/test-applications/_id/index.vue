@@ -53,7 +53,9 @@
             {{ dateFormat.fromNow(lastResponse.createdAt) }}
           </h3>
           <div class="flex-row">
-            <btn-refresh @click="loadData"></btn-refresh>
+            <btn-mustRefreshLastItemResponse
+              @click="loadData"
+            ></btn-mustRefreshLastItemResponse>
             <el-button
               type="primary"
               icon="el-icon-download"
@@ -253,18 +255,45 @@ export default class TestEditForm extends Vue {
   }
 
   mounted() {
-    let blinkAudio = new Audio("/audios/blink.mp3");
-    this.intervalBringLastResponse = setInterval(async () => {
-      let id = this.$route.params.id;
-      let lastResponse = await this.getLastResponse(id);
-      if (!this.lastResponse || lastResponse.id != this.lastResponse.id) {
-        blinkAudio.play();
-        this.loadData();
-      }
-    }, 2000);
+    this.startIntervalUpdateLastResponse();
   }
+
   destroyed() {
-    clearTimeout(this.intervalBringLastResponse);
+    clearInterval(this.intervalBringLastResponse);
   }
+
+  startIntervalUpdateLastResponse() {
+    this.intervalBringLastResponse = setInterval(
+      this.refreshLastResponse,
+      2000
+    );
+  }
+
+  async refreshLastResponse() {
+    if (
+      await mustRefreshLastItemResponse({
+        lastResponse: this.lastResponse,
+        applicationId: this.$route.params.id,
+        getLastResponse: this.getLastResponse,
+      })
+    ) {
+      this.loadData();
+    }
+  }
+}
+
+export async function mustRefreshLastItemResponse(args: {
+  lastResponse: ItemResponse;
+  applicationId: any;
+  getLastResponse: (applicationId: any) => Promise<ItemResponse>;
+}) {
+  let applicationId = args.applicationId;
+  let lastResponse = await args.getLastResponse(applicationId);
+  let blinkAudio = new Audio("/audios/blink.mp3");
+  if (!args.lastResponse || lastResponse.id != args.lastResponse.id) {
+    blinkAudio.play();
+    return true;
+  }
+
 }
 </script>
