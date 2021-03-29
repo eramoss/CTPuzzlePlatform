@@ -98,7 +98,12 @@
 <script lang="ts">
 import Vue from "vue";
 import { Action, Component, Ref, Watch } from "nuxt-property-decorator";
-import { UserDataType, UserDataQuestion, VarType } from "~/types/UserDataQuiz";
+import {
+  UserDataType,
+  UserDataQuestion,
+  VarType,
+  UserQuizSession,
+} from "~/types/UserDataQuiz";
 import Participation from "~/types/Participation";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
@@ -114,23 +119,24 @@ export default class EndOfTestQuizzPage extends Vue {
 
   participation!: Participation;
 
-  questionIndex = 0;
-
   @Ref() input!: ElInput;
 
   get hasQuestion() {
     return !!this.currentQuestion;
   }
 
+  get questionIndex() {
+    return this.quizSession?.index || 0;
+  }
+
   nextQuestion() {
-    this.questionIndex = this.questionIndex + 1;
+    this.quizSession.index = this.questionIndex + 1;
     this.saveParticipation();
     this.focusInput();
   }
 
   restart() {
-    this.participation.userDataToRequest = this.participation.application?.test?.userDataToRequest;
-    this.questionIndex = 0;
+    initQuizSession(this.participation, true);
   }
 
   @Action("participations/save")
@@ -139,7 +145,7 @@ export default class EndOfTestQuizzPage extends Vue {
   ) => Promise<Participation>;
 
   prevQuestion() {
-    this.questionIndex = this.questionIndex - 1;
+    this.quizSession.index = this.questionIndex - 1;
     this.saveParticipation();
     this.focusInput();
   }
@@ -152,12 +158,20 @@ export default class EndOfTestQuizzPage extends Vue {
     this.input?.focus();
   }
 
-  get currentQuestion() {
-    return this.questions[this.questionIndex];
+  get currentQuestion(): UserDataQuestion {
+    let question = new UserDataQuestion();
+    if (this.questions) {
+      question = this.questions[this.questionIndex];
+    }
+    return question;
   }
 
-  get questions() {
-    return this.participation?.userDataToRequest as UserDataQuestion[];
+  get quizSession(): UserQuizSession {
+    return this.participation?.userDataToRequest as UserQuizSession;
+  }
+
+  get questions(): UserDataQuestion[] {
+    return this.quizSession?.questions || [];
   }
 
   async asyncData(ctx: Context) {
@@ -165,10 +179,7 @@ export default class EndOfTestQuizzPage extends Vue {
       "participations/getById",
       ctx.params.participationId
     );
-    if (!participation.userDataToRequest) {
-      participation.userDataToRequest =
-        participation?.application?.test?.userDataToRequest;
-    }
+    initQuizSession(participation);
     return {
       participation,
     };
@@ -178,24 +189,17 @@ export default class EndOfTestQuizzPage extends Vue {
     return this.$route.params.participationId;
   }
 
-  get currentQuestionIndexCookieName() {
-    let participationId = this.participationId;
-    return `${participationId}_questionIndex`;
-  }
-
-  @Watch("questionIndex")
-  onChangeQuestionIndex() {
-    localStorage.setItem(
-      this.currentQuestionIndexCookieName,
-      this.questionIndex + ""
-    );
-  }
-
   mounted() {
-    this.questionIndex = parseInt(
-      localStorage.getItem(this.currentQuestionIndexCookieName) || "0"
-    );
     this.focusInput();
+  }
+}
+function initQuizSession(participation: Participation, force: boolean = false) {
+  if (!participation.userDataToRequest || force) {
+    const quiz = new UserQuizSession();
+    quiz.questions = participation?.application?.test
+      ?.userDataToRequest as UserDataQuestion[];
+    quiz.index = 0;
+    participation.userDataToRequest = quiz;
   }
 }
 </script>

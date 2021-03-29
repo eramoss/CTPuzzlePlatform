@@ -1,8 +1,8 @@
 export type VarType = "number" | "string" | "date" | "boolean" | "options";
 
 export class VarOption {
-    id!:number
-    name!:string
+    id!: number
+    name!: string
 }
 
 export class UserDataType {
@@ -18,4 +18,10 @@ export class UserDataQuestion {
     required!: boolean;
     answer: any
     options: VarOption[] = []
+}
+
+export class UserQuizSession {
+    index!: number
+    questions: UserDataQuestion[] = []
+
 }

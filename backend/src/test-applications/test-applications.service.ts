@@ -108,13 +108,9 @@ export class TestApplicationsService {
             })
         })
 
-
-
-
         responseProperties.forEach(prop => {
             labels.push({ label: prop, value: prop })
         });
-
         [
             { label: 'escore_max', value: 'escore_max' },
             { label: 'escore_obtido', value: 'escore_obtido' },
@@ -172,6 +168,7 @@ export class TestApplicationsService {
         }
         const participation = await this.participateInTheTest(applicationHash, user)
         const apiUrl = this.configService.get('API_URL');
+        const siteUrl = this.configService.get('SITE_URL')
         const urlToSendResponses = `${apiUrl}/participations/public/respond/${participation.id}/<item_id>`
         const urlToSendProgress = `${apiUrl}/participations/public/save-progress`
         const urlToSendUserData = `${apiUrl}/participations/public/save-user/${userHash}`
@@ -210,6 +207,9 @@ curl -X PUT --header 'Content-Type: application/json' -d '{"id": ${participation
                 help: `Envie um JSON com as informações do usuário. Exemplo:
 curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "idade": 10}' ${urlToSendUserData}`
             },
+            urlToEndOfTestQuiz: {
+                url: `${siteUrl}/end-of-test-quiz/${participation.id}`
+            }
         } as PreparedParticipation
 
         return preparedParticipation;

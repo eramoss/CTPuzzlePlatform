@@ -47,7 +47,6 @@ export default class Participation {
     @Column({
         type: 'jsonb',
         array: false,
-        default: () => "'{}'",
         nullable: true,
     })
     userDataToRequest!:Object

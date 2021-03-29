@@ -17,6 +17,11 @@ export class UrlToSendUserData {
     help: string
 }
 
+export class UrlToEndOfTestQuiz {
+    url: string
+    help: 'Open in a browser'
+}
+
 export default class PreparedParticipation {
 
     lastVisitedItemId:number
@@ -25,5 +30,6 @@ export default class PreparedParticipation {
     urlToSendResponses: UrlToSendResponses
     urlToSendProgress: UrlToSendProgress
     urlToSendUserData: UrlToSendUserData
+    urlToEndOfTestQuiz: UrlToEndOfTestQuiz
 
 }
