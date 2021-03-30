@@ -1,96 +1,101 @@
 <template>
-  <div class="quiz-form center">
-    <h2>Responda o questionário abaixo para ver o resultado</h2>
-    <div>
-      <div v-if="hasQuestion">
-        <div class="question" style="margin: 0 auto">
-          <h3>Questão {{ questionIndex + 1 }} de {{ questions.length }}</h3>
-          <h3>{{ currentQuestion.name }}</h3>
-          <div>
-            <el-input
-              v-if="currentQuestion.variableType.varType == 'string'"
-              class="large-input"
-              ref="input"
-              size="large"
-              v-model="currentQuestion.answer"
-              placeholder="Responda aqui"
-            >
-            </el-input>
-            <el-radio-group
-              v-model="currentQuestion.answer"
-              v-if="currentQuestion.variableType.varType == 'boolean'"
-            >
-              <el-radio-button class="large-radio" label="true"
-                >Sim</el-radio-button
-              >
-              <el-radio-button class="large-radio" size="large" label="false"
-                >Não</el-radio-button
-              >
-            </el-radio-group>
-            <el-radio-group
-              v-model="currentQuestion.answer"
-              v-if="currentQuestion.variableType.varType == 'options'"
-            >
-              <el-radio-button
-                :key="option.id"
-                v-for="option in currentQuestion.options"
-                class="large-radio"
-                :label="option.name"
-                >{{ option.name }}</el-radio-button
-              >
-            </el-radio-group>
-            <el-input
-              v-if="currentQuestion.variableType.varType == 'number'"
-              class="large-input"
-              ref="input"
-              size="large"
-              type="number"
-              style="text-align: center"
-              v-model="currentQuestion.answer"
-              placeholder="0"
-            >
-            </el-input>
-          </div>
-        </div>
-        <div class="flex-row center btns">
-          <div class="prev" v-if="questionIndex > 0">
-            <el-button @click="prevQuestion" type="success">
-              <div class="flex-row">
-                <icon name="arrow_back" />
-                Questão anterior
-              </div>
-            </el-button>
-          </div>
-          <div class="next" v-if="questionIndex < questions.length">
-            <el-button
-              @click="nextQuestion"
-              type="success"
-              :disabled="!currentQuestion.answer && currentQuestion.required"
-            >
-              <div class="flex-row">
-                Próxima questão
-                <icon name="arrow_forward" />
-              </div>
-            </el-button>
-          </div>
-        </div>
-      </div>
+  <div>
+    <div v-show="isTestingQuiz" class="quiz-test-info">
+      Testando questionário (as respostas não serão guardadas)
     </div>
-    <div class="center fill" v-if="!hasQuestion">
+    <div class="quiz-form center">
+      <h2>Responda o questionário abaixo para ver o resultado</h2>
       <div>
-        <el-button class="btnSeeResult" type="success" size="large">
-          Ver resultado!
-        </el-button>
+        <div v-if="hasQuestion">
+          <div class="question" style="margin: 0 auto">
+            <h3>Questão {{ questionIndex + 1 }} de {{ questions.length }}</h3>
+            <h3>{{ currentQuestion.name }}</h3>
+            <div>
+              <el-input
+                v-if="currentQuestion.variableType.varType == 'string'"
+                class="large-input"
+                ref="input"
+                size="large"
+                v-model="currentQuestion.answer"
+                placeholder="Responda aqui"
+              >
+              </el-input>
+              <el-radio-group
+                v-model="currentQuestion.answer"
+                v-if="currentQuestion.variableType.varType == 'boolean'"
+              >
+                <el-radio-button class="large-radio" label="true"
+                  >Sim</el-radio-button
+                >
+                <el-radio-button class="large-radio" size="large" label="false"
+                  >Não</el-radio-button
+                >
+              </el-radio-group>
+              <el-radio-group
+                v-model="currentQuestion.answer"
+                v-if="currentQuestion.variableType.varType == 'options'"
+              >
+                <el-radio-button
+                  :key="option.id"
+                  v-for="option in currentQuestion.options"
+                  class="large-radio"
+                  :label="option.name"
+                  >{{ option.name }}</el-radio-button
+                >
+              </el-radio-group>
+              <el-input
+                v-if="currentQuestion.variableType.varType == 'number'"
+                class="large-input"
+                ref="input"
+                size="large"
+                type="number"
+                style="text-align: center"
+                v-model="currentQuestion.answer"
+                placeholder="0"
+              >
+              </el-input>
+            </div>
+          </div>
+          <div class="flex-row center btns">
+            <div class="prev" v-if="questionIndex > 0">
+              <el-button @click="prevQuestion" type="success">
+                <div class="flex-row">
+                  <icon name="arrow_back" />
+                  Questão anterior
+                </div>
+              </el-button>
+            </div>
+            <div class="next" v-if="questionIndex < questions.length">
+              <el-button
+                @click="nextQuestion"
+                type="success"
+                :disabled="!currentQuestion.answer && currentQuestion.required"
+              >
+                <div class="flex-row">
+                  Próxima questão
+                  <icon name="arrow_forward" />
+                </div>
+              </el-button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <el-button
-          @click="restart"
-          class="btnSeeResult"
-          type="default"
-          size="large"
-        >
-          Reponder novamente
-        </el-button>
+      <div class="center fill" v-if="!hasQuestion">
+        <div>
+          <el-button class="btnSeeResult" type="success" size="large">
+            Ver resultado!
+          </el-button>
+        </div>
+        <div>
+          <el-button
+            @click="restart"
+            class="btnSeeResult"
+            type="default"
+            size="large"
+          >
+            Reponder novamente
+          </el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -120,6 +125,7 @@ export default class EndOfTestQuizzPage extends Vue {
   participation!: Participation;
 
   @Ref() input!: ElInput;
+  isTestingQuiz = false;
 
   get hasQuestion() {
     return !!this.currentQuestion;
@@ -151,7 +157,9 @@ export default class EndOfTestQuizzPage extends Vue {
   }
 
   async saveParticipation() {
-    this.participation = await this.callSaveParticipation(this.participation);
+    if (!this.isTestingQuiz) {
+      this.participation = await this.callSaveParticipation(this.participation);
+    }
   }
 
   focusInput() {
@@ -175,13 +183,28 @@ export default class EndOfTestQuizzPage extends Vue {
   }
 
   async asyncData(ctx: Context) {
-    const participation = await ctx.store.dispatch(
-      "participations/getById",
-      ctx.params.participationId
-    );
-    initQuizSession(participation);
+    let participationId = ctx.params.participationId;
+    let participation = new Participation();
+    let isTestingQuiz = false;
+    if (participationId) {
+      participation = await ctx.store.dispatch(
+        "participations/getById",
+        participationId
+      );
+      initQuizSession(participation);
+    } else {
+      isTestingQuiz = true;
+      let strQuiz = ctx.route.query.quiz as string;
+      let quiz = Object.assign(
+        new UserQuizSession(),
+        JSON.parse(strQuiz)
+      ) as UserQuizSession;
+      quiz.index = 0;
+      participation.userDataToRequest = quiz;
+    }
     return {
       participation,
+      isTestingQuiz,
     };
   }
 
@@ -254,5 +277,14 @@ function initQuizSession(participation: Participation, force: boolean = false) {
       font-size: 20pt;
     }
   }
+}
+.quiz-test-info {
+  background: #e6a23c;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 12pt;
+  color: white;
+  padding: 7px;
 }
 </style>

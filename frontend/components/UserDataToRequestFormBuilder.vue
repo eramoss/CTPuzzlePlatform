@@ -1,6 +1,10 @@
 <template>
   <div class="form-builder panel shadow white">
-    <h2 style="margin-bottom: 20px">Questionário de fim de teste</h2>
+    <div class="flex-row">
+      <h2 style="margin-bottom: 20px">Questionário de fim de teste</h2>
+      <el-button @click="testQuizForm" 
+      type="warning" icon="el-icon-monitor" style="font-weight:bold">Testar formulário</el-button>
+    </div>
     <message-alert style="margin-bottom: 20px">
       <p>
         O questionário de fim de teste visa captar informações dos participantes
@@ -118,6 +122,7 @@ import {
   UserDataQuestion,
   VarType,
   VarOption,
+  UserQuizSession,
 } from "~/types/UserDataQuiz";
 
 @Component
@@ -183,6 +188,17 @@ export default class UserDataToRequestFormBuilder extends Vue {
 
   saveOptions() {
     this.optionsListDialogVisible = false;
+  }
+
+  testQuizForm() {
+    let quiz = new UserQuizSession();
+    quiz.questions = this.userDataList;
+    let link = document.createElement("a");
+    link.href = `/end-of-test-quiz?quiz=${JSON.stringify(
+      quiz
+    )}`;
+    link.target = "_blank";
+    link.click();
   }
 
   addVariable() {
