@@ -224,7 +224,7 @@ export default class UserDataToRequestFormBuilder extends Vue {
   }
 
   mounted() {
-    if (!this.userDataList.length)
+    if (!this.userDataList?.length)
       this.userDataList = [
         {
           id: 1,

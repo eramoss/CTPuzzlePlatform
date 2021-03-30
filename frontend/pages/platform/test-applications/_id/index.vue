@@ -53,9 +53,7 @@
             {{ dateFormat.fromNow(lastResponse.createdAt) }}
           </h3>
           <div class="flex-row">
-            <btn-mustRefreshLastItemResponse
-              @click="loadData"
-            ></btn-mustRefreshLastItemResponse>
+            <btn-refresh @click="loadData"></btn-refresh>
             <el-button
               type="primary"
               icon="el-icon-download"
@@ -290,10 +288,11 @@ export async function mustRefreshLastItemResponse(args: {
   let applicationId = args.applicationId;
   let lastResponse = await args.getLastResponse(applicationId);
   let blinkAudio = new Audio("/audios/blink.mp3");
-  if (!args.lastResponse || lastResponse.id != args.lastResponse.id) {
-    blinkAudio.play();
-    return true;
+  if (lastResponse.id) {
+    if (!args.lastResponse || lastResponse.id != args.lastResponse.id) {
+      blinkAudio.play();
+      return true;
+    }
   }
-
 }
 </script>

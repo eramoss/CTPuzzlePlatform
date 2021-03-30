@@ -153,6 +153,7 @@ export class TestApplicationsService {
                     .orWhere("test.name like :search", searchLike)
             }))
             .andWhere(pageRequest.andWhere)
+            .orderBy("test-application.id", "DESC")
             .getMany();
         return new PageResponse(data);
     }
