@@ -1,16 +1,11 @@
 <template>
   <div class="form-builder panel shadow white">
-    <div class="flex-row">
+    <div class="flex-row bordered-bottom">
       <h2 style="margin-bottom: 20px">Questionário de fim de teste</h2>
       <el-button @click="testQuizForm" 
       type="warning" icon="el-icon-monitor" style="font-weight:bold">Testar formulário</el-button>
     </div>
-    <message-alert style="margin-bottom: 20px">
-      <p>
-        O questionário de fim de teste visa captar informações dos participantes
-        do teste para fins estatísticos.
-      </p>
-    </message-alert>
+    
     <table style="width: 100%">
       <tr>
         <th>Pergunta</th>
