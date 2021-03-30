@@ -65,7 +65,7 @@
             <el-button
               @click="nextQuestion"
               type="success"
-              :disabled="!currentQuestion.answer"
+              :disabled="!currentQuestion.answer && currentQuestion.required"
             >
               <div class="flex-row">
                 Próxima questão

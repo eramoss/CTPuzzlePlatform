@@ -316,7 +316,7 @@ export default class ItemEditForm extends Vue {
   }
 
   back() {
-    this.$router.go(-1);
+    this.$router.push("/platform/items");
   }
 
   mounted() {

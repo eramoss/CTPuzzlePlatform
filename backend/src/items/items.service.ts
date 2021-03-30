@@ -22,7 +22,12 @@ export class ItemsService {
     }
 
     getById(id: number): Promise<Item> {
-        return this.itemRepository.findOne({ id }, { relations: ['mechanic'] })
+        return this.itemRepository
+            .createQueryBuilder('item')
+            .where({ id })
+            .leftJoinAndSelect('item.mechanic', 'mechanic')
+            .withDeleted()
+            .getOne()
     }
 
     softDeleteById(id: number): Promise<DeleteResult> {
