@@ -68,6 +68,10 @@
           @request-update="loadData"
         />
       </div>
+      <div class="panel white shadow top-marged">
+        <h2>Questionário</h2>
+        <quiz-responses :quiz="participation.userDataToRequest" />
+      </div>
     </div>
   </div>
 </template>
@@ -77,6 +81,7 @@ import { Component, Action } from "nuxt-property-decorator";
 import { Context } from "@nuxt/types";
 import Participation from "~/types/Participation";
 import ItemResponsesScreen from "~/components/ItemResponsesScreen.vue";
+import QuizResponses from "~/components/QuizResponses.vue";
 import {
   ACTION_GET_LAST_RESPONSE,
   mustRefreshLastItemResponse,
@@ -87,6 +92,7 @@ const ACTION_GET_BY_ID = "participations/getById";
 @Component({
   components: {
     ItemResponsesScreen,
+    QuizResponses,
   },
 })
 export default class ItemResponsesList extends Vue {

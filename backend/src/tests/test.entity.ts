@@ -1,3 +1,4 @@
+import { UserDataQuestion } from "src/participation/user-quiz.dto";
 import ResearchGroup from "src/research-group/research-group.entity";
 import { TestApplication } from "src/test-applications/test-application.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
@@ -31,10 +32,10 @@ export class Test {
     deletedAt: Date
 
     @CreateDateColumn()
-    createdAt:Date
+    createdAt: Date
 
     @UpdateDateColumn()
-    updatedAt:Date
+    updatedAt: Date
 
     @Column({
         type: 'jsonb',
@@ -42,6 +43,6 @@ export class Test {
         default: () => "'{}'",
         nullable: true,
     })
-    userDataToRequest!:Object
+    userDataToRequest!: UserDataQuestion[]
 }
 

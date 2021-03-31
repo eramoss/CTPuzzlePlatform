@@ -69,30 +69,44 @@ export class TestApplicationsService {
         const rows: any[] = []
         let responseProperties: string[] = []
         let userProperties: string[] = []
+        let quizProperties: string[] = []
         const labels = [
             { label: 'usuario', value: 'usuario' },
-            //{ label: 'data', value: 'data' },
             { label: 'item_id', value: 'item_id' },
-            { label: 'resposta', value: 'resposta' },
+            //{ label: 'resposta', value: 'resposta' },
         ]
 
-        testApplication.participations.map((participation: Participation) => {
+
+        testApplication.participations.forEach((participation: Participation) => {
             if (participation.user.data) {
                 userProperties = Object.keys(participation.user.data)
-                userProperties.forEach(prop => {
+                userProperties.reverse().forEach(prop => {
                     if (!labels.some(l => l.label == prop)) {
-                        labels.splice(1, 0, { label: prop, value: prop })
+                        labels.splice(0, 0, { label: prop, value: prop })
                     }
                 });
             }
+
+            if (participation.userDataToRequest) {
+                quizProperties = participation.userDataToRequest.questions.map(q => q.name)
+                quizProperties.reverse().forEach(prop => {
+                    if (!labels.some(l => l.label == prop)) {
+                        labels.splice(1, 0, { label: prop, value: prop })
+                    }
+                })
+            }
+
+        })
+
+        testApplication.participations.map((participation: Participation) => {
+
             participation.itemResponses.forEach((itemResponse: ItemResponse) => {
                 let row = {
                     usuario: participation.user.id,
-                    //data: participation.user.data,
                     item_id: itemResponse.testItem.item.id,
-                    resposta: itemResponse.response,
+                    //resposta: itemResponse.response,
                     escore_max: itemResponse.score.max,
-                    escore_obtido: itemResponse.score.score
+                    escore_obtido: itemResponse.score.score,
                 }
                 let responseJson = JSON.parse(itemResponse.response);
                 if (!responseProperties.length) {
@@ -103,6 +117,11 @@ export class TestApplicationsService {
                 })
                 responseProperties.forEach((key: string) => {
                     row[key] = responseJson[key]
+                })
+                quizProperties.forEach((key: string) => {
+                    if (participation.userDataToRequest) {
+                        row[key] = participation.userDataToRequest.questions.find(q => q.name == key).answer
+                    }
                 })
                 rows.push(row);
             })

@@ -2,6 +2,7 @@ import { ItemResponse } from "src/item-responses/item-response.entity";
 import { TestApplication } from "src/test-applications/test-application.entity";
 import { User } from "src/users/user.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { UserQuizSession } from "./user-quiz.dto";
 
 @Entity()
 export default class Participation {
@@ -13,10 +14,10 @@ export default class Participation {
     user: User
 
     @CreateDateColumn()
-    createdAt:Date
+    createdAt: Date
 
     @UpdateDateColumn()
-    updatedAt:Date
+    updatedAt: Date
 
     @Column({ nullable: true })
     finishedAt: Date
@@ -49,6 +50,6 @@ export default class Participation {
         array: false,
         nullable: true,
     })
-    userDataToRequest!:Object
+    userDataToRequest!: UserQuizSession
 
 }

@@ -24,10 +24,10 @@
                 v-model="currentQuestion.answer"
                 v-if="currentQuestion.variableType.varType == 'boolean'"
               >
-                <el-radio-button class="large-radio" label="true"
+                <el-radio-button class="large-radio" label="Sim"
                   >Sim</el-radio-button
                 >
-                <el-radio-button class="large-radio" size="large" label="false"
+                <el-radio-button class="large-radio" size="large" label="Não"
                   >Não</el-radio-button
                 >
               </el-radio-group>

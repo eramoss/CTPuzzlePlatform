@@ -1,6 +1,7 @@
 import ItemResponse from "./ItemResponse";
 import TestApplication from "./TestApplication";
 import User from "./User";
+import { UserQuizSession } from "./UserDataQuiz";
 
 export default class Participation {
     id!: number
@@ -11,5 +12,5 @@ export default class Participation {
     createdAt!: Date
     deletedAt!: Date
     updatedAt!: Date
-    userDataToRequest!: Object
+    userDataToRequest!: UserQuizSession
 }
