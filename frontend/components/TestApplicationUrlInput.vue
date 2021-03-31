@@ -12,7 +12,9 @@
         </el-tooltip>
     </template>
     </copy-input>
-    <message-alert type="warning" icon-position="top" icon-size="18pt" label="Informações sobre o link da aplicação">
+    <el-button type="text" @click="aboutApplicationLinkVisible=true">Informações sobre o link de aplicação</el-button>
+    <el-dialog title="Informações sobre o link de aplicação" :visible.sync="aboutApplicationLinkVisible">
+        <message-alert type="warning" icon-position="top" icon-size="18pt">
         <div>
             <p>
                 O link da aplicação permite iniciar a comunicação entre a plataforma e o aplicativo responsável pela apresentação dos puzzles.
@@ -34,16 +36,6 @@
                         <td>{{operation}}</td>
                         <td>Denota a operação do link: <i> application </i> para aplicação e <i>playground</i> para teste do item</td>
                     </tr>
-                     <tr>
-                        <td>hash</td>
-                        <td>{{hash}}</td>
-                        <td>Identificador único da aplicação</td>
-                    </tr>
-                    <tr>
-                        <td>baseUrl</td>
-                        <td>{{baseUrl}}</td>
-                        <td>Endereço base da API da plataforma</td>
-                    </tr>
                     <tr>
                         <td>dataUrl</td>
                         <td><a :href="dataUrl" style="margin-left:0" target="_blank">{{dataUrl}}</a></td>
@@ -56,6 +48,8 @@
             </p>
         </div>
     </message-alert>
+    </el-dialog>
+    
   </div>
 </template>
 <script lang="ts">
@@ -75,6 +69,7 @@ export default class TestApplicationUrlInput extends Vue {
   @Prop({ default: "application" }) operation!: string;
   @Prop({ default: false }) showAccessIcon!: boolean;
   puzzleUrl: string = "";
+  aboutApplicationLinkVisible: boolean = false;
 
   @Action("tests/getPuzzleBaseUrl") getPuzzleBaseUrl!: (
     testId: number

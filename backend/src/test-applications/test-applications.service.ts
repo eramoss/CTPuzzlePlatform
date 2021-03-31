@@ -113,7 +113,7 @@ export class TestApplicationsService {
                     responseProperties = Object.keys(responseJson)
                 }
                 userProperties.forEach((key: string) => {
-                    row[key] = participation.user.data[key]
+                    row[key] = participation.user.data[key] 
                 })
                 responseProperties.forEach((key: string) => {
                     row[key] = responseJson[key]
