@@ -83,16 +83,8 @@ export default class TestApplicationUrlInput extends Vue {
     }
   }
 
-  get baseUrl() {
-    return this.$axios.defaults.baseURL;
-  }
-
-  get hash() {
-    return this.testApplication.hash;
-  }
-
   get dataUrl() {
-    let hash = this.hash;
+    let hash = this.testApplication.hash;
     let baseUrl = this.$axios.defaults.baseURL;
     return `${baseUrl}/test-applications/public/data/${hash}/<user_uuid>`;
   }
@@ -104,11 +96,8 @@ export default class TestApplicationUrlInput extends Vue {
     );
     let url = "";
     if (applicationName.length) {
-      let hash = this.hash;
       let params = {
         op: this.operation,
-        hash: hash,
-        baseUrl: this.baseUrl,
         dataUrl: this.dataUrl,
       };
       url = `${this.puzzleUrl}?${queryString(params)}`;
