@@ -12,8 +12,8 @@
         </el-tooltip>
     </template>
     </copy-input>
-    <el-button type="text" @click="aboutApplicationLinkVisible=true">Informações sobre o link de aplicação</el-button>
-    <el-dialog title="Informações sobre o link de aplicação" :visible.sync="aboutApplicationLinkVisible">
+    <el-button type="text" icon="el-icon-info" @click="aboutApplicationLinkVisible=true">Informações sobre o link de aplicação</el-button>
+    <el-dialog title="Informações sobre o link de aplicação" :visible.sync="aboutApplicationLinkVisible" width="98vw" top="10px">
         <message-alert type="warning" icon-position="top" icon-size="18pt">
         <div>
             <p>
@@ -38,7 +38,7 @@
                     </tr>
                     <tr>
                         <td>dataUrl</td>
-                        <td><a :href="dataUrl" style="margin-left:0" target="_blank">{{dataUrl}}</a></td>
+                        <td><a :href="dataUrl" style="margin-left:0; word-break: break-all" target="_blank">{{dataUrl}}</a></td>
                         <td>Endereço dos dados do teste em formato JSON.
                              O parâmetro <b>&lt;user_uuid&gt;</b> identifica os participantes no teste.
                              Deve ser gerado pelo aplicativo a cada nova participação.</td>
@@ -108,7 +108,13 @@ export default class TestApplicationUrlInput extends Vue {
 </script>
 <style lang="scss">
 .params-table {
+  td,
+  th {
+    text-align: left;
+    //color:red;
+  }
   margin-top: 5px;
+
   th {
     text-align: center;
   }

@@ -27,9 +27,11 @@ export default class MessageAlert extends Vue {
 </script>
 <style lang="scss">
 .message-alert {
+  border-radius: 5px;
   word-break: keep-all;
   text-align: justify;
   line-height: 1.3em;
+  margin-bottom: 5px;
   padding: 15px;
   display: flex;
   font-size: 14pt;
@@ -42,12 +44,14 @@ export default class MessageAlert extends Vue {
 }
 
 .info {
-  background: #d9edf7;
-  color: #2d779a;
+  background: #f1faff;
+  color: #11445c;
+  border: 1px solid #11445c;
 }
 .warning {
-  background: #ffe5b8;
+  background: #fffbd8;
   color: #5c3a00;
+  border: 1px solid #5c3a00;
 }
 .header-content {
   display: flex;
