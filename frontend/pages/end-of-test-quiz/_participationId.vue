@@ -220,7 +220,7 @@ export default class EndOfTestQuizzPage extends Vue {
   }
 
   seeResult() {
-    this.$router.push(`/score?participationId=${this.participationId}`);
+    this.$router.push(`/score/${this.participationId}`);
   }
 
   mounted() {

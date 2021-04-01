@@ -3,7 +3,7 @@
     <centered-logo/>
     <div class="center result-page">
       <h1>{{ congratsMessage }}</h1>
-      <icon name="star" class="star" />
+      <icon maxWidth="100px" name="star" class="star" />
       <p class="hability-paragraph">
         Seu nível de habilidade é
         {{ ((totalGrade / maxGrade) * 100).toFixed(0) + "" }}%
@@ -44,7 +44,7 @@ export default class extends Vue {
   participation!: Participation;
 
   async asyncData(ctx: Context) {
-    const participationId = ctx.query.participationId;
+    const participationId = ctx.params.participationId;
     const participation = await ctx.store.dispatch(
       "participations/getById",
       participationId

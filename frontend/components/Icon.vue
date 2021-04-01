@@ -1,5 +1,6 @@
 <template>
-  <i v-if="visible" 
+  <i :style="{'max-width':maxWidth}" 
+     v-if="visible" 
     class="material-icons-outlined">{{name}}</i>
 </template>
 <script lang="ts">
@@ -9,6 +10,7 @@ import { Component, Prop } from "nuxt-property-decorator";
 //https://material.io/resources/icons/?icon=home&style=baseline
 export default class Icon extends Vue {
   @Prop() name!: string;
+  @Prop({default:'50px'}) maxWidth!: string;
   visible = false;
 
   mounted() {
