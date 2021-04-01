@@ -170,7 +170,13 @@ import CodeEditor from "~/components/CodeEditor.vue";
 import ScoreFunctionTestDto from "~/types/ScoreFunctionTestDto";
 import ScoreFunctionTestResult from "~/types/ScoreFunctionTestResult";
 import ItemResponseScoreCell from "~/components/ItemResponseScoreCell.vue";
-import { Action, Component, Prop, VModel, Watch } from "nuxt-property-decorator";
+import {
+  Action,
+  Component,
+  Prop,
+  VModel,
+  Watch,
+} from "nuxt-property-decorator";
 import Mechanic from "~/types/Mechanic";
 import { createScoreFunctionCode, ItemTestCase } from "~/types/ItemTestCase";
 import { ResponseTestCase } from "~/types/ResponseTestCase";
@@ -190,6 +196,7 @@ export default class ScoreFunctionTestForm extends Vue {
   runningTests = false;
 
   addItemTestCase() {
+    let index = this.mechanic.itemTestCases.length;
     this.mechanic.itemTestCases.push(new ItemTestCase(this.mechanic));
     this.showItemTestHelp();
   }

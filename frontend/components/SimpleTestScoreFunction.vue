@@ -76,6 +76,7 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "nuxt-property-decorator";
 import Mechanic from "~/types/Mechanic";
 import {
+  CleanInstantiationOptions,
   createCleanInstantiationFunctionCode,
   createScoreFunctionCode,
 } from "~/types/ItemTestCase";
@@ -98,18 +99,20 @@ export default class SimpleScoreFunction extends Vue {
 
   clearSampleItem() {
     this.bkpItem = this.mechanic.itemInstantiation;
-    this.mechanic.itemInstantiation = createCleanInstantiationFunctionCode(
-      this.mechanic.classDefinition,
-      "criarItem"
-    );
+    const options = new CleanInstantiationOptions();
+    options.classDefinition = this.mechanic.classDefinition;
+    options.fnName = 'criarItem';
+    this.mechanic.itemInstantiation = createCleanInstantiationFunctionCode(options);
   }
 
   clearSampleResponse() {
     this.bkpResponse = this.mechanic.responseInstantiation;
+    const options = new CleanInstantiationOptions();
+    options.classDefinition = this.mechanic.responseClassDefinition;
+    options.fnName = "criarResposta";
+    options.objectName = "resposta";
     this.mechanic.responseInstantiation = createCleanInstantiationFunctionCode(
-      this.mechanic.responseClassDefinition,
-      "criarResposta",
-      "resposta"
+      options
     );
   }
 

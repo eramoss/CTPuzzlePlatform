@@ -1,6 +1,6 @@
 import Mechanic from "./Mechanic"
 import { ResponseTestCase } from "./ResponseTestCase"
-import { getDeclaredClassesNames } from "~/utils/utils";
+import { getDeclaredClassesNames, randWord } from "~/utils/utils";
 
 export class ItemTestCase {
 
@@ -10,18 +10,33 @@ export class ItemTestCase {
     responseTestCases: ResponseTestCase[] = []
 
     constructor(mechanic: Mechanic) {
-        this.itemInstantiation = createCleanInstantiationFunctionCode(mechanic.classDefinition);
+        const options = new CleanInstantiationOptions();
+        options.classDefinition = mechanic.classDefinition;
+        this.itemInstantiation = createCleanInstantiationFunctionCode(options);
         this.responseTestCases.push(new ResponseTestCase(mechanic));
     }
 }
 
-export const createCleanInstantiationFunctionCode = function (classDefinition: string, fnName: string = 'criarItem', objectName: string = 'item', classNamePart: string = '') {
-    let clazz = getDeclaredClassesNames(classDefinition, classNamePart)[0]
-    return `function ${fnName}(): ${clazz} {
-    let ${objectName} = new ${clazz}();
-    ${objectName}.atributo = "valor";
-    return ${objectName};
+export class CleanInstantiationOptions {
+    classDefinition: string = '';
+    fnName: string = 'criarItem';
+    suffixFnName: string = '';
+    objectName: string = 'item';
+    classNamePart: string = ''
+    encloseInParentesis: boolean = true
+}
+
+export const createCleanInstantiationFunctionCode = function (options: CleanInstantiationOptions) {
+    let clazz = getDeclaredClassesNames(options.classDefinition, options.classNamePart)[0]
+    let fn = `function ${options.fnName}${options.suffixFnName}(): ${clazz} {
+    let ${options.objectName} = new ${clazz}();
+    ${options.objectName}.atributo = "valor";
+    return ${options.objectName};
 }`
+    if (options.encloseInParentesis) {
+        fn = `(${fn})`
+    }
+    return fn;
 }
 
 export const createScoreFunctionCode = function (classDefinition: string, responseDefinition: string) {

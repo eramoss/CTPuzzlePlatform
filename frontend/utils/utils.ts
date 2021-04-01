@@ -1,9 +1,19 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
 
-export default function queryString(params: any) {
+export default function queryString(params: any):string {
     return Object.keys(params)
         .map((key) => `${key}=${params[key]}`)
         .join("&");
+}
+
+export function randWord(wordLength: number): string {
+    let alphabet = 'abcdefghjjklmnopqrstuvwzyz'
+    let word = '';
+    for (let i = 0; i < wordLength; i++) {
+        let index = Math.random() * alphabet.length;
+        word += alphabet.substring(index, index + 1);
+    }
+    return word;
 }
 
 export function downloadWithAxios(axios: NuxtAxiosInstance, url: string, filename: string) {

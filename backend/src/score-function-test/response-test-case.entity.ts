@@ -14,7 +14,7 @@ export class ResponseTestCase {
     @ManyToOne(type => ItemTestCase, { onDelete: 'CASCADE' })
     itemTestCase: ItemTestCase
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, default: 0 })
     expectedScore: number
 
     @Column({

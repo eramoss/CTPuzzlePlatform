@@ -63,9 +63,15 @@
             </el-row>
 
             <MessageAlert type="info">
-              A especificação da mecânica é a estrutura de dados para
-              configuração do puzzle. Deve seguir as restrições de uma classe na
-              linguagem TypeScript.
+              <p>
+                A especificação da mecânica é uma classe<a
+                  href="https://www.typescriptlang.org/"
+                  >TypeScript</a
+                >
+                com as características do puzzle. Posição de objetos,
+                tamanho de mapa, dificuldade, tempo esperado de resolução,
+                número de vidas são exemplos de atributos.
+              </p>
             </MessageAlert>
 
             <el-form-item prop="classDefinition">
@@ -80,8 +86,9 @@
             </el-form-item>
 
             <MessageAlert type="info">
-              A classe resposta é a estrutura de dados enviada como resposta do
-              usuário e utilizada para o cálculo do escore.
+              A classe de resposta contém os dados que o utilizados para o
+              cálculo de escore. Tempo de resposta,
+              número de erros, solução informada, número de tentativas são exemplos de atributos.
             </MessageAlert>
 
             <el-form-item prop="responseClassDefinition">

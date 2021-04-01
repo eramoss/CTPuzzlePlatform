@@ -81,7 +81,7 @@ export default class ScoreFunctionTestsSummary extends Vue {
   isTestPassed(itemResponse: ResponseTestCase): boolean {
     let passed = false;
     if (itemResponse.score) {
-      if (itemResponse.expectedScore) {
+      if (itemResponse.expectedScore != undefined) {
         passed = itemResponse.score.score == itemResponse.expectedScore;
       }
     }

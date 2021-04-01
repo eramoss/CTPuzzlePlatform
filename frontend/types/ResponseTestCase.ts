@@ -1,4 +1,4 @@
-import { ItemTestCase } from "./ItemTestCase"
+import { CleanInstantiationOptions, ItemTestCase } from "./ItemTestCase"
 import { v4 as uuidV4 } from 'uuid';
 import Score from "./Score";
 import Mechanic from "./Mechanic";
@@ -12,10 +12,11 @@ export class ResponseTestCase {
     expectedScore!: number
 
     constructor(mechanic: Mechanic) {
-        this.responseInstantiation = createCleanInstantiationFunctionCode(
-            mechanic.responseClassDefinition,
-            'criarResposta',
-            'resposta',
-            'resp')
+        const options = new CleanInstantiationOptions();
+        options.classDefinition = mechanic.responseClassDefinition;
+        options.fnName = 'criarResposta';
+        options.objectName = 'resposta';
+        options.classNamePart = 'resp';
+        this.responseInstantiation = createCleanInstantiationFunctionCode(options);
     }
 }
