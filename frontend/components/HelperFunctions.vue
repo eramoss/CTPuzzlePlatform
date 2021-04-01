@@ -101,9 +101,9 @@ export default class HelperFunctions extends Vue {
       description: `Esta função é a mesma que a Levenshtein, com a diferença de que o retorno varia entre 0 (pouco similar) e 1 (totalmente similar). `,
       reference:
         "https://stackoverflow.com/questions/10405440/percentage-rank-of-matches-using-levenshtein-distance-matching",
-      code: `//1 = Totalmente similar
-      //0.5 = Metade similar
-      function stringsSimilarity(str1 = '', str2 = ''){
+      code: `/**1 = Totalmente similar
+0.5 = Metade similar*/
+function stringsSimilarity(str1 = '', str2 = ''){
    const track = Array(str2.length + 1).fill(null).map(() =>
    Array(str1.length + 1).fill(null));
    for (let i = 0; i <= str1.length; i += 1) {

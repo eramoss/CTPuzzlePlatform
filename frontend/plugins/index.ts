@@ -18,6 +18,7 @@ import Icon from '~/components/Icon.vue'
 import SnackBar from '~/components/SnackBar.vue'
 import DateInput from '~/components/DateInput.vue'
 import HelperFunctions from '~/components/HelperFunctions.vue'
+import CenteredLogo from '~/components/CenteredLogo.vue'
 
 Vue.component('container', Container)
 Vue.component('FormItemLabel', FormItemLabel)
@@ -38,6 +39,7 @@ Vue.component('Icon', Icon)
 Vue.component('SnackBar', SnackBar)
 Vue.component('DateInput', DateInput)
 Vue.component('HelperFunctions', HelperFunctions)
+Vue.component('CenteredLogo', CenteredLogo)
 
 // Global
 import VueTheMask from 'vue-the-mask'

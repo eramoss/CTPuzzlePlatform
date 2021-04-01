@@ -72,7 +72,8 @@ export class TestApplicationsService {
         let quizProperties: string[] = []
         const labels = [
             { label: 'usuario', value: 'usuario' },
-            { label: 'item_id', value: 'item_id' },
+            { label: 'participacao', value: 'participacao_id' },
+            { label: 'item', value: 'item_id' },
             //{ label: 'resposta', value: 'resposta' },
         ]
 
@@ -82,7 +83,7 @@ export class TestApplicationsService {
                 userProperties = Object.keys(participation.user.data)
                 userProperties.reverse().forEach(prop => {
                     if (!labels.some(l => l.label == prop)) {
-                        labels.splice(0, 0, { label: prop, value: prop })
+                        labels.splice(1, 0, { label: prop, value: prop })
                     }
                 });
             }
@@ -91,7 +92,7 @@ export class TestApplicationsService {
                 quizProperties = participation.userDataToRequest.questions.map(q => q.name)
                 quizProperties.reverse().forEach(prop => {
                     if (!labels.some(l => l.label == prop)) {
-                        labels.splice(1, 0, { label: prop, value: prop })
+                        labels.splice(2, 0, { label: prop, value: prop })
                     }
                 })
             }
@@ -102,7 +103,8 @@ export class TestApplicationsService {
 
             participation.itemResponses.forEach((itemResponse: ItemResponse) => {
                 let row = {
-                    usuario: participation.user.id,
+                    usuario: participation.user.hash,
+                    participacao_id: participation.id,
                     item_id: itemResponse.testItem.item.id,
                     //resposta: itemResponse.response,
                     escore_max: itemResponse.score.max,

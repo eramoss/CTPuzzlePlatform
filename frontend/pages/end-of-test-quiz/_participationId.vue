@@ -1,10 +1,12 @@
 <template>
   <div>
+    <centered-logo/>
     <div v-show="isTestingQuiz" class="quiz-test-info">
       Testando questionário (as respostas não serão guardadas)
     </div>
     <div class="quiz-form center">
-      <h2>Responda o questionário abaixo para ver o resultado</h2>
+      <h2 v-if="hasQuestion">Responda o questionário abaixo para ver o resultado</h2>
+      <h2 v-if="!hasQuestion">Obrigado por sua participação!</h2>
       <div>
         <div v-if="hasQuestion">
           <div class="question" style="margin: 0 auto">
@@ -82,7 +84,12 @@
       </div>
       <div class="center fill" v-if="!hasQuestion">
         <div>
-          <el-button class="btnSeeResult" type="success" size="large">
+          <el-button
+            class="btnSeeResult"
+            type="success"
+            size="large"
+            @click="seeResult"
+          >
             Ver resultado!
           </el-button>
         </div>
@@ -112,16 +119,16 @@ import {
 import Participation from "~/types/Participation";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
+import CenteredLogo from "~/components/CenteredLogo.vue";
 
 @Component({
+  components: { CenteredLogo },
   head: {
     title: "Resultado do teste",
   },
   auth: false,
 })
 export default class EndOfTestQuizzPage extends Vue {
-  //@Action('participations/loadEndOfTestQuiz') loadEndOfTestQuiz:()=>
-
   participation!: Participation;
 
   @Ref() input!: ElInput;
@@ -210,6 +217,10 @@ export default class EndOfTestQuizzPage extends Vue {
 
   get participationId() {
     return this.$route.params.participationId;
+  }
+
+  seeResult() {
+    this.$router.push(`/score?participationId=${this.participationId}`);
   }
 
   mounted() {

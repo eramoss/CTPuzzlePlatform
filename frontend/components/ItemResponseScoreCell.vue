@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="score-cell">
     <el-tooltip
       popper-class="error-message-popper"
       effect="light"
@@ -27,8 +27,7 @@
             :format="format"
           ></el-progress>
           <i
-            class="el-icon-chat-line-square"
-            style="color: #cc6633; font-size: 20pt"
+            class="chat-icon el-icon-chat-line-square"
           ></i>
         </span>
       </div>
@@ -90,5 +89,14 @@ export default class ItemResponseScoreCell extends Vue {
   .el-progress-bar__innerText {
     color: red;
   }
+}
+.chat-icon {
+    color: #cc6633;
+    font-size: 20pt;
+}
+.score-cell:hover{
+    .chat-icon{
+        color: red;
+    }
 }
 </style>

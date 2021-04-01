@@ -1,6 +1,5 @@
 <template>
-  <i style="max-width: 50px" 
-     v-if="visible" 
+  <i v-if="visible" 
     class="material-icons-outlined">{{name}}</i>
 </template>
 <script lang="ts">
