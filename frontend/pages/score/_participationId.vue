@@ -39,7 +39,9 @@ import Participation from "~/types/Participation";
 import { Context } from "@nuxt/types";
 import ItemResponse from "~/types/ItemResponse";
 
-@Component
+@Component({
+    auth: false,
+})
 export default class extends Vue {
   participation!: Participation;
 
