@@ -7,6 +7,10 @@ export const actions: ActionTree<any, any> = {
     async getById(state, id: number): Promise<Participation> {
         return $axios.$get('/participations/byId/' + id);
     },
+
+    async getByIdPublic(state, id: number): Promise<Participation> {
+        return $axios.$get('/participations/public/byId/' + id);
+    },
     
     async recalculateAllResponseItems(state, id: number): Promise<Participation> {
         return $axios.$get('/participations/recalculateAllResponseItems/' + id);

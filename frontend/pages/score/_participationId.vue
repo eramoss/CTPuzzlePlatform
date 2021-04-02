@@ -46,7 +46,7 @@ export default class extends Vue {
   async asyncData(ctx: Context) {
     const participationId = ctx.params.participationId;
     const participation = await ctx.store.dispatch(
-      "participations/getById",
+      "participations/getByIdPublic",
       participationId
     );
     return {

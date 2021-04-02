@@ -32,6 +32,11 @@ export class ParticipationController {
         return this.service.getById(id);
     }
 
+    @Get('public/byId/:id')
+    getByIdPublic(@Param('id') id: number): Promise<Participation> {
+        return this.service.getById(id);
+    }
+
     @Get('recalculateAllResponseItems/:participationId')
     recalculateAll(@Param('participationId') participationId: number): Promise<any> {
         return this.service.recalculateAllResponseItems(participationId)

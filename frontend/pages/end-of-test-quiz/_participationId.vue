@@ -195,7 +195,7 @@ export default class EndOfTestQuizzPage extends Vue {
     let isTestingQuiz = false;
     if (participationId) {
       participation = await ctx.store.dispatch(
-        "participations/getById",
+        "participations/getByIdPublic",
         participationId
       );
       initQuizSession(participation);
@@ -290,7 +290,7 @@ function initQuizSession(participation: Participation, force: boolean = false) {
   }
 }
 .quiz-test-info {
-  background: #e6a23c;
+  background: #ffbe1c;
   width: 100%;
   text-align: center;
   font-weight: bold;
