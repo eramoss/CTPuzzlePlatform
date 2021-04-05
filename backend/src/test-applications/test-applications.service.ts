@@ -8,7 +8,7 @@ import { TestService } from 'src/tests/tests.service';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Brackets, DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { TestApplication } from './test-application.entity';
+import { TestApplication, TestApplicationVisibility } from './test-application.entity';
 import { v4 as uuidv4 } from "uuid";
 import { ConfigService } from '@nestjs/config';
 import PreparedParticipation from 'src/participation/prepared-participation.dto';
@@ -18,7 +18,6 @@ import { ItemResponse } from 'src/item-responses/item-response.entity';
 
 @Injectable()
 export class TestApplicationsService {
-
 
     constructor(
         @InjectRepository(TestApplication)
@@ -30,6 +29,16 @@ export class TestApplicationsService {
         private testService: TestService,
         private configService: ConfigService,
     ) {
+    }
+
+    getPuplicApplications(): Promise<TestApplication[]> {
+        return this.testApplicationRepository.createQueryBuilder('test-application')
+            .leftJoinAndSelect('test-application.test', 'test')
+            .leftJoinAndSelect('test.items', 'testItem')
+            .leftJoinAndSelect('testItem.item', 'item')
+            .orderBy('test-application.createdAt', 'DESC')
+            .where("test-application.visibility = 'PUBLIC'")
+            .getMany()
     }
 
     save(testApplication: TestApplication): Promise<TestApplication> {
@@ -115,7 +124,7 @@ export class TestApplicationsService {
                     responseProperties = Object.keys(responseJson)
                 }
                 userProperties.forEach((key: string) => {
-                    row[key] = participation.user.data[key] 
+                    row[key] = participation.user.data[key]
                 })
                 responseProperties.forEach((key: string) => {
                     row[key] = responseJson[key]

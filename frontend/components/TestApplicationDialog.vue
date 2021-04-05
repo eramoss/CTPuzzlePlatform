@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="Aplicar teste" :visible.sync="visible">
-    <el-form label-position="left" label-width="130px">
+    <el-form label-position="left" label-width="140px">
       <el-form-item label="Teste">
         <el-select
           placeholder="Selecione o teste a ser aplicado"
@@ -30,6 +30,28 @@
           :test-application="this.testApplication"
         />
       </el-form-item>
+
+      <el-form-item label="Visibilidade">
+        <el-tooltip
+          :content="
+            testApplication.visibility == 'PUBLIC'
+              ? 'Público: visível no site'
+              : 'Privado: visísvel somente a quem receber o link de aplicação'
+          "
+          placement="top"
+        >
+          <el-switch
+            v-model="testApplication.visibility"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-value="PUBLIC"
+            inactive-value="PRIVATE"
+            active-text="Público"
+            inactive-text="Privado"
+          >
+          </el-switch>
+        </el-tooltip>
+      </el-form-item>
     </el-form>
     <el-button
       title="Acessar lista de aplicações"
@@ -43,6 +65,7 @@
     >
       {{ getQuantityApplicationsText(testApplication.test).text }}
     </el-button>
+
     <div slot="footer">
       <el-button
         @click="createApplication"

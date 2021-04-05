@@ -20,6 +20,19 @@
                 placeholder="Avaliação Turma 3º ano"
               ></el-input>
             </el-form-item>
+            <el-form-item
+                prop="description"
+                label="Descrição e observações"
+                title="Descrição e observações"
+                label-width="170px"
+            >
+                <el-input
+                type="textarea"
+                v-model="testApplication.description"
+                autofocus
+                placeholder="Informações e observações sobre a aplicação"
+                ></el-input>
+            </el-form-item>
             <el-form-item label-width="100px" label="Teste">
               <nuxt-link
                 target="_blank"
@@ -36,6 +49,31 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-col>
+            <el-form-item label="Visibilidade">
+              <el-tooltip
+                :content="
+                  testApplication.visibility == 'PUBLIC'
+                    ? 'Público: visível no site'
+                    : 'Privado: visísvel somente a quem receber o link de aplicação'
+                "
+                placement="top"
+              >
+                <el-switch
+                  v-model="testApplication.visibility"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  active-value="PUBLIC"
+                  inactive-value="PRIVATE"
+                  active-text="Público"
+                  inactive-text="Privado"
+                >
+                </el-switch>
+              </el-tooltip>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="22">
             <el-form-item label="Link" label-width="100px">
               <test-application-url-input
@@ -46,6 +84,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+        
         <el-row>
           <h3>Participações ({{ testApplication.participations.length }})</h3>
           <h3 v-if="lastResponse">

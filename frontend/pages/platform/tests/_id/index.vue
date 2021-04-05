@@ -23,6 +23,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+        
         <el-row>
           <el-col :span="19">
             <el-form-item label="Pesquisar itens" label-width="130px">

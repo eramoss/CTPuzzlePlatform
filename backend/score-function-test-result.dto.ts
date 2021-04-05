@@ -16,6 +16,7 @@ export default class ScoreFunctionTestResult {
             score.max = -1;
             score.message = this.response;
         }
+        score.message = score.message.split('\n').filter(line => line.indexOf('at file') == -1).join('\n');
         return score;
     }
     response!: string

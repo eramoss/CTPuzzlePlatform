@@ -48,6 +48,7 @@ export class ItemsService {
                     .orWhere("item.name like :search", { search: `%${search}%` })
             }))
             .andWhere(pageRequest.andWhere)
+            .orderBy('item.id', 'DESC')
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .getMany()

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <centered-logo/>
+    <centered-logo />
     <div class="center result-page">
       <h1>{{ congratsMessage }}</h1>
       <icon maxWidth="100px" name="star" class="star" />
@@ -40,7 +40,7 @@ import { Context } from "@nuxt/types";
 import ItemResponse from "~/types/ItemResponse";
 
 @Component({
-    auth: false,
+  auth: false,
 })
 export default class extends Vue {
   participation!: Participation;

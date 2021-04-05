@@ -1,12 +1,14 @@
 import Participation from "./Participation"
 import Test from "./Test"
 
+export type TestApplicationVisibility = "PUBLIC" | "PRIVATE"
 export default class TestApplication {
 
     id: number = 0
     test: Test = new Test()
 
     name: string = ''
+    description: string = ''
     url!: string
     hash!: string
 
@@ -14,5 +16,6 @@ export default class TestApplication {
     createdAt!:Date
     deletedAt!:Date
     updatedAt!:Date
+    visibility:TestApplicationVisibility = "PRIVATE"
 
 }

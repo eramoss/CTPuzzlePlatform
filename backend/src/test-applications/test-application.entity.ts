@@ -2,6 +2,8 @@ import { Test } from "../tests/test.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import Participation from "src/participation/participation.entity";
 
+export enum TestApplicationVisibility { "PUBLIC", "PRIVATE" }
+
 @Entity()
 export class TestApplication {
 
@@ -12,10 +14,16 @@ export class TestApplication {
     participations: Participation[]
 
     @Column()
-    name: String
+    name: string
 
     @Column()
-    url: String
+    url: string
+
+    @Column({ default: TestApplicationVisibility.PRIVATE, type: 'varchar' })
+    visibility: TestApplicationVisibility
+
+    @Column({ nullable: true })
+    description: string
 
     @Column()
     hash!: string
@@ -27,9 +35,9 @@ export class TestApplication {
     deletedAt: Date
 
     @CreateDateColumn()
-    createdAt:Date
+    createdAt: Date
 
     @UpdateDateColumn()
-    updatedAt:Date
+    updatedAt: Date
 
 }

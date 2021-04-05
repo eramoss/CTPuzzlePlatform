@@ -18,6 +18,10 @@ export const actions: ActionTree<any, any> = {
         return $axios.$post('/test-applications', testApplication);
     },
 
+    getPuplicApplications(state):Promise<TestApplication[]>{
+        return $axios.$get('/test-applications/public/getPuplicApplications');
+    },
+
     getById(state, id: number): Promise<TestApplication> {
         return $axios.$get('/test-applications/byId/' + id);
     },

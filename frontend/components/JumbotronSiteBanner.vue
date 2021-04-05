@@ -9,14 +9,14 @@
         divertidos
       </p>
       <div style="margin-top: 40px">
-        <a href="#play">
+        <nuxt-link to="/public-applications">
           <el-button
             class="shadow btn-big"
             type="warning"
             title="Quero jogar um puzzle"
             >Jogar!</el-button
           >
-        </a>
+        </nuxt-link>
         <nuxt-link to="/signin/researcher" v-show="!$auth.loggedIn">
           <el-button
             class="shadow btn-big"
