@@ -14,6 +14,7 @@
       </div>
     </div>
     <iframe
+      ref="iframe"
       :src="url"
       frameborder="0"
       :width="calculatedWidth"
@@ -37,6 +38,11 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
+    },
+  },
+  watch: {
+    url() {
+      this.$refs.iframe.contentWindow.location.reload();
     },
   },
   data() {
