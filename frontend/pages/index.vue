@@ -2,6 +2,7 @@
   <div>
     <top-bar class="shadow" width="100%" />
     <nuxt-child />
+    <footer-bar />
   </div>
 </template>
 <script lang="ts">

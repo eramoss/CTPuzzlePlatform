@@ -1,6 +1,6 @@
 <template>
   <div v-if="testApplication">
-    <game-iframe :url="gameUrl" />
+    <game-iframe :url="gameUrl" :covered="covered" />
   </div>
 </template>
 <script lang="ts">
@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from "uuid";
 })
 export default class TestApplicationGameIframe extends Vue {
   @Prop({}) testApplication!: TestApplication;
+  @Prop({ default: true }) covered!: boolean;
   userUuid!: string;
 
   async asyncData(ctx: Context) {}

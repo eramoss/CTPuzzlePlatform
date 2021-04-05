@@ -18,7 +18,7 @@ export default class GameIframe extends Vue {
   @Prop({default: 800}) width!: number;
   @Prop({default: 500}) height!: number;
   
-  covered = true
+  @Prop({default:true}) covered !:boolean
 
   uncover(){
       this.covered = false

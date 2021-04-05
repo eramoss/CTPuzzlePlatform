@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="currentApplication.id" class="play-area">
-      <test-application-game-iframe :testApplication="currentApplication" />
+      <test-application-game-iframe :testApplication="currentApplication" :covered="false" />
     </div>
     <div class="public-applications-list">
       <div

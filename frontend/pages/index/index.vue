@@ -7,11 +7,6 @@
         <test-application-game-iframe
           :testApplication="randomTestApplication"
         />
-        <div style="style: margin-bottom: 200px">
-          <!--   <nuxt-link to="/public-applications">
-            <el-button class="shadow btn-big" type="warning">Mais jogos</el-button>
-          </nuxt-link> -->
-        </div>
       </section>
     </container>
   </div>
