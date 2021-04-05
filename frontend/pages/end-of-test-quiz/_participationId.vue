@@ -121,6 +121,8 @@ import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
 import CenteredLogo from "~/components/CenteredLogo.vue";
 
+import { ACTION_GET_BY_ID_PUBLIC_PARTICIPATION, ACTION_SAVE_PARTICIPATION } from "~/store/participations";
+
 @Component({
   components: { CenteredLogo },
   head: {
@@ -152,7 +154,7 @@ export default class EndOfTestQuizzPage extends Vue {
     initQuizSession(this.participation, true);
   }
 
-  @Action("participations/save")
+  @Action(ACTION_SAVE_PARTICIPATION)
   callSaveParticipation!: (
     participation: Participation
   ) => Promise<Participation>;
@@ -195,7 +197,7 @@ export default class EndOfTestQuizzPage extends Vue {
     let isTestingQuiz = false;
     if (participationId) {
       participation = await ctx.store.dispatch(
-        "participations/getByIdPublic",
+        ACTION_GET_BY_ID_PUBLIC_PARTICIPATION,
         participationId
       );
       initQuizSession(participation);

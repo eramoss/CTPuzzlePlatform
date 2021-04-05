@@ -38,6 +38,7 @@ import { Component, Prop, Action } from "nuxt-property-decorator";
 import Participation from "~/types/Participation";
 import { Context } from "@nuxt/types";
 import ItemResponse from "~/types/ItemResponse";
+import { ACTION_GET_BY_ID_PUBLIC_PARTICIPATION } from "~/store/participations";
 
 @Component({
   auth: false,
@@ -48,7 +49,7 @@ export default class extends Vue {
   async asyncData(ctx: Context) {
     const participationId = ctx.params.participationId;
     const participation = await ctx.store.dispatch(
-      "participations/getByIdPublic",
+      ACTION_GET_BY_ID_PUBLIC_PARTICIPATION,
       participationId
     );
     return {

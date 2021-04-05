@@ -73,13 +73,14 @@ export class TestApplicationsService {
             .getOne();
     }
 
-    async generateItemResponsesCsv(testApplicationId: number): Promise<string> {
+    async generateCsvFromItemResponses(testApplicationId: number): Promise<string> {
         const testApplication = await this.getById(testApplicationId);
         const rows: any[] = []
         let responseProperties: string[] = []
         let userProperties: string[] = []
         let quizProperties: string[] = []
         const labels = [
+            { label: 'data', value: 'data' },
             { label: 'usuario', value: 'usuario' },
             { label: 'participacao', value: 'participacao_id' },
             { label: 'item', value: 'item_id' },
@@ -112,6 +113,7 @@ export class TestApplicationsService {
 
             participation.itemResponses.forEach((itemResponse: ItemResponse) => {
                 let row = {
+                    data: itemResponse.createdAt.toLocaleString(),
                     usuario: participation.user.hash,
                     participacao_id: participation.id,
                     item_id: itemResponse.testItem.item.id,
@@ -175,6 +177,7 @@ export class TestApplicationsService {
         const searchLike = { search: `%${pageRequest.search.toString()}%` };
         let data = await this.testApplicationRepository.createQueryBuilder('test-application')
             .leftJoinAndSelect('test-application.test', 'test')
+            .leftJoinAndSelect('test-application.participations', 'participation')
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .where(where)
@@ -182,6 +185,7 @@ export class TestApplicationsService {
                 qb.where("test-application.name like :search", searchLike)
                     .orWhere("test.name like :search", searchLike)
             }))
+            .andWhere('participation."deletedAt" is null')
             .andWhere(pageRequest.andWhere)
             .orderBy("test-application.id", "DESC")
             .getMany();

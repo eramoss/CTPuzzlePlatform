@@ -13,4 +13,5 @@ export default class Participation {
     deletedAt!: Date
     updatedAt!: Date
     userDataToRequest!: UserQuizSession
+    observations!: string
 }

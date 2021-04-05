@@ -2,6 +2,8 @@ import { ActionTree } from 'vuex'
 import { $axios } from '~/utils/axios'
 import { AxiosResponse } from 'axios';
 import Participation from '~/types/Participation';
+
+
 export const actions: ActionTree<any, any> = {
 
     async getById(state, id: number): Promise<Participation> {
@@ -29,3 +31,7 @@ export const actions: ActionTree<any, any> = {
     },
 
 }
+
+
+export const ACTION_SAVE_PARTICIPATION = 'participations/save';
+export const ACTION_GET_BY_ID_PUBLIC_PARTICIPATION = 'participations/getByIdPublic';

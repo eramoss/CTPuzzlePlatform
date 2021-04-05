@@ -54,7 +54,20 @@
       >
         <el-table-column prop="id" label="Código" width="80"></el-table-column>
         <!-- <el-table-column prop="hash" label="Hash" width="200"></el-table-column> -->
-        <el-table-column prop="name" label="Nome"></el-table-column>
+        <el-table-column prop="name" label="Nome">
+          <template slot-scope="{ row }">
+            <el-button type="text" title="Acessar" @click="follow(row)">{{
+              row.name
+            }}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="Participações" width="120">
+          <template slot-scope="{ row }">
+            <div>
+              {{ row.participations.length }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="Teste" width="340">
           <template slot-scope="{ row }">
             <div>
@@ -64,18 +77,8 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="Ações" width="300">
+        <el-table-column label="Ações" width="140">
           <template slot-scope="{ row }">
-            <el-tooltip content="Ver andamento do teste" effect="light">
-              <el-button
-                size="small"
-                icon="el-icon-view"
-                @click="follow(row)"
-                type="primary"
-              >
-                Acompanhar
-              </el-button>
-            </el-tooltip>
             <btn-remove @click="remove(row)" />
           </template>
         </el-table-column>

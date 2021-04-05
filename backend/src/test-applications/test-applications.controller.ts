@@ -49,7 +49,7 @@ export class TestApplicationsController {
 
     @Get('generateItemResponsesCsv/:testApplicationId')
     generateItemResponsesCsv(@Param('testApplicationId') testApplicationId: number): Promise<string> {
-        return this.testApplicationsService.generateItemResponsesCsv(testApplicationId);
+        return this.testApplicationsService.generateCsvFromItemResponses(testApplicationId);
     }
 
     @Get('getLastResponse/:testApplicationId')

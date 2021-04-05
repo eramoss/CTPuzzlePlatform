@@ -21,17 +21,17 @@
               ></el-input>
             </el-form-item>
             <el-form-item
-                prop="description"
-                label="Descrição e observações"
-                title="Descrição e observações"
-                label-width="170px"
+              prop="description"
+              label="Descrição e observações"
+              title="Descrição e observações"
+              label-width="170px"
             >
-                <el-input
+              <el-input
                 type="textarea"
                 v-model="testApplication.description"
                 autofocus
                 placeholder="Informações e observações sobre a aplicação"
-                ></el-input>
+              ></el-input>
             </el-form-item>
             <el-form-item label-width="100px" label="Teste">
               <nuxt-link
@@ -84,7 +84,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row>
           <h3>Participações ({{ testApplication.participations.length }})</h3>
           <h3 v-if="lastResponse">
@@ -115,7 +115,7 @@
             <el-table-column
               label="Participante"
               prop="user.name"
-              width="250"
+              width="300"
             />
             <el-table-column label="Código do usuário" prop="user.hash" />
             <el-table-column label="Respostas" width="200">
@@ -127,8 +127,11 @@
                 </nuxt-link>
               </template>
             </el-table-column>
-            <el-table-column width="220">
+            <el-table-column width="420" label="Anotar, remover">
               <template slot-scope="{ row }">
+                <add-observations-btn 
+                @save="saveParticipation(row)"
+                v-model="row.observations"></add-observations-btn>
                 <btn-remove @click="removeParticipation(row)" />
               </template>
             </el-table-column>
@@ -162,6 +165,8 @@ import BtnRemove from "~/components/BtnRemove.vue";
 import SnackBarRemove from "~/components/SnackBarRemove.vue";
 import { DateFormat } from "~/utils/DateFormat";
 import ItemResponse from "~/types/ItemResponse";
+import AddObservationsBtn from "~/components/AddObservationsBtn.vue";
+import { ACTION_SAVE_PARTICIPATION } from '~/store/participations'
 
 const ACTION_GET_BY_ID = "test-applications/getById";
 export const ACTION_GET_LAST_RESPONSE = "test-applications/getLastResponse";
@@ -171,6 +176,7 @@ export const ACTION_GET_LAST_RESPONSE = "test-applications/getLastResponse";
     title: "Aplicação de teste",
   },
   components: {
+    AddObservationsBtn,
     SnackBarRemove,
     TestApplicationUrlInput,
     BtnRemove,
@@ -191,6 +197,8 @@ export default class TestEditForm extends Vue {
   @Action(ACTION_GET_LAST_RESPONSE) getLastResponse!: (
     id: any
   ) => Promise<ItemResponse>;
+
+  @Action(ACTION_SAVE_PARTICIPATION) saveParticipation!:(participation:Participation)=>Promise<any>
 
   @Action("test-applications/save") saveTestApplication!: (
     testApplication: TestApplication
