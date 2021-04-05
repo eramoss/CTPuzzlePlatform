@@ -19,27 +19,31 @@ import { v4 as uuidv4 } from "uuid";
 export default class TestApplicationGameIframe extends Vue {
   @Prop({}) testApplication!: TestApplication;
   @Prop({ default: true }) covered!: boolean;
-  userUuid!: string;
 
   async asyncData(ctx: Context) {}
 
   get gameUrl(): string {
     let gameUrl = "https://ct.playerweb.com.br";
-    if (this.testApplication) {
-      gameUrl = this.testApplication?.url?.replace(
-        "<user_uuid>",
-        this.userUuid
-      );
+    if (this.userUuid) {
+      if (this.testApplication) {
+        if (this.testApplication?.url) {
+          gameUrl = this.testApplication?.url?.replace(
+            "<user_uuid>",
+            this.userUuid
+          );
+        }
+      }
     }
     return gameUrl;
   }
-  mounted() {
+
+  get userUuid(): string {
     let userUuid = localStorage.getItem("userUuid");
     if (!userUuid) {
       userUuid = uuidv4();
       localStorage.setItem("userUuid", userUuid);
     }
-    this.userUuid = userUuid;
+    return userUuid;
   }
 }
 </script>
