@@ -83,6 +83,7 @@ export class TestApplicationsService {
             { label: 'data', value: 'data' },
             { label: 'usuario', value: 'usuario' },
             { label: 'participacao', value: 'participacao_id' },
+            { label: 'observacoes', value: 'observacoes' },
             { label: 'item', value: 'item_id' },
             //{ label: 'resposta', value: 'resposta' },
         ]
@@ -118,6 +119,7 @@ export class TestApplicationsService {
                     participacao_id: participation.id,
                     item_id: itemResponse.testItem.item.id,
                     //resposta: itemResponse.response,
+                    observacoes: participation.observations,
                     escore_max: itemResponse.score.max,
                     escore_obtido: itemResponse.score.score,
                 }

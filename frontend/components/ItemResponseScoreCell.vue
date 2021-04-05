@@ -6,7 +6,7 @@
       placement="left"
     >
       <div slot="content">
-        <span style="margin-bottom:5px;display:block; font-size:10pt">
+        <span style="small-tooltip-title">
           Execução do cálculo de escore:
         </span>
         <pre>{{ score && score.message }}</pre>

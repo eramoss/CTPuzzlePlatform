@@ -2,6 +2,7 @@
   <span class="observation-component">
     <el-tooltip effect="light" placement="left">
       <template slot="content">
+        <i class="small-tooltip-title">Observações</i>
         <pre>{{ observations || "Observações. Clique para editar" }}</pre>
       </template>
       <el-button @click="showDialog" type="text">
@@ -32,21 +33,29 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Ref, VModel } from "nuxt-property-decorator";
-import { Context } from "@nuxt/types";
+import { Component, Prop, Ref, VModel, Watch } from "nuxt-property-decorator";
 import { ElInput } from "element-ui/types/input";
 @Component
 export default class AddObservationsBtn extends Vue {
-  @VModel({ default: "Observação. Edite o texto e clique em salvar" })
-  observations!: string;
+  @Prop({ default: "Observação. Edite o texto e clique em salvar" })
+  value!: string;
   @Ref()
   textArea!: ElInput;
+
+  observations: string = "";
   dialogVisible: boolean = false;
+
+  mounted() {
+    this.observations = this.value + "";
+  }
 
   closeDialog() {
     this.dialogVisible = false;
+    this.$emit("input", this.observations);
+    this.$emit("update:value", this.observations);
     this.$emit("save", this.observations);
   }
+
   showDialog() {
     this.dialogVisible = true;
     this.$nextTick(() => {
@@ -59,7 +68,7 @@ export default class AddObservationsBtn extends Vue {
   }
 
   get observationsTrimmed(): string {
-    return (this.observations || "Observações").substr(0, 6) + "...";
+    return (this.value || "Observações").substr(0, 6) + "...";
   }
 }
 </script>

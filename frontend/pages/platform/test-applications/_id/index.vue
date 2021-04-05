@@ -129,9 +129,10 @@
             </el-table-column>
             <el-table-column width="420" label="Anotar, remover">
               <template slot-scope="{ row }">
-                <add-observations-btn 
-                @save="saveParticipation(row)"
-                v-model="row.observations"></add-observations-btn>
+                <add-observations-btn
+                  @save="saveParticipation(row)"
+                  :value.sync="row.observations"
+                ></add-observations-btn>
                 <btn-remove @click="removeParticipation(row)" />
               </template>
             </el-table-column>
@@ -166,7 +167,7 @@ import SnackBarRemove from "~/components/SnackBarRemove.vue";
 import { DateFormat } from "~/utils/DateFormat";
 import ItemResponse from "~/types/ItemResponse";
 import AddObservationsBtn from "~/components/AddObservationsBtn.vue";
-import { ACTION_SAVE_PARTICIPATION } from '~/store/participations'
+import { ACTION_SAVE_PARTICIPATION } from "~/store/participations";
 
 const ACTION_GET_BY_ID = "test-applications/getById";
 export const ACTION_GET_LAST_RESPONSE = "test-applications/getLastResponse";
@@ -198,7 +199,9 @@ export default class TestEditForm extends Vue {
     id: any
   ) => Promise<ItemResponse>;
 
-  @Action(ACTION_SAVE_PARTICIPATION) saveParticipation!:(participation:Participation)=>Promise<any>
+  @Action(ACTION_SAVE_PARTICIPATION) saveParticipation!: (
+    participation: Participation
+  ) => Promise<any>;
 
   @Action("test-applications/save") saveTestApplication!: (
     testApplication: TestApplication

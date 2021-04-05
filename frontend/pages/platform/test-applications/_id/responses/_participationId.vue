@@ -34,6 +34,10 @@
             <td>Respostas</td>
             <td>{{ participation.itemResponses.length }}</td>
           </tr>
+          <tr v-if="participation.observations">
+            <td>Observações</td>
+            <td>{{ participation.observations }}</td>
+          </tr>
         </table>
       </div>
       <div class="flex-row fill">
