@@ -34,7 +34,7 @@ export class User {
     @Column({ default: 'O' })
     gender: string
 
-    @Column({ default: null })
+    @Column({ default: '', nullable: true })
     confirmationCode: string
 
     @Column({ nullable: true })
