@@ -21,6 +21,7 @@
       <el-input
         ref="textArea"
         type="textarea"
+        rows="20"
         v-model="observations"
       ></el-input>
       <template slot="footer">
@@ -45,8 +46,9 @@ export default class AddObservationsBtn extends Vue {
   observations: string = "";
   dialogVisible: boolean = false;
 
-  mounted() {
-    this.observations = this.value + "";
+  @Watch("value", { immediate: true })
+  valueChanged() {
+    this.observations = this.value || "";
   }
 
   closeDialog() {

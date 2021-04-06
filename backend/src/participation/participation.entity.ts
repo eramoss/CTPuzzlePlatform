@@ -25,8 +25,8 @@ export default class Participation {
     @Column({ nullable: true })
     startedAt: Date
 
-    @Column()
-    observations:string
+    @Column({ nullable: true })
+    observations: string
 
     @ManyToOne(type => TestApplication, { nullable: true, onDelete: 'CASCADE' })
     application: TestApplication;
