@@ -89,6 +89,12 @@ export default class TestApplicationUrlInput extends Vue {
     return `${baseUrl}/test-applications/public/data/${hash}/<user_uuid>`;
   }
 
+  @Watch("applicationUrl")
+  onChangeApplicationUrl() {
+    this.testApplication.url = this.applicationUrl;
+    this.$emit("update:testApplication", this.testApplication);
+  }
+
   get applicationUrl(): string {
     let applicationName = this.testApplication.name.replace(
       /[^A-Za-z0-9]/g,

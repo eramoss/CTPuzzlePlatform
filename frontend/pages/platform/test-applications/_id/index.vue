@@ -78,7 +78,7 @@
             <el-form-item label="Link" label-width="100px">
               <test-application-url-input
                 :showAccessIcon="true"
-                :test-application="testApplication"
+                :test-application.sync="testApplication"
                 style="flex-grow: 1"
               />
             </el-form-item>
