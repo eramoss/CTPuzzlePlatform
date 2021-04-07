@@ -15,9 +15,11 @@ import PreparedParticipation from 'src/participation/prepared-participation.dto'
 import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { buildCsv } from 'src/util/download';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
+import { TestItem } from 'src/tests/test-item.entity';
 
 @Injectable()
 export class TestApplicationsService {
+
 
     constructor(
         @InjectRepository(TestApplication)
@@ -38,6 +40,18 @@ export class TestApplicationsService {
             .leftJoinAndSelect('testItem.item', 'item')
             .orderBy('test-application.createdAt', 'DESC')
             .where("test-application.visibility = 'PUBLIC'")
+            .getMany()
+    }
+
+    getPuplicApplicationsByMechanicName(name: string): Promise<TestApplication[]> {
+        return this.testApplicationRepository.createQueryBuilder('test-application')
+            .leftJoinAndSelect('test-application.test', 'test')
+            .leftJoinAndSelect('test.items', 'testItem')
+            .leftJoinAndSelect('testItem.item', 'item')
+            .leftJoinAndSelect('item.mechanic', 'mechanic')
+            .orderBy('test-application.createdAt', 'DESC')
+            .where("test-application.visibility = 'PUBLIC'")
+            .andWhere('upper(mechanic.name) like :name', { name:`%${name.toUpperCase()}%` })
             .getMany()
     }
 
@@ -219,9 +233,22 @@ export class TestApplicationsService {
             console.error('Não foi possível obter a classe de resposta para mostrar como exemplo. ', error);
         }
 
+        let lastVisitedItemId = participation.lastVisitedItemId;
+
+        if (participation.lastVisitedItemWasFinished) {
+            let nextItem = this.getItemAfter(participation, lastVisitedItemId);
+            if (nextItem) {
+                lastVisitedItemId = nextItem.id;
+            }
+            if (!nextItem) {
+                lastVisitedItemId = -1;
+            }
+        }
+
+
         let preparedParticipation = {
             participationId: participation.id,
-            lastVisitedItemId: participation.lastVisitedItemId,
+            lastVisitedItemId: lastVisitedItemId,
             test: participation.test,
             urlToSendResponses: {
                 method: 'POST',
@@ -250,6 +277,14 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
         } as PreparedParticipation
 
         return preparedParticipation;
+    }
+
+    getItemAfter(participation: Participation, lastVisitedItemId: number): TestItem {
+        let items = participation.application.test.items;
+        let lastVisitedItem = items.find(item => item.id == lastVisitedItemId)
+        let indexLastVisited = items.indexOf(lastVisitedItem)
+        let nextItem = items[indexLastVisited + 1]
+        return nextItem
     }
 
     private async participateInTheTest(testApplicationHash: string, user: User): Promise<Participation> {

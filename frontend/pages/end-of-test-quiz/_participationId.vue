@@ -93,16 +93,16 @@
             Ver resultado!
           </el-button>
         </div>
-        <div>
+        <!-- <div>
           <el-button
             @click="restart"
             class="btnSeeResult"
             type="default"
             size="large"
           >
-            Reponder novamente
+            Responder novamente
           </el-button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

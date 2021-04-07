@@ -32,6 +32,11 @@ export class TestApplicationsController {
         return this.testApplicationsService.getPuplicApplications();
     }
 
+    @Get('public/getPuplicApplicationsByMechanicName/:name')
+    getPuplicApplicationsByMechanicName(@Param('name')name:string):Promise<TestApplication[]>{
+        return this.testApplicationsService.getPuplicApplicationsByMechanicName(name);
+    }
+
     @Get('restore/:id')
     restore(@Param('id') id: number): Promise<UpdateResult> {
         return this.testApplicationsService.restore(id);

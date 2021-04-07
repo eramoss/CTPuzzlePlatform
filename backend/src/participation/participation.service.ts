@@ -72,6 +72,7 @@ export class ParticipationService {
         itemResponse.response = JSON.stringify(response);
         itemResponse.score = await this.itemResponseService.calculateScore(itemResponse);
         participation.addResponse(itemResponse);
+        participation.lastVisitedItemWasFinished = true;
         this.participationRepository.save(participation);
     }
 
