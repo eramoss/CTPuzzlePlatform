@@ -16,6 +16,8 @@ import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { buildCsv } from 'src/util/download';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
 import { TestItem } from 'src/tests/test-item.entity';
+import { Item } from 'src/items/item.entity';
+import { Test } from 'src/tests/test.entity';
 
 @Injectable()
 export class TestApplicationsService {
@@ -51,7 +53,7 @@ export class TestApplicationsService {
             .leftJoinAndSelect('item.mechanic', 'mechanic')
             .orderBy('test-application.createdAt', 'DESC')
             .where("test-application.visibility = 'PUBLIC'")
-            .andWhere('upper(mechanic.name) like :name', { name:`%${name.toUpperCase()}%` })
+            .andWhere('upper(mechanic.name) like :name', { name: `%${name.toUpperCase()}%` })
             .getMany()
     }
 
@@ -163,6 +165,33 @@ export class TestApplicationsService {
             { label: 'escore_max', value: 'escore_max' },
             { label: 'escore_obtido', value: 'escore_obtido' },
         ].forEach(item => labels.push(item))
+
+        return buildCsv(labels, rows)
+    }
+
+    async generateCsvFromItemResponsesForIRT(testApplicationId: number): Promise<string> {
+        const testApplication = await this.getById(testApplicationId);
+        const rows: any[] = []
+
+        let test: Test = await this.testService.getById(testApplication.test.id)
+
+        const labels = [{ label: 'id_resposta', value: 'id_resposta' }]
+        test.items
+            .map(testItem => testItem.item)
+            .forEach((item: Item) => labels.push({
+                label: item.name,
+                value: `${item.id}`
+            }))
+
+        testApplication.participations.forEach((participation: Participation) => {
+            let row = {
+                id_resposta: participation.id
+            }
+            participation.itemResponses.forEach((itemResponse: ItemResponse) => {
+                row[`${itemResponse.testItem.item.id}`] = itemResponse.score.score
+            })
+            rows.push(row)
+        })
 
         return buildCsv(labels, rows)
     }

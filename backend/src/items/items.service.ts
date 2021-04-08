@@ -77,6 +77,7 @@ export class ItemsService {
             console.log(JSON.stringify(${itemDefinition}()))
         `
         let instantiatedItem = await this.codeInterpreterService.execute(code);
+        console.log('JSON to parse ', instantiatedItem);
         return JSON.parse(instantiatedItem);
     }
 

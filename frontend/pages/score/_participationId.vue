@@ -3,7 +3,7 @@
     <centered-logo />
     <div class="center result-page">
       <h1>{{ congratsMessage }}</h1>
-      <icon maxWidth="100px" name="star" class="star" />
+      <icon maxWidth="400" name="star" class="star" />
       <p class="hability-paragraph">
         Seu nível de habilidade é
         {{ ((totalGrade / maxGrade) * 100).toFixed(0) + "" }}%
@@ -93,7 +93,7 @@ export default class extends Vue {
       congratMessage = "Muito bom!";
     }
     if (this.totalGrade / this.maxGrade > 0.75) {
-      congratMessage = "Otimo!";
+      congratMessage = "Ótimo!";
     }
     if (this.totalGrade / this.maxGrade > 0.9) {
       congratMessage = "Incrível!";

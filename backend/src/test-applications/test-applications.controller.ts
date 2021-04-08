@@ -57,6 +57,11 @@ export class TestApplicationsController {
         return this.testApplicationsService.generateCsvFromItemResponses(testApplicationId);
     }
 
+    @Get('generateItemResponsesCsvForIRT/:testApplicationId')
+    generateItemResponsesCsvForIRT(@Param('testApplicationId') testApplicationId: number): Promise<string> {
+        return this.testApplicationsService.generateCsvFromItemResponsesForIRT(testApplicationId);
+    }
+
     @Get('getLastResponse/:testApplicationId')
     getLastResponse(@Param('testApplicationId') testApplicationId: number): Promise<ItemResponse> {
         return this.testApplicationsService.getLastResponse(testApplicationId);

@@ -2,27 +2,33 @@
   <div>
     <el-table :data="participation.itemResponses">
       <el-table-column label="Código" prop="id" width="70"></el-table-column>
-      <el-table-column label="Hora" prop="createdAt" width="170">
+      <el-table-column label="Hora" prop="createdAt" width="120">
         <template slot-scope="{ row }">
           <div>
             {{ dateFormat.fromNow(row.createdAt) }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="Item" width="150">
+      <el-table-column label="Item" width="270">
         <template slot-scope="{ row }">
           <div v-if="row.testItem">
             <nuxt-link
               :to="`/platform/items/${row.testItem.item.id}#instantiate`"
             >
-              <el-button type="text">
+              <el-button type="text" :title="row.testItem.item.name">
                 {{ row.testItem.item.name }}
               </el-button>
             </nuxt-link>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="Resposta" prop="response" />
+      <el-table-column label="Resposta" prop="response" >
+          <template slot-scope="{row}">
+              <div>
+                  <span :title="row.response">{{ row.response }}</span>
+              </div>
+          </template>
+      </el-table-column>
       <el-table-column label="Escore" prop="score" width="150">
         <template slot-scope="{ row }">
           <item-response-score-cell :score="row.score" />

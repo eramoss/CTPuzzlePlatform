@@ -86,10 +86,10 @@ import { Context } from "@nuxt/types";
 import Participation from "~/types/Participation";
 import ItemResponsesScreen from "~/components/ItemResponsesScreen.vue";
 import QuizResponses from "~/components/QuizResponses.vue";
-import {
-  ACTION_GET_LAST_RESPONSE,
-  mustRefreshLastItemResponse,
-} from "../index.vue";
+
+import { ACTION_GET_LAST_RESPONSE } from "~/store/test-applications";
+import { mustRefreshLastItemResponse } from "../index.vue";
+
 import ItemResponse from "~/types/ItemResponse";
 const ACTION_GET_BY_ID = "participations/getById";
 

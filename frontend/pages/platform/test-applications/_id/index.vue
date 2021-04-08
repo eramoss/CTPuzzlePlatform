@@ -93,15 +93,27 @@
           </h3>
           <div class="flex-row">
             <btn-refresh @click="loadData"></btn-refresh>
-            <el-button
-              type="primary"
-              icon="el-icon-download"
-              size="small"
-              :loading="downloading"
-              @click="download"
-            >
-              Baixar respostas
-            </el-button>
+            <span>
+              <el-button
+                title="Baixar respostas em formato útil para análise com IRT"
+                type="primary"
+                icon="el-icon-download"
+                size="small"
+                :loading="downloading"
+                @click="downloadIRT"
+              >
+                IRT CSV
+              </el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-download"
+                size="small"
+                :loading="downloading"
+                @click="download"
+              >
+                Baixar respostas
+              </el-button>
+            </span>
           </div>
           <el-table
             :data="testApplication.participations"
@@ -170,7 +182,13 @@ import AddObservationsBtn from "~/components/AddObservationsBtn.vue";
 import { ACTION_SAVE_PARTICIPATION } from "~/store/participations";
 
 const ACTION_GET_BY_ID = "test-applications/getById";
-export const ACTION_GET_LAST_RESPONSE = "test-applications/getLastResponse";
+
+import {
+  ACTION_GET_LAST_RESPONSE,
+  ACTION_GENERATE_CSV,
+  ACTION_GENERATE_IRT_CSV,
+  ACTION_SAVE_TEST_APPLICATION,
+} from "~/store/test-applications";
 
 @Component({
   head: {
@@ -203,12 +221,16 @@ export default class TestEditForm extends Vue {
     participation: Participation
   ) => Promise<any>;
 
-  @Action("test-applications/save") saveTestApplication!: (
+  @Action(ACTION_SAVE_TEST_APPLICATION) saveTestApplication!: (
     testApplication: TestApplication
   ) => Promise<TestApplication>;
 
-  @Action("test-applications/generateItemResponsesCsv")
+  @Action(ACTION_GENERATE_CSV)
   generateItemResponsesCsv!: (testApplicationId: number) => Promise<any>;
+
+  @Action(ACTION_GENERATE_IRT_CSV)
+  generateItemResponsesCsvIRT!: (testApplicationId: number) => Promise<any>;
+
   intervalBringLastResponse!: NodeJS.Timeout;
 
   async asyncData(ctx: Context) {
@@ -263,6 +285,20 @@ export default class TestEditForm extends Vue {
   async removeParticipation(participation: Participation) {
     await this.snackBar.remove(participation.id);
     this.loadData();
+  }
+
+  async downloadIRT() {
+    try {
+      this.downloading = true;
+      await this.generateItemResponsesCsvIRT(this.testApplication.id);
+    } catch (e) {
+      this.$notify.error({
+        title: "Não foi possível gerar o arquivo",
+        message: "Ocorreu um erro interno durante a geração",
+      });
+    } finally {
+      this.downloading = false;
+    }
   }
 
   async download() {

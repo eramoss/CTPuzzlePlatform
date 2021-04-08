@@ -10,7 +10,14 @@ export const actions: ActionTree<any, any> = {
     generateItemResponsesCsv(state, testApplicationId: number) {
         let date = new Date();
         let dateString = `${date.getFullYear()}_${date.getMonth()}_${date.getDate()}_${date.getHours()}_${date.getMinutes()}`;
-        let url = '/test-applications/generateItemResponsesCsv/' + testApplicationId;
+        let url = `/test-applications/generateItemResponsesCsv/${testApplicationId}`;
+        downloadWithAxios($axios, url, `respostas_aplicacao_${testApplicationId}___${dateString}.csv`)
+    },
+
+    generateItemResponsesCsvForIRT(state, testApplicationId: number) {
+        let date = new Date();
+        let dateString = `${date.getFullYear()}_${date.getMonth()}_${date.getDate()}_${date.getHours()}_${date.getMinutes()}`;
+        let url = `/test-applications/generateItemResponsesCsvForIRT/${testApplicationId}`;
         downloadWithAxios($axios, url, `respostas_aplicacao_${testApplicationId}___${dateString}.csv`)
     },
 
@@ -18,7 +25,7 @@ export const actions: ActionTree<any, any> = {
         return $axios.$post('/test-applications', testApplication);
     },
 
-    getPuplicApplications(state):Promise<TestApplication[]>{
+    getPuplicApplications(state): Promise<TestApplication[]> {
         return $axios.$get('/test-applications/public/getPuplicApplications');
     },
 
@@ -45,5 +52,9 @@ export const actions: ActionTree<any, any> = {
     restore(state, id: number): Promise<AxiosResponse> {
         return $axios.$get('/test-applications/restore/' + id);
     },
-
 }
+
+export const ACTION_GENERATE_CSV = "test-applications/generateItemResponsesCsv"
+export const ACTION_GENERATE_IRT_CSV = "test-applications/generateItemResponsesCsvForIRT"
+export const ACTION_GET_LAST_RESPONSE = "test-applications/getLastResponse"
+export const ACTION_SAVE_TEST_APPLICATION = "test-applications/save"
