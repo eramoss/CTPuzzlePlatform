@@ -1,4 +1,4 @@
-export type VarType = "number" | "string" | "date" | "boolean" | "options";
+export type VarType = "number" | "string" | "longString" | "date" | "boolean" | "options";
 
 export class VarOption {
     id!: number

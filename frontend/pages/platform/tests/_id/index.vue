@@ -23,7 +23,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row>
           <el-col :span="19">
             <el-form-item label="Pesquisar itens" label-width="130px">
@@ -73,7 +73,7 @@
                 class="added-items"
                 @end="updateOrder"
               >
-                <transition-group type="transition" name="flip-list">
+                <transition-group type="transition">
                   <div
                     class="added-item"
                     v-for="(testItem, index) in selectedItems"
@@ -92,13 +92,27 @@
                       </template>
                       <template slot="end">
                         <div>
+                          <span v-if="testItem.countItemResponses">
+                            Há {{ testItem.countItemResponses }} respostas
+                            informadas para este item
+                          </span>
+                        </div>
+                        <div>
                           <nuxt-link
                             target="_blank"
                             :to="`/platform/items/${testItem.item.id}`"
                           >
                             <btn-edit />
                           </nuxt-link>
-                          <btn-remove @click="removeItem(testItem)" />
+                          <btn-remove
+                            :title="
+                              testItem.countItemResponses
+                                ? 'Não é possível remover pois há respostas informadas'
+                                : ''
+                            "
+                            :disabled="!!testItem.countItemResponses"
+                            @click="removeItem(testItem)"
+                          />
                         </div>
                       </template>
                     </item-thumbnail>
@@ -221,11 +235,33 @@ export default class TestEditForm extends Vue {
     try {
       this.saving = true;
       this.test = await this.saveTest(this.test);
-      this.$notify({
+      /* this.$notify({
         type: "success",
         title: "O teste foi salvo",
         message: "Você já pode acessar o teste.",
-      });
+      }); */
+      this.$alert(
+        "Gostaria de aplicar o teste?",
+        "O teste está pronto! Quer aplicá-lo agora?",
+        {
+          confirmButtonText: "Aplicar agora",
+          cancelButtonText: "Não",
+          confirmButtonClass: "el-button--success",
+          showCancelButton: true,
+          callback: (action: string) => {
+            debugger;
+            if (action == "confirm") {
+              this.$router.push(
+                `/platform/test-applications?test=${this.test.id}&action=apply`
+              );
+            }
+            if (action == "cancel") {
+              this.back();
+            }
+          },
+        }
+      );
+
       this.$router.push({ params: { id: this.test.id + "" } });
       //this.back();
     } catch (e) {

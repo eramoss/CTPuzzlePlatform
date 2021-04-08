@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ItemResponsesService } from 'src/item-responses/item-responses.service';
 import { ItemsService } from 'src/items/items.service';
 import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
@@ -16,6 +17,7 @@ export class TestService {
         @InjectRepository(Test)
         private testRepository: Repository<Test>,
         private itemService: ItemsService,
+        private itemResponseService: ItemResponsesService,
     ) { }
 
     save(test: Test): Promise<Test> {
@@ -30,15 +32,21 @@ export class TestService {
             .orderBy('testItem.order', 'ASC')
             .withDeleted()
             .getOne();
+        await Promise.all(test.items.map(async item => {
+            item.countItemResponses = await this.itemResponseService.countByItem(item)
+        }))
         return test;
     }
 
     findAll(researchGroupId: number): Promise<Test[]> {
-        return this.testRepository.createQueryBuilder('test').where({
-            researchGroup: {
-                id: researchGroupId
-            }
-        }).getMany();
+        return this.testRepository.createQueryBuilder('test')
+            .where({
+                researchGroup: {
+                    id: researchGroupId
+                }
+            })
+            .orderBy('test.id', 'DESC')
+            .getMany();
     }
 
     softDeleteById(id: number): Promise<DeleteResult> {
@@ -55,7 +63,7 @@ export class TestService {
             .take(pageRequest.limit)
             .where(pageRequest.filter)
             .leftJoinAndSelect('test.items', 'item')
-            .leftJoinAndSelect('test.applications', 'application','application."deletedAt" is null')
+            .leftJoinAndSelect('test.applications', 'application', 'application."deletedAt" is null')
             .orderBy("test.id", "DESC")
             .getMany()
         return new PageResponse(data);

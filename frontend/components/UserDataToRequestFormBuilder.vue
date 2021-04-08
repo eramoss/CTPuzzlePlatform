@@ -2,10 +2,15 @@
   <div class="form-builder panel shadow white">
     <div class="flex-row bordered-bottom">
       <h2 style="margin-bottom: 20px">Questionário de fim de teste</h2>
-      <el-button @click="testQuizForm" 
-      type="warning" icon="el-icon-monitor" style="font-weight:bold">Testar formulário</el-button>
+      <el-button
+        @click="testQuizForm"
+        type="warning"
+        icon="el-icon-monitor"
+        style="font-weight: bold"
+        >Testar formulário</el-button
+      >
     </div>
-    
+
     <table style="width: 100%">
       <tr>
         <th>Pergunta</th>
@@ -132,6 +137,7 @@ export default class UserDataToRequestFormBuilder extends Vue {
       { id: 2, varTypeName: "Texto", varType: "string" },
       { id: 3, varTypeName: "Sim ou não", varType: "boolean" },
       { id: 4, varTypeName: "Opções", varType: "options" },
+      { id: 5, varTypeName: "Texto longo", varType: "longString" },
     ];
   }
 
@@ -189,9 +195,7 @@ export default class UserDataToRequestFormBuilder extends Vue {
     let quiz = new UserQuizSession();
     quiz.questions = this.userDataList;
     let link = document.createElement("a");
-    link.href = `/end-of-test-quiz?quiz=${JSON.stringify(
-      quiz
-    )}`;
+    link.href = `/end-of-test-quiz?quiz=${JSON.stringify(quiz)}`;
     link.target = "_blank";
     link.click();
   }

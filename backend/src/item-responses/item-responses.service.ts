@@ -4,12 +4,21 @@ import { CodeInterpreterService } from 'src/code-interpreter/code-interpreter.se
 import { ItemsService } from 'src/items/items.service';
 import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { ScoreFunctionTestService } from 'src/score-function-test/score-function-test.service';
+import { TestItem } from 'src/tests/test-item.entity';
 import { Repository } from 'typeorm';
 import { ItemResponse } from './item-response.entity';
 import { Score } from './score.entity';
 
 @Injectable()
 export class ItemResponsesService {
+
+    async countByItem(item: TestItem): Promise<number> {
+        let count = await this.itemResponseRepository
+            .createQueryBuilder(`itemResponse`)
+            .where({ testItem: item })
+            .getCount()
+        return count;
+    }
 
 
     constructor(

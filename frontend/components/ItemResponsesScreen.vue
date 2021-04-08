@@ -22,12 +22,12 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="Resposta" prop="response" >
-          <template slot-scope="{row}">
-              <div>
-                  <span :title="row.response">{{ row.response }}</span>
-              </div>
-          </template>
+      <el-table-column label="Resposta" prop="response">
+        <template slot-scope="{ row }">
+          <div>
+            <span :title="row.response">{{ row.response }}</span>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column label="Escore" prop="score" width="150">
         <template slot-scope="{ row }">

@@ -1,17 +1,23 @@
 <template>
   <div>
-    <centered-logo/>
+    <centered-logo />
     <div v-show="isTestingQuiz" class="quiz-test-info">
       Testando questionário (as respostas não serão guardadas)
     </div>
     <div class="quiz-form center">
-      <h2 v-if="hasQuestion">Responda o questionário abaixo para ver o resultado</h2>
+      <h2 v-if="hasQuestion">
+        Parabéns! Você finalizou todas as fases! <br />Responda o questionário
+        abaixo para ver o resultado
+      </h2>
       <h2 v-if="!hasQuestion">Obrigado por sua participação!</h2>
       <div>
         <div v-if="hasQuestion">
           <div class="question" style="margin: 0 auto">
             <h3>Questão {{ questionIndex + 1 }} de {{ questions.length }}</h3>
-            <h3>{{ currentQuestion.name }}</h3>
+            <h2>
+              {{ currentQuestion.name }}
+              <span v-show="!currentQuestion.required">(opcional)</span>
+            </h2>
             <div>
               <el-input
                 v-if="currentQuestion.variableType.varType == 'string'"
@@ -48,12 +54,23 @@
               <el-input
                 v-if="currentQuestion.variableType.varType == 'number'"
                 class="large-input"
-                ref="input"
+                ref="inputNumber"
                 size="large"
                 type="number"
                 style="text-align: center"
                 v-model="currentQuestion.answer"
                 placeholder="0"
+              >
+              </el-input>
+              <el-input
+                v-if="currentQuestion.variableType.varType == 'longString'"
+                class="large-input"
+                ref="inputTextArea"
+                size="large"
+                type="textarea"
+                style="text-align: center"
+                v-model="currentQuestion.answer"
+                placeholder="Escreva aqui sua resposta"
               >
               </el-input>
             </div>
@@ -121,7 +138,10 @@ import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
 import CenteredLogo from "~/components/CenteredLogo.vue";
 
-import { ACTION_GET_BY_ID_PUBLIC_PARTICIPATION, ACTION_SAVE_PARTICIPATION } from "~/store/participations";
+import {
+  ACTION_GET_BY_ID_PUBLIC_PARTICIPATION,
+  ACTION_SAVE_PARTICIPATION,
+} from "~/store/participations";
 
 @Component({
   components: { CenteredLogo },
@@ -134,6 +154,9 @@ export default class EndOfTestQuizzPage extends Vue {
   participation!: Participation;
 
   @Ref() input!: ElInput;
+  @Ref() inputTextArea!: ElInput;
+  @Ref() inputNumber!: ElInput;
+
   isTestingQuiz = false;
 
   get hasQuestion() {
@@ -144,10 +167,12 @@ export default class EndOfTestQuizzPage extends Vue {
     return this.quizSession?.index || 0;
   }
 
-  nextQuestion() {
+  async nextQuestion() {
     this.quizSession.index = this.questionIndex + 1;
-    this.saveParticipation();
-    this.focusInput();
+    await this.saveParticipation();
+    this.$nextTick(() => {
+      this.focusInput();
+    });
   }
 
   restart() {
@@ -172,7 +197,16 @@ export default class EndOfTestQuizzPage extends Vue {
   }
 
   focusInput() {
-    this.input?.focus();
+    let varType = this.currentQuestion?.variableType?.varType;
+    if (varType == "longString") {
+      this.inputTextArea?.focus();
+    }
+    if (varType == "string") {
+      this.input?.focus();
+    }
+    if (varType == "number") {
+      this.inputNumber?.focus();
+    }
   }
 
   get currentQuestion(): UserDataQuestion {
@@ -222,7 +256,9 @@ export default class EndOfTestQuizzPage extends Vue {
   }
 
   seeResult() {
-    this.$router.push(`/score/${this.participationId}`);
+    if (this.participationId) {
+      this.$router.push(`/score/${this.participationId}`);
+    }
   }
 
   mounted() {
