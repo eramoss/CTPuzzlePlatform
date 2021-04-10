@@ -315,7 +315,7 @@ function initQuizSession(participation: Participation, force: boolean = false) {
   .quiz-form {
     padding: 30px;
     .question {
-      width: 50%;
+      width: 80%;
     }
     .btns {
       .el-button {

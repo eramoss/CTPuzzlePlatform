@@ -85,7 +85,7 @@ export default class extends Vue {
   }
 
   get congratsMessage(): string {
-    let congratMessage = "Parabéns chegado ao final!";
+    let congratMessage = "Parabéns. Você chegou ao final!";
     if (this.totalGrade / this.maxGrade > 0.25) {
       congratMessage = "Seu resultado foi bom!";
     }
