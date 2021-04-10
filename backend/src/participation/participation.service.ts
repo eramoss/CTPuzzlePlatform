@@ -89,7 +89,10 @@ export class ParticipationService {
     }
 
     getNonFinishedParticipation(testApplication: TestApplication, user: User): Promise<Participation> {
-        return this.participationRepository.createQueryBuilder('participation')
+        return this.participationRepository
+            .createQueryBuilder('participation')
+            .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
+            .leftJoinAndSelect('itemResponse.testItem', 'testItem')
             .where({
                 application: testApplication,
                 user: user,

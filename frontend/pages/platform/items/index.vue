@@ -45,21 +45,28 @@
       </filters-box>
       <el-table :data="pageResponse.data">
         <el-table-column label="Código" prop="id" width="70"></el-table-column>
-        <el-table-column label="Imagem" width="130">
+        <el-table-column label="Nome" prop="name" width="270">
           <template slot-scope="{ row }">
-            <thumbnail :src="row.thumbnail" width="120px" height="80px" />
+            <el-tooltip placement="left" effect="light">
+              <template slot="content">
+                <div>
+                  <thumbnail :src="row.thumbnail" width="360px" height="240px" />
+                </div>
+              </template>
+              <el-button type="text" @click="edit(row)">
+                {{ row.name }}
+              </el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column
           label="Mecânica"
           prop="mechanic.name"
-          width="140"
+          width="240"
         ></el-table-column>
-        <el-table-column label="Nome" prop="name" width="200"></el-table-column>
         <el-table-column label="Descrição" prop="description"></el-table-column>
-        <el-table-column label="Ações" prop="name" width="240">
+        <el-table-column label="Ações" prop="name" width="150">
           <template slot-scope="{ row }">
-            <btn-edit @click="edit(row)"> Editar </btn-edit>
             <btn-remove @click="remove(row)"> Remover </btn-remove>
           </template>
         </el-table-column>

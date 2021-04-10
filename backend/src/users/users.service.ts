@@ -92,7 +92,10 @@ export class UsersService {
     }
 
     async saveOrGetByHash(user: User): Promise<User> {
-        let foundUser: User = await this.userRepository.findOne({ hash: user.hash })
+        let foundUser: User = await this.userRepository.createQueryBuilder('user')
+            .leftJoinAndSelect('user.researchGroup', 'researchGroup')
+            .where({ hash: user.hash })
+            .getOne()
         if (!foundUser) {
             foundUser = await this.save(user, false);
         }

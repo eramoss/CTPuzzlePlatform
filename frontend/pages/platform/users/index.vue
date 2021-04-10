@@ -28,7 +28,7 @@
       </filters-box>
 
       <el-table :data="pageResponse.data">
-        <el-table-column prop="id" label="Código" width="100"></el-table-column>
+        <el-table-column prop="id" label="Código" width="70"></el-table-column>
         <el-table-column label="Dt. Cadastro" width="200">
           <template slot-scope="{ row }">
             {{ dateFormat.fromNow(row.createdAt) }}

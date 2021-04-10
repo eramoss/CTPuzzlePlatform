@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
@@ -297,9 +297,12 @@ export class TestApplicationsService {
     ): Promise<PreparedParticipation> {
         let user = new User();
         user.hash = userHash;
+        
         if (userHash == '<user_uuid>') {
             userHash = uuidv4().substring(0, 7);
+            console.warn('The puzzle forgot to replace the user token with a random unique id value!!')
         }
+
         const participation = await this.participateInTheTest(applicationHash, user)
         const apiUrl = this.configService.get('API_URL');
         const siteUrl = this.configService.get('SITE_URL')
@@ -327,7 +330,6 @@ export class TestApplicationsService {
                 lastVisitedItemId = -1;
             }
         }
-
 
         let preparedParticipation = {
             participationId: participation.id,
@@ -363,10 +365,15 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
     }
 
     getItemAfter(participation: Participation, lastVisitedItemId: number): TestItem {
-        let items = participation.application.test.items;
-        let lastVisitedItem = items.find(item => item.id == lastVisitedItemId)
-        let indexLastVisited = items.indexOf(lastVisitedItem)
-        let nextItem = items[indexLastVisited + 1]
+        const test = Object.assign(new Test(), participation.test)
+        const itemWithResponsesIds = participation.itemResponses.map(itemResponse=>itemResponse.testItem.id);
+        const itemsWithoutResponses = test.items.filter(testItem=>itemWithResponsesIds.indexOf(testItem.id) == -1);
+        
+        // const lastVisitedItem = itemsWithoutResponses.find(item => item.id == lastVisitedItemId)
+        // const indexLastVisited = itemsWithoutResponses.indexOf(lastVisitedItem)
+        // const nextItem = itemsWithoutResponses[indexLastVisited + 1]
+
+        const nextItem = itemsWithoutResponses[0]
         return nextItem
     }
 
@@ -399,7 +406,7 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
         let itemsToPlay = []
         let items = testApplication.test.items;
         if (participation.lastVisitedItemId) {
-            let lastVisitedItem = items.find(testItem => testItem.item.id === participation.lastVisitedItemId)
+            let lastVisitedItem = items.find(testItem => testItem.id === participation.lastVisitedItemId)
             let index = items.indexOf(lastVisitedItem)
             itemsToPlay = items.slice(index)
         }

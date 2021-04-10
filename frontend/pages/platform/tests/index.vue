@@ -19,8 +19,14 @@
       </el-button>
       <!-- <el-input v-model="pageRequest.search"></el-input> -->
       <el-table :data="pageResponse.data">
-        <el-table-column prop="id" label="Código" width="100"></el-table-column>
-        <el-table-column prop="name" label="Nome"></el-table-column>
+        <el-table-column prop="id" label="Código" width="70"></el-table-column>
+        <el-table-column prop="name" label="Nome">
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="edit(row)" title="Editar">
+              {{ row.name }}
+            </el-button>
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="Itens" width="100">
           <template slot-scope="{ row }">
             {{ row.items.length }}
@@ -46,9 +52,8 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column label="Ações" width="240">
+        <el-table-column label="Ações" width="200">
           <template slot-scope="{ row }">
-            <btn-edit @click="edit(row)"> Editar </btn-edit>
             <btn-remove @click="remove(row)"> Remover </btn-remove>
           </template>
         </el-table-column>

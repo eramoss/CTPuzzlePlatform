@@ -20,6 +20,7 @@
             </h2>
             <div>
               <el-input
+                @keydown.enter.native="nextQuestion"
                 v-if="currentQuestion.variableType.varType == 'string'"
                 class="large-input"
                 ref="input"
@@ -52,6 +53,7 @@
                 >
               </el-radio-group>
               <el-input
+                @keydown.enter.native="nextQuestion"
                 v-if="currentQuestion.variableType.varType == 'number'"
                 class="large-input"
                 ref="inputNumber"
@@ -168,6 +170,11 @@ export default class EndOfTestQuizzPage extends Vue {
   }
 
   async nextQuestion() {
+    if (this.currentQuestion?.required) {
+      if (!this.currentQuestion?.answer) {
+        return;
+      }
+    }
     this.quizSession.index = this.questionIndex + 1;
     await this.saveQuizResponse();
     this.$nextTick(() => {

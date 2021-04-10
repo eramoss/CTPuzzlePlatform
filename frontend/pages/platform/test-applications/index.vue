@@ -52,7 +52,7 @@
         v-if="pageResponse"
         empty-text="Sem resultados"
       >
-        <el-table-column prop="id" label="Código" width="80"></el-table-column>
+        <el-table-column prop="id" label="Código" width="70"></el-table-column>
         <!-- <el-table-column prop="hash" label="Hash" width="200"></el-table-column> -->
         <el-table-column prop="name" label="Nome">
           <template slot-scope="{ row }">
