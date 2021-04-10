@@ -1,5 +1,6 @@
 <template>
   <div v-if="testApplication">
+      <a ref="link" target="_blank" :href="gameUrl" style="display:none">Link</a>
     <game-iframe :url="gameUrl" :covered="covered" />
     <div>
       <a :href="gameUrl" target="_blank" rel="noopener noreferrer">
@@ -10,7 +11,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Watch } from "nuxt-property-decorator";
+import { Component, Prop, Ref, Watch } from "nuxt-property-decorator";
 import { Context } from "@nuxt/types";
 import TestApplication from "~/types/TestApplication";
 import GameIframe from "./GameIframe.vue";
@@ -25,6 +26,7 @@ export default class TestApplicationGameIframe extends Vue {
   @Prop({}) testApplication!: TestApplication;
   @Prop({ default: true }) covered!: boolean;
   userUuid = "";
+  @Ref() link!:HTMLElement
 
   async asyncData(ctx: Context) {}
 
@@ -53,6 +55,11 @@ export default class TestApplicationGameIframe extends Vue {
       }
     }
     this.userUuid = userUuid;
+  }
+
+  @Watch('gameUrl')
+  onChangeGameUrl(){
+      //this.link.click()
   }
 
   @Watch("testApplication", { immediate: true })

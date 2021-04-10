@@ -21,6 +21,11 @@ export class ParticipationController {
         return this.service.save(participation);
     }
 
+    @Post('public/saveQuizResponse')
+    saveQuizResponse(@Body() participation: Participation): Promise<Participation> {
+        return this.service.save(participation);
+    }
+
 
     @Post('public/save-user/:userHash')
     saveUser(@Param('userHash') userHash: string, @Body() user: any) {

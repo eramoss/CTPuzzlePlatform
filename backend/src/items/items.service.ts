@@ -39,13 +39,13 @@ export class ItemsService {
     }
 
     async paginate(pageRequest: PageRequest): Promise<PageResponse<Item>> {
-        let search = pageRequest.search
+        let search = pageRequest.search?.toUpperCase()
         const data = await this.itemRepository.createQueryBuilder('item')
             .leftJoinAndSelect('item.mechanic', 'mechanic')
             .where(pageRequest.filter)
             .andWhere(new Brackets(qb => {
-                qb.where("mechanic.name like :search", { search: `%${search}%` })
-                    .orWhere("item.name like :search", { search: `%${search}%` })
+                qb.where("upper(mechanic.name) like :search", { search: `%${search}%` })
+                    .orWhere("upper(item.name) like :search", { search: `%${search}%` })
             }))
             .andWhere(pageRequest.andWhere)
             .orderBy('item.id', 'DESC')

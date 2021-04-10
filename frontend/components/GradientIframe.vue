@@ -14,56 +14,41 @@
       </div>
     </div>
     <iframe
+      :key="url"
       ref="iframe"
-      :src="url"
       frameborder="0"
+      :src="url"
       :width="calculatedWidth"
       :height="calculatedHeight"
     ></iframe>
   </div>
 </template>
-<script>
-export default {
-  props: {
-    url: {
-      required: true,
-      type: String,
-    },
-    width: {
-      default: 800,
-    },
-    height: {
-      default: 480,
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  watch: {
-    url() {
-      this.$refs.iframe.contentWindow.location.reload();
-    },
-  },
-  data() {
-    return {
-      calculatedWidth: this.width,
-      calculatedHeight: this.height,
-    };
-  },
-  methods: {
-    updateWidthAndWeight() {
-      let ratio = this.height / this.width;
-      this.calculatedWidth = window.innerWidth - 20;
-      this.calculatedHeight = ratio * this.calculatedWidth;
-    },
-  },
+<script lang="ts">
+import Vue from "vue";
+import { Component, Prop, Watch, Ref } from "nuxt-property-decorator";
+@Component
+export default class GradientIframe extends Vue {
+  @Prop() url!: string;
+  @Prop({ default: 800 }) width!: number;
+  @Prop({ default: 480 }) height!: number;
+  @Prop({ default: false }) disabled!: Boolean;
+  @Ref() iframe!: any;
+
+  calculatedWidth: number = this.width;
+  calculatedHeight: number = this.height;
+
+  updateWidthAndWeight() {
+    let ratio = this.height / this.width;
+    this.calculatedWidth = window.innerWidth - 20;
+    this.calculatedHeight = ratio * this.calculatedWidth;
+  }
+
   mounted() {
     if (window.innerWidth < 1000) {
       this.updateWidthAndWeight();
     }
-  },
-};
+  }
+}
 </script>
 <style lang="scss">
 .game-iframe {

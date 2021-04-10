@@ -26,12 +26,16 @@ export const actions: ActionTree<any, any> = {
         return $axios.$post('/participations', participation);
     },
 
+    async saveQuizResponse(state, participation:Participation): Promise<Participation>{
+        return $axios.$post('/participations/public/saveQuizResponse', participation);
+    },
+
     async restore(state, id: number): Promise<AxiosResponse> {
         return $axios.$get('/participations/restore/' + id);
     },
 
 }
 
-
 export const ACTION_SAVE_PARTICIPATION = 'participations/save';
+export const ACTION_SAVE_QUIZ_RESPONSE = 'participations/saveQuizResponse';
 export const ACTION_GET_BY_ID_PUBLIC_PARTICIPATION = 'participations/getByIdPublic';

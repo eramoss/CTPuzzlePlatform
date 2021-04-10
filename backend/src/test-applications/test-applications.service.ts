@@ -8,7 +8,7 @@ import { TestService } from 'src/tests/tests.service';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Brackets, DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { TestApplication, TestApplicationVisibility } from './test-application.entity';
+import { TestApplication } from './test-application.entity';
 import { v4 as uuidv4 } from "uuid";
 import { ConfigService } from '@nestjs/config';
 import PreparedParticipation from 'src/participation/prepared-participation.dto';
@@ -168,8 +168,62 @@ export class TestApplicationsService {
 
         return buildCsv(labels, rows)
     }
-
     async generateCsvFromItemResponsesForIRT(testApplicationId: number): Promise<string> {
+        const rows = []
+        let labels = [
+            { label: 'A1', value: '0' },
+            { label: 'A2', value: '1' },
+            { label: 'A3', value: '2' },
+            { label: 'A4', value: '3' },
+            { label: 'A5', value: '4' },
+        ]
+
+        let randomWithProbabilities:
+            (values: any[], probabilities: number[]) => number
+            = (values: any[], probabilities: number[]) => {
+
+                let newProbabilities = []
+                let count = 1;
+                for (let i = 0; i < probabilities.length; i++) {
+                    let sum = 0;
+                    for (let j = 0; j < count; j++) {
+                        sum += probabilities[j]
+                    }
+                    newProbabilities[i] = sum
+                    count++
+                }
+                probabilities = newProbabilities
+
+                let random = Math.random()
+                let randomValue = -1;
+                probabilities
+                    .reverse()
+                    .forEach((probability, index) => {
+                        index = Math.abs((probabilities.length - 1) - index)
+                        if (random < probability) {
+                            randomValue = values[index]
+                        }
+                    })
+                return randomValue
+            }
+
+        for (let i = 0; i < 28000; i++) {
+            let row = {
+                0: randomWithProbabilities(['1', '2', '3', '4'], [.25, .25, .25, .25]),
+                //1: randomWithProbabilities(['1', '2', '3','4'], [.2, .3, .5]),
+                // 2: randomWithProbabilities(['1', '2', '3','4'], [.3, .4, .3]),
+                // 3: randomWithProbabilities(['1', '2', '3','4'], [.5, .3, .2]),
+                // 4: randomWithProbabilities(['1', '2', '3','4'], [.7, .2, .1]),
+            }
+            rows.push(row)
+        }
+
+        //rows.filter(row=>row[0] == 1).length
+
+        return buildCsv(labels, rows)
+    }
+
+    async generateCsvFromItemResponsesForIRT_bkp(testApplicationId: number): Promise<string> {
         const testApplication = await this.getById(testApplicationId);
         const rows: any[] = []
 
@@ -219,7 +273,7 @@ export class TestApplicationsService {
 
     async paginate(pageRequest: PageRequest): Promise<PageResponse<TestApplication>> {
         let where = pageRequest.filter
-        const searchLike = { search: `%${pageRequest.search.toString()}%` };
+        const searchLike = { search: `%${pageRequest.search.toString().toUpperCase()}%` };
         let data = await this.testApplicationRepository.createQueryBuilder('test-application')
             .leftJoinAndSelect('test-application.test', 'test')
             .leftJoinAndSelect('test-application.participations', 'participation')
@@ -227,8 +281,8 @@ export class TestApplicationsService {
             .take(pageRequest.limit)
             .where(where)
             .andWhere(new Brackets(qb => {
-                qb.where("test-application.name like :search", searchLike)
-                    .orWhere("test.name like :search", searchLike)
+                qb.where("upper(test-application.name) like :search", searchLike)
+                    .orWhere("upper(test.name) like :search", searchLike)
             }))
             .andWhere('participation."deletedAt" is null')
             .andWhere(pageRequest.andWhere)

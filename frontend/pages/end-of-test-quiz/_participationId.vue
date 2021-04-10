@@ -140,7 +140,7 @@ import CenteredLogo from "~/components/CenteredLogo.vue";
 
 import {
   ACTION_GET_BY_ID_PUBLIC_PARTICIPATION,
-  ACTION_SAVE_PARTICIPATION,
+  ACTION_SAVE_QUIZ_RESPONSE,
 } from "~/store/participations";
 
 @Component({
@@ -169,7 +169,7 @@ export default class EndOfTestQuizzPage extends Vue {
 
   async nextQuestion() {
     this.quizSession.index = this.questionIndex + 1;
-    await this.saveParticipation();
+    await this.saveQuizResponse();
     this.$nextTick(() => {
       this.focusInput();
     });
@@ -179,20 +179,20 @@ export default class EndOfTestQuizzPage extends Vue {
     initQuizSession(this.participation, true);
   }
 
-  @Action(ACTION_SAVE_PARTICIPATION)
-  callSaveParticipation!: (
+  @Action(ACTION_SAVE_QUIZ_RESPONSE)
+  callSaveQuizResponse!: (
     participation: Participation
   ) => Promise<Participation>;
 
   prevQuestion() {
     this.quizSession.index = this.questionIndex - 1;
-    this.saveParticipation();
+    this.saveQuizResponse();
     this.focusInput();
   }
 
-  async saveParticipation() {
+  async saveQuizResponse() {
     if (!this.isTestingQuiz) {
-      this.participation = await this.callSaveParticipation(this.participation);
+      this.participation = await this.callSaveQuizResponse(this.participation);
     }
   }
 
