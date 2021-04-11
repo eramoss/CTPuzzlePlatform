@@ -9,7 +9,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="Item" width="270">
+      <el-table-column label="Item">
         <template slot-scope="{ row }">
           <div v-if="row.testItem">
             <nuxt-link
@@ -22,10 +22,10 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="Resposta" prop="response">
+      <el-table-column label="Resposta" prop="response" width="300">
         <template slot-scope="{ row }">
           <div>
-            <span :title="row.response">{{ row.response }}</span>
+            <json-view :title="row.response" :data="JSON.parse(row.response)" />
           </div>
         </template>
       </el-table-column>
@@ -34,7 +34,7 @@
           <item-response-score-cell :score="row.score" />
         </template>
       </el-table-column>
-      <el-table-column label="Ações" prop="response" width="280">
+      <el-table-column label="Ações" prop="response" width="250">
         <template slot-scope="{ row }">
           <div>
             <btn-remove
