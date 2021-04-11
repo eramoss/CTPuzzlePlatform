@@ -17,7 +17,7 @@
       >
         <public-application-thumbnail
           :testApplication="application"
-          @requestPlay="playPuzzle"
+          @requestPlay="pushRouteToPlayTestApplication"
         />
       </div>
     </div>
@@ -38,8 +38,21 @@ import TestApplicationGameIframe from "~/components/TestApplicationGameIframe.vu
 })
 export default class PublicApplicationsList extends Vue {
   @Prop({}) testApplications!: TestApplication[];
-
   currentApplication: TestApplication = new TestApplication();
+
+  play(applicationId: string) {
+    let application = this.testApplications.find(
+      (application) => application.id == parseInt(applicationId)
+    );
+    if (application) {
+      this.playPuzzle(application);
+    }
+  }
+
+  pushRouteToPlayTestApplication(testApplication: TestApplication) {
+    this.$router.push(`/public-applications/${testApplication.id}`);
+    this.playPuzzle(testApplication);
+  }
 
   playPuzzle(testApplication: TestApplication) {
     this.currentApplication = testApplication;
