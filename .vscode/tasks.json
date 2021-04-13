@@ -13,6 +13,15 @@
             "problemMatcher": []
         },
         {
+            "label": "Update online version aftet success CI/CD build",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "command": "./updatePlatform.sh",
+            "problemMatcher": []
+        },
+        {
             "label": "Run local Docker image",
             "type": "shell",
             "options": {

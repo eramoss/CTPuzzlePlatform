@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Head, Request, Param, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Head, Request, Param, Post, Res, UseGuards, Put } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
@@ -22,18 +22,23 @@ export class TestApplicationsController {
         return this.testApplicationsService.save(testApplication);
     }
 
+    @Put('updateVisibility')
+    updateVisibility(@Body() testApplication: TestApplication): Promise<UpdateResult> {
+        return this.testApplicationsService.updateVisibility(testApplication);
+    }
+
     @Delete('softDelete/:id')
     softDelete(@Param('id') id: number): Promise<DeleteResult> {
         return this.testApplicationsService.softDeleteById(id);
     }
 
     @Get('public/getPuplicApplications')
-    getPuplicApplications():Promise<TestApplication[]>{
+    getPuplicApplications(): Promise<TestApplication[]> {
         return this.testApplicationsService.getPuplicApplications();
     }
 
     @Get('public/getPuplicApplicationsByMechanicName/:name')
-    getPuplicApplicationsByMechanicName(@Param('name')name:string):Promise<TestApplication[]>{
+    getPuplicApplicationsByMechanicName(@Param('name') name: string): Promise<TestApplication[]> {
         return this.testApplicationsService.getPuplicApplicationsByMechanicName(name);
     }
 

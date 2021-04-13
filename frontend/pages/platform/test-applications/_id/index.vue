@@ -51,25 +51,9 @@
         <el-row>
           <el-col>
             <el-form-item label="Visibilidade">
-              <el-tooltip
-                :content="
-                  testApplication.visibility == 'PUBLIC'
-                    ? 'Público: visível no site'
-                    : 'Privado: visísvel somente a quem receber o link de aplicação'
-                "
-                placement="top"
-              >
-                <el-switch
-                  v-model="testApplication.visibility"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                  active-value="PUBLIC"
-                  inactive-value="PRIVATE"
-                  active-text="Público"
-                  inactive-text="Privado"
-                >
-                </el-switch>
-              </el-tooltip>
+              <switch-test-application-visibility
+                :test-application="testApplication"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -179,6 +163,7 @@ import SnackBarRemove from "~/components/SnackBarRemove.vue";
 import { DateFormat } from "~/utils/DateFormat";
 import ItemResponse from "~/types/ItemResponse";
 import AddObservationsBtn from "~/components/AddObservationsBtn.vue";
+import SwitchTestApplicationVisibility from "~/components/SwitchTestApplicationVisibility.vue";
 import { ACTION_SAVE_PARTICIPATION } from "~/store/participations";
 
 const ACTION_GET_BY_ID = "test-applications/getById";
@@ -195,6 +180,7 @@ import {
     title: "Aplicação de teste",
   },
   components: {
+    SwitchTestApplicationVisibility,
     AddObservationsBtn,
     SnackBarRemove,
     TestApplicationUrlInput,

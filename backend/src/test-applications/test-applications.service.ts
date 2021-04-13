@@ -61,6 +61,12 @@ export class TestApplicationsService {
         return this.testApplicationRepository.save(testApplication);
     }
 
+    updateVisibility(testApplication: TestApplication): Promise<UpdateResult> {
+        return this.testApplicationRepository.update({ id: testApplication.id }, {
+            visibility: testApplication.visibility,
+        });
+    }
+
     async getLastResponse(applicationId: number): Promise<ItemResponse> {
         let itemResponse = await this.itemResponseRepository.createQueryBuilder('itemResponse')
             .leftJoinAndSelect('itemResponse.participation', 'participation')
@@ -297,7 +303,7 @@ export class TestApplicationsService {
     ): Promise<PreparedParticipation> {
         let user = new User();
         user.hash = userHash;
-        
+
         if (userHash == '<user_uuid>') {
             userHash = uuidv4().substring(0, 7);
             console.warn('The puzzle forgot to replace the user token with a random unique id value!!')
@@ -366,9 +372,9 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
 
     getItemAfter(participation: Participation, lastVisitedItemId: number): TestItem {
         const test = Object.assign(new Test(), participation.test)
-        const itemWithResponsesIds = participation.itemResponses.map(itemResponse=>itemResponse.testItem.id);
-        const itemsWithoutResponses = test.items.filter(testItem=>itemWithResponsesIds.indexOf(testItem.id) == -1);
-        
+        const itemWithResponsesIds = participation.itemResponses.map(itemResponse => itemResponse.testItem.id);
+        const itemsWithoutResponses = test.items.filter(testItem => itemWithResponsesIds.indexOf(testItem.id) == -1);
+
         // const lastVisitedItem = itemsWithoutResponses.find(item => item.id == lastVisitedItemId)
         // const indexLastVisited = itemsWithoutResponses.indexOf(lastVisitedItem)
         // const nextItem = itemsWithoutResponses[indexLastVisited + 1]

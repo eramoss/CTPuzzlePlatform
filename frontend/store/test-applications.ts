@@ -21,6 +21,10 @@ export const actions: ActionTree<any, any> = {
         downloadWithAxios($axios, url, `respostas_aplicacao_${testApplicationId}___${dateString}.csv`)
     },
 
+    updateVisibility(state, testApplication: TestApplication): Promise<any> {
+        return $axios.put('/test-applications/updateVisibility', testApplication)
+    },
+
     save(state, testApplication: TestApplication): Promise<TestApplication> {
         return $axios.$post('/test-applications', testApplication);
     },
@@ -58,3 +62,4 @@ export const ACTION_GENERATE_CSV = "test-applications/generateItemResponsesCsv"
 export const ACTION_GENERATE_IRT_CSV = "test-applications/generateItemResponsesCsvForIRT"
 export const ACTION_GET_LAST_RESPONSE = "test-applications/getLastResponse"
 export const ACTION_SAVE_TEST_APPLICATION = "test-applications/save"
+export const ACTION_UPDATE_VISIBILITY = "test-applications/updateVisibility"

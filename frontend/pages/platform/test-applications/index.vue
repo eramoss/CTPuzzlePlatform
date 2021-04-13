@@ -77,6 +77,13 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column label="Visibilidade" width="340">
+          <template slot-scope="{ row }">
+            <div>
+              <switch-test-application-visibility :test-application="row" />
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="Ações" width="140">
           <template slot-scope="{ row }">
             <btn-remove @click="remove(row)" />
@@ -103,12 +110,18 @@ import { Context } from "@nuxt/types";
 import BtnRemove from "~/components/BtnRemove.vue";
 import TestApplication from "~/types/TestApplication";
 import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
+import SwitchTestApplicationVisibility from "~/components/SwitchTestApplicationVisibility.vue";
 import SnackBarRemove from "~/components/SnackBarRemove.vue";
 
 const ACTION_PAGINATE_NAME = "test-applications/paginate";
 
 @Component({
-  components: { BtnRemove, TestApplicationDialog, SnackBarRemove },
+  components: {
+    BtnRemove,
+    TestApplicationDialog,
+    SnackBarRemove,
+    SwitchTestApplicationVisibility,
+  },
   head() {
     return {
       title: "Aplicações",
