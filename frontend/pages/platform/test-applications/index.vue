@@ -68,14 +68,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="Teste" width="340">
-          <template slot-scope="{ row }">
-            <div>
-              <nuxt-link :to="`/platform/tests/${row.test.id}`">
-                <el-button type="text">{{ row.test.name }}</el-button>
-              </nuxt-link>
-            </div>
-          </template>
+        <el-table-column label="Teste" width="340" prop="test.name">
         </el-table-column>
         <el-table-column label="Visibilidade" width="340">
           <template slot-scope="{ row }">

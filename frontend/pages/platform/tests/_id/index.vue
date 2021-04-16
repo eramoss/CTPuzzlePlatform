@@ -255,7 +255,7 @@ export default class TestEditForm extends Vue {
               );
             }
             if (action == "cancel") {
-              this.back();
+              //this.back();
             }
           },
         }
