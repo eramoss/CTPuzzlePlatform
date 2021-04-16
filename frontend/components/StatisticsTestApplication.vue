@@ -49,16 +49,20 @@
               >
               </el-option>
             </el-select>
-            {{ selectedData }}
           </el-col>
         </el-row>
-        <el-row>
-          <thumbnail
-            v-loading="loading"
-            width="500px"
-            height="500px"
-            :src="plotResponse.plotFileName"
-          />
+        <el-row class="top-marged">
+          <el-col :span="12">
+            <thumbnail
+              v-loading="loading"
+              width="500px"
+              height="500px"
+              :src="plotResponse.plotFileName"
+            />
+          </el-col>
+          <el-col :span="12">
+            {{ selectedData }}
+          </el-col>
         </el-row>
       </div>
     </div>
@@ -118,11 +122,21 @@ export default class StatisticsTestApplication extends Vue {
       this.loading = true;
       const plotRequest = new PlotRequest();
       plotRequest.fn = this.measure.fn;
-      plotRequest.data = this.csvData;
+
+      let filteredCsvData = new CsvData();
+      filteredCsvData.labels = [this.choosedLabel];
+      filteredCsvData.rows = this.csvData.rows.map((row) => {
+        let filteredRow: any = {};
+        filteredRow[this.choosedLabel.value] = row[this.choosedLabel.value];
+        return filteredRow;
+      });
+
+      plotRequest.data = filteredCsvData;
       let plotResponse = await this.plot(plotRequest);
       plotResponse.plotFileName += "?" + new Date().getTime();
       this.plotResponse = plotResponse;
     } catch (e) {
+      console.error(e);
       this.$notify.error("Não foi possível plotar");
     } finally {
       this.loading = false;

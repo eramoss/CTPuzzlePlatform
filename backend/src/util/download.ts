@@ -1,4 +1,5 @@
 import { Parser } from 'json2csv';
+import fs from 'fs'
 
 export class CsvHeaderLabel {
     label!: string
@@ -14,4 +15,8 @@ export function buildCsv(fields: CsvHeaderLabel[], data: any): string {
     const json2csv = new Parser({ fields });
     const csv = json2csv.parse(data);
     return csv;
+}
+
+export function writeCsv(path: string, data: CsvData) {
+    fs.writeFileSync(path, buildCsv(data.labels, data.rows))
 }

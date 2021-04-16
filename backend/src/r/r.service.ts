@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { spawnSync, SpawnSyncReturns } from 'child_process';
+import { buildCsv, writeCsv } from 'src/util/download';
 import { PlotRequest, PlotResponse } from './plot.dto';
 
 // Como gerar gráficos:
@@ -24,16 +25,17 @@ export class RService {
                 let path = `${RscriptsLocation}/plot.R`
                 let plotFileName = `output-plot-${plotRequest.fn}.png`
                 let plot_file_path = `${uploadDir}/${plotFileName}`
+                let data_file_path = `${RscriptsLocation}/input.csv`
 
-                //R --vanilla --slave --file=plot-avg.R --args --plot_output_file_path=xpto.png
-                let r: SpawnSyncReturns<Buffer> = spawnSync('R',
+                writeCsv(data_file_path, plotRequest.data)
+
+                let r: SpawnSyncReturns<Buffer> = spawnSync('Rscript',
                     [
                         '--vanilla',
-                        //'--slave',
-                        `--file=${path}`,
-                        `--args`,
+                        `${path}`,
                         `--fn=${plotRequest.fn}`,
                         `--plot_output_file_path=${plot_file_path}`,
+                        `--data_input_file_path=${data_file_path}`,
                     ],
                     { env: {} });
                 let stderr = r.stderr.toString()

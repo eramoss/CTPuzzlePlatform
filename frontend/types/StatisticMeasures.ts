@@ -9,9 +9,11 @@ export class Measure {
     }
 }
 
-const average = new Measure('avg', 'Média')
-const median = new Measure('median', 'Mediana')
-const squareDeviation = new Measure('squareDeviation', 'Desvio padrão')
+const average = new Measure('boxplot', 'Boxplot')
+const median = new Measure('histogram', 'Histograma')
+// const squareDeviation = new Measure('squareDeviation', 'Desvio padrão')
 export const availableMeasures = [
-    average, median, squareDeviation
+    average,
+    median
+    //squareDeviation
 ]
