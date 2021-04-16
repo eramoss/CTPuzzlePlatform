@@ -2,7 +2,9 @@ FROM node:12.21.0
 
 WORKDIR /backend
 
+RUN apt-get update
 RUN apt-get install curl -y
+RUN apt-get install r-base -y
 RUN curl -fsSL https://deno.land/x/install/install.sh | sh
 
 COPY package.json .
@@ -10,6 +12,8 @@ COPY package.json .
 RUN npm install
 
 COPY . .
+
+RUN Rscript R_install_packages.R
 
 RUN npm run build
 

@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { spawnSync, SpawnSyncReturns } from 'child_process';
-import R from 'r-script'
-import MulterConfigService from 'src/file-upload/multer-config.service';
 import { PlotRequest, PlotResponse } from './plot.dto';
 
 // Como gerar gráficos:
@@ -24,7 +22,7 @@ export class RService {
                 let uploadDir = this.configService.get('FILE_UPLOAD_DIRECTORY')
                 let RscriptsLocation = this.configService.get('R_SCRIPTS_LOCATION')
                 let path = `${RscriptsLocation}/plot.R`
-                let plotFileName = `plot-${plotRequest.fn}.png`
+                let plotFileName = `output-plot-${plotRequest.fn}.png`
                 let plot_file_path = `${uploadDir}/${plotFileName}`
 
                 //R --vanilla --slave --file=plot-avg.R --args --plot_output_file_path=xpto.png
