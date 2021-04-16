@@ -111,9 +111,8 @@ import BtnRemove from "~/components/BtnRemove.vue";
 import TestApplication from "~/types/TestApplication";
 import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
 import SwitchTestApplicationVisibility from "~/components/SwitchTestApplicationVisibility.vue";
-import SnackBarRemove from "~/components/SnackBarRemove.vue";
-
-const ACTION_PAGINATE_NAME = "test-applications/paginate";
+import SnackBarRemove from "~/components/SnackBarRemove.vue"
+import { ACTION_PAGINATE_APPLICATIONS } from "~/store/test-applications";
 
 @Component({
   components: {
@@ -136,7 +135,7 @@ export default class ApplicationsList extends Vue {
   @Ref("applicationDialog") testApplicationDialog!: TestApplicationDialog;
   @Ref() snackBar!: SnackBarRemove;
 
-  @Action(ACTION_PAGINATE_NAME) paginate!: (
+  @Action(ACTION_PAGINATE_APPLICATIONS) paginate!: (
     pageRequest: PageRequest
   ) => Promise<PageResponse<Test>>;
 
@@ -185,8 +184,8 @@ export default class ApplicationsList extends Vue {
       pageRequest.andWhere = "test.researchGroup.id = " + researchGroup.id;
     }
 
-    let pageResponse: PageResponse<Test> = await ctx.store.dispatch(
-      ACTION_PAGINATE_NAME,
+    let pageResponse: PageResponse<TestApplication> = await ctx.store.dispatch(
+      ACTION_PAGINATE_APPLICATIONS,
       pageRequest
     );
     return { pageResponse, pageRequest, tests };

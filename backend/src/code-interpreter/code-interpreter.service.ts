@@ -42,6 +42,7 @@ export class CodeInterpreterService {
         let result = this.removeUndesiredLines(deno)
         return Promise.resolve(result);
     }
+    
     removeUndesiredLines(deno: SpawnSyncReturns<Buffer>): string {
         return deno.output.toString().split('\n')
             .map(line => {

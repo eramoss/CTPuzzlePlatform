@@ -5,6 +5,7 @@ import { AxiosResponse } from 'axios'
 import TestApplication from '~/types/TestApplication';
 import { downloadWithAxios } from '~/utils/utils';
 import ItemResponse from '~/types/ItemResponse';
+import { CsvData } from '~/types/CsvData';
 export const actions: ActionTree<any, any> = {
 
     generateItemResponsesCsv(state, testApplicationId: number) {
@@ -12,6 +13,10 @@ export const actions: ActionTree<any, any> = {
         let dateString = `${date.getFullYear()}_${date.getMonth()}_${date.getDate()}_${date.getHours()}_${date.getMinutes()}`;
         let url = `/test-applications/generateItemResponsesCsv/${testApplicationId}`;
         downloadWithAxios($axios, url, `respostas_aplicacao_${testApplicationId}___${dateString}.csv`)
+    },
+
+    getCsvData(state, testApplication: TestApplication): Promise<CsvData> {
+        return $axios.$get('/test-applications/getCsvData/' + testApplication.id)
     },
 
     generateItemResponsesCsvForIRT(state, testApplicationId: number) {
@@ -45,10 +50,6 @@ export const actions: ActionTree<any, any> = {
         return $axios.$post('/test-applications/paginate', pageRequest);
     },
 
-    findAll(state, pageRequest: PageRequest): Promise<TestApplication[]> {
-        return $axios.$get('/test-applications/findAll');
-    },
-
     softDeleteById(state, id: number): Promise<AxiosResponse> {
         return $axios.$delete('/test-applications/softDelete/' + id);
     },
@@ -63,3 +64,5 @@ export const ACTION_GENERATE_IRT_CSV = "test-applications/generateItemResponsesC
 export const ACTION_GET_LAST_RESPONSE = "test-applications/getLastResponse"
 export const ACTION_SAVE_TEST_APPLICATION = "test-applications/save"
 export const ACTION_UPDATE_VISIBILITY = "test-applications/updateVisibility"
+export const ACTION_PAGINATE_APPLICATIONS = "test-applications/paginate"
+export const ACTION_GET_CSV_DATA_TEST_APPLICATION = "test-applications/getCsvData"

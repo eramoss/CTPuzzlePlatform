@@ -9,6 +9,7 @@ import { TestApplicationsService } from './test-applications.service';
 import { Response } from 'express';
 import { getResearchGroupId } from 'src/util/getClaim';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
+import { CsvData } from 'src/util/download';
 
 @Controller('test-applications')
 @UseGuards(JwtAuthGuard)
@@ -60,6 +61,11 @@ export class TestApplicationsController {
     @Get('generateItemResponsesCsv/:testApplicationId')
     generateItemResponsesCsv(@Param('testApplicationId') testApplicationId: number): Promise<string> {
         return this.testApplicationsService.generateCsvFromItemResponses(testApplicationId);
+    }
+
+    @Get('getCsvData/:testApplicationId')
+    getCsvData(@Param('testApplicationId') testApplicationId: number): Promise<CsvData> {
+        return this.testApplicationsService.getCsvData(testApplicationId);
     }
 
     @Get('generateItemResponsesCsvForIRT/:testApplicationId')

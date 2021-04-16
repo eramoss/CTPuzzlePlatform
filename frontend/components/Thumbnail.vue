@@ -23,7 +23,13 @@ export default class Thumbnail extends Vue {
   @Prop({ default: "130px" }) height!: string;
 
   get computedSrc() {
-    return $axios.defaults.baseURL + "/file-upload/view/" + this.src;
+    let src = "";
+    if (this.src) {
+      src = `${$axios.defaults.baseURL}/file-upload/view/${this.src}?${
+        new Date().getTime()
+      }`;
+    }
+    return src;
   }
 }
 </script>

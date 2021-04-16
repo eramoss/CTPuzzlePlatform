@@ -14,34 +14,34 @@ export class User {
     }
 
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column()
-    name: string
+    name!: string
 
     @Column({ nullable: true })
-    birthDate: Date
+    birthDate!: Date
 
     @Column({ nullable: true })
-    hash: string
+    hash!: string
 
     @Column()
-    password: string
+    password!: string
 
     @Column({ unique: true })
-    email: string
+    email!: string
 
     @Column({ default: 'O' })
-    gender: string
+    gender!: string
 
     @Column({ default: '', nullable: true })
-    confirmationCode: string
+    confirmationCode!: string
 
     @Column({ nullable: true })
-    recoverPasswordHash: string
+    recoverPasswordHash?: string
 
     @ManyToOne(type => ResearchGroup, { cascade: ['insert'] })
-    researchGroup: ResearchGroup
+    researchGroup!: ResearchGroup
 
     @Column({
         type: 'jsonb',
@@ -58,20 +58,20 @@ export class User {
     }
 
     @CreateDateColumn()
-    createdAt: Date
+    createdAt!: Date
 
     @UpdateDateColumn()
-    updatedAt: Date
+    updatedAt!: Date
 
     @DeleteDateColumn()
-    deletedAt: Date
+    deletedAt!: Date
 
     @Column({
         type: 'jsonb',
         default: () => "'{}'",
         nullable: false,
     })
-    data: Object;
+    data!: Object;
 
 }
 

@@ -123,7 +123,7 @@
                 </nuxt-link>
               </template>
             </el-table-column>
-            <el-table-column width="420" label="Anotar, remover">
+            <el-table-column width="280" label="Ações">
               <template slot-scope="{ row }">
                 <add-observations-btn
                   @save="saveParticipation(row)"

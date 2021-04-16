@@ -32,9 +32,11 @@ export class TestService {
             .orderBy('testItem.order', 'ASC')
             .withDeleted()
             .getOne();
-        await Promise.all(test.items.map(async item => {
-            item.countItemResponses = await this.itemResponseService.countByItem(item)
-        }))
+        if (test) {
+            await Promise.all(test.items.map(async item => {
+                item.countItemResponses = await this.itemResponseService.countByItem(item)
+            }))
+        }
         return test;
     }
 

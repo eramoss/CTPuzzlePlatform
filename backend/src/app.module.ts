@@ -19,6 +19,7 @@ import { databaseConfig } from './databaseConfig'
 import { ParticipationModule } from './participation/participation.module';
 import { ItemResponsesModule } from './item-responses/item-responses.module';
 import { ResearchGroupModule } from './research-group/research-group.module';
+import { RModule } from './r/r.module';
 
 @Module({
     imports: [
@@ -39,6 +40,7 @@ import { ResearchGroupModule } from './research-group/research-group.module';
         ParticipationModule,
         ItemResponsesModule,
         ResearchGroupModule,
+        RModule,
     ],
     controllers: [AppController],
     providers: [AppService],

@@ -249,7 +249,6 @@ export default class TestEditForm extends Vue {
           confirmButtonClass: "el-button--success",
           showCancelButton: true,
           callback: (action: string) => {
-            debugger;
             if (action == "confirm") {
               this.$router.push(
                 `/platform/test-applications?test=${this.test.id}&action=apply`

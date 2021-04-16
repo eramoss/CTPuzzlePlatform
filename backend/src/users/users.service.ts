@@ -13,7 +13,7 @@ import { PageResponse } from "src/pagination/pageresponse.dto";
 export class UsersService {
 
 
-    getById(id: number): Promise<User> {
+    getById(id: number): Promise<User | undefined> {
         return this.userRepository.createQueryBuilder('user')
             .where({ id })
             .getOne()
@@ -52,8 +52,10 @@ export class UsersService {
 
     async saveData(userHash: string, userData: any): Promise<any> {
         let user = await this.userRepository.findOne({ hash: userHash })
-        user.data = userData;
-        return this.userRepository.save(user);
+        if (user) {
+            user.data = userData;
+            return this.userRepository.save(user);
+        }
     }
 
     restore(id: number): Promise<UpdateResult> {
@@ -92,7 +94,7 @@ export class UsersService {
     }
 
     async saveOrGetByHash(user: User): Promise<User> {
-        let foundUser: User = await this.userRepository.createQueryBuilder('user')
+        let foundUser = await this.userRepository.createQueryBuilder('user')
             .leftJoinAndSelect('user.researchGroup', 'researchGroup')
             .where({ hash: user.hash })
             .getOne()
@@ -103,15 +105,18 @@ export class UsersService {
     }
 
     async validateConfirmationCode(validationInfo: { email: string; code: string; }): Promise<boolean> {
-        let user: User = await this.userRepository.findOne({ email: validationInfo.email })
+        let user = await this.userRepository.findOne({ email: validationInfo.email })
         console.info('Encontrado usuário: ', user)
-        let isCodeValid = user.confirmationCode == validationInfo.code;
-        console.info('Código é valido: ', isCodeValid)
-        return Promise.resolve(isCodeValid);
+        let isCodeValid = false;
+        if (user) {
+            isCodeValid = user.confirmationCode == validationInfo.code;
+            console.info('Código é valido: ', isCodeValid)
+        }
+        return isCodeValid;
     }
 
     async sendPasswordRecoveryLink(email: string): Promise<any> {
-        let user: User = await this.userRepository.findOne({ email });
+        let user = await this.userRepository.findOne({ email });
         if (!user) {
             throw new ForbiddenException('Não foi encontrado usuário com esse email')
         }
@@ -120,14 +125,16 @@ export class UsersService {
         this.mailer.sendPasswordRecoveryLink(user, user.recoverPasswordHash);
     }
 
-    async findByUsername(username: string): Promise<User> {
+    async findByUsername(username: string): Promise<User | undefined> {
         let user = await this.userRepository.createQueryBuilder('user')
             .leftJoinAndSelect('user.researchGroup', 'researchGroup')
             .where({ email: username })
             .getOne();
-        if (!user.researchGroup) {
-            if (!user.isSysAdmin()) {
-                this.createReseachGroupToUser(user);
+        if (user) {
+            if (!user.researchGroup) {
+                if (!user.isSysAdmin()) {
+                    this.createReseachGroupToUser(user);
+                }
             }
         }
         return user
@@ -135,7 +142,7 @@ export class UsersService {
 
     async validateRecoveryLink(hash: string): Promise<boolean> {
         let isLinkValid = false;
-        let user: User = await this.userRepository.findOne({ recoverPasswordHash: hash });
+        let user = await this.userRepository.findOne({ recoverPasswordHash: hash });
         if (user) {
             isLinkValid = true;
         }
@@ -143,9 +150,9 @@ export class UsersService {
     }
 
     async updatePassword(updatePasswordInfo: { hash: string; newPassword: string; }): Promise<any> {
-        let user: User = await this.userRepository.findOne({ recoverPasswordHash: updatePasswordInfo.hash });
+        let user = await this.userRepository.findOne({ recoverPasswordHash: updatePasswordInfo.hash });
         if (user) {
-            user.recoverPasswordHash = null;
+            user.recoverPasswordHash = undefined;
             user.password = updatePasswordInfo.newPassword;
             this.userRepository.save(user);
         }

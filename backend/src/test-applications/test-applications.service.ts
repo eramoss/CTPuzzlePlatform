@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ConfigService } from '@nestjs/config';
 import PreparedParticipation from 'src/participation/prepared-participation.dto';
 import { Mechanic } from 'src/mechanics/mechanic.entity';
-import { buildCsv } from 'src/util/download';
+import { buildCsv, CsvData, CsvHeaderLabel } from 'src/util/download';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
 import { TestItem } from 'src/tests/test-item.entity';
 import { Item } from 'src/items/item.entity';
@@ -96,11 +96,16 @@ export class TestApplicationsService {
     }
 
     async generateCsvFromItemResponses(testApplicationId: number): Promise<string> {
+        const { labels, rows } = await this.getCsvData(testApplicationId);
+        return buildCsv(labels, rows)
+    }
+
+    async getCsvData(testApplicationId: number): Promise<CsvData> {
         const testApplication = await this.getById(testApplicationId);
-        const rows: any[] = []
-        let responseProperties: string[] = []
-        let userProperties: string[] = []
-        let quizProperties: string[] = []
+        const rows: any[] = [];
+        let responseProperties: string[] = [];
+        let userProperties: string[] = [];
+        let quizProperties: string[] = [];
         const labels = [
             { label: 'data', value: 'data' },
             { label: 'usuario', value: 'usuario' },
@@ -108,29 +113,29 @@ export class TestApplicationsService {
             { label: 'observacoes', value: 'observacoes' },
             { label: 'item', value: 'item_id' },
             //{ label: 'resposta', value: 'resposta' },
-        ]
+        ];
 
 
         testApplication.participations.forEach((participation: Participation) => {
             if (participation.user.data) {
-                userProperties = Object.keys(participation.user.data)
+                userProperties = Object.keys(participation.user.data);
                 userProperties.reverse().forEach(prop => {
                     if (!labels.some(l => l.label == prop)) {
-                        labels.splice(1, 0, { label: prop, value: prop })
+                        labels.splice(1, 0, { label: prop, value: prop });
                     }
                 });
             }
 
             if (participation.userDataToRequest) {
-                quizProperties = participation.userDataToRequest.questions.map(q => q.name)
+                quizProperties = participation.userDataToRequest.questions.map(q => q.name);
                 quizProperties.reverse().forEach(prop => {
                     if (!labels.some(l => l.label == prop)) {
-                        labels.splice(2, 0, { label: prop, value: prop })
+                        labels.splice(2, 0, { label: prop, value: prop });
                     }
-                })
+                });
             }
 
-        })
+        });
 
         testApplication.participations.map((participation: Participation) => {
 
@@ -144,36 +149,37 @@ export class TestApplicationsService {
                     observacoes: participation.observations,
                     escore_max: itemResponse.score.max,
                     escore_obtido: itemResponse.score.score,
-                }
+                };
                 let responseJson = JSON.parse(itemResponse.response);
                 if (!responseProperties.length) {
-                    responseProperties = Object.keys(responseJson)
+                    responseProperties = Object.keys(responseJson);
                 }
                 userProperties.forEach((key: string) => {
-                    row[key] = participation.user.data[key]
-                })
+                    row[key] = participation.user.data[key];
+                });
                 responseProperties.forEach((key: string) => {
-                    row[key] = responseJson[key]
-                })
+                    row[key] = responseJson[key];
+                });
                 quizProperties.forEach((key: string) => {
                     if (participation.userDataToRequest) {
-                        row[key] = participation.userDataToRequest.questions.find(q => q.name == key).answer
+                        row[key] = participation.userDataToRequest.questions.find(q => q.name == key).answer;
                     }
-                })
+                });
                 rows.push(row);
-            })
-        })
+            });
+        });
 
         responseProperties.forEach(prop => {
-            labels.push({ label: prop, value: prop })
+            labels.push({ label: prop, value: prop });
         });
         [
             { label: 'escore_max', value: 'escore_max' },
             { label: 'escore_obtido', value: 'escore_obtido' },
-        ].forEach(item => labels.push(item))
-
-        return buildCsv(labels, rows)
+        ].forEach(item => labels.push(item));
+        
+        return { labels, rows };
     }
+
     async generateCsvFromItemResponsesForIRT(testApplicationId: number): Promise<string> {
         const rows = []
         let labels = [
