@@ -5,10 +5,10 @@
       Testando questionário (as respostas não serão guardadas)
     </div>
     <div class="quiz-form center">
-      <h2 v-if="hasQuestion">
-        Parabéns! Você finalizou todas as fases! <br />Responda o questionário
-        abaixo para ver o resultado
-      </h2>
+      <div v-if="hasQuestion">
+        <h3>Parabéns! Você finalizou todas as fases!</h3>
+        <h2>Responda o questionário abaixo para ver o resultado</h2>
+      </div>
       <h2 v-if="!hasQuestion">Obrigado por sua participação!</h2>
       <div>
         <div v-if="hasQuestion">
