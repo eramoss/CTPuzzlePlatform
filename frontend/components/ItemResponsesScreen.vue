@@ -19,14 +19,14 @@
                 {{ row.testItem.item.name }}
               </el-button>
             </nuxt-link>
-            <tutorial-label :item="row.testItem.item"/>
+            <tutorial-label :item="row.testItem.item" />
           </div>
         </template>
       </el-table-column>
       <el-table-column label="Resposta" prop="response" width="300">
         <template slot-scope="{ row }">
           <div>
-            <json-view :title="row.response" :data="JSON.parse(row.response)" />
+            <json-tree :title="row.response" :json="JSON.parse(row.response)" />
           </div>
         </template>
       </el-table-column>
@@ -78,9 +78,11 @@ import ItemResponseScoreCell from "~/components/ItemResponseScoreCell.vue";
 import ItemResponse from "~/types/ItemResponse";
 import SnackBarRemove from "./SnackBarRemove.vue";
 import { DateFormat } from "~/utils/DateFormat";
+import JsonTree from "~/components/JsonTree.vue";
 
 @Component({
   components: {
+    JsonTree,
     ItemThumbnail,
     SnackBarRemove,
     ItemResponseScoreCell,

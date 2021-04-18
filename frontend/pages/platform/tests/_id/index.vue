@@ -28,6 +28,7 @@
           <el-col :span="19">
             <el-form-item label="Pesquisar itens" label-width="130px">
               <el-select
+                @focus="loadItems"
                 no-data-text="Não há itens para selecionar"
                 value=""
                 :v-model="selectedItems"
@@ -156,6 +157,8 @@ import ItemThumbnail from "~/components/ItemThumbnail.vue";
 import { ElForm } from "element-ui/types/form";
 import ResearchGroup from "~/types/ResearchGroup";
 import UserDataToRequestFormBuilder from "~/components/UserDataToRequestFormBuilder.vue";
+import { ACTION_FIND_ALL_ITEMS } from "~/store/items";
+import { ACTION_GET_TEST_BY_ID } from "~/store/tests";
 
 @Component({
   head: {
@@ -318,19 +321,26 @@ export default class TestEditForm extends Vue {
       test = new Test();
     }
     if (id != "new") {
-      test = await ctx.store.dispatch("tests/getById", id);
+      test = await ctx.store.dispatch(ACTION_GET_TEST_BY_ID, id);
     }
     if (!test) {
       test = new Test();
     }
     let selectedItems = test.items || [];
-    let availableItems = await ctx.store.dispatch("items/findAll");
+    let availableItems = await ctx.store.dispatch(ACTION_FIND_ALL_ITEMS);
     test.researchGroup = ctx.$auth.user?.researchGroup as ResearchGroup;
     return {
       test,
       availableItems,
       selectedItems,
     };
+  }
+
+  @Action(ACTION_FIND_ALL_ITEMS)
+  findAllItems!: () => Promise<Item[]>;
+
+  async loadItems() {
+    this.availableItems = await this.findAllItems();
   }
 
   mounted() {

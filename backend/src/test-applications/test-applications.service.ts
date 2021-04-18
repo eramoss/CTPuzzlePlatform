@@ -112,6 +112,7 @@ export class TestApplicationsService {
             { label: 'participacao', value: 'participacao_id' },
             { label: 'observacoes', value: 'observacoes' },
             { label: 'item', value: 'item_id' },
+            { label: 'tutorial', value: 'tutorial' },
             //{ label: 'resposta', value: 'resposta' },
         ];
 
@@ -145,6 +146,7 @@ export class TestApplicationsService {
                     usuario: participation.user.hash,
                     participacao_id: participation.id,
                     item_id: itemResponse.testItem.item.id,
+                    tutorial: itemResponse.testItem.item.isTutorial?'T':'F',
                     //resposta: itemResponse.response,
                     observacoes: participation.observations,
                     escore_max: itemResponse.score.max,
