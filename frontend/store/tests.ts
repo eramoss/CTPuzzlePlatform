@@ -35,3 +35,4 @@ export const actions: ActionTree<any, any> = {
 
 }
 export const ACTION_GET_TEST_BY_ID = "tests/getById"
+export const ACTION_SAVE_TEST = "tests/save"

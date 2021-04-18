@@ -129,14 +129,14 @@
           <el-col>
             <btn-save @click="save" :loading="saving" />
             <btn-back @click="back" />
-            <!-- <el-button
+            <el-button
               type="primary"
-              @click="genereateTestJson"
+              @click="saveAndApply"
               icon=""
               :disabled="!test.id"
             >
-              Gerar JSON
-            </el-button> -->
+              Aplicar
+            </el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -158,7 +158,7 @@ import { ElForm } from "element-ui/types/form";
 import ResearchGroup from "~/types/ResearchGroup";
 import UserDataToRequestFormBuilder from "~/components/UserDataToRequestFormBuilder.vue";
 import { ACTION_FIND_ALL_ITEMS } from "~/store/items";
-import { ACTION_GET_TEST_BY_ID } from "~/store/tests";
+import { ACTION_GET_TEST_BY_ID, ACTION_SAVE_TEST } from "~/store/tests";
 
 @Component({
   head: {
@@ -186,7 +186,7 @@ export default class TestEditForm extends Vue {
   @Ref("inputName") inputName!: ElInput;
   @Ref("form") form!: ElForm;
 
-  @Action("tests/save") saveTest!: (test: Test) => Promise<Test>;
+  @Action(ACTION_SAVE_TEST) saveTest!: (test: Test) => Promise<Test>;
 
   get formRules() {
     return {
@@ -194,27 +194,6 @@ export default class TestEditForm extends Vue {
         { required: true, trigger: "blur", message: "Informe o nome do teste" },
       ],
     };
-  }
-
-  async genereateTestJson() {
-    try {
-      if (this.test.id) {
-        this.generatingJson = true;
-        let url =
-          this.$axios.defaults.baseURL +
-          "/tests/public/generateJson/" +
-          this.test.id;
-        window.open(url, "_blank");
-      }
-    } catch (e) {
-      this.$notify({
-        type: "error",
-        title: "Não foi possível gerar o json",
-        message: e,
-      });
-    } finally {
-      this.generatingJson = false;
-    }
   }
 
   get dragOptions() {
@@ -230,41 +209,25 @@ export default class TestEditForm extends Vue {
     return this.form.validate();
   }
 
-  async save() {
+  async save(requestApply: boolean = false) {
     if (!(await this.formIsValid())) {
       return;
     }
     try {
       this.saving = true;
+      let isJustSaved = !this.test.id;
       this.test = await this.saveTest(this.test);
-      /* this.$notify({
-        type: "success",
-        title: "O teste foi salvo",
-        message: "Você já pode acessar o teste.",
-      }); */
-      this.$alert(
-        "Gostaria de aplicar o teste?",
-        "O teste está pronto! Quer aplicá-lo agora?",
-        {
-          confirmButtonText: "Aplicar agora",
-          cancelButtonText: "Não",
-          confirmButtonClass: "el-button--success",
-          showCancelButton: true,
-          callback: (action: string) => {
-            if (action == "confirm") {
-              this.$router.push(
-                `/platform/test-applications?test=${this.test.id}&action=apply`
-              );
-            }
-            if (action == "cancel") {
-              //this.back();
-            }
-          },
-        }
-      );
-
-      this.$router.push({ params: { id: this.test.id + "" } });
-      //this.back();
+      if (isJustSaved || requestApply) {
+        this.askForTestApplication();
+        return;
+      }
+      if (!isJustSaved) {
+        this.$notify({
+          type: "success",
+          title: "O teste foi salvo",
+          message: "Você já pode aplicar o teste.",
+        });
+      }
     } catch (e) {
       console.error(e);
       this.$notify({
@@ -275,6 +238,37 @@ export default class TestEditForm extends Vue {
     } finally {
       this.saving = false;
     }
+  }
+
+  async saveAndApply() {
+    this.save(true);
+  }
+
+  applyTest() {
+    this.$router.push({ params: { id: this.test.id + "" } });
+  }
+
+  askForTestApplication() {
+    this.$alert(
+      "Será criada uma sessão de aplicação. Um testes pode ser aplicado diversas vezes.",
+      "Aplicar o teste?",
+      {
+        confirmButtonText: "Aplicar",
+        cancelButtonText: "Não",
+        confirmButtonClass: "el-button--success",
+        showCancelButton: true,
+        callback: (action: string) => {
+          if (action == "confirm") {
+            this.$router.push(
+              `/platform/test-applications?test=${this.test.id}&action=apply`
+            );
+          }
+          if (action == "cancel") {
+            //this.back();
+          }
+        },
+      }
+    );
   }
 
   updateOrder() {
@@ -298,11 +292,11 @@ export default class TestEditForm extends Vue {
     testItem.item = item;
     this.selectedItems.push(testItem);
     this.updateOrder();
-    /* this.$notify({
+    this.$notify({
       type: "success",
       title: "O item foi adicionado",
-      message: "O item foi adicionado ao teste. Salve para registrar.",
-    }); */
+      message: "Salve o teste para registrar esta lista de itens.",
+    });
   }
 
   removeItem(testItem: TestItem) {
