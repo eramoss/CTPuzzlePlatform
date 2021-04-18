@@ -97,7 +97,7 @@
                             informadas para este item
                           </span>
                         </div>
-                        <div>
+                        <div class="flex-row">
                           <nuxt-link
                             target="_blank"
                             :to="`/platform/items/${testItem.item.id}`"
