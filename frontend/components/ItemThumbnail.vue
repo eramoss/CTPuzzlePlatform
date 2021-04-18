@@ -5,7 +5,7 @@
     <div class="item-infos">
       <p class="title">
         <slot name="headline">
-          {{ item.name }}
+          {{ item.name }} <tutorial-label :item="item"/>
         </slot>
       </p>
       <p class="description">{{ item.description }}</p>

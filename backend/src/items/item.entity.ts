@@ -13,6 +13,9 @@ export class Item {
     @Column({ nullable: true })
     thumbnail: string
 
+    @Column({ default: false, nullable: false })
+    isTutorial: boolean
+
     @Column()
     description: string
 
@@ -26,9 +29,9 @@ export class Item {
     deletedAt: Date
 
     @CreateDateColumn()
-    createdAt:Date
+    createdAt: Date
 
     @UpdateDateColumn()
-    updatedAt:Date
+    updatedAt: Date
 
 }

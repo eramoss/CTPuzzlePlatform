@@ -10,6 +10,7 @@ export default class Item {
     createdAt!:Date
     deletedAt!:Date
     updatedAt!:Date
+    isTutorial!:boolean
 }
 
 export function createExampleItem(): Item {

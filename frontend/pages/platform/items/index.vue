@@ -50,13 +50,18 @@
             <el-tooltip placement="left" effect="light">
               <template slot="content">
                 <div>
-                  <thumbnail :src="row.thumbnail" width="360px" height="240px" />
+                  <thumbnail
+                    :src="row.thumbnail"
+                    width="360px"
+                    height="240px"
+                  />
                 </div>
               </template>
               <el-button type="text" @click="edit(row)">
                 {{ row.name }}
               </el-button>
             </el-tooltip>
+            <tutorial-label :item="row" />
           </template>
         </el-table-column>
         <el-table-column

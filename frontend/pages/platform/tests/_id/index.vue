@@ -43,14 +43,12 @@
                   :value="item"
                   value-key="id"
                 >
-                  <el-tooltip
-                    content="Clique para adicionar ao teste"
-                    effect="light"
+                  <div
+                    @click="addItemToTest(item)"
+                    title="Clique para adicionar ao teste"
                   >
-                    <div @click="addItemToTest(item)">
-                      <item-thumbnail :item="item" />
-                    </div>
-                  </el-tooltip>
+                    <item-thumbnail :item="item" />
+                  </div>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -82,6 +80,7 @@
                     <item-thumbnail :item="testItem.item">
                       <div slot="headline">
                         Fase {{ index + 1 }}: {{ testItem.item.name }}
+                        <tutorial-label :item="testItem.item" />
                       </div>
                       <template slot="start">
                         <el-tooltip effect="light" content="Arraste para mover">

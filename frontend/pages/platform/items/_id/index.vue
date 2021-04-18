@@ -79,6 +79,15 @@
                     placeholder="Informações sobre o desafio presente no item"
                   ></el-input>
                 </el-form-item>
+                <el-form-item label="Tutorial" label-width="170px">
+                  <el-checkbox v-model="item.isTutorial"
+                    >Este é um item de tutorial
+                    <el-tooltip
+                      effect="light"
+                      content="Itens de tutorial não contam pontos"
+                      ><i class="el-icon-question" /> </el-tooltip
+                  ></el-checkbox>
+                </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item title="Ilustração da mecânica">

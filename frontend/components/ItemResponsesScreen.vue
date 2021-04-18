@@ -19,6 +19,7 @@
                 {{ row.testItem.item.name }}
               </el-button>
             </nuxt-link>
+            <tutorial-label :item="row.testItem.item"/>
           </div>
         </template>
       </el-table-column>
