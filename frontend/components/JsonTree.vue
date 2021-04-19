@@ -22,7 +22,7 @@ export default class JsonTree extends Vue {
     default: () =>
       ({
         rootObjectKey: "Resposta",
-        maxDepth: 0,
+        //maxDepth: 0,
       } as JsonTreeOptions),
   })
   options!: JsonTreeOptions;
