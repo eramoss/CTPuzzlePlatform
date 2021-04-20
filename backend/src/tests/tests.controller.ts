@@ -51,9 +51,4 @@ export class TestController {
         return this.testService.getPuzzleBaseUrl(id)
     }
 
-    @Get('public/generateJson/:id')
-    @Header('Content-Type', 'application/json')
-    generateJsonFromTest(@Param('id') testId: number): Promise<string> {
-        return this.testService.generateJson(testId);
-    }
 }

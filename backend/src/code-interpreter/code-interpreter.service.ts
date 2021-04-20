@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { ChildProcess, spawn, spawnSync, SpawnSyncReturns } from 'child_process';
 
-const fs = require('fs')
+import fs from 'fs'
 
 @Injectable()
 export class CodeInterpreterService {
@@ -25,7 +25,6 @@ export class CodeInterpreterService {
     }
 
     execute(script: string, rejectOnError: boolean = false): Promise<string> {
-        //console.info(`running code:\n ${script}`)
         return this.executeSync(script, rejectOnError);
     }
 

@@ -42,11 +42,14 @@ export default class Participation {
     @Column({ default: 0 })
     lastVisitedItemId: number
 
-    @Column({default:false})
-    lastVisitedItemWasFinished:boolean
+    @Column({ default: false })
+    lastVisitedItemWasFinished: boolean
 
-    @Column({ nullable: true })
-    test: string
+    @Column({
+        type: 'jsonb',
+        nullable: true,
+    })
+    test: Object
 
     @DeleteDateColumn()
     deletedAt: Date

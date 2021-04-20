@@ -46,10 +46,4 @@ export class MechanicsController {
         return this.mechanicsService.restore(id);
     }
 
-
-    @Get('public/instantiate/:id')
-    instantiate(@Param('id') id: number): Promise<string> {
-        return this.mechanicsService.instantiateToGetJson(id);
-    }
-
 }

@@ -24,6 +24,17 @@ export class TestService {
         return this.testRepository.save(test);
     }
 
+    async getByIdJoinItemMechanics(id: number): Promise<Test> {
+        let test = await this.testRepository.createQueryBuilder('test')
+            .where({ id })
+            .leftJoinAndSelect('test.items', 'testItem')
+            .leftJoinAndSelect('testItem.item', 'item')
+            .leftJoinAndSelect('item.mechanic', 'mechanic')
+            .orderBy('testItem.order', 'ASC')
+            .getOne();
+        return test;
+    }
+
     async getById(id: number): Promise<Test> {
         let test = await this.testRepository.createQueryBuilder('test')
             .where({ id })
@@ -88,20 +99,22 @@ export class TestService {
         return baseUrl;
     }
 
-    async generateJson(testId: number): Promise<any> {
-        const test = await this.getById(testId);
+    async generateJson(testId: number): Promise<{}> {
+        const test = await this.getByIdJoinItemMechanics(testId);
         let testJson = {
             id: test.id,
             name: test.name,
             items: []
         };
-        testJson.items = await Promise.all(test.items.map(async (testItem) => {
-            let itemJson = await this.itemService.instantiateToGetJson(testItem.item.id)
+        const items = test.items.map(testItem => testItem.item);
+        const jsonItems = await this.itemService.getJsonFromItems(items)
+        testJson.items = jsonItems.map((jsonItem, index) => {
             return {
-                id: testItem.id,
-                item: itemJson
+                id: (test.items[index].id),
+                item: jsonItem
             }
-        }))
+        }
+        );
         return testJson;
     }
 

@@ -67,14 +67,36 @@ export class ItemsService {
         return this.getJsonFromItem(item);
     }
 
-    async getJsonFromItem(item: Item) {
+    async getJsonFromItem(item: Item): Promise<{}> {
         return this.instantiateItem(item.mechanic.classDefinition, item.itemDefinition);
     }
 
-    async instantiateItem(classDefinition: string, itemDefinition: string) {
+    async getJsonFromItems(items: Item[]): Promise<Object[]> {
+        let classes = []
+        items.forEach(item => {
+            const classDefinition = item.mechanic.classDefinition
+            if (classes.indexOf(classDefinition) == -1) {
+                classes.push(classDefinition)
+            }
+        })
+        let classesDefinitions = classes.join('\n')
+        let itemsDefinitionsFunctions = items
+            .map((item, index) => `itemsJsons[${index}] = (${item.itemDefinition}())`)
+            .join('\n')
+        let code = `
+        ${classesDefinitions}
+        let itemsJsons = []
+        ${itemsDefinitionsFunctions}
+        console.log(JSON.stringify(itemsJsons))
+        `
+        let arrayOfItems = await this.codeInterpreterService.execute(code);
+        return JSON.parse(arrayOfItems);
+    }
+
+    async instantiateItem(classDefinition: string, itemDefinition: string): Promise<{}> {
         let code = `
             ${classDefinition}
-            console.log(JSON.stringify(${itemDefinition}()))
+            console.log(JSON.stringify( ${itemDefinition}() ))
         `
         let instantiatedItem = await this.codeInterpreterService.execute(code);
         console.log('JSON to parse ', instantiatedItem);
