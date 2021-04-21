@@ -63,9 +63,7 @@
         </el-table-column>
         <el-table-column label="Participações" width="120">
           <template slot-scope="{ row }">
-            <div>
-              {{ row.participations.length }}
-            </div>
+            {{ row.countParticipations }}
           </template>
         </el-table-column>
         <el-table-column label="Teste" width="340" prop="test.name">
@@ -104,7 +102,7 @@ import BtnRemove from "~/components/BtnRemove.vue";
 import TestApplication from "~/types/TestApplication";
 import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
 import SwitchTestApplicationVisibility from "~/components/SwitchTestApplicationVisibility.vue";
-import SnackBarRemove from "~/components/SnackBarRemove.vue"
+import SnackBarRemove from "~/components/SnackBarRemove.vue";
 import { ACTION_PAGINATE_APPLICATIONS } from "~/store/test-applications";
 
 @Component({

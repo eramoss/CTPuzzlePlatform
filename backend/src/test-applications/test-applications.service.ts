@@ -146,7 +146,7 @@ export class TestApplicationsService {
                     usuario: participation.user.hash,
                     participacao_id: participation.id,
                     item_id: itemResponse.testItem.item.id,
-                    tutorial: itemResponse.testItem.item.isTutorial?'T':'F',
+                    tutorial: itemResponse.testItem.item.isTutorial ? 'T' : 'F',
                     //resposta: itemResponse.response,
                     observacoes: participation.observations,
                     escore_max: itemResponse.score.max,
@@ -178,7 +178,7 @@ export class TestApplicationsService {
             { label: 'escore_max', value: 'escore_max' },
             { label: 'escore_obtido', value: 'escore_obtido' },
         ].forEach(item => labels.push(item));
-        
+
         return { labels, rows };
     }
 
@@ -290,7 +290,6 @@ export class TestApplicationsService {
         const searchLike = { search: `%${pageRequest.search.toString().toUpperCase()}%` };
         let data = await this.testApplicationRepository.createQueryBuilder('test-application')
             .leftJoinAndSelect('test-application.test', 'test')
-            .leftJoinAndSelect('test-application.participations', 'participation')
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .where(where)
@@ -298,10 +297,13 @@ export class TestApplicationsService {
                 qb.where("upper(test-application.name) like :search", searchLike)
                     .orWhere("upper(test.name) like :search", searchLike)
             }))
-            .andWhere('participation."deletedAt" is null')
             .andWhere(pageRequest.andWhere)
             .orderBy("test-application.id", "DESC")
             .getMany();
+        await Promise.all(data.map(async (application) => {
+            const count = await this.participationService.countByTestApplication(application);
+            application.countParticipations = count
+        }))
         return new PageResponse(data);
     }
 

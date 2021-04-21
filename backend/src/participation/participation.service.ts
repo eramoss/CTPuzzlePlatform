@@ -25,6 +25,10 @@ export class ParticipationService {
         return this.userService.saveData(userHash, user)
     }
 
+    async countByTestApplication(application: TestApplication): Promise<number> {
+        return this.participationRepository.count({ where: { application: application } })
+    }
+
     async saveProgress(participation: Participation) {
         let id = participation.id;
         let part = await this.participationRepository.findOne({ id })

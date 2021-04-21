@@ -12,6 +12,7 @@ export class TestApplication {
 
     @OneToMany(type => Participation, participation => participation.application, { cascade: ['insert', 'update',] })
     participations: Participation[]
+    countParticipations: number
 
     @Column()
     name: string

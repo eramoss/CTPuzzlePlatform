@@ -13,6 +13,7 @@ export default class TestApplication {
     hash!: string
 
     participations: Participation[] = []
+    countParticipations = 0
     createdAt!:Date
     deletedAt!:Date
     updatedAt!:Date
