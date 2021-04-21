@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="panel shadow" v-if="testApplication">
+      <spread-sheet />
       <div>
         <h3>Selecione a aplicação</h3>
         <el-select
@@ -77,8 +78,13 @@ import { Measure, availableMeasures } from "~/types/StatisticMeasures";
 import { ACTION_GET_CSV_DATA_TEST_APPLICATION } from "~/store/test-applications";
 import { ACTION_R_PLOT } from "~/store/r";
 import { PlotRequest, PlotResponse } from "~/types/plot";
+import SpreadSheet from "~/components/SpreadSheet.vue";
 
-@Component
+@Component({
+  components: {
+    SpreadSheet,
+  },
+})
 export default class StatisticsTestApplication extends Vue {
   @Prop() testApplications!: TestApplication[];
   testApplication: TestApplication = new TestApplication();
