@@ -3,6 +3,7 @@ import { CsvData } from "src/util/download";
 export class PlotRequest {
     fn!: string;
     data: CsvData;
+    csv: string;
 }
 
 export class PlotResponse {

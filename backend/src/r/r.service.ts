@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { spawnSync, SpawnSyncReturns } from 'child_process';
-import { buildCsv, writeCsv } from 'src/util/download';
+import { buildCsv, write, writeCsv } from 'src/util/download';
 import { PlotRequest, PlotResponse } from './plot.dto';
 
 // Como gerar gráficos:
@@ -27,7 +27,7 @@ export class RService {
                 let plot_file_path = `${uploadDir}/${plotFileName}`
                 let data_file_path = `${RscriptsLocation}/input.csv`
 
-                writeCsv(data_file_path, plotRequest.data)
+                write(data_file_path, plotRequest.csv)
 
                 let r: SpawnSyncReturns<Buffer> = spawnSync('Rscript',
                     [

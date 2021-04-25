@@ -1,16 +1,16 @@
 <template>
   <div>
-    <div class="panel shadow" v-if="testApplication">
-      <spread-sheet />
+    <div class="panel shadow">
       <div>
         <h3>Selecione a aplicação</h3>
         <el-select
           v-model="testApplication"
           placeholder="Selecione a aplicação para verificar as estatísticas"
-          value-key="id"
+          hasChoosedLabels-key="id"
           @change="loadCsv"
           filterable
           clearable
+          value-key="id"
         >
           <el-option
             v-for="application in testApplications"
@@ -23,46 +23,59 @@
       </div>
 
       <div class="top-marged">
+        <spread-sheet v-model="csv" @input="updateAndPlot" :cols="170" />
+      </div>
+
+      <div class="top-marged">
         <h3>Selecione a medida</h3>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-select v-model="measure" @change="plotData" value-key="name">
-              <el-option
-                :key="m.name"
-                :value="m"
-                :label="m.name"
-                v-for="m in availableMeasures"
+            <el-row>
+              <el-select
+                v-model="measure"
+                @change="updateAndPlot"
+                value-key="name"
               >
-              </el-option>
-            </el-select>
+                <el-option
+                  :key="m.name"
+                  :value="m"
+                  :label="m.name"
+                  v-for="m in availableMeasures"
+                >
+                </el-option>
+              </el-select>
+            </el-row>
+            <el-row>
+              <thumbnail
+                v-loading="loading"
+                width="500px"
+                height="500px"
+                :src="plotResponse.plotFileName"
+              />
+            </el-row>
           </el-col>
           <el-col :span="12">
-            <el-select
-              v-model="choosedLabel"
-              @change="plotData"
-              value-key="value"
-            >
-              <el-option
-                :key="choosedLabel.value"
-                :value="choosedLabel"
-                :label="choosedLabel.label"
-                v-for="choosedLabel in labels"
+            <el-row>
+              <el-checkbox-group
+                v-model="selectedHeaders"
+                @change="updateAndPlot"
               >
-              </el-option>
-            </el-select>
-          </el-col>
-        </el-row>
-        <el-row class="top-marged">
-          <el-col :span="12">
-            <thumbnail
-              v-loading="loading"
-              width="500px"
-              height="500px"
-              :src="plotResponse.plotFileName"
-            />
-          </el-col>
-          <el-col :span="12">
-            {{ selectedData }}
+                <el-checkbox
+                  v-for="header in csvHeaders"
+                  :key="header.value"
+                  :label="header.value"
+                ></el-checkbox>
+              </el-checkbox-group>
+            </el-row>
+            <el-row>
+              <spread-sheet v-model="selectedData" :cols="70" />
+              <el-button
+                :disabled="loading"
+                @click="plotData"
+                icon="el-icon-arrow-left"
+                >Atualizar gráfico</el-button
+              >
+            </el-row>
           </el-col>
         </el-row>
       </div>
@@ -73,7 +86,7 @@
 import Vue from "vue";
 import { Action, Component, Prop } from "nuxt-property-decorator";
 import TestApplication from "~/types/TestApplication";
-import { CsvData, CsvHeaderLabel } from "~/types/CsvData";
+import { CsvData, csvDataToCsv, CsvHeaderLabel, CSV_SEPARATOR } from "~/types/CsvData";
 import { Measure, availableMeasures } from "~/types/StatisticMeasures";
 import { ACTION_GET_CSV_DATA_TEST_APPLICATION } from "~/store/test-applications";
 import { ACTION_R_PLOT } from "~/store/r";
@@ -90,9 +103,15 @@ export default class StatisticsTestApplication extends Vue {
   testApplication: TestApplication = new TestApplication();
   measure: Measure = new Measure("", "");
   loading = false;
-  choosedLabel: CsvHeaderLabel = new CsvHeaderLabel();
   csvData: CsvData = new CsvData();
   plotResponse: PlotResponse = new PlotResponse();
+  csv: string = "";
+  selectedData: string = "";
+  selectedHeaders: string[] = [];
+
+  get csvHeaders() {
+    return this.csvData.labels;
+  }
 
   @Action(ACTION_GET_CSV_DATA_TEST_APPLICATION) getCsvData!: (
     testApplication: TestApplication
@@ -110,34 +129,40 @@ export default class StatisticsTestApplication extends Vue {
     return this.csvData?.labels;
   }
 
-  get selectedData(): any[] {
-    let selectedData = [];
-    if (this.choosedLabel.value) {
-      selectedData = this.csvData?.rows?.map(
-        (row) => row[this.choosedLabel.value]
+  updateAndPlot() {
+    this.updateSelectedData();
+    this.plotData();
+  }
+
+  updateSelectedData() {
+    let selectedData = "";
+    let hasChoosedLabels = this.selectedHeaders.length;
+    if (hasChoosedLabels) {
+      let lines = this.csv.split("\n");
+      let headers = lines[0].split(CSV_SEPARATOR);
+
+      let columnsIndexes = this.selectedHeaders.map((header) =>
+        headers.indexOf(header)
       );
+
+      lines.forEach((line: string) => {
+        let columns = line.split(CSV_SEPARATOR);
+        let row = columnsIndexes.map((index) => columns[index]).join(CSV_SEPARATOR);
+        selectedData += row + "\n";
+      });
     }
-    return selectedData;
+    this.selectedData = selectedData;
   }
 
   async plotData() {
-    if (!this.measure.fn?.length || !this.choosedLabel.value) {
+    if (!this.measure.fn?.length || !this.selectedHeaders.length) {
       return;
     }
     try {
       this.loading = true;
       const plotRequest = new PlotRequest();
       plotRequest.fn = this.measure.fn;
-
-      let filteredCsvData = new CsvData();
-      filteredCsvData.labels = [this.choosedLabel];
-      filteredCsvData.rows = this.csvData.rows.map((row) => {
-        let filteredRow: any = {};
-        filteredRow[this.choosedLabel.value] = row[this.choosedLabel.value];
-        return filteredRow;
-      });
-
-      plotRequest.data = filteredCsvData;
+      plotRequest.csv = this.selectedData;
       let plotResponse = await this.plot(plotRequest);
       plotResponse.plotFileName += "?" + new Date().getTime();
       this.plotResponse = plotResponse;
@@ -153,6 +178,7 @@ export default class StatisticsTestApplication extends Vue {
     if (testApplication) {
       let csvData = await this.getCsvData(testApplication);
       this.csvData = csvData;
+      this.csv = csvDataToCsv(csvData);
       this.plotData();
     }
   }

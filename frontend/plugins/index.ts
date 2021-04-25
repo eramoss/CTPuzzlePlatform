@@ -48,8 +48,3 @@ Vue.component('TutorialLabel', TutorialLabel)
 // Global
 import VueTheMask from 'vue-the-mask'
 Vue.use(VueTheMask)
-
-// Grids/Spredsheets
-import grid from 'vue-xgrid-lib'
-import 'vue-xgrid-lib/dist/xgrid.css'
-Vue.component('x-grid',grid.XGrid)

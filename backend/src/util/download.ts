@@ -20,3 +20,7 @@ export function buildCsv(fields: CsvHeaderLabel[], data: any): string {
 export function writeCsv(path: string, data: CsvData) {
     fs.writeFileSync(path, buildCsv(data.labels, data.rows))
 }
+
+export function write(path: string, csv: string) {
+    fs.writeFileSync(path, csv)
+}

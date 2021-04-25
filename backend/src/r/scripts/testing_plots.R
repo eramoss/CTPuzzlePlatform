@@ -23,7 +23,7 @@ library(ggplot2)
 # Scannter plot
 plot(mtcars$wt, mtcars$mpg)
 
-ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point()
+ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point() + stat_smooth(method = lm)
 
 # Line graph
 
@@ -93,8 +93,3 @@ ggplot(ToothGrowth, aes(x = interaction(supp,dose), y = len)) + geom_boxplot()
 dev.off()
 
 'teste'
-
-
-
-
-

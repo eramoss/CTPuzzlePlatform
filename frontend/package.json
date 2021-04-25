@@ -25,9 +25,7 @@
     "vue-monaco": "^1.2.2",
     "vue-property-decorator": "^9.1.2",
     "vue-the-mask": "^0.11.1",
-    "vue-xgrid-lib": "^0.1.27",
     "vuedraggable": "^2.24.3",
-    "vuejs-spreadsheet": "^2.2.0",
     "vuex-class": "^0.3.2"
   },
   "devDependencies": {
