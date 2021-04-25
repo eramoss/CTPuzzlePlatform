@@ -8,9 +8,7 @@
           :test-applications="testApplications"
         />
       </template>
-      <el-button @click="addStatisticsPanel"
-        >Adicionar painel de estatísticas</el-button
-      >
+      <el-button @click="addStatisticsPanel">Adicionar painel de estatísticas</el-button>
     </div>
   </div>
 </template>

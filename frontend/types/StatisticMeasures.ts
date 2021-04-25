@@ -3,7 +3,7 @@ export class Measure {
     id?: string
     name?: string
     numVarsNeededToCalculate?: number
-    
+
     constructor(id: string, name: string, numVarsNeededToCalculate: number = 1) {
         this.id = id
         this.name = name
