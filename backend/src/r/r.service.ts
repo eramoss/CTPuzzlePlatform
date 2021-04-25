@@ -23,7 +23,7 @@ export class RService {
                 let uploadDir = this.configService.get('FILE_UPLOAD_DIRECTORY')
                 let RscriptsLocation = this.configService.get('R_SCRIPTS_LOCATION')
                 let path = `${RscriptsLocation}/plot.R`
-                let plotFileName = `output-plot-${plotRequest.fn}.png`
+                let plotFileName = `output-plot-${plotRequest.id}.png`
                 let plot_file_path = `${uploadDir}/${plotFileName}`
                 let data_file_path = `${RscriptsLocation}/input.csv`
 
@@ -33,7 +33,7 @@ export class RService {
                     [
                         '--vanilla',
                         `${path}`,
-                        `--fn=${plotRequest.fn}`,
+                        `--fn=${plotRequest.id}`,
                         `--plot_output_file_path=${plot_file_path}`,
                         `--data_input_file_path=${data_file_path}`,
                     ],

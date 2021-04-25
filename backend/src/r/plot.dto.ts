@@ -1,7 +1,7 @@
 import { CsvData } from "src/util/download";
 
 export class PlotRequest {
-    fn!: string;
+    id!: string;
     data: CsvData;
     csv: string;
 }

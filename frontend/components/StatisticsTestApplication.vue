@@ -45,7 +45,7 @@
                 </el-option>
               </el-select>
             </el-row>
-            <el-row>
+            <el-row class="top-marged">
               <thumbnail
                 v-loading="loading"
                 width="500px"
@@ -67,7 +67,7 @@
                 ></el-checkbox>
               </el-checkbox-group>
             </el-row>
-            <el-row>
+            <el-row class="top-marged">
               <spread-sheet v-model="selectedData" :cols="70" />
               <el-button
                 :disabled="loading"
@@ -155,13 +155,13 @@ export default class StatisticsTestApplication extends Vue {
   }
 
   async plotData() {
-    if (!this.measure.fn?.length || !this.selectedHeaders.length) {
+    if (!this.measure.id?.length || !this.selectedHeaders.length) {
       return;
     }
     try {
       this.loading = true;
       const plotRequest = new PlotRequest();
-      plotRequest.fn = this.measure.fn;
+      plotRequest.id = this.measure.id;
       plotRequest.csv = this.selectedData;
       let plotResponse = await this.plot(plotRequest);
       plotResponse.plotFileName += "?" + new Date().getTime();
