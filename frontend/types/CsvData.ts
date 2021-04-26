@@ -1,3 +1,5 @@
+import { groupByKey, OperationOnGroup } from "./StatisticMeasures";
+
 export const CSV_SEPARATOR = "|"
 
 export class CsvHeaderLabel {
@@ -6,10 +8,8 @@ export class CsvHeaderLabel {
 }
 
 export class CsvData {
-    labels!: CsvHeaderLabel[]
-    rows!: any[];
-
-
+    labels: CsvHeaderLabel[] = []
+    rows: any[] = [];
 }
 
 export function csvDataToCsv(csvData: CsvData): string {
@@ -17,10 +17,11 @@ export function csvDataToCsv(csvData: CsvData): string {
     let header = csvData.labels.map(label => label.value).join(CSV_SEPARATOR)
     let body = csvData.rows.map(row =>
         keys.map(key => {
+            let columnValue = row[key]
             if (typeof row[key] == "object") {
-                return JSON.stringify(row[key])
+                columnValue = JSON.stringify(row[key])
             }
-            return row[key]
+            return columnValue?.toString().replaceAll('\n', ' ')
         }).join(CSV_SEPARATOR)
     ).join('\n')
     return `${header}\n${body}`
@@ -53,6 +54,30 @@ export function filterCsvData(csvData: CsvData, leftOperandFilterVariable: strin
     return csvData;
 }
 
-export function transformCsvData(csvData: CsvData): CsvData {
-    return csvData;
+export function groupCsvData(csvData: CsvData, groupBy: string, groupWhat: string, operationAfterGroup: OperationOnGroup<number[], number>): CsvData {
+    let csvDataGrouped = new CsvData()
+    let labelGroupBy = new CsvHeaderLabel()
+    let labelGroupWhat = new CsvHeaderLabel()
+
+    labelGroupBy.value = groupBy
+    labelGroupBy.label = groupBy
+
+    labelGroupWhat.value = groupWhat
+    labelGroupWhat.label = groupWhat
+
+    csvDataGrouped.labels.push(labelGroupBy)
+    csvDataGrouped.labels.push(labelGroupWhat)
+
+    let groups = groupByKey(groupWhat, groupBy, csvData.rows)
+    groups.forEach((value: Object[], key: string) => {
+        let row: any = {}
+        row[groupBy] = key
+        row[groupWhat] = operationAfterGroup?.fn(value as number[])
+        csvDataGrouped.rows.push(row)
+    })
+    return csvDataGrouped;
+}
+
+export function getCsvHeaders(csv: string) {
+    return csv.split("\n")[0].split(CSV_SEPARATOR)
 }

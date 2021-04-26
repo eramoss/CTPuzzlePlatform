@@ -14,11 +14,32 @@ export class Measure {
 const average = new Measure('boxplot', 'Boxplot', 1)
 const histogram = new Measure('histogram', 'Histograma', 1)
 const regression = new Measure('regression', 'Regressão linear', 2)
-const avg = new Measure('avg_by', 'Média X por Y', 2)
+
+export class OperationOnGroup<INPUT, OUTPUT> {
+    name: string
+    fn: (array: INPUT) => OUTPUT = (array: INPUT) => ({} as OUTPUT)
+    constructor(name: string = "", fn: (array: INPUT) => OUTPUT = (array: INPUT) => ({} as OUTPUT)) {
+        this.name = name;
+        this.fn = fn
+    }
+}
+
+export function groupByKey(groupWhat: string, groupBy: string, arrayOfObjects: any[]): Map<string, Array<Object>> {
+    let groups: Map<string, Array<Object>> = new Map<string, Array<Object>>()
+    arrayOfObjects.forEach(object => {
+        let groupName = object[groupBy]
+        let groupElements = groups.get(groupName)
+        if (!groupElements) {
+            groupElements = []
+            groups.set(groupName, groupElements)
+        }
+        groupElements.push(object[groupWhat])
+    })
+    return groups
+}
 
 export const availableMeasures = [
     average,
     histogram,
     regression,
-    avg
 ]

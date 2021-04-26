@@ -23,61 +23,27 @@
       </div>
 
       <div class="top-marged">
-        <el-button @click="filterDialogVisible = true">Filtrar</el-button>
+        <div class="left flex-row">
+          <statistics-filter
+            :disabled="!testApplication.id"
+            :csvData="csvData"
+            @onUpdateCsvData="onUpdateCsvData"
+          />
+          <statistics-transform
+            :disabled="!testApplication.id"
+            :csvData="csvData"
+            @onUpdateCsvData="onUpdateCsvData"
+          />
+          <el-button :disabled="!testApplication.id" @click="resetCsv"
+            >Restaurar</el-button
+          >
+        </div>
         <spread-sheet
           class="top-marged"
           v-model="csv"
           @input="updateAndPlot"
           :cols="170"
         />
-        <el-dialog title="Filtrar" :visible.sync="filterDialogVisible">
-          <div class="flex-row">
-            <el-row :gutter="20">
-              <el-col :span="8">
-                <el-select
-                  v-model="leftOperandFilterVariable"
-                  placeholder="Variável"
-                >
-                  <el-option
-                    :key="header.value"
-                    v-for="header in csvHeaders"
-                    :value="header.value"
-                    :label="header.value"
-                  ></el-option>
-                </el-select>
-              </el-col>
-              <el-col :span="8">
-                <el-select
-                  v-model="logicalOperationFilter"
-                  placeholder="Operador lógico"
-                >
-                  <el-option value=">"></el-option>
-                  <el-option value="<"></el-option>
-                  <el-option value=">="></el-option>
-                  <el-option value="<="></el-option>
-                  <el-option value="=="></el-option>
-                  <el-option value="!="></el-option>
-                </el-select>
-              </el-col>
-              <el-col :span="8">
-                <el-input
-                  v-model="rightOperandFilterValue"
-                  placeholder="Valor"
-                ></el-input>
-              </el-col>
-            </el-row>
-          </div>
-          <div class="top-marged">
-            Filtrar linhas com valor
-            <b>
-              {{ leftOperandFilterVariable }}
-              {{ logicalOperationFilter }} {{ rightOperandFilterValue }}
-            </b>
-          </div>
-          <div slot="footer">
-            <el-button type="primary" @click="filter">Filtrar</el-button>
-          </div>
-        </el-dialog>
       </div>
 
       <div class="top-marged">
@@ -116,8 +82,8 @@
               >
                 <el-checkbox
                   v-for="header in csvHeaders"
-                  :key="header.value"
-                  :label="header.value"
+                  :key="header"
+                  :label="header"
                 ></el-checkbox>
               </el-checkbox-group>
             </el-row>
@@ -145,22 +111,26 @@ import {
   csvDataToCsv,
   CsvHeaderLabel,
   CSV_SEPARATOR,
-  filterCsvData,
+  getCsvHeaders,
 } from "~/types/CsvData";
 import { Measure, availableMeasures } from "~/types/StatisticMeasures";
 import { ACTION_GET_CSV_DATA_TEST_APPLICATION } from "~/store/test-applications";
 import { ACTION_R_PLOT } from "~/store/r";
 import { PlotRequest, PlotResponse } from "~/types/plot";
 import SpreadSheet from "~/components/SpreadSheet.vue";
+import StatisticsFilter from "./StatisticsFilter.vue";
+import StatisticsTransform from "./StatisticsTransform.vue";
 
 @Component({
   components: {
+    StatisticsFilter,
+    StatisticsTransform,
     SpreadSheet,
   },
 })
 export default class StatisticsTestApplication extends Vue {
   @Prop() testApplications!: TestApplication[];
-  filterDialogVisible = false;
+
   testApplication: TestApplication = new TestApplication();
   measure: Measure = new Measure("", "");
   loading = false;
@@ -170,12 +140,8 @@ export default class StatisticsTestApplication extends Vue {
   selectedData: string = "";
   selectedHeaders: string[] = [];
 
-  leftOperandFilterVariable = "";
-  logicalOperationFilter = "";
-  rightOperandFilterValue = "";
-
-  get csvHeaders() {
-    return this.csvData.labels;
+  get csvHeaders(): string[] {
+    return getCsvHeaders(this.csv);
   }
 
   @Action(ACTION_GET_CSV_DATA_TEST_APPLICATION) getCsvData!: (
@@ -185,18 +151,6 @@ export default class StatisticsTestApplication extends Vue {
   @Action(ACTION_R_PLOT) plot!: (
     plotRequest: PlotRequest
   ) => Promise<PlotResponse>;
-
-  filter() {
-    this.csv = csvDataToCsv(
-      filterCsvData(
-        this.csvData,
-        this.leftOperandFilterVariable,
-        this.logicalOperationFilter,
-        this.rightOperandFilterValue
-      )
-    );
-    this.filterDialogVisible = false;
-  }
 
   get availableMeasures(): Measure[] {
     return availableMeasures;
@@ -233,6 +187,10 @@ export default class StatisticsTestApplication extends Vue {
     this.selectedData = selectedData;
   }
 
+  resetCsv() {
+    this.loadCsv(this.testApplication);
+  }
+
   async plotData() {
     if (!this.measure.id?.length || !this.selectedHeaders.length) {
       return;
@@ -251,6 +209,11 @@ export default class StatisticsTestApplication extends Vue {
     } finally {
       this.loading = false;
     }
+  }
+
+  onUpdateCsvData(csvData: CsvData) {
+    this.csvData = csvData;
+    this.csv = csvDataToCsv(this.csvData);
   }
 
   async loadCsv(testApplication: TestApplication) {

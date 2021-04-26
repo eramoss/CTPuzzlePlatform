@@ -1,14 +1,17 @@
 <template>
   <div>
-    <textarea
-      class="text-area-spread-sheet"
-      ref="textarea"
-      v-model="csv"
-      :rows="rows"
-      :cols="cols"
-      @keydown="handleKeydown"
-      wrap="off"
-    />
+    <div>
+      {{ csv.split("\n").length }} linhas
+      <textarea
+        class="text-area-spread-sheet"
+        ref="textarea"
+        v-model="csv"
+        :rows="rows"
+        :cols="cols"
+        @keydown="handleKeydown"
+        wrap="off"
+      />
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -23,8 +26,7 @@ export default class SpreadSheet extends Vue {
 
   @Ref() textarea!: HTMLInputElement;
 
-  handleKeydown(event: KeyboardEvent) {
-  }
+  handleKeydown(event: KeyboardEvent) {}
 }
 </script>
 <style lang="scss">

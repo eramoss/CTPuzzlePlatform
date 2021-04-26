@@ -40,7 +40,8 @@ args = parse_args(opt_parser);
 print_help(opt_parser)
 
 # Import DATASET
-dataset  <- read.csv(args$data_input_file_path, header=TRUE, sep="|")
+separator = '|'
+dataset  <- read.csv(args$data_input_file_path, header=TRUE, sep=separator)
 summary(dataset)
 
 # Generate GRAPH
@@ -51,7 +52,7 @@ if(args$fn == 'regression'){ plot_regression(dataset) }
 dev.off()
 
 # Tests
-dataset <- read.csv('input.csv', header=TRUE, sep='|')
+dataset <- read.csv('input.csv', header=TRUE, sep=separator)
 plot_histogram(dataset)
 plot_boxplot(dataset)
 plot_regression(dataset)

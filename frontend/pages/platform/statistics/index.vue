@@ -4,11 +4,14 @@
       <h2>Estatísticas</h2>
       <template v-for="panel in panels">
         <statistics-test-application
+          class="top-marged"
           :key="panel.id"
           :test-applications="testApplications"
         />
       </template>
-      <el-button @click="addStatisticsPanel">Adicionar painel de estatísticas</el-button>
+      <el-button @click="addStatisticsPanel" class="top-marged"
+        >Adicionar painel de estatísticas</el-button
+      >
     </div>
   </div>
 </template>
