@@ -4,20 +4,23 @@
       <h2>Estatísticas</h2>
       <template v-for="panel in panels">
         <statistics-test-application
+          @onRemove="removePanel(panel)"
           class="top-marged"
           :key="panel.id"
           :test-applications="testApplications"
         />
       </template>
-      <el-button @click="addStatisticsPanel" class="top-marged"
-        >Adicionar painel de estatísticas</el-button
-      >
+    </div>
+    <div class="top-marged">
+      <el-button @click="addStatisticsPanel" type="primary">
+        Adicionar painel de estatísticas
+      </el-button>
     </div>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "nuxt-property-decorator";
+import { Component } from "nuxt-property-decorator";
 import { Context } from "@nuxt/types";
 import TestApplication from "~/types/TestApplication";
 import StatisticsTestApplication from "~/components/StatisticsTestApplication.vue";
@@ -37,6 +40,10 @@ export default class StatisticsPage extends Vue {
   testApplications!: TestApplication[];
 
   panels: StatisticsPanel[] = [];
+
+  removePanel(panel: StatisticsPanel) {
+    this.panels.splice(this.panels.indexOf(panel), 1);
+  }
 
   addStatisticsPanel() {
     let panel = new StatisticsPanel();

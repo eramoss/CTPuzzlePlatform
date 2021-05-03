@@ -1,7 +1,20 @@
 <template>
   <div>
-    <el-button :disabled="disabled" @click="visible = true">Filtrar</el-button>
+    <el-button
+      :disabled="disabled"
+      title="Filtrar dados por condição (igual, diferente, maior, menor etc)"
+      @click="visible = true"
+      >{{ buttonText }}</el-button
+    >
     <el-dialog title="Filtrar" :visible.sync="visible">
+      <div class="phrase">
+        Filtrar linhas com
+        <b>
+          {{ leftOperandFilterVariable || "___" }}
+          {{ logicalOperationFilter || "___" }}
+          {{ rightOperandFilterValue || "___" }}
+        </b>
+      </div>
       <div class="flex-row">
         <el-select
           v-model="leftOperandFilterVariable"
@@ -32,14 +45,7 @@
           placeholder="Valor"
         ></el-input>
       </div>
-      <div class="top-marged">
-        Filtrar linhas com
-        <b>
-          {{ leftOperandFilterVariable || "___" }}
-          {{ logicalOperationFilter || "___" }}
-          {{ rightOperandFilterValue || "___" }}
-        </b>
-      </div>
+
       <div slot="footer">
         <el-button type="primary" @click="filter">Filtrar</el-button>
       </div>
@@ -59,6 +65,7 @@ export default class StatisticsFilter extends Vue {
   visible = false;
   @Prop() csvData!: CsvData;
   @Prop({ default: false }) disabled!: boolean;
+  @Prop({ default: "Filtrar" }) buttonText!: string;
 
   get csvHeaders() {
     return this.csvData.labels;

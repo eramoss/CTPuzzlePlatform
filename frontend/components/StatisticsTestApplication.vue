@@ -2,7 +2,16 @@
   <div>
     <div class="panel shadow">
       <div>
-        <h3>Selecione a aplicação</h3>
+        <div class="flex-row">
+          <h3>Aplicação</h3>
+          <el-button
+            title="Remover painel"
+            @click="$emit('onRemove')"
+            type="text"
+            size="large"
+            >Remover painel</el-button
+          >
+        </div>
         <el-select
           v-model="testApplication"
           placeholder="Selecione a aplicação para verificar as estatísticas"
@@ -25,20 +34,23 @@
       <div class="top-marged">
         <div class="left flex-row">
           <statistics-filter
+            button-text="Filtrar"
             :disabled="!testApplication.id"
             :csvData="csvData"
             @onUpdateCsvData="onUpdateCsvData"
           />
           <statistics-transform
+            button-text="Agrupar"
             :disabled="!testApplication.id"
             :csvData="csvData"
             @onUpdateCsvData="onUpdateCsvData"
           />
-          <el-button :disabled="!testApplication.id" @click="resetCsv"
-            >Restaurar</el-button
-          >
+          <el-button :disabled="!testApplication.id" @click="resetCsv">
+            Desfazer filtros e agrupamentos
+          </el-button>
         </div>
         <spread-sheet
+          phraseWhenZeroLines="(Selecione uma aplicação ou restaure os dados)"
           class="top-marged"
           v-model="csv"
           @input="updateAndPlot"
@@ -47,9 +59,45 @@
       </div>
 
       <div class="top-marged">
-        <h3>Selecione a medida</h3>
         <el-row :gutter="20">
           <el-col :span="12">
+            <h3>Colunas</h3>
+            <el-row>
+              <el-col>
+                <el-checkbox-group
+                  v-model="selectedHeaders"
+                  @change="updateAndPlot"
+                >
+                  <el-checkbox
+                    class="checkbox-column"
+                    :title="header"
+                    style="
+                      width: 200px;
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                    "
+                    v-for="header in csvHeaders"
+                    :key="header"
+                    :label="header"
+                  ></el-checkbox>
+                </el-checkbox-group>
+              </el-col>
+              <el-col>
+                <spread-sheet v-model="selectedData" :cols="70" />
+                <el-col align="end">
+                  <el-button
+                    :disabled="loading"
+                    @click="plotData"
+                    type="primary"
+                    >Atualizar gráfico</el-button
+                  >
+                </el-col>
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :span="12">
+            <h3>Gráfico</h3>
             <el-row>
               <el-select
                 v-model="measure"
@@ -66,35 +114,14 @@
               </el-select>
             </el-row>
             <el-row class="top-marged">
-              <thumbnail
-                v-loading="loading"
-                width="500px"
-                height="500px"
-                :src="plotResponse.plotFileName"
-              />
-            </el-row>
-          </el-col>
-          <el-col :span="12">
-            <el-row>
-              <el-checkbox-group
-                v-model="selectedHeaders"
-                @change="updateAndPlot"
-              >
-                <el-checkbox
-                  v-for="header in csvHeaders"
-                  :key="header"
-                  :label="header"
-                ></el-checkbox>
-              </el-checkbox-group>
-            </el-row>
-            <el-row class="top-marged">
-              <spread-sheet v-model="selectedData" :cols="70" />
-              <el-button
-                :disabled="loading"
-                @click="plotData"
-                icon="el-icon-arrow-left"
-                >Atualizar gráfico</el-button
-              >
+              <el-col align="center">
+                <thumbnail
+                  v-loading="loading"
+                  width="400px"
+                  height="400px"
+                  :src="plotResponse.plotFileName"
+                />
+              </el-col>
             </el-row>
           </el-col>
         </el-row>
@@ -226,3 +253,10 @@ export default class StatisticsTestApplication extends Vue {
   }
 }
 </script>
+<style lang="scss">
+.checkbox-column {
+  .el-checkbox__label {
+    display: inline;
+  }
+}
+</style>

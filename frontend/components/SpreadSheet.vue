@@ -1,7 +1,8 @@
 <template>
   <div>
     <div>
-      {{ csv.split("\n").length }} linhas
+      {{ countLines }} linhas
+      <span v-show="!countLines">{{ phraseWhenZeroLines }}</span>
       <textarea
         class="text-area-spread-sheet"
         ref="textarea"
@@ -23,8 +24,13 @@ export default class SpreadSheet extends Vue {
   @VModel() csv!: string;
   @Prop({ default: 189 }) cols!: number;
   @Prop({ default: 20 }) rows!: number;
+  @Prop({}) phraseWhenZeroLines!: string;
 
   @Ref() textarea!: HTMLInputElement;
+
+  get countLines(): number {
+    return this.csv.split("\n").filter((line) => line.length > 0).length;
+  }
 
   handleKeydown(event: KeyboardEvent) {}
 }

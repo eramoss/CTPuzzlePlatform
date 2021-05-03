@@ -1,7 +1,17 @@
 <template>
   <div>
-    <el-button :disabled="disabled" @click="visible = true">Agrupar</el-button>
+    <el-button
+      :disabled="disabled"
+      @click="visible = true"
+      title="Agrupar dados somando ou calculando a média de variável"
+      >{{ buttonText }}</el-button
+    >
     <el-dialog title="Agrupar" :visible.sync="visible">
+      <div class="phrase">
+        Calcular <b>{{ onGroupDoWhat.name || "___" }}</b> de
+        <b>{{ groupWhat || "___" }}</b> agrupado por
+        <b>{{ groupBy || "___" }}</b>
+      </div>
       <div class="flex-row">
         <el-select
           v-model="onGroupDoWhat"
@@ -41,11 +51,7 @@
           ></el-option>
         </el-select>
       </div>
-      <div class="top-marged">
-        Calcular <b>{{ onGroupDoWhat.name || "___" }}</b> de
-        <b>{{ groupWhat || "___" }}</b> agrupado por
-        <b>{{ groupBy || "___" }}</b>
-      </div>
+
       <div slot="footer">
         <el-button type="primary" @click="transform">Agrupar</el-button>
       </div>
@@ -84,6 +90,7 @@ export default class StatisticsTransform extends Vue {
   ];
 
   @Prop() csvData!: CsvData;
+  @Prop({ default: "Agrupar" }) buttonText!: string;
   @Prop({ default: false }) disabled!: boolean;
 
   get csvHeaders() {

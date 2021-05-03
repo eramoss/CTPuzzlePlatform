@@ -95,3 +95,4 @@ backend/uploads/*
 .Rproj.user
 
 backend/src/r/scripts/input.csv
+backend/src/r/scripts/.Rhistory
