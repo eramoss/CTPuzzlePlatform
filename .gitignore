@@ -93,3 +93,5 @@ sw.*
 
 backend/uploads/*
 .Rproj.user
+
+backend/src/r/scripts/input.csv
