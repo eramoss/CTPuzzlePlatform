@@ -50,12 +50,12 @@ export class ItemResponsesService {
 
             let item = await this.itemsService.getById(itemResponse.testItem.item.id);
             let mechanic = item.mechanic
-            let classThatCouldBeInstantiated = await this.getFunctionToInstantiateJsonResponse(mechanic, itemResponse);
+            let fnInstantiateResponse = await this.getFunctionToInstantiateJsonResponse(mechanic, itemResponse);
 
             let scoreFunctionResult = await this.scoreFnService.calculateScore({
                 mechanic,
                 item: `${item.itemDefinition}()`,
-                response: `${classThatCouldBeInstantiated}()`,
+                response: `${fnInstantiateResponse}()`,
             })
             score = scoreFunctionResult.toScore()
         } catch (e) {
@@ -66,21 +66,23 @@ export class ItemResponsesService {
     }
 
     async getFunctionToInstantiateJsonResponse(mechanic: Mechanic, itemResponse: ItemResponse): Promise<string> {
-        let classThatCouldBeInstantiated = ""
+        let fnInstantiateResponse = ""
         const classesNames: string[] = mechanic.getDeclaredClassesNames();
-        await Promise.all(classesNames.map(async responseClass => {
-            let fnAssignJsonToClass =
+        await Promise.all(classesNames.map(async responseClassName => {
+            let fnTryAssignJsonToResponseClass =
                 `function(){
-                        return Object.assign(new ${responseClass}(), ${itemResponse.response})
+                        return Object.assign(new ${responseClassName}(), ${itemResponse.response})
                     }`;
-            let isValidCode = await this.codeInterpreterService.isExecutable(
-                `${mechanic.responseClassDefinition}
-                        console.log(${fnAssignJsonToClass}())
+            let isExecutable = await this.codeInterpreterService.isExecutable(
+                `
+                ${mechanic.classDefinition}
+                ${mechanic.responseClassDefinition}
+                        console.log(${fnTryAssignJsonToResponseClass}())
                     `);
-            if (isValidCode) {
-                classThatCouldBeInstantiated = fnAssignJsonToClass;
+            if (isExecutable) {
+                fnInstantiateResponse = fnTryAssignJsonToResponseClass;
             }
         }))
-        return classThatCouldBeInstantiated;
+        return fnInstantiateResponse;
     }
 }

@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { spawnSync, SpawnSyncReturns } from 'child_process';
+import { ChildProcessWithoutNullStreams, spawn, spawnSync, SpawnSyncReturns } from 'child_process';
 
 import fs from 'fs'
+import { Readable, Writable } from 'stream';
 
 @Injectable()
 export class CodeInterpreterService {
@@ -25,9 +26,10 @@ export class CodeInterpreterService {
     }
 
     execute(script: string, rejectOnError: boolean = false): Promise<string> {
-        return this.executeSync(script, rejectOnError);
+        return this.executeAsync(script, rejectOnError);
     }
 
+    //deprecated
     executeSync(script: string, rejectOnError: boolean): Promise<string> {
         let path = __dirname + '/test.ts';
         fs.writeFileSync(path, script);
@@ -38,14 +40,52 @@ export class CodeInterpreterService {
                 Promise.reject(stderr);
             }
         }
-        let result = this.removeUndesiredLines(deno)
+        let result = this.removeUndesiredLines(deno.output.toString())
         return Promise.resolve(result);
     }
-    
-    removeUndesiredLines(deno: SpawnSyncReturns<Buffer>): string {
-        return deno.output.toString().split('\n')
+
+    executeAsync(script: string, rejectOnError: boolean): Promise<string> {
+        return new Promise((resolve, reject) => {
+
+            let deno = spawn(this.denoLocation, ['run', '-'], { env: { 'NO_COLOR': 'true' } });
+            deno.stdout.setEncoding('utf8')
+            deno.stderr.setEncoding('utf8')
+
+            let lines = ""
+
+            deno.stdout.on('data', (data: Buffer) => {
+                lines += data.toString()
+            })
+
+            deno.stderr.on('data', (data: Buffer) => {
+                let line = data.toString();
+                if (!line.startsWith('Check file:///')) {
+                    lines += data.toString()
+                    if (rejectOnError) {
+                        reject(line)
+                    }
+                }
+            })
+
+            deno.on('error', (error: Error) => {
+                console.log(error.message);
+            })
+
+            deno.on('close', code => {
+                console.log('Deno exits with code ', code);
+                let result = this.removeUndesiredLines(lines)
+                resolve(result)
+            })
+
+            deno.stdin.write(script)
+            deno.stdin.end()
+        })
+    }
+
+    removeUndesiredLines(result: String): string {
+        return result.split('\n')
             .map(line => {
-                while(line.startsWith(',')){
+                while (line.startsWith(',')) {
                     line = line.substring(1, line.length)
                 }
                 return line
