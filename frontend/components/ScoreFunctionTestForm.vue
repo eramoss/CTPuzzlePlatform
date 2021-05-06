@@ -71,7 +71,7 @@
             </div>
           </div>
         </el-row>
-        <el-row v-show="itemTestCase.expanded">
+        <el-row v-show="itemTestCase.expanded" :gutter="20">
           <el-col :span="12">
             <code-editor
               :uniqueId="`itemInstantiation${itemTestCase.id}_${mechanic.id}`"

@@ -15,6 +15,7 @@ export class ItemTestCase {
         options.classDefinition = mechanic.classDefinition;
         this.itemInstantiation = createCleanInstantiationFunctionCode(options);
         this.responseTestCases.push(new ResponseTestCase(mechanic));
+        this.expanded = true;
     }
 }
 
