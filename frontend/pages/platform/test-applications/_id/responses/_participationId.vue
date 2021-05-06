@@ -91,6 +91,7 @@ import { ACTION_GET_LAST_RESPONSE } from "~/store/test-applications";
 import { mustRefreshLastItemResponse } from "../index.vue";
 
 import ItemResponse from "~/types/ItemResponse";
+import { ACTION_RECALCULATE_ALL_SCORES, ACTION_REMOVE_PARTICIPATION_BY_ID } from "~/store/participations";
 const ACTION_GET_BY_ID = "participations/getById";
 
 @Component({
@@ -106,7 +107,7 @@ export default class ItemResponsesList extends Vue {
   lastResponse!: ItemResponse;
 
   @Action(ACTION_GET_BY_ID) getById!: (id: any) => Promise<Participation>;
-  @Action("participations/removeById") removeParticipationById!: (
+  @Action(ACTION_REMOVE_PARTICIPATION_BY_ID) removeParticipationById!: (
     id: number
   ) => Promise<any>;
 
@@ -114,7 +115,7 @@ export default class ItemResponsesList extends Vue {
     tetApplicationId: any
   ) => Promise<ItemResponse>;
 
-  @Action("participations/recalculateAllResponseItems") recalculateAll!: (
+  @Action(ACTION_RECALCULATE_ALL_SCORES) recalculateAll!: (
     id: number
   ) => Promise<any>;
 

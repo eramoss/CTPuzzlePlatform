@@ -12,6 +12,16 @@ import { Score } from './score.entity';
 @Injectable()
 export class ItemResponsesService {
 
+    
+    
+    constructor(
+        @InjectRepository(ItemResponse)
+        private itemResponseRepository: Repository<ItemResponse>,
+        private scoreFnService: ScoreFunctionTestService,
+        private codeInterpreterService: CodeInterpreterService,
+        private itemsService: ItemsService) {
+        }
+        
     async countByItem(item: TestItem): Promise<number> {
         let count = await this.itemResponseRepository
             .createQueryBuilder(`itemResponse`)
@@ -20,21 +30,11 @@ export class ItemResponsesService {
         return count;
     }
 
-
-    constructor(
-        @InjectRepository(ItemResponse)
-        private itemResponseRepository: Repository<ItemResponse>,
-        private scoreFnService: ScoreFunctionTestService,
-        private codeInterpreterService: CodeInterpreterService,
-        private itemsService: ItemsService) {
-    }
-
     async calculateScoreAndSave(itemResponse: ItemResponse): Promise<Score> {
         itemResponse.score = await this.calculateScore(itemResponse)
         this.itemResponseRepository.save(itemResponse);
         return itemResponse.score
     }
-
 
     softDelete(itemResponseId: number): Promise<any> {
         return this.itemResponseRepository.softDelete({ id: itemResponseId })
@@ -46,8 +46,6 @@ export class ItemResponsesService {
 
     async calculateScore(itemResponse: ItemResponse): Promise<Score> {
         let score: Score;
-        let text = ""
-
         try {
 
             let item = await this.itemsService.getById(itemResponse.testItem.item.id);

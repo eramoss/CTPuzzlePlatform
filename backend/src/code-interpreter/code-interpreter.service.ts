@@ -1,12 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { ChildProcess, spawn, spawnSync, SpawnSyncReturns } from 'child_process';
+import { spawnSync, SpawnSyncReturns } from 'child_process';
 
 import fs from 'fs'
 
 @Injectable()
 export class CodeInterpreterService {
+
+    denoLocation!: string
+
+    constructor(private configService: ConfigService) {
+        this.denoLocation = this.configService.get('DENO_LOCATION')
+    }
 
     async isExecutable(codeToTry: string): Promise<boolean> {
         try {
@@ -16,12 +22,6 @@ export class CodeInterpreterService {
             console.error(e);
             return false;
         }
-    }
-
-    denoLocation!: string
-
-    constructor(private configService: ConfigService) {
-        this.denoLocation = this.configService.get('DENO_LOCATION')
     }
 
     execute(script: string, rejectOnError: boolean = false): Promise<string> {
