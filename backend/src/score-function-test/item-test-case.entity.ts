@@ -17,5 +17,8 @@ export class ItemTestCase {
     @OneToMany(type => ResponseTestCase, responseCase => responseCase.itemTestCase, { cascade: true })
     responseTestCases: ResponseTestCase[]
 
+    @Column({ default: true, nullable: true })
+    expanded: boolean
+
 
 }

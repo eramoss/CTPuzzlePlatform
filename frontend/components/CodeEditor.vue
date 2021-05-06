@@ -149,7 +149,6 @@ export default class CodeEditor extends Vue {
 
   mounted() {
     eventBus.$on("resize", this.resize);
-    this.recoverHeight();
   }
 
   prepareEditor(monaco: any) {
@@ -173,7 +172,7 @@ export default class CodeEditor extends Vue {
 .editor-container {
   position: relative;
   .editor {
-    border: 1px solid #ccc;
+    border: 1px solid #aaa;
   }
   .editor:hover {
     //border: 2px solid #999;

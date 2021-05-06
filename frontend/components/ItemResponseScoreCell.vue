@@ -9,7 +9,7 @@
         <span style="small-tooltip-title">
           Execução do cálculo de escore:
         </span>
-        <pre>{{ score && score.message }}</pre>
+        <pre style="font-size:10pt">{{ score && score.message }}</pre>
       </div>
       <div>
         <b v-show="isError" class="error-indicator">
@@ -95,6 +95,7 @@ export default class ItemResponseScoreCell extends Vue {
     font-size: 20pt;
 }
 .score-cell:hover{
+    cursor:pointer;
     .chat-icon{
         color: red;
     }

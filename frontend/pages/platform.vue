@@ -82,7 +82,7 @@
 import TopBar from "~/components/TopBar.vue";
 import { Component, Watch } from "nuxt-property-decorator";
 import Vue from "vue";
-import eventBus from "~/utils/eventBus";
+import eventBus, { emitResize } from "~/utils/eventBus";
 import RoleChecker from "~/utils/RoleChecker";
 import { Context } from "@nuxt/types";
 import User from "~/types/User";
@@ -125,7 +125,7 @@ export default class Platform extends Vue {
 
   toggleCollapse() {
     this.isCollapsed = !this.isCollapsed;
-    eventBus.$emit("resize");
+    emitResize();
   }
 
   get width() {

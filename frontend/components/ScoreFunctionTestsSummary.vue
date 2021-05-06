@@ -2,30 +2,13 @@
   <div class="flex-row fill">
     <slot></slot>
     <div class="flex-row">
-      <span style="margin-right: 10px">
-        <span class="green label" v-show="allPassed">
-          Todos os testes passaram!
-        </span>
-        <span class="red label" v-show="hasTests && !allPassed">
-          {{ qtdErrorTests }} teste(s) não passaram
-        </span>
-        <span class="yellow label" v-show="!hasTests">
-          Não há testes declarados
-        </span>
-      </span>
       <span>
-        <el-tooltip content="Testes OK!">
           <span>
-            <i title="Passou no teste" class="el-icon-success green"></i>
-            {{ qtdOkTests }}
+            <b class="green">{{ qtdOkTests }} testes passaram </b>
           </span>
-        </el-tooltip>
-        <el-tooltip content="Testes com falha">
           <span>
-            <i title="Não passou no teste" class="el-icon-error red"></i>
-            {{ qtdErrorTests }}
+            <b class="red">{{ qtdErrorTests }} testes falharam</b>
           </span>
-        </el-tooltip>
       </span>
     </div>
     <div>
@@ -78,18 +61,10 @@ export default class ScoreFunctionTestsSummary extends Vue {
     return this.qtdOkTests > 0 && this.qtdErrorTests == 0;
   }
 
-  isTestPassed(itemResponse: ResponseTestCase): boolean {
-    let passed = false;
-    if (itemResponse.score) {
-      if (itemResponse.expectedScore != undefined) {
-        passed = itemResponse.score.score == itemResponse.expectedScore;
-      }
-    }
-    return passed;
-  }
+  
 
   get qtdOkTests(): number {
-    return this.responses.filter((response) => this.isTestPassed(response))
+    return this.responses.filter((response) => isTestPassed(response))
       .length;
   }
 
@@ -113,4 +88,14 @@ export default class ScoreFunctionTestsSummary extends Vue {
     return this.responses.length - this.qtdOkTests;
   }
 }
+
+export function isTestPassed(itemResponse: ResponseTestCase): boolean {
+    let passed = false;
+    if (itemResponse.score) {
+      if (itemResponse.expectedScore != undefined) {
+        passed = itemResponse.score.score == itemResponse.expectedScore;
+      }
+    }
+    return passed;
+  }
 </script>

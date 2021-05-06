@@ -7,6 +7,7 @@ export class ItemTestCase {
     id!: number
     itemInstantiation!: string
     mechanic!: Mechanic
+    expanded: boolean = false
     responseTestCases: ResponseTestCase[] = []
 
     constructor(mechanic: Mechanic) {
