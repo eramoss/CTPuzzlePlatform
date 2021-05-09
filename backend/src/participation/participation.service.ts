@@ -47,6 +47,11 @@ export class ParticipationService {
         return this.participationRepository.save(participation);
     }
 
+    async recalculateAllResponseEscores(itemResponses:ItemResponse[]):Promise<ItemResponse[]>{
+        this.itemResponseService.calculateScores(itemResponses)
+        return itemResponses;
+    }
+
     getById(id: number): Promise<Participation> {
         return this.participationRepository
             .createQueryBuilder('participation')

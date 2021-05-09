@@ -7,7 +7,7 @@
     "configurations": [
         {
             "outFiles": [
-                "${workspaceFolder}/**/*.js",
+                "${workspaceFolder}/backend/dist/**/*.js",
                 "!**/node_modules/**"
             ],
             "name": "Backend",

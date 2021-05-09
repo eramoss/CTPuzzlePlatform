@@ -26,6 +26,10 @@ export const actions: ActionTree<any, any> = {
         downloadWithAxios($axios, url, `respostas_aplicacao_${testApplicationId}___${dateString}.csv`)
     },
 
+    async recalculateAllApplicationScores(state, testApplication: TestApplication) {
+        return $axios.$get(`/test-applications/recalculateAllApplicationParticipationScores/${testApplication.id}`)
+    },
+
     updateVisibility(state, testApplication: TestApplication): Promise<any> {
         return $axios.put('/test-applications/updateVisibility', testApplication)
     },
@@ -66,3 +70,4 @@ export const ACTION_SAVE_TEST_APPLICATION = "test-applications/save"
 export const ACTION_UPDATE_VISIBILITY = "test-applications/updateVisibility"
 export const ACTION_PAGINATE_APPLICATIONS = "test-applications/paginate"
 export const ACTION_GET_CSV_DATA_TEST_APPLICATION = "test-applications/getCsvData"
+export const ACTION_RECALCULATE_ALL_APPLICATION_SCORES = "test-applications/recalculateAllApplicationScores"

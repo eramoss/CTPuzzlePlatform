@@ -2,6 +2,7 @@ import { ActionTree } from 'vuex'
 import { $axios } from '~/utils/axios'
 import { AxiosResponse } from 'axios';
 import Participation from '~/types/Participation';
+import TestApplication from '~/types/TestApplication';
 
 
 export const actions: ActionTree<any, any> = {

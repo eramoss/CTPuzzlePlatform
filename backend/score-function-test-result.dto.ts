@@ -1,12 +1,19 @@
 import { Score } from "src/item-responses/score.entity"
 
 export default class ScoreFunctionTestResult {
+
+    setResponse(response:string):ScoreFunctionTestResult{
+        this.response = response
+        return this
+    }
+    
+    response!: string
+
     toScore(): Score {
         let score: Score
         try {
             let lines = this.response.split('\n').filter(line => !!line)
             let scoreJson = lines[lines.length - 1]
-            console.warn('scoreJson', scoreJson)
             score = JSON.parse(scoreJson) as Score
             score.message = this.response
             return score;
@@ -19,5 +26,4 @@ export default class ScoreFunctionTestResult {
         score.message = score.message.split('\n').filter(line => line.indexOf('at file') == -1).join('\n');
         return score;
     }
-    response!: string
 }

@@ -3,7 +3,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import PreparedParticipation from 'src/participation/prepared-participation.dto';
-import { DeleteResult, UpdateResult } from 'typeorm';
+import { DeleteResult, Long, UpdateResult } from 'typeorm';
 import { TestApplication } from './test-application.entity';
 import { TestApplicationsService } from './test-applications.service';
 import { Response } from 'express';
@@ -89,6 +89,11 @@ export class TestApplicationsController {
         @Param('userHash') userHash: string):
         Promise<PreparedParticipation> {
         return this.testApplicationsService.getApplicationData(testAplicationHash, userHash);
+    }
+
+    @Get('recalculateAllApplicationParticipationScores/:testApplicationId')
+    recalculateAllApplicationParticipationScores(@Param('testApplicationId') testApplicationId: number) {
+        return this.testApplicationsService.recalculateAllApplicationParticipationScores(testApplicationId)
     }
 
 }

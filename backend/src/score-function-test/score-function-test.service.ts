@@ -2,18 +2,19 @@ import { Injectable } from '@nestjs/common';
 import ScoreFunctionTestResult from 'score-function-test-result.dto';
 import ScoreFunctionTestDto from 'score-function-test.dto';
 import { CodeInterpreterService } from 'src/code-interpreter/code-interpreter.service';
-import { Score } from 'src/item-responses/score.entity';
 import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { ItemTestCase } from './item-test-case.entity';
 import { ResponseTestCase } from './response-test-case.entity';
+import fs from 'fs'
+import { TestItem } from 'src/tests/test-item.entity';
+import { Item } from 'src/items/item.entity';
+import { ItemResponse } from 'src/item-responses/item-response.entity';
+import { Score } from 'src/item-responses/score.entity';
 
 @Injectable()
 export class ScoreFunctionTestService {
 
-
-    constructor(private codeInterpreterService: CodeInterpreterService) {
-
-    }
+    constructor(private codeInterpreterService: CodeInterpreterService) { }
 
     async execute(scoreFunctionTestDto: ScoreFunctionTestDto): Promise<ScoreFunctionTestResult> {
 
@@ -55,6 +56,42 @@ export class ScoreFunctionTestService {
         return responseCase
     }
 
+    async calculateScores(args: {
+        mechanic: Mechanic,
+        itemResponse: ItemResponse,
+        response: string
+    }[]
+    ): Promise<ItemResponse[]> {
+
+        const code = args.map(arg => {
+            let declareScoreFunction = this.createFunctionCalculateScore(arg.mechanic, 'calculateScore');
+            const itemDefinition = arg.itemResponse.testItem.item.itemDefinition;
+            return `{
+    ${declareScoreFunction}
+    let score = calculateScore((${itemDefinition})(),\n (${arg.response})())
+    let scoreJson = JSON.stringify(score)
+    console.log(scoreJson)    
+    console.log('SPLIT_ITEM')
+}`;
+        }).join('\n');
+
+        let output = await this.codeInterpreterService.execute(code)
+        let scoreFunctionsLogs = output.split('SPLIT_ITEM')
+        return scoreFunctionsLogs.map((log, index) => {
+            let arg = args[index]
+            if (arg) {
+                const itemResponse = arg.itemResponse;
+                const previousScore = itemResponse.score
+                const newScore = new ScoreFunctionTestResult().setResponse(log).toScore()
+                itemResponse.score = newScore;
+                if (previousScore) {
+                    itemResponse.score.id = previousScore.id
+                }
+                return itemResponse
+            }
+        }).filter(it => !!it)
+    }
+
     async calculateScore(args: {
         mechanic: Mechanic,
         item: string,
@@ -62,25 +99,38 @@ export class ScoreFunctionTestService {
     }
     ): Promise<ScoreFunctionTestResult> {
 
-        let classDefinition = args.mechanic.classDefinition;
-        let responseClassDefinition = args.mechanic.responseClassDefinition;
-        let scoreFunction = args.mechanic.scoreFunction;
+        let codePreparation = this.createFunctionCalculateScore(args.mechanic, 'calculateScore');
 
-        let code = `
-            //Definição da classe
-            ${classDefinition}
+        let response: string = await this.codeInterpreterService.execute(`
+            // Preparação do código da função de escore
+            ${codePreparation}
+            
+            // Execução da função de escore
+            let score = calculateScore(${args.item}, ${args.response})
+            let scoreJson = JSON.stringify(score)
+            console.log(scoreJson)
+        `);
 
-            //Função da resposta
-            ${responseClassDefinition}
-
-            //Função de cálculo
-            let calculateScore = ${scoreFunction}
-
-            console.log(JSON.stringify(calculateScore(${args.item}, ${args.response})))
-        `
-        let response: string = await this.codeInterpreterService.execute(code);
         const testResult = new ScoreFunctionTestResult();
         testResult.response = response;
         return testResult;
+    }
+
+    createFunctionCalculateScore(mechanic: Mechanic, fnName: string): string {
+        let classDefinition = mechanic.classDefinition;
+        let responseClassDefinition = mechanic.responseClassDefinition;
+        let scoreFunction = mechanic.scoreFunction;
+
+        let code = `
+    //Definição da classe
+    ${classDefinition}
+
+    //Função da resposta
+    ${responseClassDefinition}
+
+    //Função de cálculo
+    let ${fnName} = ${scoreFunction}
+`;
+        return code;
     }
 }

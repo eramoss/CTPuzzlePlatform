@@ -30,6 +30,14 @@ export class ItemsService {
             .getOne()
     }
 
+    getManyById(ids: number[]): Promise<Item[]> {
+        return this.itemRepository
+            .createQueryBuilder('item')
+            .whereInIds(ids)
+            .leftJoinAndSelect('item.mechanic', 'mechanic')
+            .getMany()
+    }
+
     softDeleteById(id: number): Promise<DeleteResult> {
         return this.itemRepository.softDelete({ id })
     }

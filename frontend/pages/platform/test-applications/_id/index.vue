@@ -57,6 +57,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-row>
           <el-col :span="22">
             <el-form-item label="Link" label-width="100px">
@@ -78,6 +79,14 @@
           <div class="flex-row">
             <btn-refresh @click="loadData"></btn-refresh>
             <span>
+              <el-button
+                size="small"
+                :loading="recalculating"
+                type="warning"
+                @click="recalculateAllParticipationsScores"
+              >
+                Recalcular escores de todas as participações
+              </el-button>
               <el-button
                 title="Baixar respostas em formato útil para análise com IRT"
                 type="primary"
@@ -164,7 +173,10 @@ import { DateFormat } from "~/utils/DateFormat";
 import ItemResponse from "~/types/ItemResponse";
 import AddObservationsBtn from "~/components/AddObservationsBtn.vue";
 import SwitchTestApplicationVisibility from "~/components/SwitchTestApplicationVisibility.vue";
-import { ACTION_SAVE_PARTICIPATION } from "~/store/participations";
+import {
+  ACTION_RECALCULATE_ALL_SCORES,
+  ACTION_SAVE_PARTICIPATION,
+} from "~/store/participations";
 
 const ACTION_GET_BY_ID = "test-applications/getById";
 
@@ -173,6 +185,7 @@ import {
   ACTION_GENERATE_CSV,
   ACTION_GENERATE_IRT_CSV,
   ACTION_SAVE_TEST_APPLICATION,
+  ACTION_RECALCULATE_ALL_APPLICATION_SCORES,
 } from "~/store/test-applications";
 
 @Component({
@@ -192,6 +205,7 @@ export default class TestEditForm extends Vue {
   testApplication: TestApplication = new TestApplication();
   lastResponse: ItemResponse = new ItemResponse();
   downloading: boolean = false;
+  recalculating: boolean = false;
   @Ref() snackBar!: SnackBarRemove;
   dateFormat = new DateFormat();
 
@@ -216,6 +230,9 @@ export default class TestEditForm extends Vue {
 
   @Action(ACTION_GENERATE_IRT_CSV)
   generateItemResponsesCsvIRT!: (testApplicationId: number) => Promise<any>;
+
+  @Action(ACTION_RECALCULATE_ALL_APPLICATION_SCORES)
+  recalculateScores!: (testApplication: TestApplication) => Promise<any>;
 
   intervalBringLastResponse!: NodeJS.Timeout;
 
@@ -284,6 +301,24 @@ export default class TestEditForm extends Vue {
       });
     } finally {
       this.downloading = false;
+    }
+  }
+
+  async recalculateAllParticipationsScores() {
+    this.recalculating = true;
+    try {
+      await this.recalculateScores(this.testApplication);
+      this.$notify.success({
+          title: 'As respostas foram recalculadas',
+          message: 'Todas as respostas foram recalculadas'
+      })
+    } catch (e) {
+      this.$notify.error({
+        title: "Não foi possível recalcular os escores",
+        message: "Ocorreu um erro interno durante a geração",
+      });
+    } finally {
+      this.recalculating = false;
     }
   }
 

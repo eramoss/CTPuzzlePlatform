@@ -7,7 +7,7 @@ import { ParticipationService } from 'src/participation/participation.service';
 import { TestService } from 'src/tests/tests.service';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { Brackets, DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { Brackets, DeleteResult, Long, Repository, UpdateResult } from 'typeorm';
 import { TestApplication } from './test-application.entity';
 import { v4 as uuidv4 } from "uuid";
 import { ConfigService } from '@nestjs/config';
@@ -33,6 +33,22 @@ export class TestApplicationsService {
         private testService: TestService,
         private configService: ConfigService,
     ) {
+    }
+
+    async recalculateAllApplicationParticipationScores(testApplicationId: number) {
+        let itemResponses = await this.getAllApplicationItemResponses(testApplicationId);
+        this.participationService.recalculateAllResponseEscores(itemResponses)
+    }
+
+    private async getAllApplicationItemResponses(testApplicationId: number) {
+        const testApplication = await this.getById(testApplicationId);
+        let itemResponses = new Array<ItemResponse>();
+        testApplication.participations.forEach(p => {
+            p.itemResponses.forEach(itemResponse => {
+                itemResponses.push(itemResponse);
+            });
+        });
+        return itemResponses;
     }
 
     getPuplicApplications(): Promise<TestApplication[]> {

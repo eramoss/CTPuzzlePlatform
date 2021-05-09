@@ -1,10 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
-import { ChildProcessWithoutNullStreams, spawn, spawnSync, SpawnSyncReturns } from 'child_process';
+import { spawn, spawnSync, SpawnSyncReturns } from 'child_process';
 
 import fs from 'fs'
-import { Readable, Writable } from 'stream';
 
 @Injectable()
 export class CodeInterpreterService {
