@@ -53,7 +53,7 @@ export function csvDataToCsvFormatted(csvData: CsvData): string {
 
 export function getLengthOfBigLengthValue(csvData: CsvData, csvHeader: CsvHeaderLabel) {
     let key = csvHeader.value
-    let maxLength = csvHeader.label.length;
+    let maxLength = csvHeader.value.length;
     csvData.rows.map(row => JSON.stringify(row[key])).map(value => value?.length)
         .forEach(length => {
             if (length > maxLength) {

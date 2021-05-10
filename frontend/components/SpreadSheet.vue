@@ -32,11 +32,25 @@ export default class SpreadSheet extends Vue {
     return this.csv.split("\n").filter((line) => line.length > 0).length;
   }
 
-  handleKeydown(event: KeyboardEvent) {}
+  handleKeydown(event: KeyboardEvent) {
+    let keys = ["PageUp", "PageDown"];
+    if (keys.indexOf(event.key) > -1) {
+      event.preventDefault();
+    }
+    if (event.key == "PageDown") {
+      this.textarea.scrollTo(0, this.textarea.scrollTop + 100);
+    }
+    if (event.key == "PageUp") {
+      this.textarea.scrollTo(0, this.textarea.scrollTop - 100);
+    }
+  }
 }
 </script>
 <style lang="scss">
 .text-area-spread-sheet {
+  font-size: 10pt;
+  padding: 15px;
+  line-height: 1em;
   width: 100%;
 }
 </style>
