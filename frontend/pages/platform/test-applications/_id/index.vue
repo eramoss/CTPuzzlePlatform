@@ -61,7 +61,9 @@
                 </div>
               </template>
               <el-select
-                placeholder="O grupo de controle é uma aplicação em que o participante pode ser direcionado aleatoriamente"
+                @clear="clearControlGroup"
+                :clearable="true"
+                placeholder="O grupo de controle é uma aplicação para a qual o participante pode ser direcionado aleatoriamente"
                 v-model="testApplication.controlApplication"
                 value-key="id"
               >
@@ -287,6 +289,10 @@ export default class TestEditForm extends Vue {
       }
     }
     return test;
+  }
+
+  clearControlGroup() {
+    this.testApplication.controlApplication = null;
   }
 
   accessTestApplication() {

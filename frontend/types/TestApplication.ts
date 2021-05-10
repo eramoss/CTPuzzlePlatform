@@ -12,7 +12,7 @@ export default class TestApplication {
     url!: string
     hash!: string
 
-    controlApplication!: TestApplication
+    controlApplication?: TestApplication | null = null
 
     participations: Participation[] = []
     countParticipations = 0

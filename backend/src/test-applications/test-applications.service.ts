@@ -441,8 +441,8 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
                 participation.usesControlGroup = true
             }
         }
-        
-        if(participation.usesControlGroup){
+
+        if (participation.usesControlGroup) {
             testApplication = controlGroupApplication
         }
 
