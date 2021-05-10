@@ -51,6 +51,12 @@ export class TestApplicationsService {
         return itemResponses;
     }
 
+    findAll(): Promise<TestApplication[]> {
+        return this.testApplicationRepository.createQueryBuilder('test-application')
+            .orderBy('test-application.createdAt', 'DESC')
+            .getMany()
+    }
+
     getPuplicApplications(): Promise<TestApplication[]> {
         return this.testApplicationRepository.createQueryBuilder('test-application')
             .leftJoinAndSelect('test-application.test', 'test')
@@ -100,6 +106,7 @@ export class TestApplicationsService {
             .where({ id })
             .leftJoinAndSelect('test-application.test', 'test')
             .leftJoinAndSelect('test-application.participations', 'participation', `"participation"."deletedAt" is null`)
+            .leftJoinAndSelect('test-application.controlApplication', 'controlApplication')
             .leftJoinAndSelect('participation.itemResponses', 'itemResponse', `"itemResponse"."deletedAt" is null`)
             .leftJoinAndSelect('itemResponse.testItem', 'testItem')
             .leftJoinAndSelect('itemResponse.score', 'score')
@@ -286,6 +293,7 @@ export class TestApplicationsService {
         const testApplication = await this.testApplicationRepository
             .createQueryBuilder('test-application')
             .leftJoinAndSelect('test-application.test', 'test')
+            .leftJoinAndSelect('test-application.controlApplication', 'controlApplication')
             .leftJoinAndSelect('test.researchGroup', 'researchGroup')
             .leftJoinAndSelect('test.items', 'testItem')
             .orderBy('testItem.order', 'ASC')
@@ -356,7 +364,7 @@ export class TestApplicationsService {
         let lastVisitedItemId = participation.lastVisitedItemId;
 
         if (participation.lastVisitedItemWasFinished) {
-            let nextItem = this.getItemAfter(participation, lastVisitedItemId);
+            let nextItem = this.getUndoneItem(participation);
             if (nextItem) {
                 lastVisitedItemId = nextItem.id;
             }
@@ -398,15 +406,10 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
         return preparedParticipation;
     }
 
-    getItemAfter(participation: Participation, lastVisitedItemId: number): TestItem {
+    getUndoneItem(participation: Participation): TestItem {
         const test = Object.assign(new Test(), participation.test)
         const itemWithResponsesIds = participation.itemResponses.map(itemResponse => itemResponse.testItem.id);
         const itemsWithoutResponses = test.items.filter(testItem => itemWithResponsesIds.indexOf(testItem.id) == -1);
-
-        // const lastVisitedItem = itemsWithoutResponses.find(item => item.id == lastVisitedItemId)
-        // const indexLastVisited = itemsWithoutResponses.indexOf(lastVisitedItem)
-        // const nextItem = itemsWithoutResponses[indexLastVisited + 1]
-
         const nextItem = itemsWithoutResponses[0]
         return nextItem
     }
@@ -420,18 +423,30 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
         if (!user.email)
             user.email = user.hash + '@mail.com'
 
-        const testApplication: TestApplication = await this.getByHash(testApplicationHash);
+        let testApplication: TestApplication = await this.getByHash(testApplicationHash);
+        let controlGroupApplication = testApplication.controlApplication
+        if (controlGroupApplication) {
+            controlGroupApplication = await this.getByHash(controlGroupApplication.hash)
+        }
 
         const savedUser = await this.usersService.saveOrGetByHash(user);
         if (!savedUser.researchGroup) {
             this.usersService.setResearchGroup(savedUser, testApplication.test.researchGroup);
         }
 
-        let participation = await this.participationService.getNonFinishedParticipation(testApplication, savedUser);
-        let testJson = await this.testService.generateJson(testApplication.test.id)
+        let participation = await this.participationService.getNonFinishedParticipation(testApplication, controlGroupApplication, savedUser);
         if (!participation) {
             participation = new Participation();
+            if (Math.random() > 0.5) {
+                participation.usesControlGroup = true
+            }
         }
+        
+        if(participation.usesControlGroup){
+            testApplication = controlGroupApplication
+        }
+
+        let testJson = await this.testService.generateJson(testApplication.test.id)
         participation.test = testJson
         participation.user = savedUser;
         participation.application = testApplication;

@@ -14,7 +14,7 @@
       <el-form>
         <el-row>
           <el-col :span="22">
-            <el-form-item label-width="100px" label="Nome">
+            <el-form-item label-width="170px" label="Nome">
               <el-input
                 v-model="testApplication.name"
                 placeholder="Avaliação Turma 3º ano"
@@ -33,7 +33,7 @@
                 placeholder="Informações e observações sobre a aplicação"
               ></el-input>
             </el-form-item>
-            <el-form-item label-width="100px" label="Teste">
+            <el-form-item label-width="170px" label="Teste">
               <nuxt-link
                 target="_blank"
                 title="Acessar teste"
@@ -49,8 +49,35 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="22">
+            <el-form-item label-width="170px">
+              <template slot="label">
+                <div class="flex-row end">
+                  Grupo de controle
+                  <tooltip-info
+                    style="margin-left: 5px"
+                    tooltip="O grupo de controle é uma aplicação em que o participante pode ser direcionado aleatoriamente"
+                  />
+                </div>
+              </template>
+              <el-select
+                placeholder="O grupo de controle é uma aplicação em que o participante pode ser direcionado aleatoriamente"
+                v-model="testApplication.controlApplication"
+                value-key="id"
+              >
+                <el-option
+                  :key="application.id"
+                  v-for="application in applications"
+                  :value="application"
+                  :label="application.name"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col>
-            <el-form-item label="Visibilidade">
+            <el-form-item label="Visibilidade" label-width="170px">
               <switch-test-application-visibility
                 :test-application="testApplication"
               />
@@ -60,7 +87,7 @@
 
         <el-row>
           <el-col :span="22">
-            <el-form-item label="Link" label-width="100px">
+            <el-form-item label="Link" label-width="170px">
               <test-application-url-input
                 :showAccessIcon="true"
                 :test-application.sync="testApplication"
@@ -186,6 +213,7 @@ import {
   ACTION_GENERATE_IRT_CSV,
   ACTION_SAVE_TEST_APPLICATION,
   ACTION_RECALCULATE_ALL_APPLICATION_SCORES,
+  ACTION_GET_APPLICATIONS,
 } from "~/store/test-applications";
 
 @Component({
@@ -204,6 +232,7 @@ export default class TestEditForm extends Vue {
   loading: boolean = false;
   testApplication: TestApplication = new TestApplication();
   lastResponse: ItemResponse = new ItemResponse();
+  applications: TestApplication[] = [];
   downloading: boolean = false;
   recalculating: boolean = false;
   @Ref() snackBar!: SnackBarRemove;
@@ -242,7 +271,9 @@ export default class TestEditForm extends Vue {
     let id = ctx.params.id;
     testApplication = await ctx.store.dispatch(ACTION_GET_BY_ID, id);
     lastResponse = await ctx.store.dispatch(ACTION_GET_LAST_RESPONSE, id);
+    let applications = await ctx.store.dispatch(ACTION_GET_APPLICATIONS);
     return {
+      applications,
       testApplication,
       lastResponse,
     };
@@ -309,9 +340,9 @@ export default class TestEditForm extends Vue {
     try {
       await this.recalculateScores(this.testApplication);
       this.$notify.success({
-          title: 'As respostas foram recalculadas',
-          message: 'Todas as respostas foram recalculadas'
-      })
+        title: "As respostas foram recalculadas",
+        message: "Todas as respostas foram recalculadas",
+      });
     } catch (e) {
       this.$notify.error({
         title: "Não foi possível recalcular os escores",

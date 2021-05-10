@@ -12,11 +12,13 @@ export default class TestApplication {
     url!: string
     hash!: string
 
+    controlApplication!: TestApplication
+
     participations: Participation[] = []
     countParticipations = 0
-    createdAt!:Date
-    deletedAt!:Date
-    updatedAt!:Date
-    visibility:TestApplicationVisibility = "PRIVATE"
+    createdAt!: Date
+    deletedAt!: Date
+    updatedAt!: Date
+    visibility: TestApplicationVisibility = "PRIVATE"
 
 }

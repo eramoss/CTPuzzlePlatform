@@ -136,6 +136,7 @@ import TestApplication from "~/types/TestApplication";
 import {
   CsvData,
   csvDataToCsv,
+  csvDataToCsvFormatted,
   CsvHeaderLabel,
   CSV_SEPARATOR,
   getCsvHeaders,
@@ -240,14 +241,14 @@ export default class StatisticsTestApplication extends Vue {
 
   onUpdateCsvData(csvData: CsvData) {
     this.csvData = csvData;
-    this.csv = csvDataToCsv(this.csvData);
+    this.csv = csvDataToCsvFormatted(this.csvData);
   }
 
   async loadCsv(testApplication: TestApplication) {
     if (testApplication) {
       let csvData = await this.getCsvData(testApplication);
       this.csvData = csvData;
-      this.csv = csvDataToCsv(csvData);
+      this.csv = csvDataToCsvFormatted(csvData);
       this.plotData();
     }
   }

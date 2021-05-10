@@ -46,6 +46,10 @@ export const actions: ActionTree<any, any> = {
         return $axios.$get('/test-applications/byId/' + id);
     },
 
+    getAll(state, id: number): Promise<TestApplication[]> {
+        return $axios.$get('/test-applications/findAll/');
+    },
+
     getLastResponse(state, id: number): Promise<ItemResponse> {
         return $axios.$get('/test-applications/getLastResponse/' + id);
     },
@@ -71,3 +75,4 @@ export const ACTION_UPDATE_VISIBILITY = "test-applications/updateVisibility"
 export const ACTION_PAGINATE_APPLICATIONS = "test-applications/paginate"
 export const ACTION_GET_CSV_DATA_TEST_APPLICATION = "test-applications/getCsvData"
 export const ACTION_RECALCULATE_ALL_APPLICATION_SCORES = "test-applications/recalculateAllApplicationScores"
+export const ACTION_GET_APPLICATIONS = "test-applications/getAll"

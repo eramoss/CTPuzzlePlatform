@@ -55,8 +55,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "nuxt-property-decorator";
-import { Context } from "@nuxt/types";
-import { CsvData, csvDataToCsv, filterCsvData } from "~/types/CsvData";
+import { CsvData, filterCsvData } from "~/types/CsvData";
 @Component
 export default class StatisticsFilter extends Vue {
   leftOperandFilterVariable = "";

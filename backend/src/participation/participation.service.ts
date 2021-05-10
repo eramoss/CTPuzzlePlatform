@@ -7,7 +7,7 @@ import { TestApplication } from 'src/test-applications/test-application.entity';
 import { TestItem } from 'src/tests/test-item.entity';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 import Participation from './participation.entity';
 
 @Injectable()
@@ -47,7 +47,7 @@ export class ParticipationService {
         return this.participationRepository.save(participation);
     }
 
-    async recalculateAllResponseEscores(itemResponses:ItemResponse[]):Promise<ItemResponse[]>{
+    async recalculateAllResponseEscores(itemResponses: ItemResponse[]): Promise<ItemResponse[]> {
         this.itemResponseService.calculateScores(itemResponses)
         return itemResponses;
     }
@@ -97,13 +97,14 @@ export class ParticipationService {
         return this.participationRepository.restore({ id });
     }
 
-    getNonFinishedParticipation(testApplication: TestApplication, user: User): Promise<Participation> {
+    getNonFinishedParticipation(testApplication: TestApplication, controlGroupApplication: TestApplication, user: User): Promise<Participation> {
+        let ids = [testApplication.id, controlGroupApplication.id]
         return this.participationRepository
             .createQueryBuilder('participation')
             .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
             .leftJoinAndSelect('itemResponse.testItem', 'testItem')
             .where({
-                application: testApplication,
+                application: { id: In(ids) },
                 user: user,
                 finishedAt: null
             })

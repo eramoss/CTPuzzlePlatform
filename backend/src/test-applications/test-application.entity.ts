@@ -14,6 +14,9 @@ export class TestApplication {
     participations: Participation[]
     countParticipations: number
 
+    @ManyToOne(type => TestApplication, { nullable: true })
+    controlApplication!: TestApplication
+
     @Column()
     name: string
 

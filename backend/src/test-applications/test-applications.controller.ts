@@ -33,6 +33,12 @@ export class TestApplicationsController {
         return this.testApplicationsService.softDeleteById(id);
     }
 
+    @Get("/findAll")
+    findAll(): Promise<TestApplication[]> {
+        return this.testApplicationsService.findAll()
+    }
+
+
     @Get('public/getPuplicApplications')
     getPuplicApplications(): Promise<TestApplication[]> {
         return this.testApplicationsService.getPuplicApplications();

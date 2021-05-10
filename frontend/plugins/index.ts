@@ -21,6 +21,7 @@ import HelperFunctions from '~/components/HelperFunctions.vue'
 import CenteredLogo from '~/components/CenteredLogo.vue'
 import FooterBar from '~/components/FooterBar.vue'
 import TutorialLabel from '~/components/TutorialLabel.vue'
+import TooltipInfo from '~/components/TooltipInfo.vue'
 
 Vue.component('container', Container)
 Vue.component('FormItemLabel', FormItemLabel)
@@ -44,6 +45,7 @@ Vue.component('HelperFunctions', HelperFunctions)
 Vue.component('CenteredLogo', CenteredLogo)
 Vue.component('FooterBar', FooterBar)
 Vue.component('TutorialLabel', TutorialLabel)
+Vue.component('TooltipInfo', TooltipInfo)
 
 // Global
 import VueTheMask from 'vue-the-mask'

@@ -31,6 +31,9 @@ export default class Participation {
     @ManyToOne(type => TestApplication, { nullable: true, onDelete: 'CASCADE' })
     application: TestApplication;
 
+    @Column({ nullable: true, default: false })
+    usesControlGroup: boolean
+
     @OneToMany(type => ItemResponse, itemResponse => itemResponse.participation, { cascade: true })
     itemResponses: ItemResponse[]
 
