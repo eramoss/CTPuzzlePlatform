@@ -437,8 +437,10 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
         let participation = await this.participationService.getNonFinishedParticipation(testApplication, controlGroupApplication, savedUser);
         if (!participation) {
             participation = new Participation();
-            if (Math.random() > 0.5) {
-                participation.usesControlGroup = true
+            if (controlGroupApplication) {
+                if (Math.random() > 0.5) {
+                    participation.usesControlGroup = true
+                }
             }
         }
 

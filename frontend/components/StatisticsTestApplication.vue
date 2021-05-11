@@ -198,7 +198,7 @@ export default class StatisticsTestApplication extends Vue {
     let hasChoosedLabels = this.selectedHeaders.length;
     if (hasChoosedLabels) {
       let lines = this.csv.split("\n");
-      let headers = lines[0].split(CSV_SEPARATOR);
+      let headers = lines[0].split(CSV_SEPARATOR).map(header=>header.trim());
 
       let columnsIndexes = this.selectedHeaders.map((header) =>
         headers.indexOf(header)

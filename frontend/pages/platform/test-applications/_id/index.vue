@@ -63,6 +63,7 @@
               <el-select
                 @clear="clearControlGroup"
                 :clearable="true"
+                :filterable="true"
                 placeholder="O grupo de controle é uma aplicação para a qual o participante pode ser direcionado aleatoriamente"
                 v-model="testApplication.controlApplication"
                 value-key="id"

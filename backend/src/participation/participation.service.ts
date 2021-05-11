@@ -98,7 +98,7 @@ export class ParticipationService {
     }
 
     getNonFinishedParticipation(testApplication: TestApplication, controlGroupApplication: TestApplication, user: User): Promise<Participation> {
-        let ids = [testApplication.id, controlGroupApplication.id]
+        let ids = [testApplication.id, controlGroupApplication?.id]
         return this.participationRepository
             .createQueryBuilder('participation')
             .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
