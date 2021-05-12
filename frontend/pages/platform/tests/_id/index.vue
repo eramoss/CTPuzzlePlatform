@@ -48,7 +48,20 @@
                     @click="addItemToTest(item)"
                     title="Clique para adicionar ao teste"
                   >
-                    <item-thumbnail :item="item" />
+                    <item-thumbnail :item="item">
+                      <div slot="end">
+                        <div
+                          style="
+                            text-align: center;
+                            display: flex;
+                            flex-flow: column;
+                          "
+                        >
+                          <i class="el-icon-plus" style="font-size:20pt"></i>
+                          <b>Adicionar<br>ao teste</b>
+                        </div>
+                      </div>
+                    </item-thumbnail>
                   </div>
                 </el-option>
               </el-select>

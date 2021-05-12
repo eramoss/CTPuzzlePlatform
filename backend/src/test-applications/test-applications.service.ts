@@ -137,6 +137,7 @@ export class TestApplicationsService {
             { label: 'item', value: 'item_id' },
             { label: 'order', value: 'item_order' },
             { label: 'tutorial', value: 'tutorial' },
+            { label: 'contador', value: 'contador' },
             //{ label: 'resposta', value: 'resposta' },
         ];
 
@@ -176,6 +177,7 @@ export class TestApplicationsService {
                     observacoes: participation.observations,
                     escore_max: itemResponse.score.max,
                     escore_obtido: itemResponse.score.score,
+                    contador: 1,
                 };
                 let responseJson = JSON.parse(itemResponse.response);
                 if (!responseProperties.length) {
