@@ -17,7 +17,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Ref, VModel } from "nuxt-property-decorator";
+import { Component, Prop, Ref, VModel, Watch } from "nuxt-property-decorator";
 
 @Component
 export default class SpreadSheet extends Vue {
@@ -27,6 +27,10 @@ export default class SpreadSheet extends Vue {
   @Prop({}) phraseWhenZeroLines!: string;
 
   @Ref() textarea!: HTMLInputElement;
+
+  scrollToStart(){
+      this.textarea.scrollTo(0, 0);
+  }
 
   get countLines(): number {
     let total = this.csv.split("\n").filter((line) => line.length > 0).length;
@@ -57,7 +61,7 @@ export default class SpreadSheet extends Vue {
 <style lang="scss">
 .text-area-spread-sheet {
   font-size: 10pt;
-  padding: 15px;
+  //padding: 15px;
   line-height: 1em;
   width: 100%;
 }

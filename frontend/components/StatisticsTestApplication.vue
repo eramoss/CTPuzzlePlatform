@@ -52,6 +52,7 @@
           </el-button>
         </div>
         <spread-sheet
+         ref="spreadSheet"
           phraseWhenZeroLines="(Selecione uma aplicação ou restaure os dados)"
           class="top-marged"
           v-model="csv"
@@ -173,6 +174,7 @@ export default class StatisticsTestApplication extends Vue {
 
   @Ref() statisticsFilter!: StatisticsFilter;
   @Ref() statisticsTransform!: StatisticsTransform;
+  @Ref() spreadSheet!: SpreadSheet;
 
   get csvHeaders(): string[] {
     return getCsvHeaders(this.csv);
@@ -263,6 +265,7 @@ export default class StatisticsTestApplication extends Vue {
       let csvData = await this.getCsvData(testApplication);
       this.csvData = csvData;
       this.csv = csvDataToCsvFormatted(csvData);
+      this.spreadSheet.scrollToStart();
       this.plotData();
     }
   }
