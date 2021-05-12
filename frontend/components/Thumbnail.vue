@@ -3,6 +3,7 @@
     class="image-thumbnail"
     :style="{
       'background-image': `url(${computedSrc})`,
+      'min-width': width,
       width: width,
       height: height,
     }"
