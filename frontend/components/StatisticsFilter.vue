@@ -4,7 +4,8 @@
       :disabled="disabled"
       title="Filtrar dados por condição (igual, diferente, maior, menor etc)"
       @click="visible = true"
-      >{{ buttonText }}</el-button
+      >{{ buttonText }}
+      <span v-if="applied">({{ totalApplied }})</span></el-button
     >
     <el-dialog title="Filtrar" :visible.sync="visible">
       <div class="phrase">
@@ -62,15 +63,24 @@ export default class StatisticsFilter extends Vue {
   logicalOperationFilter = "";
   rightOperandFilterValue = "";
   visible = false;
+  applied = false;
+  totalApplied = 0;
   @Prop() csvData!: CsvData;
   @Prop({ default: false }) disabled!: boolean;
   @Prop({ default: "Filtrar" }) buttonText!: string;
+
+  undoTransform() {
+    this.applied = false;
+    this.totalApplied = 0;
+  }
 
   get csvHeaders() {
     return this.csvData.labels;
   }
 
   filter() {
+    this.applied = true;
+    this.totalApplied = this.totalApplied + 1;
     let csvData = filterCsvData(
       this.csvData,
       this.leftOperandFilterVariable,

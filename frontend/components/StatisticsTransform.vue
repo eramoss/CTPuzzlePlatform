@@ -4,7 +4,8 @@
       :disabled="disabled"
       @click="visible = true"
       title="Agrupar dados somando ou calculando a média de variável"
-      >{{ buttonText }}</el-button
+      >{{ buttonText }}
+      <span v-show="applied">({{ totalApplied }})</span></el-button
     >
     <el-dialog title="Agrupar" :visible.sync="visible">
       <div class="phrase">
@@ -68,10 +69,17 @@ export default class StatisticsTransform extends Vue {
   groupBy = "";
   groupWhat = "";
   visible = false;
+  applied: boolean = false;
+  totalApplied = 0;
+
+  undoTransform() {
+    this.applied = false;
+    this.totalApplied = 0;
+  }
 
   onGroupDoWhat: OperationOnGroup<number[], number> = new OperationOnGroup();
   onGroupDoWhatAvailableOperations = [
-    new OperationOnGroup<number[], number>("média", (numbers: number[]) => {
+    new OperationOnGroup<number[], number>("Média", (numbers: number[]) => {
       return parseFloat(
         (
           numbers.reduce(
@@ -81,10 +89,20 @@ export default class StatisticsTransform extends Vue {
         ).toFixed(2)
       );
     }),
-    new OperationOnGroup<number[], number>("soma", (numbers: number[]) =>
+    new OperationOnGroup<number[], number>("Soma", (numbers: number[]) =>
       numbers.reduce(
         (previousValue: number, currentValue: number) =>
           previousValue + currentValue
+      )
+    ),
+    new OperationOnGroup<number[], number>("Maior valor", (numbers: number[]) =>
+      numbers.reduce((previousValue: number, currentValue: number) =>
+        currentValue > previousValue ? currentValue : previousValue
+      )
+    ),
+    new OperationOnGroup<number[], number>("Menor valor", (numbers: number[]) =>
+      numbers.reduce((previousValue: number, currentValue: number) =>
+        currentValue < previousValue ? currentValue : previousValue
       )
     ),
   ];
@@ -98,6 +116,8 @@ export default class StatisticsTransform extends Vue {
   }
 
   transform() {
+    this.applied = true;
+    this.totalApplied = this.totalApplied + 1;
     let csvData = groupCsvData(
       this.csvData,
       this.groupBy,

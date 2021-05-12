@@ -29,13 +29,21 @@ export default class SpreadSheet extends Vue {
   @Ref() textarea!: HTMLInputElement;
 
   get countLines(): number {
-    return this.csv.split("\n").filter((line) => line.length > 0).length;
+    let total = this.csv.split("\n").filter((line) => line.length > 0).length;
+    total = total - 1; //header
+    if (total < 0) {
+      total = 0;
+    }
+    return total;
   }
 
   handleKeydown(event: KeyboardEvent) {
     let keys = ["PageUp", "PageDown"];
     if (keys.indexOf(event.key) > -1) {
       event.preventDefault();
+    }
+    if (event.key == "Home") {
+      this.textarea.scrollTo(0, this.textarea.scrollTop);
     }
     if (event.key == "PageDown") {
       this.textarea.scrollTo(0, this.textarea.scrollTop + 100);

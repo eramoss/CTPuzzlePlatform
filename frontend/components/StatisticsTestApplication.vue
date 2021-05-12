@@ -34,12 +34,14 @@
       <div class="top-marged">
         <div class="left flex-row">
           <statistics-filter
+            ref="statisticsFilter"
             button-text="Filtrar"
             :disabled="!testApplication.id"
             :csvData="csvData"
             @onUpdateCsvData="onUpdateCsvData"
           />
           <statistics-transform
+            ref="statisticsTransform"
             button-text="Agrupar"
             :disabled="!testApplication.id"
             :csvData="csvData"
@@ -100,6 +102,7 @@
             <h3>Gráfico</h3>
             <el-row>
               <el-select
+                placeholder="Selecione o gráfico"
                 v-model="measure"
                 @change="updateAndPlot"
                 value-key="name"
@@ -131,7 +134,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Action, Component, Prop } from "nuxt-property-decorator";
+import { Action, Component, Prop, Ref } from "nuxt-property-decorator";
 import TestApplication from "~/types/TestApplication";
 import {
   CsvData,
@@ -168,6 +171,9 @@ export default class StatisticsTestApplication extends Vue {
   selectedData: string = "";
   selectedHeaders: string[] = [];
 
+  @Ref() statisticsFilter!: StatisticsFilter;
+  @Ref() statisticsTransform!: StatisticsTransform;
+
   get csvHeaders(): string[] {
     return getCsvHeaders(this.csv);
   }
@@ -198,7 +204,9 @@ export default class StatisticsTestApplication extends Vue {
     let hasChoosedLabels = this.selectedHeaders.length;
     if (hasChoosedLabels) {
       let lines = this.csv.split("\n");
-      let headers = lines[0].split(CSV_SEPARATOR).map(header=>header.trim());
+      let headers = lines[0]
+        .split(CSV_SEPARATOR)
+        .map((header) => header.trim());
 
       let columnsIndexes = this.selectedHeaders.map((header) =>
         headers.indexOf(header)
@@ -217,6 +225,11 @@ export default class StatisticsTestApplication extends Vue {
 
   resetCsv() {
     this.loadCsv(this.testApplication);
+  }
+
+  undoFilterAndTransform() {
+    this.statisticsFilter.undoTransform();
+    this.statisticsTransform.undoTransform();
   }
 
   async plotData() {
@@ -246,6 +259,7 @@ export default class StatisticsTestApplication extends Vue {
 
   async loadCsv(testApplication: TestApplication) {
     if (testApplication) {
+      this.undoFilterAndTransform();
       let csvData = await this.getCsvData(testApplication);
       this.csvData = csvData;
       this.csv = csvDataToCsvFormatted(csvData);
