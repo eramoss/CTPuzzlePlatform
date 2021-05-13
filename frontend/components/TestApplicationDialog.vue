@@ -53,18 +53,6 @@
         </el-tooltip>
       </el-form-item>
     </el-form>
-    <el-button
-      title="Acessar lista de aplicações"
-      :disabled="!getQuantityApplicationsText(testApplication.test).enabled"
-      @click="
-        $router.push(
-          `/platform/test-applications?test=${testApplication.test.id}`
-        )
-      "
-      type="text"
-    >
-      {{ getQuantityApplicationsText(testApplication.test).text }}
-    </el-button>
 
     <div slot="footer">
       <el-button
@@ -163,17 +151,6 @@ export default class TestApplicationDialog extends Vue {
 
   async mounted() {
     this.tests = await this.findAllTests();
-  }
-
-  getQuantityApplicationsText(test: Test): { enabled: boolean; text: string } {
-    let total = (test.applications || []).length;
-    let enabled = false;
-    let text = "Esse teste ainda não foi aplicado";
-    if (total > 0) {
-      enabled = true;
-      text = `Esse teste já tem ${total} aplicações`;
-    }
-    return { enabled, text };
   }
 }
 </script>

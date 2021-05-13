@@ -1,6 +1,4 @@
 # Load LIBS
-#install.packages("dyn")
-#install.packages("stats")
 #install.packages("dplyr")
 #install.packages("optparse")
 #install.packages("ggplot2")
