@@ -13,7 +13,7 @@
           >
         </div>
         <el-select
-          v-model="testApplication"
+          v-model="panel.testApplication"
           placeholder="Selecione a aplicação para verificar as estatísticas"
           hasChoosedLabels-key="id"
           @change="loadCsv"
@@ -36,23 +36,23 @@
           <statistics-filter
             ref="statisticsFilter"
             button-text="Filtrar"
-            :disabled="!testApplication.id"
+            :disabled="!panel.testApplication"
             :csvData="csvData"
             @onUpdateCsvData="onUpdateCsvData"
           />
           <statistics-transform
             ref="statisticsTransform"
             button-text="Agrupar"
-            :disabled="!testApplication.id"
+            :disabled="!panel.testApplication"
             :csvData="csvData"
             @onUpdateCsvData="onUpdateCsvData"
           />
-          <el-button :disabled="!testApplication.id" @click="resetCsv">
+          <el-button :disabled="!panel.testApplication" @click="resetCsv">
             Desfazer filtros e agrupamentos
           </el-button>
         </div>
         <spread-sheet
-         ref="spreadSheet"
+          ref="spreadSheet"
           phraseWhenZeroLines="(Selecione uma aplicação ou restaure os dados)"
           class="top-marged"
           v-model="csv"
@@ -68,7 +68,7 @@
             <el-row>
               <el-col>
                 <el-checkbox-group
-                  v-model="selectedHeaders"
+                  v-model="panel.selectedHeaders"
                   @change="updateAndPlot"
                 >
                   <el-checkbox
@@ -104,7 +104,7 @@
             <el-row>
               <el-select
                 placeholder="Selecione o gráfico"
-                v-model="measure"
+                v-model="panel.measure"
                 @change="updateAndPlot"
                 value-key="name"
               >
@@ -135,11 +135,17 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Action, Component, Prop, Ref } from "nuxt-property-decorator";
+import {
+  Action,
+  Component,
+  Prop,
+  Ref,
+  VModel,
+  Watch,
+} from "nuxt-property-decorator";
 import TestApplication from "~/types/TestApplication";
 import {
   CsvData,
-  csvDataToCsv,
   csvDataToCsvFormatted,
   CsvHeaderLabel,
   CSV_SEPARATOR,
@@ -152,6 +158,7 @@ import { PlotRequest, PlotResponse } from "~/types/plot";
 import SpreadSheet from "~/components/SpreadSheet.vue";
 import StatisticsFilter from "./StatisticsFilter.vue";
 import StatisticsTransform from "./StatisticsTransform.vue";
+import StatisticsPanel from "~/types/StatisticsPanel";
 
 @Component({
   components: {
@@ -162,15 +169,29 @@ import StatisticsTransform from "./StatisticsTransform.vue";
 })
 export default class StatisticsTestApplication extends Vue {
   @Prop() testApplications!: TestApplication[];
+  @Prop() value!: StatisticsPanel;
 
-  testApplication: TestApplication = new TestApplication();
-  measure: Measure = new Measure("", "");
+  panel: StatisticsPanel = new StatisticsPanel();
+
+  @Watch("value", { immediate: true })
+  onChangeValue() {
+    if (this.value.testApplication) {
+      Vue.set(this, "panel", this.value);
+      if (!this.panel.selectedHeaders) {
+        this.panel.selectedHeaders = [];
+      }
+    }
+  }
+
+  @Watch("panel", { deep: true }) onUpdatePanel() {
+    this.$emit("input", this.panel);
+  }
+
   loading = false;
   csvData: CsvData = new CsvData();
   plotResponse: PlotResponse = new PlotResponse();
   csv: string = "";
   selectedData: string = "";
-  selectedHeaders: string[] = [];
 
   @Ref() statisticsFilter!: StatisticsFilter;
   @Ref() statisticsTransform!: StatisticsTransform;
@@ -203,14 +224,14 @@ export default class StatisticsTestApplication extends Vue {
 
   updateSelectedData() {
     let selectedData = "";
-    let hasChoosedLabels = this.selectedHeaders.length;
+    let hasChoosedLabels = this.panel.selectedHeaders.length;
     if (hasChoosedLabels) {
       let lines = this.csv.split("\n");
       let headers = lines[0]
         .split(CSV_SEPARATOR)
         .map((header) => header.trim());
 
-      let columnsIndexes = this.selectedHeaders.map((header) =>
+      let columnsIndexes = this.panel.selectedHeaders.map((header) =>
         headers.indexOf(header)
       );
 
@@ -226,22 +247,22 @@ export default class StatisticsTestApplication extends Vue {
   }
 
   resetCsv() {
-    this.loadCsv(this.testApplication);
+    this.loadCsv(this.panel.testApplication);
   }
 
   undoFilterAndTransform() {
-    this.statisticsFilter.undoTransform();
-    this.statisticsTransform.undoTransform();
+    this.statisticsFilter?.undoTransform();
+    this.statisticsTransform?.undoTransform();
   }
 
   async plotData() {
-    if (!this.measure.id?.length || !this.selectedHeaders.length) {
+    if (!this.panel?.measure.id?.length || !this.panel?.selectedHeaders?.length) {
       return;
     }
     try {
       this.loading = true;
       const plotRequest = new PlotRequest();
-      plotRequest.id = this.measure.id;
+      plotRequest.id = this.panel.measure.id;
       plotRequest.csv = this.selectedData;
       let plotResponse = await this.plot(plotRequest);
       plotResponse.plotFileName += "?" + new Date().getTime();
@@ -265,8 +286,15 @@ export default class StatisticsTestApplication extends Vue {
       let csvData = await this.getCsvData(testApplication);
       this.csvData = csvData;
       this.csv = csvDataToCsvFormatted(csvData);
-      this.spreadSheet.scrollToStart();
+      this.spreadSheet?.scrollToStart();
       this.plotData();
+    }
+  }
+
+  async mounted() {
+    if (this.panel) {
+      await this.loadCsv(this.panel.testApplication);
+      this.updateAndPlot()
     }
   }
 }
