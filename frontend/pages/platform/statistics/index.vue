@@ -2,8 +2,11 @@
   <div>
     <div class="left panel">
       <h2>Estatísticas</h2>
-      Teste: {{ test }}
+      
+      <!-- Teste: {{ test }}
       <el-button @click="changeTest">Change test</el-button>
+       -->
+
       <template v-for="panel in panels">
         <statistics-test-application
           v-if="panel"
@@ -49,9 +52,7 @@ export default class StatisticsPage extends Vue {
 
   @statistics.Mutation addPanel!: () => void;
   @statistics.Mutation rmPanel!: (panel: StatisticsPanel) => void;
-  @statistics.Mutation storeUpdatePanel!: (
-    panel: StatisticsPanel
-  ) => void;
+  @statistics.Mutation storeUpdatePanel!: (panel: StatisticsPanel) => void;
   @statistics.State panels!: StatisticsPanel[];
 
   updatePanel(panel: StatisticsPanel) {

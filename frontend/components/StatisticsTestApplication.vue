@@ -34,11 +34,13 @@
       <div class="top-marged">
         <div class="left flex-row">
           <statistics-filter
+            :appliedFilters="panel.filters"
             ref="statisticsFilter"
             button-text="Filtrar"
             :disabled="!panel.testApplication"
             :csvData="csvData"
             @onUpdateCsvData="onUpdateCsvData"
+            @onUpdateFilters="saveFilters"
           />
           <statistics-transform
             ref="statisticsTransform"
@@ -159,6 +161,7 @@ import SpreadSheet from "~/components/SpreadSheet.vue";
 import StatisticsFilter from "./StatisticsFilter.vue";
 import StatisticsTransform from "./StatisticsTransform.vue";
 import StatisticsPanel from "~/types/StatisticsPanel";
+import LogicFilter from "~/types/LogicFilter";
 
 @Component({
   components: {
@@ -256,7 +259,10 @@ export default class StatisticsTestApplication extends Vue {
   }
 
   async plotData() {
-    if (!this.panel?.measure.id?.length || !this.panel?.selectedHeaders?.length) {
+    if (
+      !this.panel?.measure.id?.length ||
+      !this.panel?.selectedHeaders?.length
+    ) {
       return;
     }
     try {
@@ -280,6 +286,10 @@ export default class StatisticsTestApplication extends Vue {
     this.csv = csvDataToCsvFormatted(this.csvData);
   }
 
+  saveFilters(filters: LogicFilter[]) {
+    this.panel.filters = filters;
+  }
+
   async loadCsv(testApplication: TestApplication) {
     if (testApplication) {
       this.undoFilterAndTransform();
@@ -294,7 +304,7 @@ export default class StatisticsTestApplication extends Vue {
   async mounted() {
     if (this.panel) {
       await this.loadCsv(this.panel.testApplication);
-      this.updateAndPlot()
+      this.updateAndPlot();
     }
   }
 }
