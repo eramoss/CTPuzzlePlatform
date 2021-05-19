@@ -43,11 +43,13 @@
             @onUpdateFilters="saveFilters"
           />
           <statistics-transform
+            :appliedTransforms="panel.transforms"
             ref="statisticsTransform"
             button-text="Agrupar"
             :disabled="!panel.testApplication"
             :csvData="csvData"
             @onUpdateCsvData="onUpdateCsvData"
+            @onUpdateTransforms="saveTransforms"
           />
           <el-button :disabled="!panel.testApplication" @click="resetCsv">
             Desfazer filtros e agrupamentos
@@ -162,6 +164,7 @@ import StatisticsFilter from "./StatisticsFilter.vue";
 import StatisticsTransform from "./StatisticsTransform.vue";
 import StatisticsPanel from "~/types/StatisticsPanel";
 import LogicFilter from "~/types/LogicFilter";
+import { TransformOperation } from "~/types/TransformOperation";
 
 @Component({
   components: {
@@ -290,6 +293,10 @@ export default class StatisticsTestApplication extends Vue {
     this.panel.filters = filters;
   }
 
+  saveTransforms(transforms: TransformOperation[]) {
+    this.panel.transforms = transforms;
+  }
+
   async loadCsv(testApplication: TestApplication) {
     if (testApplication) {
       this.undoFilterAndTransform();
@@ -304,6 +311,8 @@ export default class StatisticsTestApplication extends Vue {
   async mounted() {
     if (this.panel) {
       await this.loadCsv(this.panel.testApplication);
+      this.statisticsFilter?.filter();
+      this.statisticsTransform?.transform();
       this.updateAndPlot();
     }
   }

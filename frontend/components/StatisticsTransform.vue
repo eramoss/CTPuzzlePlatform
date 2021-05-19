@@ -5,107 +5,114 @@
       @click="visible = true"
       title="Agrupar dados somando ou calculando a média de variável"
       >{{ buttonText }}
-      <span v-show="applied">({{ totalApplied }})</span></el-button
+      <span v-show="groups.length && applied"
+        >({{ groups.length }})</span
+      ></el-button
     >
     <el-dialog title="Agrupar" :visible.sync="visible">
-      <div class="phrase">
-        Calcular <b>{{ onGroupDoWhat.name || "___" }}</b> de
-        <b>{{ groupWhat || "___" }}</b> agrupado por
-        <b>{{ groupBy || "___" }}</b>
+      <div v-for="group in groups" :key="group.id">
+        <div class="phrase">
+          Calcular <b>{{ group.onGroupDoWhat.name || "___" }}</b> de
+          <b>{{ group.groupWhat || "___" }}</b> agrupado por
+          <b>{{ group.groupBy || "___" }}</b>
+        </div>
+        <div class="flex-row">
+          <el-select
+            v-model="group.onGroupDoWhat"
+            placeholder="Cálculo"
+            :filterable="true"
+            value-key="name"
+          >
+            <el-option
+              :key="groupOp.name"
+              v-for="groupOp in onGroupDoWhatAvailableOperations"
+              :value="groupOp"
+              :label="groupOp.name"
+            ></el-option>
+          </el-select>
+          <el-select
+            v-model="group.groupWhat"
+            placeholder="Variável 1"
+            :filterable="true"
+          >
+            <el-option
+              :key="header.value"
+              v-for="header in csvHeaders"
+              :value="header.value"
+              :label="header.value"
+            ></el-option>
+          </el-select>
+          <el-select
+            v-model="group.groupBy"
+            placeholder="Variável 2"
+            :filterable="true"
+          >
+            <el-option
+              :key="header.value"
+              v-for="header in csvHeaders"
+              :value="header.value"
+              :label="header.value"
+            ></el-option>
+          </el-select>
+          <el-button
+            class="el-icon-close"
+            @click="remove(group)"
+            title="Remover"
+            type="text"
+          ></el-button>
+        </div>
       </div>
-      <div class="flex-row">
-        <el-select
-          v-model="onGroupDoWhat"
-          placeholder="Cálculo"
-          :filterable="true"
-          value-key="name"
+      <div>
+        <el-button icon="el-icon-plus" @click="addTransform" type="text"
+          >Adicionar agrupamento</el-button
         >
-          <el-option
-            :key="groupOp.name"
-            v-for="groupOp in onGroupDoWhatAvailableOperations"
-            :value="groupOp"
-            :label="groupOp.name"
-          ></el-option>
-        </el-select>
-        <el-select
-          v-model="groupWhat"
-          placeholder="Variável 1"
-          :filterable="true"
-        >
-          <el-option
-            :key="header.value"
-            v-for="header in csvHeaders"
-            :value="header.value"
-            :label="header.value"
-          ></el-option>
-        </el-select>
-        <el-select
-          v-model="groupBy"
-          placeholder="Variável 2"
-          :filterable="true"
-        >
-          <el-option
-            :key="header.value"
-            v-for="header in csvHeaders"
-            :value="header.value"
-            :label="header.value"
-          ></el-option>
-        </el-select>
       </div>
 
       <div slot="footer">
-        <el-button type="primary" @click="transform">Agrupar</el-button>
+        <el-button type="primary" @click="transformAndHide">Agrupar</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "nuxt-property-decorator";
-import { CsvData, groupCsvData } from "~/types/CsvData";
-import { OperationOnGroup } from "~/types/StatisticMeasures";
+import { Component, Prop, Watch } from "nuxt-property-decorator";
+import {
+  availableGroupOperations,
+  CsvData,
+  groupCsvData,
+} from "~/types/CsvData";
+import { TransformOperation } from "~/types/TransformOperation";
+import { v4 as uuidv4 } from "uuid";
 @Component
 export default class StatisticsTransform extends Vue {
-  groupBy = "";
-  groupWhat = "";
   visible = false;
-  applied: boolean = false;
-  totalApplied = 0;
+  groups: TransformOperation[] = [];
+  applied = false;
+  @Prop() appliedTransforms!: TransformOperation[];
 
-  undoTransform() {
-    this.applied = false;
-    this.totalApplied = 0;
+  @Watch("appliedTransforms", { immediate: true }) watchAppliedTransforms() {
+    this.$nextTick(() => {
+      Vue.set(this, "groups", this.appliedTransforms);
+    });
   }
 
-  onGroupDoWhat: OperationOnGroup<number[], number> = new OperationOnGroup();
-  onGroupDoWhatAvailableOperations = [
-    new OperationOnGroup<number[], number>("Média", (numbers: number[]) => {
-      return parseFloat(
-        (
-          numbers.reduce(
-            (previousValue: number, currentValue: number) =>
-              previousValue + currentValue
-          ) / numbers.length
-        ).toFixed(2)
-      );
-    }),
-    new OperationOnGroup<number[], number>("Soma", (numbers: number[]) =>
-      numbers.reduce(
-        (previousValue: number, currentValue: number) =>
-          previousValue + currentValue
-      )
-    ),
-    new OperationOnGroup<number[], number>("Maior valor", (numbers: number[]) =>
-      numbers.reduce((previousValue: number, currentValue: number) =>
-        currentValue > previousValue ? currentValue : previousValue
-      )
-    ),
-    new OperationOnGroup<number[], number>("Menor valor", (numbers: number[]) =>
-      numbers.reduce((previousValue: number, currentValue: number) =>
-        currentValue < previousValue ? currentValue : previousValue
-      )
-    ),
-  ];
+  undoTransform() {
+    this.groups.splice(0);
+  }
+
+  addTransform() {
+    let transform = new TransformOperation();
+    transform.id = uuidv4();
+    this.groups.push(transform);
+  }
+
+  remove(group: TransformOperation) {
+    let index = this.groups.indexOf(group);
+    this.groups.splice(index, 1);
+  }
+
+  onGroupDoWhatAvailableOperations = availableGroupOperations;
 
   @Prop() csvData!: CsvData;
   @Prop({ default: "Agrupar" }) buttonText!: string;
@@ -115,17 +122,30 @@ export default class StatisticsTransform extends Vue {
     return this.csvData.labels;
   }
 
-  transform() {
-    this.applied = true;
-    this.totalApplied = this.totalApplied + 1;
-    let csvData = groupCsvData(
-      this.csvData,
-      this.groupBy,
-      this.groupWhat,
-      this.onGroupDoWhat
-    );
+  hide() {
     this.visible = false;
-    this.$emit("onUpdateCsvData", csvData);
+  }
+
+  transformAndHide() {
+    this.transform();
+    this.hide();
+  }
+
+  transform() {
+    let csvData;
+    this.groups.forEach((group) => {
+      csvData = groupCsvData(
+        this.csvData,
+        group.groupBy,
+        group.groupWhat,
+        group.onGroupDoWhat
+      );
+    });
+    if (csvData) {
+      this.$emit("onUpdateCsvData", csvData);
+      this.$emit("onUpdateTransforms", this.groups);
+      this.applied = true;
+    }
   }
 }
 </script>

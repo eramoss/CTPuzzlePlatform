@@ -3,9 +3,11 @@
     <el-button
       :disabled="disabled"
       title="Filtrar dados por condição (igual, diferente, maior, menor etc)"
-      @click="visible = true"
+      @click="show"
       >{{ buttonText }}
-      <span v-if="filters.length">({{ filters.length }})</span></el-button
+      <span v-if="filters.length && applied"
+        >({{ filters.length }})</span
+      ></el-button
     >
     <el-dialog title="Filtrar" :visible.sync="visible">
       <div v-for="filter in filters" :key="filter.id">
@@ -46,6 +48,12 @@
             v-model="filter.rightOperandFilterValue"
             placeholder="Valor"
           ></el-input>
+          <el-button
+            class="el-icon-close"
+            @click="remove(filter)"
+            title="Remover"
+            type="text"
+          ></el-button>
         </div>
       </div>
       <div>
@@ -70,18 +78,27 @@ import { CsvData, filterCsvData } from "~/types/CsvData";
 export default class StatisticsFilter extends Vue {
   filters: LogicFilter[] = [];
   visible = false;
+  applied = false;
   @Prop() csvData!: CsvData;
   @Prop() appliedFilters!: LogicFilter[];
   @Prop({ default: false }) disabled!: boolean;
   @Prop({ default: "Filtrar" }) buttonText!: string;
 
-  @Watch("appliedFilters", { immediate: true }) onChangeAppliedFilters() {
-    Vue.set(this, "filters", this.appliedFilters);
-    this.filter();
+  @Watch("appliedFilters", { immediate: true })
+  onChangeAppliedFilters() {
+    this.$nextTick(() => {
+      this.filters = [...this.appliedFilters];
+    });
   }
 
   undoTransform() {
     this.filters.splice(0);
+    this.filter();
+  }
+
+  remove(filter: LogicFilter) {
+    let index = this.filters.indexOf(filter);
+    this.filters.splice(index, 1);
   }
 
   addFilter() {
@@ -92,6 +109,13 @@ export default class StatisticsFilter extends Vue {
 
   get csvHeaders() {
     return this.csvData.labels;
+  }
+
+  show() {
+    this.visible = true;
+    /* if (!this.filters.length) {
+      this.addFilter();
+    } */
   }
 
   hide() {
@@ -114,8 +138,11 @@ export default class StatisticsFilter extends Vue {
       );
     });
 
-    this.$emit("onUpdateCsvData", csvData);
-    this.$emit("onUpdateFilters", this.filters);
+    if (csvData) {
+      this.applied = true;
+      this.$emit("onUpdateCsvData", csvData);
+      this.$emit("onUpdateFilters", [...this.filters]);
+    }
   }
 }
 </script>

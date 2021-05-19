@@ -105,8 +105,37 @@ export function filterCsvData(csvData: CsvData, leftOperandFilterVariable: strin
     return csvData;
 }
 
+export const availableGroupOperations = [
+    new OperationOnGroup<number[], number>("Média", (numbers: number[]) => {
+        return parseFloat(
+            (
+                numbers.reduce(
+                    (previousValue: number, currentValue: number) =>
+                        previousValue + currentValue
+                ) / numbers.length
+            ).toFixed(2)
+        );
+    }),
+    new OperationOnGroup<number[], number>("Soma", (numbers: number[]) =>
+        numbers.reduce(
+            (previousValue: number, currentValue: number) =>
+                previousValue + currentValue
+        )
+    ),
+    new OperationOnGroup<number[], number>("Maior valor", (numbers: number[]) =>
+        numbers.reduce((previousValue: number, currentValue: number) =>
+            currentValue > previousValue ? currentValue : previousValue
+        )
+    ),
+    new OperationOnGroup<number[], number>("Menor valor", (numbers: number[]) =>
+        numbers.reduce((previousValue: number, currentValue: number) =>
+            currentValue < previousValue ? currentValue : previousValue
+        )
+    ),
+]
+
 export function groupCsvData(csvData: CsvData, groupBy: string, groupWhat: string, operationAfterGroup: OperationOnGroup<number[], number>): CsvData {
-    let csvDataGrouped = new CsvData()
+    let csvTransformOperation = new CsvData()
     let labelGroupBy = new CsvHeaderLabel()
     let labelGroupWhat = new CsvHeaderLabel()
 
@@ -116,17 +145,20 @@ export function groupCsvData(csvData: CsvData, groupBy: string, groupWhat: strin
     labelGroupWhat.value = groupWhat
     labelGroupWhat.label = groupWhat
 
-    csvDataGrouped.labels.push(labelGroupBy)
-    csvDataGrouped.labels.push(labelGroupWhat)
+    csvTransformOperation.labels.push(labelGroupBy)
+    csvTransformOperation.labels.push(labelGroupWhat)
 
     let groups = groupByKey(groupWhat, groupBy, csvData.rows)
     groups.forEach((value: Object[], key: string) => {
         let row: any = {}
         row[groupBy] = key
-        row[groupWhat] = operationAfterGroup?.fn(value as number[])
-        csvDataGrouped.rows.push(row)
+        let groupFunction = availableGroupOperations.find(op => op.name == operationAfterGroup.name)?.fn
+        if (groupFunction) {
+            row[groupWhat] = groupFunction(value as number[])
+            csvTransformOperation.rows.push(row)
+        }
     })
-    return csvDataGrouped;
+    return csvTransformOperation;
 }
 
 export function getCsvHeaders(csv: string) {
