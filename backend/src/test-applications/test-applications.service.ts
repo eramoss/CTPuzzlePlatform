@@ -212,7 +212,7 @@ export class TestApplicationsService {
     async generateCsvFromItemResponsesForIRT(testApplicationId: number): Promise<string> {
         const rows = []
         let labels = [
-            { label: 'A1', value: '0' },
+            //{ label: 'A1', value: '0' },
             { label: 'A2', value: '1' },
             { label: 'A3', value: '2' },
             { label: 'A4', value: '3' },
@@ -250,11 +250,11 @@ export class TestApplicationsService {
 
         for (let i = 0; i < 28000; i++) {
             let row = {
-                0: randomWithProbabilities(['1', '2', '3', '4'], [.25, .25, .25, .25]),
-                //1: randomWithProbabilities(['1', '2', '3','4'], [.2, .3, .5]),
-                // 2: randomWithProbabilities(['1', '2', '3','4'], [.3, .4, .3]),
-                // 3: randomWithProbabilities(['1', '2', '3','4'], [.5, .3, .2]),
-                // 4: randomWithProbabilities(['1', '2', '3','4'], [.7, .2, .1]),
+                //0: randomWithProbabilities(['1', '2', '3', '4'], [.25, .25, .25, .25]),
+                1: randomWithProbabilities(['1', '2', '3','4'], [.2, .3, .5]),
+                2: randomWithProbabilities(['1', '2', '3','4'], [.3, .4, .3]),
+                3: randomWithProbabilities(['1', '2', '3','4'], [.5, .3, .2]),
+                4: randomWithProbabilities(['1', '2', '3','4'], [.7, .2, .1]),
             }
             rows.push(row)
         }

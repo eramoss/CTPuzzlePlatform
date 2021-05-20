@@ -237,9 +237,9 @@ export default class StatisticsTestApplication extends Vue {
         .split(CSV_SEPARATOR)
         .map((header) => header.trim());
 
-      let columnsIndexes = this.panel.selectedHeaders.map((header) =>
-        headers.indexOf(header)
-      );
+      let columnsIndexes = this.panel.selectedHeaders
+        .map((header) => headers.indexOf(header))
+        .filter((index) => index != -1);
 
       lines.forEach((line: string) => {
         let columns = line.split(CSV_SEPARATOR);
@@ -287,6 +287,8 @@ export default class StatisticsTestApplication extends Vue {
   onUpdateCsvData(csvData: CsvData) {
     this.csvData = csvData;
     this.csv = csvDataToCsvFormatted(this.csvData);
+    this.updateAndPlot();
+    this.spreadSheet?.scrollToStart();
   }
 
   saveFilters(filters: LogicFilter[]) {
@@ -301,10 +303,7 @@ export default class StatisticsTestApplication extends Vue {
     if (testApplication) {
       this.undoFilterAndTransform();
       let csvData = await this.getCsvData(testApplication);
-      this.csvData = csvData;
-      this.csv = csvDataToCsvFormatted(csvData);
-      this.spreadSheet?.scrollToStart();
-      this.plotData();
+      this.onUpdateCsvData(csvData);
     }
   }
 

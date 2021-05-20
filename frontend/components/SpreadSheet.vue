@@ -62,7 +62,8 @@ export default class SpreadSheet extends Vue {
 .text-area-spread-sheet {
   font-size: 10pt;
   //padding: 15px;
-  line-height: 1em;
+  line-height: 1.1em;
   width: 100%;
+  color: black;
 }
 </style>

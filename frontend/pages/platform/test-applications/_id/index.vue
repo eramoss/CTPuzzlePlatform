@@ -117,7 +117,7 @@
               >
                 Recalcular escores de todas as participações
               </el-button>
-              <!-- <el-button
+              <el-button
                 title="Baixar respostas em formato útil para análise com IRT"
                 type="primary"
                 icon="el-icon-download"
@@ -126,7 +126,7 @@
                 @click="downloadIRT"
               >
                 IRT CSV
-              </el-button> -->
+              </el-button>
               <el-button
                 type="primary"
                 icon="el-icon-download"

@@ -26,7 +26,8 @@ export default class TutorialLabel extends Vue {
   color: white;
   border-radius: 3px;
   font-weight: bold;
-  padding: 2px;
+  padding: 0 2px;
   font-size: 9pt;
+  display:inline-block;
 }
 </style>
