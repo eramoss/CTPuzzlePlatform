@@ -5,8 +5,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "nuxt-property-decorator";
-import { Context } from "@nuxt/types";
+import { Component } from "nuxt-property-decorator";
 @Component
 export default class DashboardTitle extends Vue {
   /* @Prop({}) propName!: Type;

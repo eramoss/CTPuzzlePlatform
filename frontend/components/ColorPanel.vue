@@ -8,7 +8,7 @@
       <span :style="{color:textColor}">{{ label }}</span>
     </div>
     <div :style="{color:textColor}" class="main-info">{{ info }}</div>
-    <nuxt-link :to="link" class="panel-link">
+    <nuxt-link v-if="link" :to="link" class="panel-link">
       <div :style="{color:textColor}"><i class="el-icon-top-right" /> Acessar</div>
     </nuxt-link>
   </div>
@@ -48,7 +48,7 @@ export default class ColorPanel extends Vue {
 
   .panel-link {
     cursor: pointer;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.1);
     padding: 3px;
     border-radius: 9px;
     color: rgba(255, 255, 255, 0.8);

@@ -23,4 +23,14 @@ export class ItemResponsesController {
         return this.itemResponseService.restore(itemResponseId)
     }
 
+    @Get('getTotal/:researchGroupId')
+    getTotal(@Param('researchGroupId') researchGroupId: number): Promise<number> {
+        return this.itemResponseService.getTotal(researchGroupId)
+    }
+    
+    @Get('getAvgScorePercent/:researchGroupId')
+    getAvgScorePercent(@Param('researchGroupId') researchGroupId: number): Promise<number> {
+        return this.itemResponseService.getAvgScorePercent(researchGroupId)
+    }
+
 }

@@ -5,29 +5,11 @@
         Plataforma
       </el-breadcrumb-item>
     </el-breadcrumb>
-    <dashboard-title>Últimos acessos</dashboard-title>
+    <dashboard-title>Dados da Plataforma</dashboard-title>
     <div class="start flex-row">
-      <color-panel
-        icon="el-icon-warning"
-        label="Respostas"
-        link="/platform/items"
-        info="68"
-        color="#FA5C56"
-      />
-      <color-panel
-        icon="el-icon-warning"
-        label="Participações"
-        link="/platform/items"
-        info="9"
-        color="#FFAF57"
-      />
-      <color-panel
-        icon="el-icon-warning"
-        label="Escore médio"
-        link="/platform/items"
-        info="12"
-        color="#ACB6C0"
-      />
+      <panel-total-participations :researchGroupId="researchGroupId" />
+      <panel-total-responses :researchGroupId="researchGroupId" />
+      <panel-avg-score :researchGroupId="researchGroupId" />
       <color-panel
         icon="el-icon-warning"
         label="Mecânicas"
@@ -54,24 +36,36 @@
     </div>
 
     <div class="start flex-row"></div>
-
-    <el-button @click="goCreateTest" icon="el-icon-plus" type="primary">
-      Novo teste
-    </el-button>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
 import ColorPanel from "~/components/ColorPanel.vue";
+import { Context } from "@nuxt/types";
 import DashboardTitle from "~/components/DashboardTitle.vue";
+import PanelTotalParticipations from "~/components/dashboard/PanelTotalParticipations.vue";
+import PanelTotalResponses from "~/components/dashboard/PanelTotalResponses.vue";
+import PanelAvgScore from "~/components/dashboard/PanelAvgScore.vue";
 @Component({
-  components: { ColorPanel, DashboardTitle },
+  components: {
+    ColorPanel,
+    DashboardTitle,
+    PanelTotalParticipations,
+    PanelTotalResponses,
+    PanelAvgScore,
+  },
 })
 export default class PlatformDashboard extends Vue {
-  goCreateTest() {
-    this.$router.push("/platform/tests/new");
+  get researchGroupId(): number {
+    let researchGroup = this.$auth.user?.researchGroup;
+    let id = 0;
+    if (researchGroup) {
+      //@ts-ignore
+      id = researchGroup.id;
+    }
+    return id;
   }
 }
 </script>

@@ -11,7 +11,6 @@ import { Score } from './score.entity';
 @Injectable()
 export class ItemResponsesService {
 
-
     constructor(
         @InjectRepository(ItemResponse)
         private itemResponseRepository: Repository<ItemResponse>,
@@ -25,6 +24,37 @@ export class ItemResponsesService {
             .where({ testItem: item })
             .getCount()
         return count;
+    }
+
+    async getTotal(researchGroupId: number): Promise<number> {
+        let count = await this.itemResponseRepository
+            .createQueryBuilder('item-response')
+            .leftJoinAndSelect("item-response.participation", 'participation')
+            .leftJoinAndSelect("participation.application", 'application')
+            .leftJoinAndSelect("application.test", 'test')
+            .leftJoinAndSelect("test.researchGroup", 'researchGroup')
+            .where('researchGroup.id = :id', { id: researchGroupId })
+            .andWhere('participation."deletedAt" is null')
+            .getCount()
+        return count;
+    }
+
+    async getAvgScorePercent(researchGroupId: number): Promise<number> {
+        let itemResponses = await this.itemResponseRepository
+            .createQueryBuilder('item-response')
+            .leftJoinAndSelect("item-response.participation", 'participation')
+            .leftJoinAndSelect("participation.application", 'application')
+            .leftJoinAndSelect("application.test", 'test')
+            .leftJoinAndSelect('item-response.score', 'score')
+            .leftJoinAndSelect("test.researchGroup", 'researchGroup')
+            .where('researchGroup.id = :id', { id: researchGroupId })
+            .andWhere('participation."deletedAt" is null')
+            .getMany()
+        let totalScore = itemResponses.map(itemResponse => itemResponse.score.score)
+            .reduce((left, right) => left + right)
+        let totalMax = itemResponses.map(itemResponse => itemResponse.score.max)
+            .reduce((left, right) => left + right)
+        return Math.ceil((totalScore / totalMax) * 100);
     }
 
     async calculateScoreAndSave(itemResponse: ItemResponse): Promise<Score> {

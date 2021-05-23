@@ -37,6 +37,11 @@ export class ParticipationController {
         return this.service.getById(id);
     }
 
+    @Get('getTotalParticipations/:researchGroupId')
+    getTotalParticipations(@Param('researchGroupId') researchGroupId: number): Promise<number> {
+        return this.service.countParticipations(researchGroupId)
+    }
+
     @Get('public/byId/:id')
     getByIdPublic(@Param('id') id: number): Promise<Participation> {
         return this.service.getById(id);

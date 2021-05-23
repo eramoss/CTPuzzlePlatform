@@ -14,12 +14,24 @@ import Participation from './participation.entity';
 export class ParticipationService {
 
 
+
     constructor(
         @InjectRepository(Participation) private participationRepository: Repository<Participation>,
         @InjectRepository(TestItem) private testItemRepository: Repository<TestItem>,
         private itemResponseService: ItemResponsesService,
         private userService: UsersService,
     ) { }
+
+    async countParticipations(groupId: number): Promise<number> {
+        let count = await this.participationRepository
+            .createQueryBuilder('participation')
+            .leftJoinAndSelect("participation.application", 'application')
+            .leftJoinAndSelect("application.test", 'test')
+            .leftJoinAndSelect("test.researchGroup", 'researchGroup')
+            .where('researchGroup.id = :id', { id: groupId })
+            .getCount()
+        return count;
+    }
 
     saveUserData(userHash: string, user: any): Promise<any> {
         return this.userService.saveData(userHash, user)
@@ -74,14 +86,20 @@ export class ParticipationService {
             .getOne();
         let participation = await this.participationRepository.createQueryBuilder('participation')
             .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
+            .leftJoinAndSelect('itemResponse.testItem', 'testItem')
             .where({ id: participationId })
             .getOne();
-        let itemResponse = new ItemResponse();
+
+
+        let itemResponse = participation.itemResponses.find(itemResponse => itemResponse.testItem.id == testItem.id)
+        if (!itemResponse) {
+            itemResponse = new ItemResponse()
+            participation.addResponse(itemResponse);
+        }
         itemResponse.testItem = testItem;
         itemResponse.response = JSON.stringify(response);
         itemResponse.score = await this.itemResponseService.calculateScore(itemResponse);
-        participation.addResponse(itemResponse);
-        participation.lastVisitedItemWasFinished = true;
+        //participation.lastVisitedItemWasFinished = true;
         this.participationRepository.save(participation);
     }
 
