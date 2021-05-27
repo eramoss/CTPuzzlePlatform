@@ -46,10 +46,9 @@ a {
 }
 
 .panel {
-  border-radius: 10px;
-  background: #fafafa;
+  border-radius: 5px;
+  box-shadow: 0 0 30px 0 rgba(0,0,0,0.2);
   padding: 20px;
-  border: 1px solid #dadada;
 
 
   .title {
@@ -61,9 +60,7 @@ a {
 .left{
   text-align: left;
 }
-.el-table{
-  margin-top: 20px;
-}
+
 .panel.register{
   margin: 30px auto;
   margin-left: 10px;
@@ -100,6 +97,10 @@ a {
 
 .el-breadcrumb{
     margin-bottom: 10px;
+}
+
+.el-menu{
+    border-right: none !important;
 }
 
 .el-select{
@@ -225,4 +226,14 @@ h3{
 .phrase{
     font-size: 15pt;
     margin-bottom: 6px  ;
+}
+
+.el-button.el-button--text{
+    font-weight: bold;
+}
+
+.el-table{
+    margin-top: 20px;
+    /* font-size: 15px;
+    color: #131417; */
 }

@@ -1,6 +1,6 @@
 <template>
   <span class="observation-component">
-    <el-tooltip effect="light" placement="left">
+    <el-tooltip effect="light" placement="left" :open-delay="300">
       <template slot="content">
         <i class="small-tooltip-title">Observações</i>
         <pre>{{ observations || "Observações. Clique para editar" }}</pre>
@@ -70,7 +70,13 @@ export default class AddObservationsBtn extends Vue {
   }
 
   get observationsTrimmed(): string {
-    return (this.value || "Observações").substr(0, 6) + "...";
+    let trim = "Observações";
+    if (this.value) {
+      if (this.value.length) {
+        trim = this.value.substr(0, 6) + "...";
+      }
+    }
+    return trim;
   }
 }
 </script>

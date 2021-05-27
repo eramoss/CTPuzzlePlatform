@@ -43,10 +43,6 @@
       <div class="flex-row fill">
         <btn-refresh @click="loadData"></btn-refresh>
         <div>
-          <btn-remove
-            @click="confirmRemoveParticipation"
-            title="Remover participação na aplicação do teste"
-          />
           <el-tooltip
             content="Recalcula o escore para todos os itens"
             :open-delay="400"
@@ -91,7 +87,7 @@ import { ACTION_GET_LAST_RESPONSE } from "~/store/test-applications";
 import { mustRefreshLastItemResponse } from "../index.vue";
 
 import ItemResponse from "~/types/ItemResponse";
-import { ACTION_RECALCULATE_ALL_SCORES, ACTION_REMOVE_PARTICIPATION_BY_ID } from "~/store/participations";
+import { ACTION_RECALCULATE_ALL_SCORES } from "~/store/participations";
 const ACTION_GET_BY_ID = "participations/getById";
 
 @Component({
@@ -107,9 +103,6 @@ export default class ItemResponsesList extends Vue {
   lastResponse!: ItemResponse;
 
   @Action(ACTION_GET_BY_ID) getById!: (id: any) => Promise<Participation>;
-  @Action(ACTION_REMOVE_PARTICIPATION_BY_ID) removeParticipationById!: (
-    id: number
-  ) => Promise<any>;
 
   @Action(ACTION_GET_LAST_RESPONSE) getLastResponse!: (
     tetApplicationId: any
@@ -118,30 +111,6 @@ export default class ItemResponsesList extends Vue {
   @Action(ACTION_RECALCULATE_ALL_SCORES) recalculateAll!: (
     id: number
   ) => Promise<any>;
-
-  async confirmRemoveParticipation() {
-    try {
-      let option = await this.$confirm(
-        `Tem certeza de que deseja remover a participação? <br>
-        A participação do seguinte usuário será removida:<br>
-        Usuário: ${this.participation.user.name} <br>
-        Código da participação: ${this.participation.id}
-        `,
-        "Remover participação?",
-        {
-          dangerouslyUseHTMLString: true,
-          confirmButtonText: "Remover",
-          cancelButtonText: "Cancelar",
-          confirmButtonClass: "el-button--danger",
-        }
-      );
-      if (option === "confirm") {
-        this.removeParticipation();
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
 
   async recalculateAllResponseItems() {
     this.loading = true;
@@ -156,23 +125,6 @@ export default class ItemResponsesList extends Vue {
       });
     } finally {
       this.loading = false;
-    }
-  }
-
-  async removeParticipation() {
-    try {
-      await this.removeParticipationById(this.participation.id);
-      this.$notify.success({
-        title: "A participação foi removida",
-        message: "Sucesso ao remover",
-      });
-      this.$router.go(-1);
-    } catch (e) {
-      this.$notify({
-        type: "error",
-        title: "Não foi possível remover",
-        message: "Não foi possível remover",
-      });
     }
   }
 

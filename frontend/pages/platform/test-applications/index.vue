@@ -27,7 +27,7 @@
             class="fill"
           ></el-input>
         </filters-box-item>
-        <filters-box-item label="Filtro por testes">
+        <filters-box-item label="Teste">
           <el-select
             v-model="pageRequest.filter.test"
             @clear="clearTestFilter"

@@ -1,8 +1,14 @@
 <template>
   <div>
+    <el-breadcrumb>
+      <el-breadcrumb-item :to="{ path: '/platform' }"
+        >Plataforma</el-breadcrumb-item
+      >
+      <el-breadcrumb-item>Estatísticas</el-breadcrumb-item>
+    </el-breadcrumb>
     <div class="left panel">
       <h2>Estatísticas</h2>
-      
+
       <!-- Teste: {{ test }}
       <el-button @click="changeTest">Change test</el-button>
        -->

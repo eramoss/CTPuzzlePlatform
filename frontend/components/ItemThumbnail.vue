@@ -1,14 +1,13 @@
 <template>
   <div class="item-thumbnail">
     <slot name="start" />
-    <thumbnail :src="item.thumbnail" width="150px" height="100px" />
+    <thumbnail :src="item.thumbnail" width="130px" height="80px" :title="item.description" />
     <div class="item-infos">
       <p class="title">
         <slot name="headline">
-          {{ item.name }} <tutorial-label :item="item"/>
+          {{ item.name }} <tutorial-label :item="item" />
         </slot>
       </p>
-      <p class="description">{{ item.description }}</p>
     </div>
     <!-- <thumbnail :src="item.thumbnail" /> -->
     <slot name="end" class="center-vertical" />
@@ -51,7 +50,8 @@ export default class ItemThumbnail extends Vue {
       margin: 0;
     }
     .description {
-      word-break: keep-all;
+      max-width: 500px;
+      overflow-wrap: break-word;
     }
   }
 }

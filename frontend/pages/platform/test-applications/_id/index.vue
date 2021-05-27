@@ -35,14 +35,12 @@
             </el-form-item>
             <el-form-item label-width="170px" label="Teste">
               <nuxt-link
-                target="_blank"
                 title="Acessar teste"
                 :to="`/platform/tests/${testApplication.test.id}`"
                 ref="inputName"
               >
                 <el-button type="text"
                   >{{ testApplication.test.name }}
-                  <i class="el-icon-top-right" />
                 </el-button>
               </nuxt-link>
             </el-form-item>
@@ -147,10 +145,7 @@
                 {{ dateFormat.fromNow(row.createdAt) }}
               </template>
             </el-table-column>
-            <el-table-column
-              label="Participante"
-              prop="user.name"
-            />
+            <el-table-column label="Participante" prop="user.name" />
             <!-- <el-table-column label="Código do usuário" prop="user.hash" /> -->
             <el-table-column label="Respostas" width="200">
               <template slot-scope="{ row }">
@@ -161,13 +156,17 @@
                 </nuxt-link>
               </template>
             </el-table-column>
-            <el-table-column width="280" label="Ações">
+            <el-table-column width="150" label="Remover">
+              <template slot-scope="{ row }">
+                <btn-remove @click="removeParticipation(row)" />
+              </template>
+            </el-table-column>
+            <el-table-column width="200" label="Anotações">
               <template slot-scope="{ row }">
                 <add-observations-btn
                   @save="saveParticipation(row)"
                   :value.sync="row.observations"
                 ></add-observations-btn>
-                <btn-remove @click="removeParticipation(row)" />
               </template>
             </el-table-column>
           </el-table>
@@ -202,10 +201,7 @@ import { DateFormat } from "~/utils/DateFormat";
 import ItemResponse from "~/types/ItemResponse";
 import AddObservationsBtn from "~/components/AddObservationsBtn.vue";
 import SwitchTestApplicationVisibility from "~/components/SwitchTestApplicationVisibility.vue";
-import {
-  ACTION_RECALCULATE_ALL_SCORES,
-  ACTION_SAVE_PARTICIPATION,
-} from "~/store/participations";
+import { ACTION_SAVE_PARTICIPATION } from "~/store/participations";
 
 const ACTION_GET_BY_ID = "test-applications/getById";
 
@@ -230,7 +226,7 @@ import {
     BtnRemove,
   },
 })
-export default class TestEditForm extends Vue {
+export default class ApplicationEditForm extends Vue {
   loading: boolean = false;
   testApplication: TestApplication = new TestApplication();
   lastResponse: ItemResponse = new ItemResponse();

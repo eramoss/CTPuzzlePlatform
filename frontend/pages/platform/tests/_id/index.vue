@@ -13,7 +13,7 @@
       <h2>Edição de teste</h2>
       <el-form :model="test" :rules="formRules" ref="form" v-if="test">
         <el-row :gutter="15">
-          <el-col :span="19">
+          <el-col :span="15">
             <el-form-item label-width="130px" label="Nome do teste" prop="name">
               <el-input
                 ref="inputName"
@@ -25,7 +25,7 @@
         </el-row>
 
         <el-row>
-          <el-col :span="19">
+          <el-col :span="15">
             <el-form-item label="Pesquisar itens" label-width="130px">
               <el-select
                 @focus="loadItems"
@@ -57,8 +57,8 @@
                             flex-flow: column;
                           "
                         >
-                          <i class="el-icon-plus" style="font-size:20pt"></i>
-                          <b>Adicionar<br>ao teste</b>
+                          <i class="el-icon-plus" style="font-size: 20pt"></i>
+                          <b>Adicionar<br />ao teste</b>
                         </div>
                       </div>
                     </item-thumbnail>
@@ -97,11 +97,9 @@
                         <tutorial-label :item="testItem.item" />
                       </div>
                       <template slot="start">
-                        <el-tooltip effect="light" content="Arraste para mover">
-                          <div class="drag-indicator" style="height: 100%">
-                            <img src="/dragger.svg" alt="Arrastar" />
-                          </div>
-                        </el-tooltip>
+                        <div class="drag-indicator" style="height: 100%">
+                          <img src="/dragger.svg" alt="Arrastar" />
+                        </div>
                       </template>
                       <template slot="end">
                         <div>
@@ -112,7 +110,6 @@
                         </div>
                         <div class="flex-row">
                           <nuxt-link
-                            target="_blank"
                             :to="`/platform/items/${testItem.item.id}`"
                           >
                             <btn-edit />
@@ -288,6 +285,7 @@ export default class TestEditForm extends Vue {
     this.selectedItems.forEach((item: TestItem, index: number) => {
       item.order = index;
     });
+    this.save()
   }
 
   get noSelectedItems(): Item[] {
@@ -305,20 +303,11 @@ export default class TestEditForm extends Vue {
     testItem.item = item;
     this.selectedItems.push(testItem);
     this.updateOrder();
-    this.$notify({
-      type: "success",
-      title: "O item foi adicionado",
-      message: "Salve o teste para registrar esta lista de itens.",
-    });
   }
 
   removeItem(testItem: TestItem) {
     this.selectedItems.splice(this.selectedItems.indexOf(testItem), 1);
-    /* this.$notify({
-      type: "success",
-      title: "O item foi removido",
-      message: "O item foi removido do teste. Salve para registrar.",
-    }); */
+    this.save()
   }
 
   async asyncData(ctx: Context) {
@@ -379,7 +368,7 @@ export default class TestEditForm extends Vue {
     }
   }
   .added-item:hover {
-    cursor: grab;
+    cursor: move;
     box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 10px;
     .drag-indicator {
       visibility: visible;
