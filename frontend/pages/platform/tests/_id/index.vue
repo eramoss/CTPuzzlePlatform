@@ -76,7 +76,7 @@
             <el-form-item>
               <form-item-label
                 v-if="selectedItems.length"
-                label="Itens adicionados (arraste para ordenar)"
+                :label="`${this.selectedItems.length} itens adicionados (arraste para ordenar)`"
                 required
               />
               <draggable
