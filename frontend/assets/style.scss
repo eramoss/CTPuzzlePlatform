@@ -237,3 +237,15 @@ h3{
     /* font-size: 15px;
     color: #131417; */
 }
+
+.big {
+    .el-input__inner{
+        font-size: 14pt;
+    }
+}
+
+.bold {
+    .el-input__inner{
+        font-weight: bold;
+    }
+}

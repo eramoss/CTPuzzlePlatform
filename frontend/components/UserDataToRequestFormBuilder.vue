@@ -13,21 +13,42 @@
 
     <table style="width: 100%">
       <tr>
+        <th style="width: 50px"></th>
         <th>Pergunta</th>
-        <th style="width: 200px">Tipo da resposta</th>
-        <th style="width: 200px">Obrigatório</th>
-        <th style="width: 200px">Remover</th>
+        <th style="width: 200px">Tipo</th>
+        <th style="width: 100px">Obrigatório</th>
+        <th style="width: 100px">Remover</th>
       </tr>
       <tr
         v-for="(userDataVariable, index) in userDataList"
         :key="userDataVariable.id"
       >
         <td>
-          <el-input :ref="`input${index}`" v-model="userDataVariable.name" />
+          <el-button
+            type="text"
+            title="Mover para cima"
+            icon="el-icon-arrow-up"
+            @click="up(userDataVariable, index)"
+          ></el-button>
+          <el-button
+            style="margin-left: 0"
+            title="Mover para baixo"
+            type="text"
+            icon="el-icon-arrow-down"
+            @click="down(userDataVariable, index)"
+          ></el-button>
+        </td>
+        <td>
+          <el-input
+            class="big bold"
+            :ref="`input${index}`"
+            v-model="userDataVariable.name"
+          />
         </td>
         <td>
           <div class="flex-row">
             <el-select
+              class="big bold"
               v-model="userDataVariable.variableType"
               value-key="id"
               @change="handleChange(userDataVariable)"
@@ -59,6 +80,7 @@
         </td>
       </tr>
       <tr style="margin-top: 10px">
+        <td></td>
         <td style="padding-top: 10px">
           <el-button
             title="Adicionar pergunta"
@@ -148,6 +170,22 @@ export default class UserDataToRequestFormBuilder extends Vue {
   removeOption(question: UserDataQuestion, option: VarOption) {
     const options = question.options;
     options.splice(options.indexOf(option), 1);
+  }
+
+  up(userDataVariable: UserDataQuestion, index: number) {
+    let aux = this.userDataList[index - 1];
+    if (aux) {
+      this.userDataList.splice(index - 1, 1, userDataVariable);
+      this.userDataList.splice(index, 1, aux);
+    }
+  }
+
+  down(userDataVariable: UserDataQuestion, index: number) {
+    let aux = this.userDataList[index + 1];
+    if (aux) {
+      this.userDataList.splice(index + 1, 1, userDataVariable);
+      this.userDataList.splice(index, 1, aux);
+    }
   }
 
   addVarOption() {
