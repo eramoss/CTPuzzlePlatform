@@ -98,7 +98,7 @@
     </table>
     <el-dialog
       :visible.sync="optionsListDialogVisible"
-      title="Definir opções de resposta"
+      :title="questionBeingEditted.name || 'Definir opções de resposta'"
     >
       <template>
         <div v-if="questionBeingEditted">
@@ -124,7 +124,7 @@
             style="margin-top: 20px"
             icon="el-icon-plus"
             @click="addVarOption"
-            >Adicionar opção</el-button
+            >Adicionar opção de resposta</el-button
           >
         </div>
         <div slot="footer">

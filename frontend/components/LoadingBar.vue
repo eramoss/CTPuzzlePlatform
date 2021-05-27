@@ -29,9 +29,9 @@ export default Vue.extend({
   position: fixed;
   width: 100vw;
   height: 100vh;
-  color: #ccc;
+  color: rgb(255, 216, 42);
   //background: rgba(255, 255, 255, 0.4);
-  font-size: 40pt;
+  font-size: 100pt;
   z-index: 100;
 }
 </style>
