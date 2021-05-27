@@ -226,6 +226,7 @@ export default class TestEditForm extends Vue {
     try {
       this.saving = true;
       let isJustSaved = !this.test.id;
+      this.test.items = this.selectedItems
       this.test = await this.saveTest(this.test);
       if (isJustSaved || requestApply) {
         this.askForTestApplication();
@@ -285,7 +286,7 @@ export default class TestEditForm extends Vue {
     this.selectedItems.forEach((item: TestItem, index: number) => {
       item.order = index;
     });
-    this.save()
+    this.save();
   }
 
   get noSelectedItems(): Item[] {
@@ -307,8 +308,13 @@ export default class TestEditForm extends Vue {
 
   removeItem(testItem: TestItem) {
     this.selectedItems.splice(this.selectedItems.indexOf(testItem), 1);
-    this.save()
+    this.save();
   }
+
+  /* async realoadTest() {
+    this.test = await this.$store.dispatch(ACTION_GET_TEST_BY_ID, this.test.id);
+    this.availableItems = await this.$store.dispatch(ACTION_FIND_ALL_ITEMS);
+  } */
 
   async asyncData(ctx: Context) {
     let test!: Test;
