@@ -1,14 +1,8 @@
 <template>
-  <span class="observation-component">
-    <el-tooltip effect="light" placement="left" :open-delay="300">
-      <template slot="content">
-        <i class="small-tooltip-title">Observações</i>
-        <pre>{{ observations || "Observações. Clique para editar" }}</pre>
-      </template>
-      <el-button @click="showDialog" type="text">
-        <span class="text-part">{{ observationsTrimmed }}</span>
-      </el-button>
-    </el-tooltip>
+  <span class="observation-component" :title="observations">
+    <el-button @click="showDialog" type="text" >
+      <span class="text-part">{{ observationsTrimmed }}</span>
+    </el-button>
     <el-button
       size="small"
       style="font-weight: bold"

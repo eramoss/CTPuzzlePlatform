@@ -7,12 +7,11 @@ import { TestApplication } from 'src/test-applications/test-application.entity';
 import { TestItem } from 'src/tests/test-item.entity';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { DeleteResult, In, Repository } from 'typeorm';
+import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
 import Participation from './participation.entity';
 
 @Injectable()
 export class ParticipationService {
-
 
 
     constructor(
@@ -31,6 +30,10 @@ export class ParticipationService {
             .where('researchGroup.id = :id', { id: groupId })
             .getCount()
         return count;
+    }
+
+    async saveSource(participationId: number, source: string): Promise<UpdateResult> {
+        return this.participationRepository.update({ id: participationId }, { source })
     }
 
     saveUserData(userHash: string, user: any): Promise<any> {
@@ -96,6 +99,7 @@ export class ParticipationService {
             itemResponse = new ItemResponse()
             participation.addResponse(itemResponse);
         }
+
         itemResponse.testItem = testItem;
         itemResponse.response = JSON.stringify(response);
         itemResponse.score = await this.itemResponseService.calculateScore(itemResponse);

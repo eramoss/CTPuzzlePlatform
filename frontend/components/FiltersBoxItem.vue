@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-box-item" style="flex-grow: 1">
+  <div class="filter-box-item" :style="{ 'flex-grow': grow }">
     <span class="filter-box-item-label">{{ label }}</span>
     <slot />
   </div>
@@ -11,6 +11,7 @@ import { Component, Prop } from "nuxt-property-decorator";
 @Component
 export default class FiltersBoxItem extends Vue {
   @Prop() label!: string;
+  @Prop({ default: 1 }) grow!: number;
 }
 </script>
 <style lang="scss">

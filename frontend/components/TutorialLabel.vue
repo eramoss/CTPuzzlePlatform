@@ -22,8 +22,8 @@ export default class TutorialLabel extends Vue {
 </script>
 <style lang="scss">
 .badge-tutorial {
-  background: #ffbc1b;
-  color: white;
+  //background: ;
+  color: #ffbc1b;
   border-radius: 3px;
   font-weight: bold;
   padding: 0 2px;

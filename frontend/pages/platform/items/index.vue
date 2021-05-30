@@ -24,7 +24,7 @@
             class="fill"
           ></el-input>
         </filters-box-item>
-        <filters-box-item label="Mecânicas de puzzles">
+        <filters-box-item label="Mecânicas de puzzles" :grow="0">
           <el-select
             v-model="pageRequest.filter.mechanic"
             @clear="clearMechanicFilter"
@@ -45,28 +45,32 @@
       </filters-box>
       <el-table :data="pageResponse.data">
         <el-table-column label="Código" prop="id" width="70"></el-table-column>
-        <el-table-column label="Nome" prop="name" width="570">
+        <el-table-column label="Nome" prop="name">
           <template slot-scope="{ row }">
             <div class="left flex-row">
-              <thumbnail :src="row.thumbnail" width="90px" height="50px" />
-              <el-button type="text" @click="edit(row)" style="margin-left:10px">
+              <thumbnail
+                :src="row.thumbnail"
+                width="90px"
+                height="50px"
+                :title="row.description"
+              />
+              <el-button
+                type="text"
+                @click="edit(row)"
+                style="margin-left: 10px"
+              >
                 {{ row.name }}
               </el-button>
+              <tutorial-label :item="row" style="margin-left:10px" />
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="Tutorial" width="90">
-          <template slot-scope="{ row }">
-            <tutorial-label :item="row" />
-          </template>
-        </el-table-column>
-        <el-table-column label="Descrição" prop="description"></el-table-column>
         <el-table-column
           label="Mecânica"
           prop="mechanic.name"
           width="200"
         ></el-table-column>
-        <el-table-column label="Ações" prop="name" width="150">
+        <el-table-column label="Ações" prop="name" width="140">
           <template slot-scope="{ row }">
             <btn-remove @click="remove(row)"> Remover </btn-remove>
           </template>

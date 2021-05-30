@@ -132,6 +132,7 @@ export class TestApplicationsService {
         const labels = [
             { label: 'data', value: 'data' },
             { label: 'usuario', value: 'usuario' },
+            { label: 'fonte', value: 'fonte' },
             { label: 'participacao', value: 'participacao_id' },
             { label: 'observacoes', value: 'observacoes' },
             { label: 'item', value: 'item_id' },
@@ -169,6 +170,7 @@ export class TestApplicationsService {
                 let row = {
                     data: itemResponse.createdAt.toLocaleString(),
                     usuario: participation.user.hash,
+                    fonte: participation.source,
                     participacao_id: participation.id,
                     item_id: itemResponse.testItem.item.id,
                     item_order: itemResponse.testItem.order,
@@ -251,10 +253,10 @@ export class TestApplicationsService {
         for (let i = 0; i < 28000; i++) {
             let row = {
                 //0: randomWithProbabilities(['1', '2', '3', '4'], [.25, .25, .25, .25]),
-                1: randomWithProbabilities(['1', '2', '3','4'], [.2, .3, .5]),
-                2: randomWithProbabilities(['1', '2', '3','4'], [.3, .4, .3]),
-                3: randomWithProbabilities(['1', '2', '3','4'], [.5, .3, .2]),
-                4: randomWithProbabilities(['1', '2', '3','4'], [.7, .2, .1]),
+                1: randomWithProbabilities(['1', '2', '3', '4'], [.2, .3, .5]),
+                2: randomWithProbabilities(['1', '2', '3', '4'], [.3, .4, .3]),
+                3: randomWithProbabilities(['1', '2', '3', '4'], [.5, .3, .2]),
+                4: randomWithProbabilities(['1', '2', '3', '4'], [.7, .2, .1]),
             }
             rows.push(row)
         }
@@ -352,6 +354,7 @@ export class TestApplicationsService {
         const siteUrl = this.configService.get('SITE_URL')
         const urlToSendResponses = `${apiUrl}/participations/public/respond/${participation.id}/<item_id>`
         const urlToSendProgress = `${apiUrl}/participations/public/save-progress`
+        const urlToSendSource = `${apiUrl}/participations/public/save-source/${participation.id}`
         const urlToSendUserData = `${apiUrl}/participations/public/save-user/${userHash}`
 
         let responseClassDefinition = ''
@@ -399,6 +402,12 @@ curl -X PUT --header 'Content-Type: application/json' -d '{"id": ${participation
                 url: urlToSendUserData,
                 help: `Envie um JSON com as informações do usuário. Exemplo:
 curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "idade": 10}' ${urlToSendUserData}`
+            },
+            urlToSendSource: {
+                method: 'PUT',
+                url: urlToSendSource,
+                help: `Envie uma string com a informação de onde o usuário veio. Exemplo (document.referrer)
+            curl -X PUT --header 'Content-Type: application/json' -d '{"testApplication": ${participation.id}, "source": "facebook"}' ${urlToSendSource}`
             },
             urlToEndOfTestQuiz: {
                 url: `${siteUrl}/end-of-test-quiz/${participation.id}`

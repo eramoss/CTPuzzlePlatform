@@ -23,7 +23,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="Resposta" prop="response" width="300">
+      <el-table-column label="Resposta" prop="response" width="400">
         <template slot-scope="{ row }">
           <div>
             <json-tree :title="row.response" :json="JSON.parse(row.response)" />

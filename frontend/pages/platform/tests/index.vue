@@ -27,12 +27,12 @@
             </el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="Itens" width="100">
+        <el-table-column prop="name" label="Itens" width="80">
           <template slot-scope="{ row }">
             {{ row.items.length }}
           </template>
         </el-table-column>
-        <el-table-column label="Aplicações" width="230">
+        <el-table-column label="Aplicações" width="140">
           <template slot-scope="{ row }">
             <nuxt-link
               v-show="row.applications.length"
@@ -52,7 +52,7 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column label="Ações" width="200">
+        <el-table-column label="Ações" width="140">
           <template slot-scope="{ row }">
             <btn-remove @click="remove(row)"> Remover </btn-remove>
           </template>

@@ -16,6 +16,11 @@ export class ParticipationController {
         this.service.saveProgress(participation)
     }
 
+    @Put('public/save-source/:participationId/')
+    saveParticipationSource(@Body() body: { participationId: number, source: string }) {
+        this.service.saveSource(body.participationId, body.source)
+    }
+
     @Post()
     saveParticipation(@Body() participation: Participation): Promise<Participation> {
         return this.service.save(participation);

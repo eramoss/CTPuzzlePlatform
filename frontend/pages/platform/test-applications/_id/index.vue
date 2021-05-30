@@ -146,6 +146,7 @@
               </template>
             </el-table-column>
             <el-table-column label="Participante" prop="user.name" />
+            <el-table-column label="Fonte" prop="source" />
             <!-- <el-table-column label="Código do usuário" prop="user.hash" /> -->
             <el-table-column label="Respostas" width="200">
               <template slot-scope="{ row }">

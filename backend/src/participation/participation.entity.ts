@@ -28,6 +28,9 @@ export default class Participation {
     @Column({ nullable: true })
     observations: string
 
+    @Column({ nullable: true })
+    source: string
+
     @ManyToOne(type => TestApplication, { nullable: true, onDelete: 'CASCADE' })
     application: TestApplication;
 

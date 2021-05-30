@@ -27,7 +27,7 @@
             class="fill"
           ></el-input>
         </filters-box-item>
-        <filters-box-item label="Teste">
+        <filters-box-item label="Teste" :grow="0">
           <el-select
             v-model="pageRequest.filter.test"
             @clear="clearTestFilter"
@@ -66,9 +66,9 @@
             {{ row.countParticipations }}
           </template>
         </el-table-column>
-        <el-table-column label="Teste" width="340" prop="test.name">
-        </el-table-column>
-        <el-table-column label="Visibilidade" width="340">
+        <!-- <el-table-column label="Teste" width="340" prop="test.name"> -->
+        <!-- </el-table-column> -->
+        <el-table-column label="Visibilidade" width="240">
           <template slot-scope="{ row }">
             <div>
               <switch-test-application-visibility :test-application="row" />
