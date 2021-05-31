@@ -5,8 +5,8 @@
       title="Filtrar dados por condição (igual, diferente, maior, menor etc)"
       @click="show"
       >{{ buttonText }}
-      <span v-if="filters.length && applied"
-        >({{ filters.length }})</span
+      <span v-if="totalFilters && applied"
+        >({{ totalFilters }})</span
       ></el-button
     >
     <el-dialog title="Filtrar" :visible.sync="visible">
@@ -22,14 +22,14 @@
         <div class="flex-row">
           <el-select
             v-model="filter.leftOperandFilterVariable"
-            placeholder="Variável"
+            placeholder="Variável 1"
             :filterable="true"
           >
             <el-option
-              :key="header.value"
-              v-for="header in csvHeaders"
-              :value="header.value"
-              :label="header.value"
+              :key="header"
+              v-for="header in headers"
+              :value="header"
+              :label="header"
             ></el-option>
           </el-select>
           <el-select
@@ -73,49 +73,47 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "nuxt-property-decorator";
 import LogicFilter from "~/types/LogicFilter";
 import { v4 as uuidv4 } from "uuid";
-import { CsvData, filterCsvData } from "~/types/CsvData";
+import { csvToCsvData, filterCsvData } from "~/types/CsvData";
 @Component
 export default class StatisticsFilter extends Vue {
   filters: LogicFilter[] = [];
   visible = false;
   applied = false;
-  @Prop() csvData!: CsvData;
+  @Prop() headers!: string[];
+  @Prop() csv!: string;
   @Prop() appliedFilters!: LogicFilter[];
   @Prop({ default: false }) disabled!: boolean;
   @Prop({ default: "Filtrar" }) buttonText!: string;
 
   @Watch("appliedFilters", { immediate: true })
   onChangeAppliedFilters() {
-    this.$nextTick(() => {
+    if (this.appliedFilters) {
       this.filters = [...this.appliedFilters];
-    });
+    }
   }
 
-  undoTransform() {
-    this.filters.splice(0);
-    this.filter();
+  undoFilter() {
+    this.filters?.splice(0);
+    this.$emit("onUpdateFilters", this.filters);
   }
 
   remove(filter: LogicFilter) {
-    let index = this.filters.indexOf(filter);
-    this.filters.splice(index, 1);
+    let index = this.filters?.indexOf(filter);
+    this.filters?.splice(index, 1);
   }
 
   addFilter() {
     let filter = new LogicFilter();
     filter.id = uuidv4();
-    this.filters.push(filter);
+    this.filters?.push(filter);
   }
 
-  get csvHeaders() {
-    return this.csvData.labels;
+  get totalFilters() {
+    return this.filters?.length;
   }
 
   show() {
     this.visible = true;
-    /* if (!this.filters.length) {
-      this.addFilter();
-    } */
   }
 
   hide() {
@@ -128,10 +126,10 @@ export default class StatisticsFilter extends Vue {
   }
 
   filter() {
-    let csvData;
-    this.filters.forEach((filter) => {
+    let csvData = csvToCsvData(this.csv);
+    this.filters?.forEach((filter) => {
       csvData = filterCsvData(
-        this.csvData,
+        csvData,
         filter.leftOperandFilterVariable,
         filter.logicalOperationFilter,
         filter.rightOperandFilterValue
@@ -140,8 +138,11 @@ export default class StatisticsFilter extends Vue {
 
     if (csvData) {
       this.applied = true;
+      /* if (!this.filters.length) {
+        this.$emit("reload");
+      } */
+      this.$emit("onUpdateFilters", this.filters);
       this.$emit("onUpdateCsvData", csvData);
-      this.$emit("onUpdateFilters", [...this.filters]);
     }
   }
 }

@@ -38,18 +38,22 @@
             ref="statisticsFilter"
             button-text="Filtrar"
             :disabled="!panel.testApplication"
-            :csvData="csvData"
+            :headers="csvHeaders"
+            :csv="csv"
             @onUpdateCsvData="onUpdateCsvData"
             @onUpdateFilters="saveFilters"
+            @reload="reloadAndFilter"
           />
           <statistics-transform
             :appliedTransforms="panel.transforms"
             ref="statisticsTransform"
             button-text="Agrupar"
             :disabled="!panel.testApplication"
-            :csvData="csvData"
+            :headers="csvHeaders"
+            :csv="csv"
             @onUpdateCsvData="onUpdateCsvData"
             @onUpdateTransforms="saveTransforms"
+            @reload="reloadAndFilter"
           />
           <el-button :disabled="!panel.testApplication" @click="resetCsv">
             Desfazer filtros e agrupamentos
@@ -252,13 +256,16 @@ export default class StatisticsTestApplication extends Vue {
     this.selectedData = selectedData;
   }
 
-  resetCsv() {
+  async resetCsv() {
+    this.undoFilterAndTransform();
     this.loadCsv(this.panel.testApplication);
   }
 
   undoFilterAndTransform() {
-    this.statisticsFilter?.undoTransform();
+    this.statisticsFilter?.undoFilter();
+    this.statisticsFilter?.filter();
     this.statisticsTransform?.undoTransform();
+    this.statisticsTransform?.transform();
   }
 
   async plotData() {
@@ -292,27 +299,31 @@ export default class StatisticsTestApplication extends Vue {
   }
 
   saveFilters(filters: LogicFilter[]) {
-    this.panel.filters = filters;
+    this.$emit("saveFilters", this.panel, filters);
   }
 
   saveTransforms(transforms: TransformOperation[]) {
-    this.panel.transforms = transforms;
+    this.$emit("saveTransforms", this.panel, transforms);
   }
 
   async loadCsv(testApplication: TestApplication) {
     if (testApplication) {
-      this.undoFilterAndTransform();
       let csvData = await this.getCsvData(testApplication);
       this.onUpdateCsvData(csvData);
     }
   }
 
+  async reloadAndFilter() {
+    await this.loadCsv(this.panel.testApplication);
+    this.statisticsFilter?.filter();
+    this.$nextTick(() => {
+      this.statisticsTransform?.transform();
+    });
+  }
+
   async mounted() {
     if (this.panel) {
-      await this.loadCsv(this.panel.testApplication);
-      this.statisticsFilter?.filter();
-      this.statisticsTransform?.transform();
-      this.updateAndPlot();
+      this.reloadAndFilter();
     }
   }
 }

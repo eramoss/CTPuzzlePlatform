@@ -45,7 +45,7 @@ print_help(opt_parser)
 # Import DATASET
 separator = '|'
 dataset  <- read.csv(args$data_input_file_path, header=TRUE, sep=separator)
-summary(dataset)
+# summary(dataset)
 
 # Generate GRAPH
 png(args$plot_output_file_path, res = 120)

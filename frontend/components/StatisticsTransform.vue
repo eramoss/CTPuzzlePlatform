@@ -36,10 +36,10 @@
             :filterable="true"
           >
             <el-option
-              :key="header.value"
-              v-for="header in csvHeaders"
-              :value="header.value"
-              :label="header.value"
+              :key="header"
+              v-for="header in headers"
+              :value="header"
+              :label="header"
             ></el-option>
           </el-select>
           <el-select
@@ -48,10 +48,10 @@
             :filterable="true"
           >
             <el-option
-              :key="header.value"
-              v-for="header in csvHeaders"
-              :value="header.value"
-              :label="header.value"
+              :key="header"
+              v-for="header in headers"
+              :value="header"
+              :label="header"
             ></el-option>
           </el-select>
           <el-button
@@ -79,7 +79,7 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "nuxt-property-decorator";
 import {
   availableGroupOperations,
-  CsvData,
+  csvToCsvData,
   groupCsvData,
 } from "~/types/CsvData";
 import { TransformOperation } from "~/types/TransformOperation";
@@ -89,12 +89,17 @@ export default class StatisticsTransform extends Vue {
   visible = false;
   groups: TransformOperation[] = [];
   applied = false;
+
   @Prop() appliedTransforms!: TransformOperation[];
+  @Prop() headers!: string[];
+  @Prop() csv!: string;
+  @Prop({ default: "Agrupar" }) buttonText!: string;
+  @Prop({ default: false }) disabled!: boolean;
 
   @Watch("appliedTransforms", { immediate: true }) watchAppliedTransforms() {
-    this.$nextTick(() => {
-      Vue.set(this, "groups", this.appliedTransforms);
-    });
+    if (this.appliedTransforms) {
+      this.groups = [...this.appliedTransforms];
+    }
   }
 
   undoTransform() {
@@ -114,14 +119,6 @@ export default class StatisticsTransform extends Vue {
 
   onGroupDoWhatAvailableOperations = availableGroupOperations;
 
-  @Prop() csvData!: CsvData;
-  @Prop({ default: "Agrupar" }) buttonText!: string;
-  @Prop({ default: false }) disabled!: boolean;
-
-  get csvHeaders() {
-    return this.csvData.labels;
-  }
-
   hide() {
     this.visible = false;
   }
@@ -132,18 +129,21 @@ export default class StatisticsTransform extends Vue {
   }
 
   transform() {
-    let csvData;
+    let csvData = csvToCsvData(this.csv);
     this.groups.forEach((group) => {
       csvData = groupCsvData(
-        this.csvData,
+        csvData,
         group.groupBy,
         group.groupWhat,
         group.onGroupDoWhat
       );
     });
     if (csvData) {
-      this.$emit("onUpdateCsvData", csvData);
+      /* if (!this.groups.length) {
+        this.$emit("reload");
+      } */
       this.$emit("onUpdateTransforms", this.groups);
+      this.$emit("onUpdateCsvData", csvData);
       this.applied = true;
     }
   }

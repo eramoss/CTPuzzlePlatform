@@ -27,6 +27,33 @@ export function csvDataToCsv(csvData: CsvData): string {
     return `${header}\n${body}`
 }
 
+export function csvToCsvData(csv: string): CsvData {
+    let csvData = new CsvData()
+
+    let lines = csv.split('\n')
+    let headers = lines[0].split(CSV_SEPARATOR).map(h => h.trim())
+
+    csvData.labels = headers.map((h) => {
+        let label = new CsvHeaderLabel()
+        label.label = h
+        label.value = h
+        return label
+    })
+
+    let rows: any[] = []
+
+    for (let i = 1; i < lines.length; i++) {
+        let row: any = {}
+        let line = lines[i].split(CSV_SEPARATOR).map(v => v.trim())
+        headers.forEach((h, index) => {
+            row[h] = line[index]
+        })
+        rows.push(row)
+    }
+    csvData.rows = rows
+    return csvData;
+}
+
 export function csvDataToCsvFormatted(csvData: CsvData): string {
     let keys = csvData.labels.map(l => l.value)
 
@@ -80,23 +107,44 @@ export function rightPadBlank(value: string, size: number): string {
 
 export function filterCsvData(csvData: CsvData, leftOperandFilterVariable: string, logicalOperationFilter: string, rightOperandFilterValue: string): CsvData {
     let fn: (value: any) => boolean = () => false
+
+    let prepareNumberValue = function (value: string): any {
+        return parseFloat(value)
+    }
+
     if (logicalOperationFilter == '==') {
-        fn = (value) => (value == rightOperandFilterValue)
+        fn = (value) => {
+            return (value == rightOperandFilterValue);
+        }
     }
     if (logicalOperationFilter == '!=') {
-        fn = (value) => (value != rightOperandFilterValue)
+        fn = (value) => {
+            return (value != rightOperandFilterValue);
+        }
     }
     if (logicalOperationFilter == '>') {
-        fn = (value) => (value > rightOperandFilterValue)
+        fn = (value) => {
+            value = prepareNumberValue(value)
+            return (value > rightOperandFilterValue);
+        }
     }
     if (logicalOperationFilter == '>=') {
-        fn = (value) => (value >= rightOperandFilterValue)
+        fn = (value) => {
+            value = prepareNumberValue(value)
+            return (value >= rightOperandFilterValue);
+        }
     }
     if (logicalOperationFilter == '<') {
-        fn = (value) => (value < rightOperandFilterValue)
+        fn = (value) => {
+            value = prepareNumberValue(value)
+            return (value < rightOperandFilterValue);
+        }
     }
     if (logicalOperationFilter == '<=') {
-        fn = (value) => (value <= rightOperandFilterValue)
+        fn = (value) => {
+            value = prepareNumberValue(value)
+            return (value <= rightOperandFilterValue);
+        }
     }
     let filteredRows = csvData.rows.filter(row => {
         return fn(row[leftOperandFilterVariable])
@@ -106,7 +154,8 @@ export function filterCsvData(csvData: CsvData, leftOperandFilterVariable: strin
 }
 
 export const availableGroupOperations = [
-    new OperationOnGroup<number[], number>("Média", (numbers: number[]) => {
+    new OperationOnGroup<number[], number>("Média", (numbers: any[]) => {
+        numbers = numbers.map(n => parseFloat(n))
         return parseFloat(
             (
                 numbers.reduce(
@@ -116,22 +165,44 @@ export const availableGroupOperations = [
             ).toFixed(2)
         );
     }),
-    new OperationOnGroup<number[], number>("Soma", (numbers: number[]) =>
-        numbers.reduce(
+    new OperationOnGroup<number[], number>("Soma", (numbers: any[]) => {
+        numbers = numbers.map(n => parseFloat(n))
+        return numbers.reduce(
+            (previousValue: number, currentValue: number) => previousValue + currentValue
+        );
+    }),
+    new OperationOnGroup<number[], number>("Desvio padrão", (numbers: any[]) => {
+        const totalElements = numbers.length;
+        numbers = numbers.map(n => parseFloat(n))
+        // https://www.todamateria.com.br/desvio-padrao/
+        // Raiz quadrada da soma dos elementos - a média elevado ao quadrado divivido pelo nr de elementos
+
+        let media =
+            numbers.reduce(
+                (previousValue: number, currentValue: number) =>
+                    previousValue + currentValue
+            ) / totalElements
+
+        let elementos = numbers.map(n => Math.pow(Math.abs(n - media), 2))
+
+        let somaDiffElementoMenosMedia = elementos.reduce(
             (previousValue: number, currentValue: number) =>
                 previousValue + currentValue
         )
-    ),
-    new OperationOnGroup<number[], number>("Maior valor", (numbers: number[]) =>
-        numbers.reduce((previousValue: number, currentValue: number) =>
-            currentValue > previousValue ? currentValue : previousValue
-        )
-    ),
-    new OperationOnGroup<number[], number>("Menor valor", (numbers: number[]) =>
-        numbers.reduce((previousValue: number, currentValue: number) =>
-            currentValue < previousValue ? currentValue : previousValue
-        )
-    ),
+        return parseFloat(Math.sqrt(somaDiffElementoMenosMedia / totalElements).toFixed(2))
+    }),
+    new OperationOnGroup<number[], number>("Maior valor", (numbers: any[]) => {
+        numbers = numbers.map(n => parseFloat(n))
+        return numbers.reduce((previousValue: number, currentValue: number) => {
+            return currentValue > previousValue ? currentValue : previousValue;
+        });
+    }),
+    new OperationOnGroup<number[], number>("Menor valor", (numbers: any[]) => {
+        numbers = numbers.map(n => parseFloat(n))
+        return numbers.reduce((previousValue: number, currentValue: number) => {
+            return currentValue < previousValue ? currentValue : previousValue;
+        });
+    }),
 ]
 
 export function groupCsvData(csvData: CsvData, groupBy: string, groupWhat: string, operationAfterGroup: OperationOnGroup<number[], number>): CsvData {

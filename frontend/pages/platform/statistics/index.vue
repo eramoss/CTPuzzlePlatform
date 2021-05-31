@@ -17,6 +17,8 @@
         <statistics-test-application
           v-if="panel"
           @onRemove="removePanel(panel)"
+          @saveFilters="saveFilters"
+          @saveTransforms="saveTransforms"
           :value="panel"
           @input="updatePanel"
           class="top-marged"
@@ -42,6 +44,8 @@ import { PageRequest, PageResponse } from "~/types/pagination";
 import { ACTION_PAGINATE_APPLICATIONS } from "~/store/test-applications";
 
 import StatisticsPanel from "~/types/StatisticsPanel";
+import LogicFilter from "~/types/LogicFilter";
+import { TransformOperation } from "~/types/TransformOperation";
 
 const statistics = namespace("statistics");
 
@@ -59,7 +63,26 @@ export default class StatisticsPage extends Vue {
   @statistics.Mutation addPanel!: () => void;
   @statistics.Mutation rmPanel!: (panel: StatisticsPanel) => void;
   @statistics.Mutation storeUpdatePanel!: (panel: StatisticsPanel) => void;
+
+  @statistics.Mutation storeFilters!: (payload: {
+    panel: StatisticsPanel;
+    filters: LogicFilter[];
+  }) => void;
+
+  @statistics.Mutation storeTransforms!: (payload: {
+    panel: StatisticsPanel;
+    transforms: TransformOperation[];
+  }) => void;
+
   @statistics.State panels!: StatisticsPanel[];
+
+  saveFilters(panel: StatisticsPanel, filters: LogicFilter[]) {
+    this.storeFilters({ panel, filters });
+  }
+
+  saveTransforms(panel: StatisticsPanel, transforms: TransformOperation[]) {
+    this.storeTransforms({ panel, transforms });
+  }
 
   updatePanel(panel: StatisticsPanel) {
     this.storeUpdatePanel(panel);
