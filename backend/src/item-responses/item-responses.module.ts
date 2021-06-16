@@ -6,6 +6,7 @@ import { ScoreFunctionTestModule } from 'src/score-function-test/score-function-
 import { ItemResponse } from './item-response.entity';
 import { ItemResponsesController } from './item-responses.controller';
 import { ItemResponsesService } from './item-responses.service';
+import { Score } from './score.entity';
 
 @Module({
     controllers: [ItemResponsesController],
@@ -13,7 +14,7 @@ import { ItemResponsesService } from './item-responses.service';
         CodeInterpreterModule,
         ScoreFunctionTestModule,
         ItemsModule,
-        TypeOrmModule.forFeature([ItemResponse])
+        TypeOrmModule.forFeature([ItemResponse, Score])
     ],
     providers: [ItemResponsesService],
     exports: [ItemResponsesService]

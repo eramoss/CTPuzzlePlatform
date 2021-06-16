@@ -171,9 +171,15 @@ export const availableGroupOperations = [
             (previousValue: number, currentValue: number) => previousValue + currentValue
         );
     }),
+    new OperationOnGroup<number[], number>("Correlação", (numbers: any[]) => {
+        numbers = numbers.map(n => parseFloat(n))
+        return numbers.reduce(
+            (previousValue: number, currentValue: number) => previousValue + currentValue
+        );
+    }),
     new OperationOnGroup<number[], number>("Desvio padrão", (numbers: any[]) => {
         const totalElements = numbers.length;
-        numbers = numbers.map(n => parseFloat(n))
+        numbers = numbers.map(n => parseFloat(n)) 
         // https://www.todamateria.com.br/desvio-padrao/
         // Raiz quadrada da soma dos elementos - a média elevado ao quadrado divivido pelo nr de elementos
 

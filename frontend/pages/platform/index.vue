@@ -10,7 +10,7 @@
       <panel-total-participations :researchGroupId="researchGroupId" />
       <panel-total-responses :researchGroupId="researchGroupId" />
       <panel-avg-score :researchGroupId="researchGroupId" />
-      <color-panel
+      <!-- <color-panel
         icon="el-icon-warning"
         label="Mecânicas"
         link="/platform/mechanics"
@@ -32,7 +32,7 @@
         info="12"
         textColor="#68798C"
         color="#DBDDE1"
-      />
+      /> -->
     </div>
 
     <div class="start flex-row"></div>

@@ -29,10 +29,10 @@ export class ItemResponsesService {
     async getTotal(researchGroupId: number): Promise<number> {
         let count = await this.itemResponseRepository
             .createQueryBuilder('item-response')
-            .leftJoinAndSelect("item-response.participation", 'participation')
-            .leftJoinAndSelect("participation.application", 'application')
-            .leftJoinAndSelect("application.test", 'test')
-            .leftJoinAndSelect("test.researchGroup", 'researchGroup')
+            .leftJoin("item-response.participation", 'participation')
+            .leftJoin("participation.application", 'application')
+            .leftJoin("application.test", 'test')
+            .leftJoin("test.researchGroup", 'researchGroup')
             .where('researchGroup.id = :id', { id: researchGroupId })
             .andWhere('participation."deletedAt" is null')
             .getCount()
@@ -42,9 +42,9 @@ export class ItemResponsesService {
     async getAvgScorePercent(researchGroupId: number): Promise<number> {
         let itemResponses = await this.itemResponseRepository
             .createQueryBuilder('item-response')
-            .leftJoinAndSelect("item-response.participation", 'participation')
-            .leftJoinAndSelect("participation.application", 'application')
-            .leftJoinAndSelect("application.test", 'test')
+            .leftJoin("item-response.participation", 'participation')
+            .leftJoin("participation.application", 'application')
+            .leftJoin("application.test", 'test')
             .leftJoinAndSelect('item-response.score', 'score')
             .leftJoinAndSelect("test.researchGroup", 'researchGroup')
             .where('researchGroup.id = :id', { id: researchGroupId })
