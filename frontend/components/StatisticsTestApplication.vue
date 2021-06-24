@@ -129,8 +129,8 @@
               <el-col align="center">
                 <thumbnail
                   v-loading="loading"
-                  width="400px"
-                  height="400px"
+                  width="500px"
+                  height="500px"
                   :src="plotResponse.plotFileName"
                 />
               </el-col>
@@ -187,9 +187,9 @@ export default class StatisticsTestApplication extends Vue {
   onChangeValue() {
     if (this.value.testApplication) {
       Vue.set(this, "panel", this.value);
-      if (!this.panel.selectedHeaders) {
+      /* if (!this.panel.selectedHeaders) {
         this.panel.selectedHeaders = [];
-      }
+      } */
     }
   }
 
@@ -279,7 +279,7 @@ export default class StatisticsTestApplication extends Vue {
       this.loading = true;
       const plotRequest = new PlotRequest();
       plotRequest.id = this.panel.measure.id;
-      plotRequest.csv = this.selectedData;
+      plotRequest.csv = this.selectedData
       let plotResponse = await this.plot(plotRequest);
       plotResponse.plotFileName += "?" + new Date().getTime();
       this.plotResponse = plotResponse;

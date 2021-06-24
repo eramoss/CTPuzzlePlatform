@@ -14,6 +14,18 @@ export class Measure {
 const average = new Measure('boxplot', 'Boxplot', 1)
 const histogram = new Measure('histogram', 'Histograma', 1)
 const regression = new Measure('regression', 'Regressão linear', 2)
+const bargraph = new Measure('bargraph', 'Gráfico de barras', 2)
+
+export class LogicOperation<INPUT> {
+    name: string
+    fn!: (value1: INPUT, value2:INPUT) => boolean
+    qtdOperands:number = 2
+    constructor(name: string = "", fn: (value1: INPUT, value2:INPUT) => boolean, qtdOperands:number = 2) {
+        this.name = name;
+        this.fn = fn
+        this.qtdOperands = qtdOperands
+    }
+}
 
 export class OperationOnGroup<INPUT, OUTPUT> {
     name: string
@@ -42,4 +54,5 @@ export const availableMeasures = [
     average,
     histogram,
     regression,
+    bargraph
 ]

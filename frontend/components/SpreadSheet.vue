@@ -1,8 +1,20 @@
 <template>
   <div>
     <div>
-      {{ countLines }} linhas
-      <span v-show="!countLines">{{ phraseWhenZeroLines }}</span>
+      <div class="fill flex-row">
+        <div>
+          <span>{{ countLines }} linhas</span>
+          <span v-show="!countLines">{{ phraseWhenZeroLines }}</span>
+        </div>
+        <el-button
+          type="primary"
+          size="small"
+          style="margin-bottom: 5px"
+          @click="downloadCsv"
+          icon="el-icon-download"
+          >Baixar CSV</el-button
+        >
+      </div>
       <textarea
         class="text-area-spread-sheet"
         ref="textarea"
@@ -28,8 +40,8 @@ export default class SpreadSheet extends Vue {
 
   @Ref() textarea!: HTMLInputElement;
 
-  scrollToStart(){
-      this.textarea.scrollTo(0, 0);
+  scrollToStart() {
+    this.textarea.scrollTo(0, 0);
   }
 
   get countLines(): number {
@@ -39,6 +51,34 @@ export default class SpreadSheet extends Vue {
       total = 0;
     }
     return total;
+  }
+
+  async downloadCsv() {
+    try {
+      //@ts-ignore
+      let { value } = await this.$prompt(
+        "Por favor, informe um nome para o arquivo",
+        "Nome do arquivo",
+        {
+          inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+/,
+          inputErrorMessage: "Nome inválido",
+          confirmButtonText: "Baixar",
+          cancelButtonText: "Cancelar",
+        }
+      );
+
+      var data = this.csv;
+      var c = document.createElement("a");
+      c.download = `${value}.csv`;
+
+      var t = new Blob([data], {
+        type: "text/plain",
+      });
+      c.href = window.URL.createObjectURL(t);
+      c.click();
+    } catch (e) {
+      //this.$notify.warning("O arquivo não foi gerado")
+    }
   }
 
   handleKeydown(event: KeyboardEvent) {

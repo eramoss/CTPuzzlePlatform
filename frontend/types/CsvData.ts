@@ -1,4 +1,4 @@
-import { groupByKey, OperationOnGroup } from "./StatisticMeasures";
+import { groupByKey, LogicOperation, OperationOnGroup } from "./StatisticMeasures";
 
 export const CSV_SEPARATOR = "|"
 
@@ -105,51 +105,25 @@ export function rightPadBlank(value: string, size: number): string {
 
 }
 
-export function filterCsvData(csvData: CsvData, leftOperandFilterVariable: string, logicalOperationFilter: string, rightOperandFilterValue: string): CsvData {
-    let fn: (value: any) => boolean = () => false
+export const availableLogicalOperations = [
+    new LogicOperation<any>("==", (leftOperand: any, rightOperand: any) => leftOperand == rightOperand),
+    new LogicOperation<number>("!=", (leftOperand: number, rightOperand: number) => leftOperand != rightOperand),
+    new LogicOperation<number>(">", (leftOperand: number, rightOperand: number) => leftOperand > rightOperand),
+    new LogicOperation<number>(">=", (leftOperand: number, rightOperand: number) => leftOperand >= rightOperand),
+    new LogicOperation<number>("<", (leftOperand: number, rightOperand: number) => leftOperand < rightOperand),
+    new LogicOperation<number>("<=", (leftOperand: number, rightOperand: number) => leftOperand <= rightOperand),
+    new LogicOperation<any>("não é vazio", (uniqueOperand: number) => (uniqueOperand + "").length > 0, 1),
+]
 
-    let prepareNumberValue = function (value: string): any {
-        return parseFloat(value)
-    }
-
-    if (logicalOperationFilter == '==') {
-        fn = (value) => {
-            return (value == rightOperandFilterValue);
+export function filterCsvData(csvData: CsvData, leftOperandFilterVariable: any, logicalOperationFilter: string, rightOperandFilterValue: any): CsvData {
+    let applyLogicalOperation = availableLogicalOperations.find(operation => operation.name == logicalOperationFilter)?.fn
+    csvData.rows = csvData.rows.filter(row => {
+        let logicalOperationResult = true
+        if (applyLogicalOperation) {
+            logicalOperationResult = applyLogicalOperation(row[leftOperandFilterVariable], rightOperandFilterValue)
         }
-    }
-    if (logicalOperationFilter == '!=') {
-        fn = (value) => {
-            return (value != rightOperandFilterValue);
-        }
-    }
-    if (logicalOperationFilter == '>') {
-        fn = (value) => {
-            value = prepareNumberValue(value)
-            return (value > rightOperandFilterValue);
-        }
-    }
-    if (logicalOperationFilter == '>=') {
-        fn = (value) => {
-            value = prepareNumberValue(value)
-            return (value >= rightOperandFilterValue);
-        }
-    }
-    if (logicalOperationFilter == '<') {
-        fn = (value) => {
-            value = prepareNumberValue(value)
-            return (value < rightOperandFilterValue);
-        }
-    }
-    if (logicalOperationFilter == '<=') {
-        fn = (value) => {
-            value = prepareNumberValue(value)
-            return (value <= rightOperandFilterValue);
-        }
-    }
-    let filteredRows = csvData.rows.filter(row => {
-        return fn(row[leftOperandFilterVariable])
+        return logicalOperationResult
     })
-    csvData.rows = filteredRows
     return csvData;
 }
 
@@ -179,7 +153,7 @@ export const availableGroupOperations = [
     }),
     new OperationOnGroup<number[], number>("Desvio padrão", (numbers: any[]) => {
         const totalElements = numbers.length;
-        numbers = numbers.map(n => parseFloat(n)) 
+        numbers = numbers.map(n => parseFloat(n))
         // https://www.todamateria.com.br/desvio-padrao/
         // Raiz quadrada da soma dos elementos - a média elevado ao quadrado divivido pelo nr de elementos
 
@@ -239,5 +213,5 @@ export function groupCsvData(csvData: CsvData, groupBy: string, groupWhat: strin
 }
 
 export function getCsvHeaders(csv: string) {
-    return csv.split("\n")[0].split(CSV_SEPARATOR)
+    return csv.split("\n")[0].split(CSV_SEPARATOR).map(header=>header.trim())
 }

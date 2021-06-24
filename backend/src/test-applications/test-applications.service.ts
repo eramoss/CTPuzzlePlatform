@@ -154,12 +154,15 @@ export class TestApplicationsService {
             }
 
             if (participation.userDataToRequest) {
-                quizProperties = participation.userDataToRequest.questions.map(q => q.name);
-                quizProperties.reverse().forEach(prop => {
+                let props = participation.userDataToRequest.questions.map(q => q.name);
+                props.reverse().forEach(prop => {
                     if (!labels.some(l => l.label == prop)) {
                         labels.splice(2, 0, { label: prop, value: prop });
                     }
                 });
+                if(props.length > quizProperties.length){
+                    quizProperties = props
+                }
             }
 
         });
@@ -193,7 +196,7 @@ export class TestApplicationsService {
                 });
                 quizProperties.forEach((key: string) => {
                     if (participation.userDataToRequest) {
-                        row[key] = participation.userDataToRequest.questions.find(q => q.name == key).answer;
+                        row[key] = participation.userDataToRequest.questions.find(q => q.name == key)?.answer;
                     }
                 });
                 rows.push(row);

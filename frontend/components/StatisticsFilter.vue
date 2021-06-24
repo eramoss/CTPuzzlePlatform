@@ -37,12 +37,9 @@
             v-model="filter.logicalOperationFilter"
             placeholder="Operador lógico"
           >
-            <el-option value=">"></el-option>
-            <el-option value="<"></el-option>
-            <el-option value=">="></el-option>
-            <el-option value="<="></el-option>
-            <el-option value="=="></el-option>
-            <el-option value="!="></el-option>
+            <el-option 
+                v-for="logicOperation in availableLogicalOperations" 
+                :value="logicOperation" :key="logicOperation"></el-option>
           </el-select>
           <el-input
             v-model="filter.rightOperandFilterValue"
@@ -73,12 +70,14 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "nuxt-property-decorator";
 import LogicFilter from "~/types/LogicFilter";
 import { v4 as uuidv4 } from "uuid";
-import { csvToCsvData, filterCsvData } from "~/types/CsvData";
+import { csvToCsvData, filterCsvData, availableLogicalOperations } from "~/types/CsvData";
+
 @Component
 export default class StatisticsFilter extends Vue {
   filters: LogicFilter[] = [];
   visible = false;
   applied = false;
+  availableLogicalOperations = availableLogicalOperations.map(op=>op.name)
   @Prop() headers!: string[];
   @Prop() csv!: string;
   @Prop() appliedFilters!: LogicFilter[];

@@ -5,6 +5,7 @@
 library("dplyr") # Pipe %>%
 library("ggplot2") # Graphs
 library("optparse") # Parse PARAMS
+library("stringr") # trim
 
 plot_boxplot <- function(dataset){
   columnName = names(dataset)[1]
@@ -15,7 +16,15 @@ plot_boxplot <- function(dataset){
 plot_histogram <- function(dataset) {
   columnName = names(dataset)[1]
   print(columnName)
-  ggplot(dataset, aes_string(x = columnName)) + geom_histogram(stat = "count")
+  ggplot(dataset, aes_string(x = columnName)) + geom_histogram(stat = "count", fill = "lightblue", colour = "black")
+}
+
+plot_bargraph <- function(dataset) {
+  x = names(dataset)[1]
+  y = names(dataset)[2]
+  ggplot(dataset, aes_string(x = str_trim(x), y = y)) + 
+  geom_col(fill = "lightblue", colour = "black") +
+  geom_text(aes_string(label = y), vjust = -0.2)
 }
 
 plot_regression <- function(dataset){
@@ -44,19 +53,22 @@ print_help(opt_parser)
 
 # Import DATASET
 separator = '|'
-dataset  <- read.csv(args$data_input_file_path, header=TRUE, sep=separator)
+dataset  <- read.csv(args$data_input_file_path, header=TRUE, sep=separator)  %>% mutate_all(str_trim)
 # summary(dataset)
 
 # Generate GRAPH
-png(args$plot_output_file_path, res = 120)
+png(args$plot_output_file_path, res = 100)
 if(args$fn == 'boxplot'){ plot_boxplot(dataset) }
 if(args$fn == 'histogram'){ plot_histogram(dataset) }
 if(args$fn == 'regression'){ plot_regression(dataset) }
+if(args$fn == 'bargraph'){ plot_bargraph(dataset) }
 dev.off()
 
 # Tests
-dataset <- read.csv('input.csv', header=TRUE, sep=separator)
+dataset <- read.csv('input.csv', header=TRUE, sep=separator) %>% mutate_all(str_trim)
+
 plot_histogram(dataset)
 plot_boxplot(dataset)
 plot_regression(dataset)
+plot_bargraph(dataset)
 
