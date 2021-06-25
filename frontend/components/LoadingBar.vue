@@ -32,6 +32,6 @@ export default Vue.extend({
   color: rgb(255, 216, 42);
   //background: rgba(255, 255, 255, 0.4);
   font-size: 100pt;
-  z-index: 100;
+  z-index: 1000;
 }
 </style>

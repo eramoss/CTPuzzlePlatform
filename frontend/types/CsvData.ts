@@ -63,6 +63,7 @@ export function csvDataToCsvFormatted(csvData: CsvData): string {
         return rightPadBlank(label.value, maxLengths[index])
     }).join(CSV_SEPARATOR)
 
+
     let body = csvData.rows.map(row =>
         keys.map((key, index) => {
             let columnValue = row[key]
@@ -74,6 +75,8 @@ export function csvDataToCsvFormatted(csvData: CsvData): string {
             return columnValue;
         }).join(CSV_SEPARATOR)
     ).join('\n')
+
+
     return `${header}\n${body}`
 }
 
@@ -128,6 +131,19 @@ export function filterCsvData(csvData: CsvData, leftOperandFilterVariable: any, 
 }
 
 export const availableGroupOperations = [
+
+    new OperationOnGroup<number[], number>("Total", (numbers: any[]) => {
+        numbers = numbers.map(n => parseFloat(n))
+        return numbers.reduce(
+            (previousValue: number, currentValue: number) => previousValue + currentValue
+        );
+    }),
+    /* new OperationOnGroup<number[], number>("Correlação", (numbers: any[]) => {
+        numbers = numbers.map(n => parseFloat(n))
+        return numbers.reduce(
+            (previousValue: number, currentValue: number) => previousValue + currentValue
+        );
+    }), */
     new OperationOnGroup<number[], number>("Média", (numbers: any[]) => {
         numbers = numbers.map(n => parseFloat(n))
         return parseFloat(
@@ -139,17 +155,14 @@ export const availableGroupOperations = [
             ).toFixed(2)
         );
     }),
-    new OperationOnGroup<number[], number>("Soma", (numbers: any[]) => {
-        numbers = numbers.map(n => parseFloat(n))
-        return numbers.reduce(
-            (previousValue: number, currentValue: number) => previousValue + currentValue
-        );
-    }),
-    new OperationOnGroup<number[], number>("Correlação", (numbers: any[]) => {
-        numbers = numbers.map(n => parseFloat(n))
-        return numbers.reduce(
-            (previousValue: number, currentValue: number) => previousValue + currentValue
-        );
+    new OperationOnGroup<number[], number>("Mediana", (numbers: any[]) => {
+        numbers = numbers.map(n => parseFloat(n)).sort((a, b) => a - b)
+        if (numbers.length % 2 == 0) {
+            return (numbers[numbers.length / 2 -1] + numbers[numbers.length / 2]) / 2
+        }
+        if (numbers.length % 2 == 1) {
+            return numbers[(numbers.length-1)/2]
+        }
     }),
     new OperationOnGroup<number[], number>("Desvio padrão", (numbers: any[]) => {
         const totalElements = numbers.length;
@@ -213,5 +226,15 @@ export function groupCsvData(csvData: CsvData, groupBy: string, groupWhat: strin
 }
 
 export function getCsvHeaders(csv: string) {
-    return csv.split("\n")[0].split(CSV_SEPARATOR).map(header=>header.trim())
+    return csv.split("\n")[0].split(CSV_SEPARATOR).map(header => header.trim())
+}
+
+export function trimCsvData(csv: string) {
+    return csv
+        .split("\n")
+        .map(line => line
+            .split(CSV_SEPARATOR)
+            .map(value => (value + "").trim())
+            .join(CSV_SEPARATOR))
+        .join("\n")
 }

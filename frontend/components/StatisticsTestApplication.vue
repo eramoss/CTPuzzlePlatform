@@ -1,16 +1,12 @@
 <template>
   <div>
-    <div class="panel shadow">
+    <div class="panel big-shadow">
       <div>
         <div class="flex-row">
           <h3>Aplicação</h3>
-          <el-button
-            title="Remover painel"
-            @click="$emit('onRemove')"
-            type="text"
-            size="large"
-            >Remover painel</el-button
-          >
+          <el-button @click="$emit('onRemove')" type="text" size="large">
+            <i class="el-icon-close" style="font-size: 20pt"></i>
+          </el-button>
         </div>
         <el-select
           v-model="panel.testApplication"
@@ -55,16 +51,20 @@
             @onUpdateTransforms="saveTransforms"
             @reload="reloadAndFilter"
           />
-          <el-button :disabled="!panel.testApplication" @click="resetCsv">
+          <el-button
+            :disabled="!panel.testApplication"
+            @click="resetCsv"
+            :loading="reseting"
+          >
             Desfazer filtros e agrupamentos
           </el-button>
         </div>
         <spread-sheet
+          v-loading="loading"
           ref="spreadSheet"
           phraseWhenZeroLines="(Selecione uma aplicação ou restaure os dados)"
           class="top-marged"
           v-model="csv"
-          @input="updateAndPlot"
           :cols="170"
         />
       </div>
@@ -129,8 +129,8 @@
               <el-col align="center">
                 <thumbnail
                   v-loading="loading"
-                  width="500px"
-                  height="500px"
+                  width="400px"
+                  height="400px"
                   :src="plotResponse.plotFileName"
                 />
               </el-col>
@@ -158,6 +158,7 @@ import {
   CsvHeaderLabel,
   CSV_SEPARATOR,
   getCsvHeaders,
+  trimCsvData,
 } from "~/types/CsvData";
 import { Measure, availableMeasures } from "~/types/StatisticMeasures";
 import { ACTION_GET_CSV_DATA_TEST_APPLICATION } from "~/store/test-applications";
@@ -198,6 +199,7 @@ export default class StatisticsTestApplication extends Vue {
   }
 
   loading = false;
+  reseting = false;
   csvData: CsvData = new CsvData();
   plotResponse: PlotResponse = new PlotResponse();
   csv: string = "";
@@ -257,8 +259,26 @@ export default class StatisticsTestApplication extends Vue {
   }
 
   async resetCsv() {
-    this.undoFilterAndTransform();
-    this.loadCsv(this.panel.testApplication);
+    try {
+      this.reseting = true;
+      this.loadCsv(this.panel.testApplication);
+      try {
+        let action = await this.$alert(
+          "Limpar os filtros e agrupamentos? Pode ser útil mantê-los para aplicar novamente depois.",
+          "Limpar filtros?",
+          {
+            confirmButtonText: "Limpar",
+            cancelButtonText: "Manter",
+            showCancelButton: true,
+          }
+        );
+        if (action == "confirm") {
+          this.undoFilterAndTransform();
+        }
+      } catch (e) {}
+    } finally {
+      this.reseting = false;
+    }
   }
 
   undoFilterAndTransform() {
@@ -279,7 +299,7 @@ export default class StatisticsTestApplication extends Vue {
       this.loading = true;
       const plotRequest = new PlotRequest();
       plotRequest.id = this.panel.measure.id;
-      plotRequest.csv = this.selectedData
+      plotRequest.csv = trimCsvData(this.selectedData);
       let plotResponse = await this.plot(plotRequest);
       plotResponse.plotFileName += "?" + new Date().getTime();
       this.plotResponse = plotResponse;
@@ -307,9 +327,16 @@ export default class StatisticsTestApplication extends Vue {
   }
 
   async loadCsv(testApplication: TestApplication) {
-    if (testApplication) {
-      let csvData = await this.getCsvData(testApplication);
-      this.onUpdateCsvData(csvData);
+    this.loading = true;
+    try {
+      if (testApplication) {
+        let csvData = await this.getCsvData(testApplication);
+        this.onUpdateCsvData(csvData);
+      }
+    } catch (e) {
+      this.$notify.error("Não foi possível carregar os dados");
+    } finally {
+      this.loading = false;
     }
   }
 

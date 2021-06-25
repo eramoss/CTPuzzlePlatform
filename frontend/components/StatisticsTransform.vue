@@ -138,7 +138,7 @@ export default class StatisticsTransform extends Vue {
         group.onGroupDoWhat
       );
     });
-    if (csvData) {
+    if (csvData && this.groups.length) {
       /* if (!this.groups.length) {
         this.$emit("reload");
       } */

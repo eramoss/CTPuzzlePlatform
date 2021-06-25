@@ -53,7 +53,7 @@ print_help(opt_parser)
 
 # Import DATASET
 separator = '|'
-dataset  <- read.csv(args$data_input_file_path, header=TRUE, sep=separator)  %>% mutate_all(str_trim)
+dataset  <- read.csv(args$data_input_file_path, header=TRUE, sep=separator)  #%>% mutate_all(str_trim) %>% mutate_all(as.numeric)
 # summary(dataset)
 
 # Generate GRAPH
@@ -65,10 +65,11 @@ if(args$fn == 'bargraph'){ plot_bargraph(dataset) }
 dev.off()
 
 # Tests
-dataset <- read.csv('input.csv', header=TRUE, sep=separator) %>% mutate_all(str_trim)
+dataset <- read.csv('input.csv', header=TRUE, sep=separator) #%>% mutate_all(str_trim)
 
 plot_histogram(dataset)
 plot_boxplot(dataset)
 plot_regression(dataset)
 plot_bargraph(dataset)
-
+dataset[1][1]
+cor(dataset[1], dataset[2])

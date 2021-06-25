@@ -142,7 +142,6 @@ export class TestApplicationsService {
             //{ label: 'resposta', value: 'resposta' },
         ];
 
-
         testApplication.participations.forEach((participation: Participation) => {
             if (participation.user.data) {
                 userProperties = Object.keys(participation.user.data);
@@ -211,7 +210,10 @@ export class TestApplicationsService {
             { label: 'escore_obtido', value: 'escore_obtido' },
         ].forEach(item => labels.push(item));
 
-        return { labels, rows };
+        let csvData = new CsvData()
+        csvData.labels = labels
+        csvData.rows = rows
+        return csvData
     }
 
     async generateCsvFromItemResponsesForIRT(testApplicationId: number): Promise<string> {

@@ -135,7 +135,7 @@ export default class StatisticsFilter extends Vue {
       );
     });
 
-    if (csvData) {
+    if (csvData && this.filters?.length) {
       this.applied = true;
       /* if (!this.filters.length) {
         this.$emit("reload");
