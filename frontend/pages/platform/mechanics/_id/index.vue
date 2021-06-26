@@ -76,6 +76,7 @@
 
             <el-form-item prop="classDefinition">
               <code-editor
+                @onSave="save"
                 editorTitle="Especificação da mecânica"
                 :required="true"
                 :uniqueId="`mechanicClassDefinition${mechanic.id}`"
@@ -93,6 +94,7 @@
 
             <el-form-item prop="responseClassDefinition">
               <code-editor
+                @onSave="save"
                 :uniqueId="`mechanicResponseClassDefinition${mechanic.id}`"
                 editorTitle="Especificação da resposta"
                 :required="true"
@@ -146,6 +148,7 @@
       </el-form>
     </div>
     <score-function-test-dialog
+      @onSave="save"
       ref="scoreFunctionTestDialog"
       v-model="mechanic"
     />

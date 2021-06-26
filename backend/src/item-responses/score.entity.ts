@@ -6,10 +6,10 @@ export class Score {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({type: 'numeric', default:0})
     score: number
 
-    @Column()
+    @Column({type: 'numeric', default:0})
     max: number
 
     @Column({ nullable: true })

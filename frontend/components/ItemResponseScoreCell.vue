@@ -1,37 +1,38 @@
 <template>
   <div class="score-cell">
-    <el-tooltip
-      popper-class="error-message-popper"
-      effect="light"
-      placement="left"
-    >
-      <div slot="content">
-        <span style="small-tooltip-title">
-          Execução do cálculo de escore:
-        </span>
-        <pre style="font-size:10pt">{{ score && score.message }}</pre>
-      </div>
-      <div>
-        <b v-show="isError" class="error-indicator">
-          <i class="el-icon-chat-line-square"></i>
-          Mensagem
-        </b>
-        <span v-show="!isError" class="flex-row">
-          <el-progress
-            style="flex-grow: 1; font-weight: bold"
-            :class="{ 'progress-empty': percentage == 0 }"
-            :text-inside="true"
-            :stroke-width="26"
-            :color="`${percentage == 100 ? '#67c23a' : '#409eff'}`"
-            :percentage="percentage"
-            :format="format"
-          ></el-progress>
-          <i
-            class="chat-icon el-icon-chat-line-square"
-          ></i>
-        </span>
-      </div>
-    </el-tooltip>
+    <div>
+      <b v-show="isError" class="error-indicator">
+        <i class="el-icon-chat-line-square"></i>
+        Mensagem
+      </b>
+      <span v-show="!isError" class="flex-row">
+        <el-progress
+          style="flex-grow: 1; font-weight: bold"
+          :class="{ 'progress-empty': percentage == 0 }"
+          :text-inside="true"
+          :stroke-width="26"
+          :color="`${percentage == 100 ? '#67c23a' : '#409eff'}`"
+          :percentage="percentage"
+          :format="format"
+        ></el-progress>
+      </span>
+    </div>
+    <div>
+      <el-tooltip
+        v-show="score"
+        popper-class="error-message-popper"
+        effect="light"
+        placement="left"
+      >
+        <div slot="content">
+          <span style="small-tooltip-title">
+            Execução do cálculo de escore:
+          </span>
+          <pre style="font-size: 10pt">{{ score && score.message }}</pre>
+        </div>
+        <div><b style="color:black;cursor:pointer">Ver logs</b></div>
+      </el-tooltip>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -49,7 +50,7 @@ export default class ItemResponseScoreCell extends Vue {
     let score = this.score;
     if (score) {
       if (score.score && score.max) {
-        format = `${score.score}/${score.max}`;
+        format = `${parseFloat(score.score+"").toFixed(3)}/${score.max}`;
       }
     }
     return format;
@@ -90,14 +91,18 @@ export default class ItemResponseScoreCell extends Vue {
     color: red;
   }
 }
-.chat-icon {
-    color: #cc6633;
+.log-indicator {
+  font-size: 19pt;
+  font-family: "Courier New", Courier, monospace;
+  .chat-icon {
+    color: blue;
     font-size: 20pt;
-}
-.score-cell:hover{
-    cursor:pointer;
-    .chat-icon{
-        color: red;
+  }
+  .score-cell:hover {
+    cursor: pointer;
+    .chat-icon {
+      color: red;
     }
+  }
 }
 </style>

@@ -9,6 +9,7 @@ export class ItemTestCase {
     mechanic!: Mechanic
     expanded: boolean = false
     responseTestCases: ResponseTestCase[] = []
+    position!:number
 
     constructor(mechanic: Mechanic) {
         const options = new CleanInstantiationOptions();

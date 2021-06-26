@@ -1,16 +1,7 @@
 <template>
   <div class="flex-row fill">
     <slot></slot>
-    <div class="flex-row">
-      <span>
-          <span>
-            <b class="green">{{ qtdOkTests }} testes passaram </b>
-          </span>
-          <span>
-            <b class="red">{{ qtdErrorTests }} testes falharam</b>
-          </span>
-      </span>
-    </div>
+    
     <div>
       <el-tooltip
         effect="light"
@@ -20,13 +11,23 @@
         <el-button
           icon="el-icon-video-play"
           style="font-weight: bold"
-          type="primary"
+          type="success"
           @click="runTests"
           :loading="runningTests"
         >
           Rodar casos de teste
         </el-button>
       </el-tooltip>
+    </div>
+    <div class="flex-row">
+      <span>
+          <span>
+            <b class="green">{{ qtdOkTests }} testes passaram </b>
+          </span>
+          <span>
+            <b class="red">{{ qtdErrorTests }} testes falharam</b>
+          </span>
+      </span>
     </div>
     <!-- <div>
       <span
@@ -93,7 +94,7 @@ export function isTestPassed(itemResponse: ResponseTestCase): boolean {
     let passed = false;
     if (itemResponse.score) {
       if (itemResponse.expectedScore != undefined) {
-        passed = itemResponse.score.score == itemResponse.expectedScore;
+        passed = Math.abs(itemResponse.score.score - itemResponse.expectedScore) < 0.001;
       }
     }
     return passed;

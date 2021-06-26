@@ -109,6 +109,7 @@
               <el-row :gutter="10">
                 <el-col :span="8" v-if="item.mechanic">
                   <code-editor
+                    @onSave="save"
                     :uniqueId="`mechanicClassDefinition${item.id}`"
                     editor-title="Classe da mecânica"
                     :font-size="13"
@@ -119,6 +120,7 @@
                 </el-col>
                 <el-col :span="16">
                   <code-editor
+                    @onSave="save"
                     :uniqueId="`item.itemDefinition${item.id}`"
                     id="instantiate"
                     editor-title="Instanciação do item"

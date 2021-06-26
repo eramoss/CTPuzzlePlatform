@@ -203,13 +203,14 @@ export function groupCsvData(csvData: CsvData, groupBy: string, groupWhat: strin
     let labelGroupBy = new CsvHeaderLabel()
     let labelGroupWhat = new CsvHeaderLabel()
 
-    labelGroupBy.value = groupBy
-    labelGroupBy.label = groupBy
+    if(groupBy.length){
+        labelGroupBy.value = groupBy
+        labelGroupBy.label = groupBy
+        csvTransformOperation.labels.push(labelGroupBy)
+    }
 
     labelGroupWhat.value = groupWhat
     labelGroupWhat.label = groupWhat
-
-    csvTransformOperation.labels.push(labelGroupBy)
     csvTransformOperation.labels.push(labelGroupWhat)
 
     let groups = groupByKey(groupWhat, groupBy, csvData.rows)

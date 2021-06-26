@@ -10,6 +10,7 @@ export class ResponseTestCase {
     itemTestCase!: ItemTestCase
     score!: Score
     expectedScore!: number
+    position!:number
 
     constructor(mechanic: Mechanic) {
         const options = new CleanInstantiationOptions();
