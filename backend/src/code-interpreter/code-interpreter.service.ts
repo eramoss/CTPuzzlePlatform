@@ -31,7 +31,7 @@ export class CodeInterpreterService {
     executeSync(script: string, rejectOnError: boolean): Promise<string> {
         let path = __dirname + '/test.ts';
         fs.writeFileSync(path, script);
-        let deno: SpawnSyncReturns<Buffer> = spawnSync(this.denoLocation, ['run', path], { env: { 'NO_COLOR': 'true' } });
+        let deno: SpawnSyncReturns<Buffer> = spawnSync(this.denoLocation, ['run', path], { env: { 'NO_COLOR': 'true', }, timeout: 100 });
         let stderr = deno.stderr.toString()
         if (rejectOnError) {
             if (stderr) {

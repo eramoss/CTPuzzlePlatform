@@ -30,6 +30,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Ref, VModel, Watch } from "nuxt-property-decorator";
+import { replaceDefaultSeparatorWithSemicolon } from "~/types/CsvData";
 
 @Component
 export default class SpreadSheet extends Vue {
@@ -67,7 +68,7 @@ export default class SpreadSheet extends Vue {
         }
       );
 
-      var data = this.csv;
+      var data = replaceDefaultSeparatorWithSemicolon(this.csv);
       var c = document.createElement("a");
       c.download = `${value}.csv`;
 

@@ -158,10 +158,10 @@ export const availableGroupOperations = [
     new OperationOnGroup<number[], number>("Mediana", (numbers: any[]) => {
         numbers = numbers.map(n => parseFloat(n)).sort((a, b) => a - b)
         if (numbers.length % 2 == 0) {
-            return (numbers[numbers.length / 2 -1] + numbers[numbers.length / 2]) / 2
+            return (numbers[numbers.length / 2 - 1] + numbers[numbers.length / 2]) / 2
         }
         if (numbers.length % 2 == 1) {
-            return numbers[(numbers.length-1)/2]
+            return numbers[(numbers.length - 1) / 2]
         }
     }),
     new OperationOnGroup<number[], number>("Desvio padrão", (numbers: any[]) => {
@@ -198,12 +198,18 @@ export const availableGroupOperations = [
     }),
 ]
 
+export function replaceDefaultSeparatorWithSemicolon(csv: string) {
+    return csv.split('\n')
+        .map(line => line.split(CSV_SEPARATOR).map(word => (word + "").trim()).join(';'))
+        .join('\n')
+}
+
 export function groupCsvData(csvData: CsvData, groupBy: string, groupWhat: string, operationAfterGroup: OperationOnGroup<number[], number>): CsvData {
     let csvTransformOperation = new CsvData()
     let labelGroupBy = new CsvHeaderLabel()
     let labelGroupWhat = new CsvHeaderLabel()
 
-    if(groupBy.length){
+    if (groupBy.length) {
         labelGroupBy.value = groupBy
         labelGroupBy.label = groupBy
         csvTransformOperation.labels.push(labelGroupBy)

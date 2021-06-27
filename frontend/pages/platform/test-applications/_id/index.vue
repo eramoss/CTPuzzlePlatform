@@ -394,7 +394,7 @@ export default class ApplicationEditForm extends Vue {
   }
 
   mounted() {
-    this.startIntervalUpdateLastResponse();
+    //this.startIntervalUpdateLastResponse();
   }
 
   destroyed() {

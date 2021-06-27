@@ -177,7 +177,7 @@ export default class ItemResponsesList extends Vue {
   }
 
   mounted() {
-    this.startIntervalUpdateLastResponse();
+    //this.startIntervalUpdateLastResponse();
   }
 
   destroyed() {

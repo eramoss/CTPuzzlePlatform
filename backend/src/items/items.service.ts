@@ -10,6 +10,7 @@ import { Item } from './item.entity';
 
 @Injectable()
 export class ItemsService {
+    
 
     constructor(
         @InjectRepository(Item)
@@ -19,6 +20,15 @@ export class ItemsService {
 
     save(item: Item): Promise<Item> {
         return this.itemRepository.save(item)
+    }
+
+    getByIds(ids: number[]): Promise<Item[]> {
+        return this.itemRepository
+            .createQueryBuilder('item')
+            .whereInIds(ids)
+            .leftJoinAndSelect('item.mechanic', 'mechanic')
+            .withDeleted()
+            .getMany()
     }
 
     getById(id: number): Promise<Item> {

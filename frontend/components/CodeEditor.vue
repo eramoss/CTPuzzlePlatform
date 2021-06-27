@@ -247,9 +247,9 @@ export default class CodeEditor extends Vue {
 
   onMouseDown() {
     this.$emit("onMouseDown");
-    /* if (!this.focusMode) {
+    if (!this.focusMode) {
       this.focusEditor();
-    } */
+    }
   }
 
   editorDidMount(editor: any) {
@@ -262,9 +262,9 @@ export default class CodeEditor extends Vue {
       }
     );
 
-    editor.addCommand(this.monaco.KeyCode.Escape, () => {
+    /* editor.addCommand(this.monaco.KeyCode.Escape, () => {
       this.onEscape();
-    });
+    }); */
 
     editor.onMouseDown(() => {
       this.onMouseDown();

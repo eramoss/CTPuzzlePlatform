@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Item } from 'src/items/item.entity';
 import { ItemsService } from 'src/items/items.service';
 import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { ScoreFunctionTestService } from 'src/score-function-test/score-function-test.service';
@@ -94,17 +95,32 @@ export class ItemResponsesService {
     }
 
     async calculateScores(itemResponses: ItemResponse[]) {
-        let items = await Promise.all(itemResponses.map(async itemResponse => {
-            let item = await this.itemsService.getById(itemResponse.testItem.item.id)
+
+        await this.loadItemsResponsesWithMechanics(itemResponses)
+
+        let calculationScoreParamsList = itemResponses.map((itemResponse) => {
+            let item = itemResponse.testItem.item
             return {
                 mechanic: item.mechanic,
                 itemResponse: itemResponse,
                 response: this.getFunctionToInstantiateJsonResponse(item.mechanic, itemResponse)
             }
-        }))
+        })
 
-        let itemResponsesWithCalculatedScores = await this.scoreFnService.calculateScores(items)
+        let itemResponsesWithCalculatedScores = await this.scoreFnService.calculateScores(calculationScoreParamsList)
         this.itemResponseRepository.save(itemResponsesWithCalculatedScores)
+    }
+
+    async loadItemsResponsesWithMechanics(itemResponses: ItemResponse[]) {
+        let idByItemMap:Map<number,Item> = new Map<number, Item>();
+        const itemsIds = itemResponses.map(itemResponse => itemResponse.testItem.item.id);
+        let items = await this.itemsService.getByIds(itemsIds)
+        items.forEach(item=>{
+            idByItemMap.set(item.id, item)
+        })
+        itemResponses.forEach(itemResponse=>{
+            itemResponse.testItem.item = idByItemMap.get(itemResponse.testItem.item.id)
+        })
     }
 
     getFunctionToInstantiateJsonResponse(mechanic: Mechanic, itemResponse: ItemResponse): string {
