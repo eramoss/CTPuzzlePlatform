@@ -19,7 +19,7 @@ src: ~/assets/segoeui/Segoe UI Bold.ttf */
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 40px 0px !important;
   }
 
-  
+
 
 .btn-big {
   border: 1px solid red;
@@ -248,4 +248,12 @@ h3{
     .el-input__inner{
         font-weight: bold;
     }
+}
+
+.scrollbar::-webkit-scrollbar {
+    width: 5px;
+    background-color: #eee; 
+}
+.scrollbar::-webkit-scrollbar-thumb {
+    background: #ddd;
 }

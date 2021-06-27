@@ -8,10 +8,11 @@ import { PageResponse } from 'src/pagination/pageresponse.dto';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { TestItem } from './test-item.entity';
 import { Test } from './test.entity';
+import { getManager } from 'typeorm';
+import TestItemDificulty from './test-item-dificulty.dto';
 
 @Injectable()
 export class TestService {
-
 
     constructor(
         @InjectRepository(Test)
@@ -22,6 +23,28 @@ export class TestService {
 
     save(test: Test): Promise<Test> {
         return this.testRepository.save(test);
+    }
+
+    getAvgScoresByItem(): Promise<TestItemDificulty[]> {
+        return getManager().query(`
+            select 
+                item.id as "itemId",
+                item.name as "itemName",
+                round(avg(score.score),2) as "avgScore"
+            from 
+                score 
+                join item_response ON item_response."scoreId" = score.id 
+                join test_item ON test_item.id = item_response."testItemId" 
+                join item ON item.id = test_item."itemId"
+            where 
+                score.score > 0  
+                and item."isTutorial" is false
+                and item_response."deletedAt" is null
+            group by 
+                item.id, item.name
+            order by 
+                "avgScore" desc
+       `)
     }
 
     async getByIdJoinItemMechanics(id: number): Promise<Test> {

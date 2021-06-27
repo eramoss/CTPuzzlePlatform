@@ -1,16 +1,21 @@
 <template>
-  <div
-    class="color-panel"
-    :style="{ 'background-color': color}"
-  >
+  <div class="color-panel shadow" :style="{ 'background-color': color }" @click="$router.push(link)">
     <div class="top-label">
-      <i :style="{color:textColor}" :class="icon"></i>
-      <span :style="{color:textColor}">{{ label }}</span>
+      <span :style="{ color: textColor }">{{ label }}</span>
     </div>
-    <div :style="{color:textColor}" class="main-info">{{ info }}</div>
-    <nuxt-link v-if="link" :to="link" class="panel-link">
-      <div :style="{color:textColor}"><i class="el-icon-top-right" /> Acessar</div>
-    </nuxt-link>
+    <div class="flex-row">
+      <icon
+        :style="{ color: textColor }"
+        :name="icon"
+        class="panel-icon"
+      ></icon>
+      <div :style="{ color: textColor }" class="main-info">{{ info }}</div>
+    </div>
+    <!-- <nuxt-link v-if="link" :to="link" class="panel-link">
+      <div :style="{ color: textColor }">
+        <i class="el-icon-top-right" /> Acessar
+      </div>
+    </nuxt-link> -->
   </div>
 </template>
 <script lang="ts">
@@ -28,6 +33,7 @@ export default class ColorPanel extends Vue {
 </script>
 <style lang="scss">
 .color-panel {
+  cursor: pointer;
   text-align: left;
   color: white;
   padding: 15px;
@@ -37,6 +43,7 @@ export default class ColorPanel extends Vue {
   //box-shadow: rgba(0, 0, 0, 0.18) 0px 8px 19px;
 
   .top-label {
+    font-weight: bold;
   }
 
   .main-info {
@@ -58,6 +65,11 @@ export default class ColorPanel extends Vue {
   }
   .panel-link:hover {
     color: rgba(255, 255, 255, 1);
+  }
+
+  .panel-icon {
+    font-size: 38pt;
+    opacity: 0.5;
   }
 }
 </style>

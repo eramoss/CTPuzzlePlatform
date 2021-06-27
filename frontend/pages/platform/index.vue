@@ -34,6 +34,13 @@
         color="#DBDDE1"
       /> -->
     </div>
+    <div>
+      <el-row :gutter="20">
+        <el-col :md="8">
+          <panel-items-avg header="Escore médio por item" :sort="'ascending'" />
+        </el-col>
+      </el-row>
+    </div>
 
     <div class="start flex-row"></div>
   </div>
@@ -43,11 +50,11 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import ColorPanel from "~/components/ColorPanel.vue";
-import { Context } from "@nuxt/types";
 import DashboardTitle from "~/components/DashboardTitle.vue";
 import PanelTotalParticipations from "~/components/dashboard/PanelTotalParticipations.vue";
 import PanelTotalResponses from "~/components/dashboard/PanelTotalResponses.vue";
 import PanelAvgScore from "~/components/dashboard/PanelAvgScore.vue";
+import PanelItemsAvg, {sort} from "~/components/dashboard/PanelItemsAvgScore.vue";
 @Component({
   components: {
     ColorPanel,
@@ -55,6 +62,7 @@ import PanelAvgScore from "~/components/dashboard/PanelAvgScore.vue";
     PanelTotalParticipations,
     PanelTotalResponses,
     PanelAvgScore,
+    PanelItemsAvg,
   },
 })
 export default class PlatformDashboard extends Vue {

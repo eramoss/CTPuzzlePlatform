@@ -1,7 +1,7 @@
 <template>
   <div v-loading="loading">
     <color-panel
-      icon="el-icon-warning"
+      icon="checklist"
       label="Respostas"
       link="/platform/test-applications"
       :info="total"
@@ -19,7 +19,7 @@ import { ACTION_GET_TOTAL_RESPONSES } from "~/store/item-responses";
     ColorPanel,
   },
 })
-export default class PanelTotalParticipations extends Vue {
+export default class PanelTotalResponses extends Vue {
   total: any = "...";
   @Prop() researchGroupId!: number;
   loading = true;

@@ -51,9 +51,9 @@ export class ItemResponsesService {
             .where('researchGroup.id = :id', { id: researchGroupId })
             .andWhere('participation."deletedAt" is null')
             .getMany()
-        let totalScore = itemResponses.map(itemResponse => itemResponse.score.score)
+        let totalScore = itemResponses.map(itemResponse => parseFloat(itemResponse.score.score+""))
             .reduce((left, right) => left + right)
-        let totalMax = itemResponses.map(itemResponse => itemResponse.score.max)
+        let totalMax = itemResponses.map(itemResponse => parseFloat(itemResponse.score.max+""))
             .reduce((left, right) => left + right)
         return Math.ceil((totalScore / totalMax) * 100);
     }

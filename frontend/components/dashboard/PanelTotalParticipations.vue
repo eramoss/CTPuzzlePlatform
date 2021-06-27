@@ -1,7 +1,7 @@
 <template>
   <div v-loading="loading">
     <color-panel
-      icon="el-icon-warning"
+      icon="groups"
       label="Participações"
       link="/platform/test-applications"
       :info="totalParticipations"

@@ -1,7 +1,7 @@
 <template>
   <div v-loading="loading">
     <color-panel
-      icon="el-icon-warning"
+      icon="score"
       label="Escore médio"
       link="/platform/test-applications"
       :info="avgScorePercent+'%'"

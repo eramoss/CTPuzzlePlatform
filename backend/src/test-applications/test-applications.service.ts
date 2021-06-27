@@ -107,7 +107,7 @@ export class TestApplicationsService {
             .leftJoinAndSelect('test-application.test', 'test')
             .leftJoinAndSelect('test-application.participations', 'participation', `"participation"."deletedAt" is null`)
             .leftJoinAndSelect('test-application.controlApplication', 'controlApplication')
-            .leftJoinAndSelect('participation.itemResponses', 'itemResponse', `"itemResponse"."deletedAt" is null`)
+            .innerJoinAndSelect('participation.itemResponses', 'itemResponse', `"itemResponse"."deletedAt" is null`)
             .leftJoinAndSelect('itemResponse.testItem', 'testItem')
             .leftJoinAndSelect('itemResponse.score', 'score')
             .leftJoinAndSelect('testItem.item', 'item')

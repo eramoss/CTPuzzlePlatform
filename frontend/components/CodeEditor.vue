@@ -5,14 +5,19 @@
       style="width: 100%"
       ref="code-container"
       class="editor-container"
-      :class="{ 'focus-mode': focusMode,
-      'big-shadow': focusMode }"
+      :class="{ 'focus-mode': focusMode, 'big-shadow': focusMode }"
     >
       <b class="editor-lang">{{ language }}</b>
-      <div class="flex-row" >
-        <h2><span v-show="focusMode || forceShowBigTitle">{{ editorTitle }}</span></h2>
-        <el-button type="text" @click="focusEditor" :title="focusMode?'Minimizar':'Maximizar'">
-          <icon :name="focusMode?'close_fullscreen':'open_in_full'" />
+      <div class="flex-row">
+        <h2>
+          <span v-show="focusMode || forceShowBigTitle">{{ editorTitle }}</span>
+        </h2>
+        <el-button
+          type="text"
+          @click="focusEditor"
+          :title="focusMode ? 'Minimizar' : 'Maximizar'"
+        >
+          <icon :name="focusMode ? 'close_fullscreen' : 'open_in_full'" />
         </el-button>
       </div>
       <span class="editorTitle-editor" v-show="editorTitle">
@@ -136,16 +141,17 @@ export default class CodeEditor extends Vue {
     return this.focusMode ? focusModeOptions : normalModeOptions;
   }
 
-  get appliedFontSize(){
-      return this.focusMode ? 18 : this.fontSize
+  get appliedFontSize() {
+    return this.focusMode ? 18 : this.fontSize;
   }
 
   @Ref("container")
   container!: HTMLElement;
 
   get calculedHeight() {
-    let height = (this.code.split("\n").length + 1) * this.fontSize * 1.328;
-    if (this.useHeightControls) {
+    let height =
+      (this.code.split("\n").length + 1) * this.appliedFontSize * 1.328;
+    if (this.useHeightControls || this.focusMode) {
       height = this.heightPixels;
     }
     return height;
@@ -193,8 +199,8 @@ export default class CodeEditor extends Vue {
     }
   }
 
-  updateUseHeightControls(value:boolean){
-      this.$emit('update:useHeightControls',value)
+  updateUseHeightControls(value: boolean) {
+    this.$emit("update:useHeightControls", value);
   }
 
   focusEditor() {
@@ -247,6 +253,10 @@ export default class CodeEditor extends Vue {
 
   onMouseDown() {
     this.$emit("onMouseDown");
+  }
+
+  onMouseUp() {
+    this.$emit("onMouseUp");
     if (!this.focusMode) {
       this.focusEditor();
     }
@@ -266,9 +276,8 @@ export default class CodeEditor extends Vue {
       this.onEscape();
     }); */
 
-    editor.onMouseDown(() => {
-      this.onMouseDown();
-    });
+    editor.onMouseDown(this.onMouseDown);
+    editor.onMouseUp(this.onMouseUp);
   }
 
   prepareEditor(monaco: any) {

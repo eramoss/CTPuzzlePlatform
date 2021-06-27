@@ -24,6 +24,7 @@ export class ParticipationService {
     async countParticipations(groupId: number): Promise<number> {
         let count = await this.participationRepository
             .createQueryBuilder('participation')
+            .innerJoin('participation.itemResponses', 'itemResponse')
             .leftJoinAndSelect("participation.application", 'application')
             .leftJoinAndSelect("application.test", 'test')
             .leftJoinAndSelect("test.researchGroup", 'researchGroup')
@@ -41,7 +42,10 @@ export class ParticipationService {
     }
 
     async countByTestApplication(application: TestApplication): Promise<number> {
-        return this.participationRepository.count({ where: { application: application } })
+        return this.participationRepository.createQueryBuilder("participation")
+        .innerJoin('participation.itemResponses', 'itemResponse')
+        .where("participation.application = :application", {application:application.id})
+        .getCount()
     }
 
     async saveProgress(participation: Participation) {
@@ -73,7 +77,7 @@ export class ParticipationService {
             .leftJoinAndSelect('participation.application', 'application')
             .leftJoinAndSelect('application.test', 'test')
             .leftJoinAndSelect('participation.user', 'user')
-            .leftJoinAndSelect('participation.itemResponses', 'itemResponse', `"itemResponse"."deletedAt" is null`)
+            .innerJoinAndSelect('participation.itemResponses', 'itemResponse')
             .orderBy('itemResponse.createdAt', 'DESC')
             .leftJoinAndSelect('itemResponse.testItem', 'testItem')
             .leftJoinAndSelect('itemResponse.score', 'score')
