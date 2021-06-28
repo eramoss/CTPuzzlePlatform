@@ -2,7 +2,12 @@
   <div class="left panel shadow">
     <div class="flex-row">
       <h2 style="margin: 0">{{ header }}</h2>
-      <el-tooltip :content="info" placement="top" v-show="info">
+      <el-tooltip placement="top">
+        <div slot="content">
+          <div style="max-width: 300px">
+            <slot name="info" />
+          </div>
+        </div>
         <span>
           <icon name="info" class="info-icon" />
         </span>

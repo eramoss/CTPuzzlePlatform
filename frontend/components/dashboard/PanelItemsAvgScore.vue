@@ -1,10 +1,11 @@
 <template>
   <div>
-    <card-panel
-      :header="header"
-      info="Mostra o escore médio obtido em itens, exceto os de tipo tutorial"
-      v-loading="loading"
-    >
+    <card-panel :header="header" v-loading="loading">
+      <template slot="info">
+        Mostra o escore médio obtido em itens, exceto os de tipo tutorial. Os
+        valores são calculados em porcentagem do valor de escore obtido em
+        relação ao valor máximo.
+      </template>
       <el-table
         :data="items"
         :default-sort="{ prop: 'avgScore', order: 'descending' }"
@@ -27,7 +28,9 @@
           prop="avgScore"
           width="150"
           sortable
-        />
+        >
+          <template slot-scope="{ row }"> {{ row.avgScore }}% </template>
+        </el-table-column>
       </el-table>
     </card-panel>
   </div>

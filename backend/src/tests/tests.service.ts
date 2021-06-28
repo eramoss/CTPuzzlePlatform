@@ -30,7 +30,7 @@ export class TestService {
             select 
                 item.id as "itemId",
                 item.name as "itemName",
-                round(avg(score.score),2) as "avgScore"
+                round(avg(score.score / score.max * 100),2) as "avgScore"
             from 
                 score 
                 join item_response ON item_response."scoreId" = score.id 
