@@ -54,7 +54,7 @@ import DashboardTitle from "~/components/DashboardTitle.vue";
 import PanelTotalParticipations from "~/components/dashboard/PanelTotalParticipations.vue";
 import PanelTotalResponses from "~/components/dashboard/PanelTotalResponses.vue";
 import PanelAvgScore from "~/components/dashboard/PanelAvgScore.vue";
-import PanelItemsAvg, {sort} from "~/components/dashboard/PanelItemsAvgScore.vue";
+import PanelItemsAvg from "~/components/dashboard/PanelItemsAvgScore.vue";
 @Component({
   components: {
     ColorPanel,
