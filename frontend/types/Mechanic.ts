@@ -1,12 +1,9 @@
+import { getDeclaredClassesNames } from "~/utils/utils";
 import { ItemTestCase } from "./ItemTestCase";
 import ResearchGroup from "./ResearchGroup";
 import User from "./User"
 
 export default class Mechanic {
-    static newEmpty(): Mechanic {
-        return new Mechanic('', '', '', '', '');
-    }
-
     id: number = 0
     name: string = ''
     baseUrl: string = ''
@@ -53,4 +50,28 @@ export function createMechanicExample(user: User): Mechanic {
     mechanicExample.researchGroup = user.researchGroup
     return mechanicExample;
 
+}
+
+export function createScoreFunctionExampleIfUndefined(mechanic: Mechanic) {
+    if (!mechanic.scoreFunction) {
+        mechanic.scoreFunction = createScoreFunctionCode(mechanic.classDefinition, mechanic.responseClassDefinition)
+    }
+}
+
+export const createScoreFunctionCode = function (classDefinition: string, responseDefinition: string) {
+    let itemClassName = getDeclaredClassesNames(classDefinition)[0]
+    let responseClassName = getDeclaredClassesNames(responseDefinition, 'resp')[0]
+    return `function calcularEscore(item: ${itemClassName}, resposta: ${responseClassName}){
+    
+    // Escreva a função de escore
+    
+    // Exemplo
+    // let nota = 0;
+    // if(resposta.tempo == item.tempoEsperado / 2){
+    //    nota = 5
+    //}
+    
+    // Formato esperado com escore e escore máximo atingível
+    return { score: nota, max: 10 };
+}`
 }

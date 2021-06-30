@@ -16,7 +16,9 @@
 </template>
 <script lang="ts">
 import { Component, VModel, Ref } from "nuxt-property-decorator";
-import Mechanic from "~/types/Mechanic";
+import Mechanic, {
+  createScoreFunctionExampleIfUndefined,
+} from "~/types/Mechanic";
 import CodeEditor from "~/components/CodeEditor.vue";
 import ScoreFunctionTestForm from "~/components/ScoreFunctionTestForm.vue";
 
@@ -36,6 +38,7 @@ export default class ScoreFunctionTestDialog extends Vue {
   runningTests = false;
 
   show() {
+    createScoreFunctionExampleIfUndefined(this.mechanic);
     this.visible = true;
   }
 

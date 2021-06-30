@@ -10,13 +10,15 @@ library("stringr") # trim
 plot_boxplot <- function(dataset){
   columnName = names(dataset)[1]
   print(columnName)
-  ggplot(dataset, aes_string(y = columnName)) + geom_boxplot()
+  ggplot(dataset, aes_string(y = columnName)) +
+  geom_boxplot()
 }
 
 plot_histogram <- function(dataset) {
   columnName = names(dataset)[1]
   print(columnName)
-  ggplot(dataset, aes_string(x = columnName)) + geom_histogram(stat = "count", fill = "lightblue", colour = "black")
+  ggplot(dataset, aes_string(x = factor(columnName))) +
+  geom_histogram(stat = "count", fill = "lightblue", colour = "black")
 }
 
 plot_bargraph <- function(dataset) {
@@ -30,7 +32,9 @@ plot_bargraph <- function(dataset) {
 plot_regression <- function(dataset){
   columnName1 = names(dataset)[1]
   columnName2 = names(dataset)[2]
-  ggplot(dataset, aes_string(x = columnName1, y = columnName2)) + geom_point() + stat_smooth(method = lm)
+  ggplot(dataset, aes_string(x = columnName1, y = columnName2)) +
+  geom_point() +
+  stat_smooth(method = lm)
 }
 
 option_list = list(

@@ -78,7 +78,6 @@ import Mechanic from "~/types/Mechanic";
 import {
   CleanInstantiationOptions,
   createCleanInstantiationFunctionCode,
-  createScoreFunctionCode,
 } from "~/types/ItemTestCase";
 import queryString from "~/utils/utils";
 @Component

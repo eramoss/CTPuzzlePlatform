@@ -65,12 +65,13 @@
             <MessageAlert type="info">
               <p>
                 A especificação da mecânica é uma classe<a
+                  target="_blank"
                   href="https://www.typescriptlang.org/"
                   >TypeScript</a
                 >
-                com as características do puzzle. Posição de objetos,
-                tamanho de mapa, dificuldade, tempo esperado de resolução,
-                número de vidas são exemplos de atributos.
+                com as características do puzzle. Posição de objetos, tamanho de
+                mapa, dificuldade, tempo esperado de resolução, número de vidas
+                são exemplos de atributos.
               </p>
             </MessageAlert>
 
@@ -88,8 +89,8 @@
 
             <MessageAlert type="info">
               A classe de resposta contém os dados que o utilizados para o
-              cálculo de escore. Tempo de resposta,
-              número de erros, solução informada, número de tentativas são exemplos de atributos.
+              cálculo de escore. Tempo de resposta, número de erros, solução
+              informada, número de tentativas são exemplos de atributos.
             </MessageAlert>
 
             <el-form-item prop="responseClassDefinition">

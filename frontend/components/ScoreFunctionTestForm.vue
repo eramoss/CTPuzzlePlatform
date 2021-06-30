@@ -213,7 +213,7 @@ import {
   Watch,
 } from "nuxt-property-decorator";
 import Mechanic from "~/types/Mechanic";
-import { createScoreFunctionCode, ItemTestCase } from "~/types/ItemTestCase";
+import { ItemTestCase } from "~/types/ItemTestCase";
 import { ResponseTestCase } from "~/types/ResponseTestCase";
 import { isTestPassed } from "./ScoreFunctionTestsSummary.vue";
 import ScoreFunctionTestsSummary from "./ScoreFunctionTestsSummary.vue";
