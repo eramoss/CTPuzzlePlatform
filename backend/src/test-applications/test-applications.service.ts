@@ -126,41 +126,41 @@ export class TestApplicationsService {
     async getCsvData(testApplicationId: number): Promise<CsvData> {
         const testApplication = await this.getById(testApplicationId);
         const rows: any[] = [];
-        let responseProperties: string[] = [];
-        let userProperties: string[] = [];
+        let responseKeys: string[] = [];
+        let userKeys: string[] = [];
         let quizProperties: string[] = [];
         const labels = [
-            { label: 'data', value: 'data' },
-            { label: 'usuario', value: 'usuario' },
-            { label: 'fonte', value: 'fonte' },
-            { label: 'participacao', value: 'participacao_id' },
-            { label: 'observacoes', value: 'observacoes' },
-            { label: 'item', value: 'item_id' },
-            { label: 'order', value: 'item_order' },
-            { label: 'tutorial', value: 'tutorial' },
-            { label: 'contador', value: 'contador' },
+            { label: 'data', value: 'data'},
+            { label: 'usuario', value: 'usuario'},
+            { label: 'fonte', value: 'fonte'},
+            { label: 'participacao', value: 'participacao_id'},
+            { label: 'observacoes', value: 'observacoes'},
+            { label: 'item', value: 'item_id'},
+            { label: 'order', value: 'item_order'},
+            { label: 'tutorial', value: 'tutorial'},
+            { label: 'contador', value: 'contador'},
             //{ label: 'resposta', value: 'resposta' },
         ];
 
         testApplication.participations.forEach((participation: Participation) => {
             if (participation.user.data) {
-                userProperties = Object.keys(participation.user.data);
-                userProperties.reverse().forEach(prop => {
-                    if (!labels.some(l => l.label == prop)) {
-                        labels.splice(1, 0, { label: prop, value: prop });
+                userKeys = Object.keys(participation.user.data);
+                userKeys.reverse().forEach(key => {
+                    if (!labels.some(l => l.label == key)) {
+                        labels.splice(1, 0, { label: key, value: key});
                     }
                 });
             }
 
             if (participation.userDataToRequest) {
-                let props = participation.userDataToRequest.questions.map(q => q.name);
-                props.reverse().forEach(prop => {
-                    if (!labels.some(l => l.label == prop)) {
-                        labels.splice(2, 0, { label: prop, value: prop });
+                let quizKeys = participation.userDataToRequest.questions.map(q => q.name);
+                quizKeys.reverse().forEach(key => {
+                    if (!labels.some(l => l.label == key)) {
+                        labels.splice(2, 0, { label: key, value: key});
                     }
                 });
-                if(props.length > quizProperties.length){
-                    quizProperties = props
+                if(quizKeys.length > quizProperties.length){
+                    quizProperties = quizKeys
                 }
             }
 
@@ -184,13 +184,13 @@ export class TestApplicationsService {
                     contador: 1,
                 };
                 let responseJson = JSON.parse(itemResponse.response);
-                if (!responseProperties.length) {
-                    responseProperties = Object.keys(responseJson);
+                if (!responseKeys.length) {
+                    responseKeys = Object.keys(responseJson);
                 }
-                userProperties.forEach((key: string) => {
+                userKeys.forEach((key: string) => {
                     row[key] = participation.user.data[key];
                 });
-                responseProperties.forEach((key: string) => {
+                responseKeys.forEach((key: string) => {
                     row[key] = responseJson[key];
                 });
                 quizProperties.forEach((key: string) => {
@@ -198,104 +198,31 @@ export class TestApplicationsService {
                         row[key] = participation.userDataToRequest.questions.find(q => q.name == key)?.answer;
                     }
                 });
+
+                // labels.forEach(header=>{
+                //     let length = (row[header.value]+"").length
+                //     if(length > header.maxLengthContent){
+                //         header.maxLengthContent = length
+                //     }
+                // })
+
                 rows.push(row);
             });
         });
 
-        responseProperties.forEach(prop => {
-            labels.push({ label: prop, value: prop });
+        responseKeys.forEach(prop => {
+            labels.push({ label: prop, value: prop});
         });
+
         [
             { label: 'escore_max', value: 'escore_max' },
-            { label: 'escore_obtido', value: 'escore_obtido' },
+            { label: 'escore_obtido', value: 'escore_obtido'},
         ].forEach(item => labels.push(item));
 
         let csvData = new CsvData()
         csvData.labels = labels
         csvData.rows = rows
         return csvData
-    }
-
-    async generateCsvFromItemResponsesForIRT(testApplicationId: number): Promise<string> {
-        const rows = []
-        let labels = [
-            //{ label: 'A1', value: '0' },
-            { label: 'A2', value: '1' },
-            { label: 'A3', value: '2' },
-            { label: 'A4', value: '3' },
-            { label: 'A5', value: '4' },
-        ]
-
-        let randomWithProbabilities:
-            (values: any[], probabilities: number[]) => number
-            = (values: any[], probabilities: number[]) => {
-
-                let newProbabilities = []
-                let count = 1;
-                for (let i = 0; i < probabilities.length; i++) {
-                    let sum = 0;
-                    for (let j = 0; j < count; j++) {
-                        sum += probabilities[j]
-                    }
-                    newProbabilities[i] = sum
-                    count++
-                }
-                probabilities = newProbabilities
-
-                let random = Math.random()
-                let randomValue = -1;
-                probabilities
-                    .reverse()
-                    .forEach((probability, index) => {
-                        index = Math.abs((probabilities.length - 1) - index)
-                        if (random < probability) {
-                            randomValue = values[index]
-                        }
-                    })
-                return randomValue
-            }
-
-        for (let i = 0; i < 28000; i++) {
-            let row = {
-                //0: randomWithProbabilities(['1', '2', '3', '4'], [.25, .25, .25, .25]),
-                1: randomWithProbabilities(['1', '2', '3', '4'], [.2, .3, .5]),
-                2: randomWithProbabilities(['1', '2', '3', '4'], [.3, .4, .3]),
-                3: randomWithProbabilities(['1', '2', '3', '4'], [.5, .3, .2]),
-                4: randomWithProbabilities(['1', '2', '3', '4'], [.7, .2, .1]),
-            }
-            rows.push(row)
-        }
-
-        //rows.filter(row=>row[0] == 1).length
-
-        return buildCsv(labels, rows)
-    }
-
-    async generateCsvFromItemResponsesForIRT_bkp(testApplicationId: number): Promise<string> {
-        const testApplication = await this.getById(testApplicationId);
-        const rows: any[] = []
-
-        let test: Test = await this.testService.getById(testApplication.test.id)
-
-        const labels = [{ label: 'id_resposta', value: 'id_resposta' }]
-        test.items
-            .map(testItem => testItem.item)
-            .forEach((item: Item) => labels.push({
-                label: item.name,
-                value: `${item.id}`
-            }))
-
-        testApplication.participations.forEach((participation: Participation) => {
-            let row = {
-                id_resposta: participation.id
-            }
-            participation.itemResponses.forEach((itemResponse: ItemResponse) => {
-                row[`${itemResponse.testItem.item.id}`] = itemResponse.score.score
-            })
-            rows.push(row)
-        })
-
-        return buildCsv(labels, rows)
     }
 
     async getByHash(hash: string): Promise<TestApplication> {

@@ -12,16 +12,28 @@ export class CsvData {
     rows: any[] = [];
 }
 
-export function csvDataToCsv(csvData: CsvData): string {
-    let keys = csvData.labels.map(l => l.value)
-    let header = csvData.labels.map(label => label.value).join(CSV_SEPARATOR)
+
+export function stringfyCsvColumnDataRow(columnValue: any) {
+    if (typeof columnValue == "object") {
+        columnValue = JSON.stringify(columnValue)
+    }
+    return columnValue?.toString().replaceAll('\n', ' ')
+}
+
+export function csvDataToCsv(csvData: CsvData, selectedColumns: string[] = []): string {
+
+    let labels = csvData.labels
+    if (selectedColumns.length) {
+        labels = labels.filter(label => selectedColumns.find(value => value == label.value))
+    }
+
+    let keys = labels.map(l => l.value)
+
+    let header = keys.join(CSV_SEPARATOR)
+
     let body = csvData.rows.map(row =>
         keys.map(key => {
-            let columnValue = row[key]
-            if (typeof row[key] == "object") {
-                columnValue = JSON.stringify(row[key])
-            }
-            return columnValue?.toString().replaceAll('\n', ' ')
+            return stringfyCsvColumnDataRow(row[key])
         }).join(CSV_SEPARATOR)
     ).join('\n')
     return `${header}\n${body}`
@@ -81,10 +93,14 @@ export function csvDataToCsvFormatted(csvData: CsvData): string {
 }
 
 
-export function getLengthOfBigLengthValue(csvData: CsvData, csvHeader: CsvHeaderLabel) {
+export function getLengthOfBigLengthValue(csvData: CsvData, csvHeader: CsvHeaderLabel, numOfRows: number = -1) {
     let key = csvHeader.value
     let maxLength = csvHeader.value.length;
-    csvData.rows.map(row => JSON.stringify(row[key])).map(value => value?.length)
+    let rows = csvData.rows;
+    if (numOfRows > -1) {
+        rows = rows.slice(0, numOfRows)
+    }
+    rows.map(row => JSON.stringify(row[key])).map(value => value?.length)
         .forEach(length => {
             if (length > maxLength) {
                 maxLength = length
@@ -244,4 +260,21 @@ export function trimCsvData(csv: string) {
             .map(value => (value + "").trim())
             .join(CSV_SEPARATOR))
         .join("\n")
+}
+
+export async function downloadCsvData(csvData: CsvData, fileName: string, selectedColumns: string[] = []) {
+    try {
+        const csv = csvDataToCsv(csvData, selectedColumns)
+        const data = replaceDefaultSeparatorWithSemicolon(csv);
+        var c = document.createElement("a");
+        c.download = `${fileName}.csv`;
+
+        var t = new Blob([data], {
+            type: "text/plain",
+        });
+        c.href = window.URL.createObjectURL(t);
+        c.click();
+    } catch (e) {
+        //this.$notify.warning("O arquivo não foi gerado")
+    }
 }

@@ -113,6 +113,9 @@ a {
     justify-content: space-between;
     align-items: center;
 }
+.flex-row.center{
+    justify-content: center;
+}
 .flex-row.left, .flex-row.start{
     justify-content: flex-start;
 }
