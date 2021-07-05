@@ -3,7 +3,7 @@ import { $axios } from '~/utils/axios'
 import { AxiosResponse } from 'axios';
 import { PageRequest, PageResponse } from '~/types/pagination';
 import Test from '~/types/Test';
-import TestItemDificulty from '~/types/TestItemDificulty';
+import TestItemDifficulty from '~/types/TestItemDifficulty';
 export const actions: ActionTree<any, any> = {
 
     async save(state, test: Test): Promise<Test> {
@@ -34,7 +34,7 @@ export const actions: ActionTree<any, any> = {
         return $axios.$get('/tests/getPuzzleBaseUrl/' + testId);
     },
 
-    async getAvgScoreByItem(state): Promise<TestItemDificulty> {
+    async getAvgScoreByItem(state): Promise<TestItemDifficulty> {
         return $axios.$get('/tests/getAvgScoreByItem')
     }
 

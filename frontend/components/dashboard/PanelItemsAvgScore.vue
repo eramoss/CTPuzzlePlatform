@@ -38,7 +38,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Action, Component, Prop } from "nuxt-property-decorator";
-import TestItemDificulty from "~/types/TestItemDificulty";
+import TestItemDifficulty from "~/types/TestItemDifficulty";
 import CardPanel from "~/components/CardPanel.vue";
 import { ACTION_GET_AVG_SCORE_BY_ITEM } from "~/store/tests";
 
@@ -46,14 +46,14 @@ import { ACTION_GET_AVG_SCORE_BY_ITEM } from "~/store/tests";
   components: { CardPanel },
 })
 export default class PanelItemsAvgScore extends Vue {
-  items: TestItemDificulty[] = [];
+  items: TestItemDifficulty[] = [];
   loading = true;
 
   @Prop({ default: "Escore médio por item" }) header!: string;
   @Prop({ default: undefined }) maxRows!: number;
 
   @Action(ACTION_GET_AVG_SCORE_BY_ITEM)
-  getAvgScoreByItem!: () => Promise<TestItemDificulty[]>;
+  getAvgScoreByItem!: () => Promise<TestItemDifficulty[]>;
 
   async mounted() {
     try {

@@ -11,7 +11,7 @@
       </el-col>
       <el-col :span="6">
         <form-item-label label="Dificuldade"></form-item-label>
-        <el-input v-model="dificulty"></el-input>
+        <el-input v-model="difficulty"></el-input>
       </el-col>
     </el-row>
     <div v-show="errorMessage">{{ errorMessage }}</div>
@@ -24,6 +24,7 @@ import { Component, Prop, Watch } from "nuxt-property-decorator";
 import Plot from "./Plot.vue";
 import { CsvData } from "~/types/CsvData";
 import { evaluate, Matrix, range } from "mathjs";
+import ItemCharacteristicCurveFunction from "@/types/ItemCharacteristicCurveFunction";
 
 @Component({
   components: {
@@ -35,10 +36,9 @@ export default class ItemResponseTheoryPlot extends Vue {
 
   data: any[] = [];
   discrimination = 2;
-  dificulty = 0.4;
-  probabilityFunction!: Function;
-  curveExpression =
-    "P(ability, a, b) = 1 / ( 1 + exp(1) ^ (-a * (ability - b)) )";
+  difficulty = 0.4;
+  probabilityFunction = new ItemCharacteristicCurveFunction();
+  curveExpression = this.probabilityFunction.curveExpression;
   errorMessage = "";
 
   updateData() {
@@ -51,10 +51,10 @@ export default class ItemResponseTheoryPlot extends Vue {
       ).toArray() as number[];
       let probabilityOfTotalHitGivenSkillLevel: number[] = [];
       abilityRange.forEach((ability) => {
-        let p = this.probabilityFunction(
+        let p = this.probabilityFunction.execute(
           ability,
           this.discrimination,
-          this.dificulty
+          this.difficulty
         );
         probabilityOfTotalHitGivenSkillLevel.push(p);
       });
@@ -74,9 +74,14 @@ export default class ItemResponseTheoryPlot extends Vue {
     }
   }
 
+  setParameters(parameters: { difficulty: number; discrimination: number }) {
+    this.difficulty = parameters.difficulty;
+    this.discrimination = parameters.discrimination;
+  }
+
   compileExpression() {
     try {
-      this.probabilityFunction = evaluate(this.curveExpression);
+      this.probabilityFunction.setExpression(this.curveExpression);
     } catch (e) {
       this.errorMessage = "Expressão inválida";
     }
@@ -84,13 +89,13 @@ export default class ItemResponseTheoryPlot extends Vue {
 
   get plotLayout() {
     return {
-      title:
-        "Curva característica do item (CCI)",
+      title: "Curva característica do item (CCI)",
       xaxis: {
         title: "Habilidade",
       },
       yaxis: {
-        title: "Probabilidade de resposta correta",
+        title: "Probabilidade de acerto total",
+        range: [0, 1],
       },
     };
   }
@@ -111,8 +116,8 @@ export default class ItemResponseTheoryPlot extends Vue {
     this.updateData();
   }
 
-  @Watch("dificulty", { immediate: true })
-  onChangeDificulty() {
+  @Watch("difficulty", { immediate: true })
+  onChangeDifficulty() {
     this.updateData();
   }
 }

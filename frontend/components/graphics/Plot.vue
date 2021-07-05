@@ -60,8 +60,10 @@ export default class Plot extends Vue {
   }
 
   async plot() {
-    await this.initializePlotly();
-    this.plotly.newPlot(this.plotDiv, this.data, this.layout);
+    if (process.browser) {
+      await this.initializePlotly();
+      this.plotly.newPlot(this.plotDiv, this.data, this.layout);
+    }
   }
 
   get plotDiv() {
@@ -72,6 +74,5 @@ export default class Plot extends Vue {
   onChangeData() {
     this.plot();
   }
-  
 }
 </script>

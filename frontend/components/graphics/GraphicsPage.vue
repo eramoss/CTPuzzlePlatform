@@ -3,11 +3,15 @@
     <el-row class="panel shadow top-marged">
       <el-col :md="12">
         <parameters-estimation-plot
+          @onChangePlotParameters="updateParameters"
           :testApplicationData="testApplicationData"
         />
       </el-col>
       <el-col :md="12">
-        <item-response-theory-plot :testApplicationData="testApplicationData" />
+        <item-response-theory-plot
+          ref="itemResponseTheoryPlot"
+          :testApplicationData="testApplicationData"
+        />
       </el-col>
     </el-row>
     <el-row class="panel shadow top-marged">
@@ -21,7 +25,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "nuxt-property-decorator";
+import { Component, Prop, Ref } from "nuxt-property-decorator";
 import TestItemsBoxPlot from "./TestItemsBoxPlot.vue";
 import ItemResponseTheoryPlot from "./ItemResponseTheoryPlot.vue";
 import ParametersEstimationPlot from "./ParametersEstimationPlot.vue";
@@ -35,5 +39,11 @@ import { CsvData } from "~/types/CsvData";
 })
 export default class GraphicsPage extends Vue {
   @Prop() testApplicationData!: CsvData;
+
+  @Ref() itemResponseTheoryPlot!: ItemResponseTheoryPlot;
+
+  updateParameters(parameters: {difficulty: number, discrimination:number}) {
+    this.itemResponseTheoryPlot?.setParameters(parameters);
+  }
 }
 </script>

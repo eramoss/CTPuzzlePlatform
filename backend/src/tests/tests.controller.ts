@@ -4,7 +4,7 @@ import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import { getResearchGroupId } from 'src/util/getClaim';
 import { DeleteResult } from 'typeorm';
-import TestItemDificulty from './test-item-dificulty.dto';
+import TestItemDifficulty from './test-item-difficulty.dto';
 import { Test } from './test.entity';
 import { TestService } from './tests.service';
 
@@ -25,7 +25,7 @@ export class TestController {
         return this.testService.getById(id);
     }
     @Get('getAvgScoreByItem')
-    getAvgScoreByItem(): Promise<TestItemDificulty[]> {
+    getAvgScoreByItem(): Promise<TestItemDifficulty[]> {
         return this.testService.getAvgScoresByItem()
     }
 

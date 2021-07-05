@@ -29,7 +29,7 @@ export default class TestItemsBoxPlot extends Vue {
 
   get plotLayout() {
     return {
-      title: this.selectedColumnValue,
+      //title: this.selectedColumnValue,
       yaxis: {
         title: this.selectedColumnValue,
       },

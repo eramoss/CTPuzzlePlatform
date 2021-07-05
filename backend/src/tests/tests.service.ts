@@ -9,7 +9,7 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { TestItem } from './test-item.entity';
 import { Test } from './test.entity';
 import { getManager } from 'typeorm';
-import TestItemDificulty from './test-item-dificulty.dto';
+import TestItemDifficulty from './test-item-difficulty.dto';
 
 @Injectable()
 export class TestService {
@@ -25,7 +25,7 @@ export class TestService {
         return this.testRepository.save(test);
     }
 
-    getAvgScoresByItem(): Promise<TestItemDificulty[]> {
+    getAvgScoresByItem(): Promise<TestItemDifficulty[]> {
         return getManager().query(`
             select 
                 item.id as "itemId",
