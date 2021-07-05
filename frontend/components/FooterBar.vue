@@ -12,7 +12,7 @@ export default class FooterBar extends Vue {
 </script>
 <style lang="scss">
 .footer-bar {
-  background: #ddd;
+  background: white;
   width: 100%;
   height: 200px;
   margin-top: 120px;

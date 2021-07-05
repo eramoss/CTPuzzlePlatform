@@ -1,79 +1,96 @@
 <template>
   <div>
     <el-breadcrumb>
-      <el-breadcrumb-item :to="{ path: '/platform' }"
-        >Plataforma</el-breadcrumb-item
-      >
+      <el-breadcrumb-item :to="{ path: '/platform' }">
+        Plataforma
+      </el-breadcrumb-item>
       <el-breadcrumb-item>Estatísticas</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="left panel">
       <h2>Estatísticas</h2>
 
-      <el-select
-        v-model="selectedTestApplication"
-        value-key="id"
-        placeholder="Selecione a aplicação"
-      >
-        <el-option
-          v-for="testApplication in testApplications"
-          :key="testApplication.id"
-          :label="testApplication.name"
-          :value="testApplication"
-        ></el-option>
-      </el-select>
-
-      <div class="flex-row end">
-        <el-tooltip
-          effect="light"
-          content="Download arquivo csv separado por ';'"
+      <form-item-label label="Aplicação de teste" :required="true" />
+      <div class="flex-row">
+        <el-select
+          :filterable="true"
+          v-model="selectedTestApplication"
+          value-key="id"
+          placeholder="Selecione a aplicação"
         >
-          <el-button
-            :disabled="!totalDataRows"
-            type="text"
-            @click="showDialogDownloadCsv"
-            icon="el-icon-download"
-            >Baixar</el-button
-          >
-        </el-tooltip>
+          <el-option
+            v-for="testApplication in testApplications"
+            :key="testApplication.id"
+            :label="testApplication.name"
+            :value="testApplication"
+          ></el-option>
+        </el-select>
       </div>
-      <el-table
-        id="dataTable"
+
+      <div
+        class="panel left top-marged"
         v-loading="loadingTestApplicationData"
         element-loading-text="Carregando dados..."
-        highlight-current-row
-        ref="dataTable"
-        size="small"
-        border
-        stripe
-        height="500"
-        :data="getLoadedRows"
-        empty-text="Não há dados carregados. Selecione uma aplicação de teste."
       >
-        <el-table-column
-          v-for="header in testApplicationData.labels"
-          :label="header.label"
-          :key="header.label"
-          :width="calculateColumnWidth(header)"
-          :prop="header.value"
-          :fixed="calculateColumnFixPosition(header)"
+        <h3>
+          <span class="flex-row">
+            <span>
+              Respostas
+              <span v-show="isContentLoaded"
+                >({{ totalLoadedRows }}/{{ totalDataRows }})</span
+              >
+            </span>
+            <el-tooltip
+              effect="light"
+              content="Download arquivo csv separado por ';'"
+            >
+              <el-button
+                :disabled="!isContentLoaded"
+                type="primary"
+                @click="showDialogDownloadCsv"
+                icon="el-icon-download"
+                >Baixar</el-button
+              >
+            </el-tooltip>
+            <download-csv-data-dialog
+              :csvData="testApplicationData"
+              ref="downloadCsvDialog"
+            />
+          </span>
+        </h3>
+
+        <el-table
+          id="dataTable"
+          highlight-current-row
+          ref="dataTable"
+          v-loading="loadingMoreRows"
+          :element-loading-text="`Carregando mais ${quantityLinesToLoad} linhas...`"
+          border
+          stripe
+          height="500"
+          :data="getLoadedRows"
+          empty-text="Não há dados carregados. Selecione uma aplicação de teste."
         >
-          <template slot-scope="{ row }">
-            {{ columnToString(row[header.value]) }}
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- <el-table>
-          <el-table-column></el-table-column>
-      </el-table> -->
-      <div class="flex-row">
-        <div v-show="totalDataRows">
-          Mostrando {{ totalLoadedRows }} linhas de {{ totalDataRows }}
-        </div>
-        <div class="loading-indicator" :class="{ visible: loadingMoreRows }">
-          <i class="el-icon-loading"></i> Carregando mais linhas...
-        </div>
+          <el-table-column
+            v-for="header in testApplicationData.labels"
+            :label="header.label"
+            :key="header.value"
+            :width="calculateColumnWidth(header)"
+            :prop="header.value"
+            :fixed="calculateColumnFixPosition(header)"
+          >
+            <template slot-scope="{ row }">
+              {{ columnToString(row[header.value]) }}
+            </template>
+          </el-table-column>
+        </el-table>
+        <summary-table :data="testApplicationData" v-show="isContentLoaded" />
       </div>
-      <download-csv-data-dialog :csvData="testApplicationData" ref="downloadCsvDialog" />
+
+      <graphics-page
+        v-show="isContentLoaded"
+        ref="graphicsChooserDialog"
+        :testApplicationData="testApplicationData"
+      />
     </div>
   </div>
 </template>
@@ -91,6 +108,8 @@ import TestApplication from "~/types/TestApplication";
 import StatisticsTestApplication from "~/components/StatisticsTestApplication.vue";
 import { PageRequest, PageResponse } from "~/types/pagination";
 import DownloadCsvDataDialog from "~/components/DownloadCsvDataDialog.vue";
+import SummaryTable from "~/components/SummaryTable.vue";
+import GraphicsPage from "~/components/graphics/GraphicsPage.vue";
 import {
   ACTION_GET_CSV_DATA_TEST_APPLICATION,
   ACTION_PAGINATE_APPLICATIONS,
@@ -98,7 +117,8 @@ import {
 import {
   CsvData,
   CsvHeaderLabel,
-  getLengthOfBigLengthValue,
+  getColumnFixPosition,
+  getColumnWidth,
   stringfyCsvColumnDataRow,
 } from "~/types/CsvData";
 import { ElTable } from "element-ui/types/table";
@@ -110,6 +130,8 @@ const statistics = namespace("statistics");
   components: {
     StatisticsTestApplication,
     DownloadCsvDataDialog,
+    SummaryTable,
+    GraphicsPage,
   },
 })
 export default class StatisticsPage extends Vue {
@@ -159,7 +181,7 @@ export default class StatisticsPage extends Vue {
           this.selectedTestApplication
         );
         this.registerLoadedTestApplicationId();
-        this.totalLoadedRows = 20;
+        this.totalLoadedRows = this.quantityLinesToLoad;
       } catch (e) {
         this.$notify({
           type: "error",
@@ -170,6 +192,10 @@ export default class StatisticsPage extends Vue {
         this.loadingTestApplicationData = false;
       }
     }
+  }
+
+  get quantityLinesToLoad() {
+    return 20;
   }
 
   registerLoadedTestApplicationId() {
@@ -205,20 +231,15 @@ export default class StatisticsPage extends Vue {
   }
 
   calculateColumnWidth(header: CsvHeaderLabel) {
-    let columnWidth =
-      getLengthOfBigLengthValue(this.testApplicationData, header, 10) * 8;
-    if (columnWidth < 100) {
-      columnWidth = 100;
-    }
-    return columnWidth;
+    return getColumnWidth(this.testApplicationData, header);
   }
 
   calculateColumnFixPosition(header: CsvHeaderLabel): string | boolean {
-    let fixed: string | boolean = false;
-    if (header.value == "escore_obtido") {
-      fixed = "right";
-    }
-    return fixed;
+    return getColumnFixPosition(header);
+  }
+
+  get isContentLoaded() {
+    return !!this.totalDataRows;
   }
 
   get totalDataRows() {
@@ -237,7 +258,7 @@ export default class StatisticsPage extends Vue {
     }
     setTimeout(() => {
       this.loadingMoreRows = false;
-    }, 500);
+    }, 1500);
   }
 
   get loadedAllRows() {
@@ -256,7 +277,7 @@ export default class StatisticsPage extends Vue {
   loadMoreRowsIfIsOnEndOfScroll(dataTableBody: Element) {
     if (this.detectEndOfScroll(dataTableBody)) {
       if (!this.loadedAllRows) {
-        this.loadMoreRows(10);
+        this.loadMoreRows(this.quantityLinesToLoad);
       }
     }
   }
@@ -280,13 +301,6 @@ export default class StatisticsPage extends Vue {
 }
 </script>
 <style lang="scss">
-.loading-indicator {
-  opacity: 0;
-  transition: opacity 500ms ease-out;
-}
-.loading-indicator.visible {
-  opacity: 1;
-}
 #dataTable {
   margin-top: 0;
   padding-top: 0;

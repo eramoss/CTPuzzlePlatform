@@ -92,4 +92,4 @@ png(filename="ToothGrowth.png", res=120)
 ggplot(ToothGrowth, aes(x = interaction(supp,dose), y = len)) + geom_boxplot()
 dev.off()
 
-'teste'
+shapiro.test()

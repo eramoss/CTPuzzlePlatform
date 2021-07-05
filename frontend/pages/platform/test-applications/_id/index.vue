@@ -116,16 +116,6 @@
                 Recalcular escores de todas as participações
               </el-button>
               <el-button
-                title="Baixar respostas em formato útil para análise com IRT"
-                type="primary"
-                icon="el-icon-download"
-                size="small"
-                :loading="downloading"
-                @click="downloadIRT"
-              >
-                IRT CSV
-              </el-button>
-              <el-button
                 type="primary"
                 icon="el-icon-download"
                 size="small"
@@ -209,7 +199,6 @@ const ACTION_GET_BY_ID = "test-applications/getById";
 import {
   ACTION_GET_LAST_RESPONSE,
   ACTION_GENERATE_CSV,
-  ACTION_GENERATE_IRT_CSV,
   ACTION_SAVE_TEST_APPLICATION,
   ACTION_RECALCULATE_ALL_APPLICATION_SCORES,
   ACTION_GET_APPLICATIONS,
@@ -255,9 +244,6 @@ export default class ApplicationEditForm extends Vue {
 
   @Action(ACTION_GENERATE_CSV)
   generateItemResponsesCsv!: (testApplicationId: number) => Promise<any>;
-
-  @Action(ACTION_GENERATE_IRT_CSV)
-  generateItemResponsesCsvIRT!: (testApplicationId: number) => Promise<any>;
 
   @Action(ACTION_RECALCULATE_ALL_APPLICATION_SCORES)
   recalculateScores!: (testApplication: TestApplication) => Promise<any>;
@@ -324,27 +310,13 @@ export default class ApplicationEditForm extends Vue {
     this.loadData();
   }
 
-  async downloadIRT() {
-    try {
-      this.downloading = true;
-      await this.generateItemResponsesCsvIRT(this.testApplication.id);
-    } catch (e) {
-      this.$notify.error({
-        title: "Não foi possível gerar o arquivo",
-        message: "Ocorreu um erro interno durante a geração",
-      });
-    } finally {
-      this.downloading = false;
-    }
-  }
-
   async recalculateAllParticipationsScores() {
     this.recalculating = true;
     try {
       await this.recalculateScores(this.testApplication);
       this.$notify.success({
         title: "As respostas foram recalculadas",
-        message: "Todas as respostas foram recalculadas",
+        message: "A rotina de cálculo foi disparada",
       });
     } catch (e) {
       this.$notify.error({

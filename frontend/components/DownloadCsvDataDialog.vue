@@ -1,45 +1,58 @@
 <template>
   <el-dialog :visible.sync="visible" title="Baixar dados de aplicação de teste">
-    <el-form>
-      <el-form-item label="Nome do arquivo">
-        <el-input ref="fileNameInput" v-model="fileName">
-          <template slot="append">.csv</template>
-        </el-input>
-      </el-form-item>
-      <el-form-item label="Colunas">
-        <div class="columns-switch">
-          <el-switch
-            v-model="isSelectedColumns"
-            active-text="Selecionar colunas"
-          ></el-switch>
-        </div>
-        <div v-show="messageSelectedColumns">
-          <div class="flex-row">
-            {{ messageSelectedColumns }}
-            <div>
-              <el-button
-                type="text"
-                size="small"
-                @click="unselectAllColumns"
-                :disabled="!isAllowedUnselectAllColumns"
-                >Desmarcar tudo</el-button
-              >
-            </div>
+    <div>
+      <form-item-label label="Nome do arquivo" />
+      <el-input ref="fileNameInput" v-model="fileName">
+        <template slot="append">.csv</template>
+      </el-input>
+    </div>
+
+    <div class="top-marged">
+      <form-item-label label="Colunas" />
+      <div class="columns-switch">
+        <el-switch
+          v-model="isSelectedColumns"
+          active-text="Selecionar colunas"
+        ></el-switch>
+      </div>
+      <div v-show="messageSelectedColumns">
+        <div class="flex-row">
+          {{ messageSelectedColumns }}
+          <div>
+            <el-button
+              type="text"
+              size="small"
+              @click="unselectAllColumns"
+              :disabled="!isAllowedUnselectAllColumns"
+              >Desmarcar tudo</el-button
+            >
           </div>
         </div>
-        <div class="columns-checkbox-group" v-show="isSelectedColumns">
-          <el-checkbox-group v-model="selectedColumns">
-            <el-checkbox
-              size="small"
-              class="column-checkbox"
-              v-for="csvHeader in csvHeaders"
-              :key="csvHeader.value"
-              :label="csvHeader.label"
-            />
-          </el-checkbox-group>
-        </div>
-      </el-form-item>
-    </el-form>
+      </div>
+    </div>
+
+    <div class="columns-checkbox-group" v-show="isSelectedColumns">
+      <el-checkbox-group v-model="selectedColumnsLabels">
+        <el-checkbox
+          size="small"
+          class="column-checkbox"
+          v-for="csvHeader in csvHeaders"
+          :key="csvHeader.value"
+          :label="csvHeader.label"
+        />
+      </el-checkbox-group>
+    </div>
+
+    <div class="top-marged">
+      <form-item-label label="Formatar colunas"> </form-item-label>
+      <div>
+        <el-switch
+          v-model="useColumnsNamesInSnakeCase"
+          active-text="Formatar colunas no padrão caixa_baixa_sem_acentos"
+        ></el-switch>
+      </div>
+    </div>
+
     <template slot="footer">
       <el-button
         icon="el-icon-download"
@@ -62,7 +75,8 @@ export default class DownloadCsvDataDialog extends Vue {
   visible = false;
   fileName = "dados";
   isSelectedColumns = false;
-  selectedColumns: string[] = [];
+  useColumnsNamesInSnakeCase = true;
+  selectedColumnsLabels: string[] = [];
 
   @Ref() fileNameInput!: ElInput;
   show() {
@@ -78,10 +92,10 @@ export default class DownloadCsvDataDialog extends Vue {
   }
 
   downloadCsv() {
-    let selectedColumns: string[] = [];
+    let selectedColumnsLabels: string[] = [];
     if (this.isSelectedColumns) {
-      selectedColumns = this.selectedColumns;
-      if (!selectedColumns.length) {
+      selectedColumnsLabels = this.selectedColumnsLabels;
+      if (!selectedColumnsLabels.length) {
         this.$alert(
           "Não há nenhuma coluna selecionada para ser exportada",
           "Selecione ao menos uma coluna",
@@ -90,8 +104,21 @@ export default class DownloadCsvDataDialog extends Vue {
         return;
       }
     }
-    downloadCsvData(this.csvData, this.fileName, selectedColumns);
+    downloadCsvData(this.csvData, this.fileName, this.selectedColumns, this.useColumnsNamesInSnakeCase);
     this.close();
+  }
+
+  get selectedColumns(): CsvHeaderLabel[] {
+    let selectedColumns: CsvHeaderLabel[] = [];
+    this.selectedColumnsLabels.forEach((selectedColumn) => {
+      let header = this.csvHeaders.find(
+        (label) => label.label == selectedColumn
+      );
+      if (header) {
+        selectedColumns.push(header);
+      }
+    });
+    return selectedColumns;
   }
 
   get csvHeaders() {
@@ -103,19 +130,19 @@ export default class DownloadCsvDataDialog extends Vue {
   }
 
   get isAllowedUnselectAllColumns() {
-    return this.selectedColumns.length > 0;
+    return this.selectedColumnsLabels.length > 0;
   }
 
   unselectAllColumns() {
-    this.selectedColumns.splice(0);
+    this.selectedColumnsLabels.splice(0);
   }
 
   get messageSelectedColumns(): string | null {
     let messageSelectedColumns = null;
     if (this.isSelectedColumns) {
       messageSelectedColumns = "Selecione as colunas marcando os itens abaixo:";
-      if (this.selectedColumns.length) {
-        messageSelectedColumns = `${this.selectedColumns.length} colunas selecionadas`;
+      if (this.selectedColumnsLabels.length) {
+        messageSelectedColumns = `${this.selectedColumnsLabels.length} colunas selecionadas`;
       }
     }
     return messageSelectedColumns;

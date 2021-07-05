@@ -2,9 +2,12 @@ import { groupByKey, LogicOperation, OperationOnGroup } from "./StatisticMeasure
 
 export const CSV_SEPARATOR = "|"
 
+export type CsvColumnType = "string" | "number"
+
 export class CsvHeaderLabel {
     label!: string
     value!: string
+    type?: CsvColumnType
 }
 
 export class CsvData {
@@ -20,16 +23,20 @@ export function stringfyCsvColumnDataRow(columnValue: any) {
     return columnValue?.toString().replaceAll('\n', ' ')
 }
 
-export function csvDataToCsv(csvData: CsvData, selectedColumns: string[] = []): string {
+export function csvDataToCsv(csvData: CsvData, selectedColumns: CsvHeaderLabel[] = [], useColumnsNamesInSnakeCase = false): string {
 
     let labels = csvData.labels
     if (selectedColumns.length) {
-        labels = labels.filter(label => selectedColumns.find(value => value == label.value))
+        labels = labels.filter(header => selectedColumns.find(value => value == header))
     }
 
     let keys = labels.map(l => l.value)
 
-    let header = keys.join(CSV_SEPARATOR)
+    let header: string[] | string = []
+    if (useColumnsNamesInSnakeCase) {
+        header = keys.map(k => formatSnakeCase(k))
+    }
+    header = header.join(CSV_SEPARATOR)
 
     let body = csvData.rows.map(row =>
         keys.map(key => {
@@ -37,6 +44,27 @@ export function csvDataToCsv(csvData: CsvData, selectedColumns: string[] = []): 
         }).join(CSV_SEPARATOR)
     ).join('\n')
     return `${header}\n${body}`
+}
+
+export function formatSnakeCase(value: string): string {
+    value.match(/[a-z][A-Z]/g)?.forEach(joining => {
+        value = value.replaceAll(joining, joining[0] + "_" + joining[1])
+    })
+
+    value =
+        value.toUpperCase()
+            .replaceAll(" ", "_")
+            .replace(/[ÃÁÂÀ]/g, "A")
+            .replace(/[ẼÉÊÈ]/g, "E")
+            .replace(/[ĨÍÎÌ]/g, "I")
+            .replace(/[ÕÓÔÒ]/g, "O")
+            .replace(/[ŨÚÛÙ]/g, "U")
+            .replace(/[Ç]/g, "C")
+            .replace(/[^\w\d_]/g, '')
+            .toLocaleLowerCase()
+
+    return value
+
 }
 
 export function csvToCsvData(csv: string): CsvData {
@@ -262,9 +290,9 @@ export function trimCsvData(csv: string) {
         .join("\n")
 }
 
-export async function downloadCsvData(csvData: CsvData, fileName: string, selectedColumns: string[] = []) {
+export async function downloadCsvData(csvData: CsvData, fileName: string, selectedColumns: CsvHeaderLabel[] = [], useColumnsNamesInSnakeCase = false) {
     try {
-        const csv = csvDataToCsv(csvData, selectedColumns)
+        const csv = csvDataToCsv(csvData, selectedColumns, useColumnsNamesInSnakeCase)
         const data = replaceDefaultSeparatorWithSemicolon(csv);
         var c = document.createElement("a");
         c.download = `${fileName}.csv`;
@@ -277,4 +305,24 @@ export async function downloadCsvData(csvData: CsvData, fileName: string, select
     } catch (e) {
         //this.$notify.warning("O arquivo não foi gerado")
     }
+}
+
+export function getColumnWidth(csvData: CsvData, header: CsvHeaderLabel) {
+    let columnWidth =
+        getLengthOfBigLengthValue(csvData, header, 10) * 8;
+    if (columnWidth < 100) {
+        columnWidth = 100;
+    }
+    return columnWidth;
+}
+
+export function getColumnFixPosition(header: CsvHeaderLabel) {
+    let fixed: string | boolean = false;
+    if (header.value == "escore_obtido") {
+        fixed = "right";
+    }
+    return fixed;
+}
+export function getNumericColumns(csvData: CsvData): CsvHeaderLabel[] {
+    return csvData?.labels.filter((header) => header.type == "number")
 }

@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ConfigService } from '@nestjs/config';
 import PreparedParticipation from 'src/participation/prepared-participation.dto';
 import { Mechanic } from 'src/mechanics/mechanic.entity';
-import { buildCsv, CsvData, CsvHeaderLabel } from 'src/util/download';
+import { buildCsv, CsvColumnType, CsvData, CsvHeaderLabel } from 'src/util/download';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
 import { TestItem } from 'src/tests/test-item.entity';
 import { Item } from 'src/items/item.entity';
@@ -130,24 +130,22 @@ export class TestApplicationsService {
         let userKeys: string[] = [];
         let quizProperties: string[] = [];
         const labels = [
-            { label: 'data', value: 'data'},
-            { label: 'usuario', value: 'usuario'},
-            { label: 'fonte', value: 'fonte'},
-            { label: 'participacao', value: 'participacao_id'},
-            { label: 'observacoes', value: 'observacoes'},
-            { label: 'item', value: 'item_id'},
-            { label: 'order', value: 'item_order'},
-            { label: 'tutorial', value: 'tutorial'},
-            { label: 'contador', value: 'contador'},
-            //{ label: 'resposta', value: 'resposta' },
-        ];
+            { label: 'data', value: 'data' },
+            { label: 'usuario', value: 'usuario' },
+            { label: 'fonte', value: 'fonte' },
+            { label: 'participacao', value: 'participacao_id', },
+            { label: 'observacoes', value: 'observacoes' },
+            { label: 'item', value: 'item_id', },
+            { label: 'order', value: 'item_order', },
+            { label: 'tutorial', value: 'tutorial' },
+        ] as CsvHeaderLabel[];
 
         testApplication.participations.forEach((participation: Participation) => {
             if (participation.user.data) {
                 userKeys = Object.keys(participation.user.data);
                 userKeys.reverse().forEach(key => {
                     if (!labels.some(l => l.label == key)) {
-                        labels.splice(1, 0, { label: key, value: key});
+                        labels.splice(1, 0, { label: key, value: key, type: "string" });
                     }
                 });
             }
@@ -156,10 +154,10 @@ export class TestApplicationsService {
                 let quizKeys = participation.userDataToRequest.questions.map(q => q.name);
                 quizKeys.reverse().forEach(key => {
                     if (!labels.some(l => l.label == key)) {
-                        labels.splice(2, 0, { label: key, value: key});
+                        labels.splice(2, 0, { label: key, value: key });
                     }
                 });
-                if(quizKeys.length > quizProperties.length){
+                if (quizKeys.length > quizProperties.length) {
                     quizProperties = quizKeys
                 }
             }
@@ -181,7 +179,6 @@ export class TestApplicationsService {
                     observacoes: participation.observations,
                     escore_max: itemResponse.score.max,
                     escore_obtido: itemResponse.score.score,
-                    contador: 1,
                 };
                 let responseJson = JSON.parse(itemResponse.response);
                 if (!responseKeys.length) {
@@ -199,25 +196,45 @@ export class TestApplicationsService {
                     }
                 });
 
-                // labels.forEach(header=>{
-                //     let length = (row[header.value]+"").length
-                //     if(length > header.maxLengthContent){
-                //         header.maxLengthContent = length
-                //     }
-                // })
-
                 rows.push(row);
             });
         });
 
         responseKeys.forEach(prop => {
-            labels.push({ label: prop, value: prop});
+            labels.push({ label: prop, value: prop });
         });
 
         [
             { label: 'escore_max', value: 'escore_max' },
-            { label: 'escore_obtido', value: 'escore_obtido'},
+            { label: 'escore_obtido', value: 'escore_obtido' },
         ].forEach(item => labels.push(item));
+
+        ///^\d*([,.]){0,1}\d+$/.test('12,12')
+        let regexMatchNumbers = /^\d*[,.]?\d+$/
+        labels.forEach(label => {
+            let type: CsvColumnType = "number"
+            let rowIndex = 0
+            let reachedEnd = false
+
+            looping_to_check_if_data_rows_are_numbers:
+            while (type == "number" && !reachedEnd) {
+                let row = rows[rowIndex]
+                if (row == undefined) {
+                    reachedEnd = true
+                    continue looping_to_check_if_data_rows_are_numbers
+                }
+                if (row != undefined) {
+                    let cellValue = row[label.value]
+                    let match = regexMatchNumbers.test(cellValue)
+                    if (match) {
+                        rowIndex++
+                        continue looping_to_check_if_data_rows_are_numbers
+                    }
+                    type = "string"
+                }
+            }
+            label.type = type
+        })
 
         let csvData = new CsvData()
         csvData.labels = labels
