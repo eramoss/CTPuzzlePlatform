@@ -94,7 +94,7 @@ export class ItemResponsesService {
         return score
     }
 
-    async calculateScores(itemResponses: ItemResponse[]) {
+    async calculateScores(itemResponses: ItemResponse[]):Promise<ItemResponse[]>{
 
         await this.loadItemsResponsesWithMechanics(itemResponses)
 
@@ -108,7 +108,8 @@ export class ItemResponsesService {
         })
 
         let itemResponsesWithCalculatedScores = await this.scoreFnService.calculateScores(calculationScoreParamsList)
-        this.itemResponseRepository.save(itemResponsesWithCalculatedScores)
+        await this.itemResponseRepository.save(itemResponsesWithCalculatedScores)
+        return itemResponsesWithCalculatedScores
     }
 
     async loadItemsResponsesWithMechanics(itemResponses: ItemResponse[]) {

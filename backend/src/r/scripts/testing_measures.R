@@ -14,3 +14,8 @@ levels(genero)
 
 
 mean(test_dataset$escore_obtido)
+
+p <- function(){
+  
+}
+stats4::mle(p)

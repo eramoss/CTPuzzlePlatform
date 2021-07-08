@@ -35,9 +35,9 @@ export class TestApplicationsService {
     ) {
     }
 
-    async recalculateAllApplicationParticipationScores(testApplicationId: number) {
+    async recalculateAllApplicationParticipationScores(testApplicationId: number): Promise<ItemResponse[]> {
         let itemResponses = await this.getAllApplicationItemResponses(testApplicationId);
-        this.participationService.recalculateAllResponseEscores(itemResponses)
+        return this.participationService.recalculateAllResponseEscores(itemResponses)
     }
 
     private async getAllApplicationItemResponses(testApplicationId: number) {
@@ -129,6 +129,7 @@ export class TestApplicationsService {
         let responseKeys: string[] = [];
         let userKeys: string[] = [];
         let quizProperties: string[] = [];
+        let scoreKeys: string[] = []
         const labels = [
             { label: 'data', value: 'data' },
             { label: 'usuario', value: 'usuario' },
@@ -145,7 +146,7 @@ export class TestApplicationsService {
                 userKeys = Object.keys(participation.user.data);
                 userKeys.reverse().forEach(key => {
                     if (!labels.some(l => l.label == key)) {
-                        labels.splice(1, 0, { label: key, value: key, type: "string" });
+                        labels.splice(1, 0, { label: key, value: key });
                     }
                 });
             }
@@ -181,14 +182,21 @@ export class TestApplicationsService {
                     escore_obtido: itemResponse.score.score,
                 };
                 let responseJson = JSON.parse(itemResponse.response);
+                let scoreJson = JSON.parse(itemResponse.score.json)
                 if (!responseKeys.length) {
                     responseKeys = Object.keys(responseJson);
+                }
+                if (!scoreKeys.length) {
+                    scoreKeys = Object.keys(scoreJson)
                 }
                 userKeys.forEach((key: string) => {
                     row[key] = participation.user.data[key];
                 });
                 responseKeys.forEach((key: string) => {
                     row[key] = responseJson[key];
+                });
+                scoreKeys.forEach((key: string) => {
+                    row[key] = scoreJson[key];
                 });
                 quizProperties.forEach((key: string) => {
                     if (participation.userDataToRequest) {
@@ -203,7 +211,9 @@ export class TestApplicationsService {
         responseKeys.forEach(prop => {
             labels.push({ label: prop, value: prop });
         });
-
+        scoreKeys.forEach(prop => {
+            labels.push({ label: prop, value: prop });
+        });
         [
             { label: 'escore_max', value: 'escore_max' },
             { label: 'escore_obtido', value: 'escore_obtido' },

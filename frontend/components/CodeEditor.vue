@@ -98,6 +98,7 @@ export default class CodeEditor extends Vue {
 
   @Prop({ default: false }) readonly!: boolean;
   @Prop({ default: 17 }) fontSize!: number;
+  @Prop({ default: false }) openOnClick!: boolean;
 
   // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorminimapoptions.html
 
@@ -257,7 +258,7 @@ export default class CodeEditor extends Vue {
 
   onMouseUp() {
     this.$emit("onMouseUp");
-    if (!this.focusMode) {
+    if (!this.focusMode && this.openOnClick) {
       this.focusEditor();
     }
   }

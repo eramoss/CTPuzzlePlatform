@@ -28,11 +28,11 @@ export default class ItemCharacteristicCurveFunction {
         abilityLevelsRange: number[],
         observedCorrectnessProportionsInThatLevels: number[]): { difficulty: number, discrimination: number } {
 
-        let difficulties = range(-3, 3, 0.05)
-        let discriminations = range(-20, 20, 0.05)
+        let difficulties = range(-3, 3, 0.1)
+        let discriminations = range(0, 30, 0.1)
 
         let bestFitDifficulty = 1
-        let bestFitDiscrimination = 1
+        let bestFitDiscrimination = 0
         let minError = Infinity
 
         for (let i = 0; i < 2; i++) {

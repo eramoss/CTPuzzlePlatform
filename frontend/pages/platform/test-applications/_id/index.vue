@@ -313,10 +313,16 @@ export default class ApplicationEditForm extends Vue {
   async recalculateAllParticipationsScores() {
     this.recalculating = true;
     try {
+      this.$notify.warning({
+        title: "Aguarde...",
+        message: "O cálculo dos escores foi iniciado...",
+        duration: 5000,
+      });
       await this.recalculateScores(this.testApplication);
       this.$notify.success({
-        title: "As respostas foram recalculadas",
-        message: "A rotina de cálculo foi disparada",
+        title: "Pronto!",
+        message: "O cálculo dos escores foi concluído!",
+        duration: 5000,
       });
     } catch (e) {
       this.$notify.error({

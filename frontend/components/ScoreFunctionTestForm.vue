@@ -4,6 +4,7 @@
       <el-row>
         <code-editor
           @onSave="save"
+          :openOnClick="true"
           :uniqueId="`scoreFunction${mechanic.id}`"
           editorTitle="Função de escore"
           :useHeightControls.sync="useHeightControls"
@@ -112,9 +113,7 @@
                         v-if="itemResponseTestCase.score"
                         class="item score-test-indicator"
                       >
-                        <div
-                          v-if="isTestPassed(itemResponseTestCase)"
-                        >
+                        <div v-if="isTestPassed(itemResponseTestCase)">
                           <el-tooltip content="Passou no teste">
                             <i class="el-icon-success green"></i>
                           </el-tooltip>
@@ -230,7 +229,7 @@ export default class ScoreFunctionTestForm extends Vue {
   response: string = "";
   @VModel() mechanic!: Mechanic;
   runningTests = false;
-  useHeightControls = true
+  useHeightControls = true;
 
   @Ref("scoreFunctionTestsSummary")
   scoreFunctionTestsSummary!: ScoreFunctionTestsSummary;
@@ -252,7 +251,7 @@ export default class ScoreFunctionTestForm extends Vue {
     this.mechanic.itemTestCases.push(itemTestCase);
     this.showItemTestHelp();
     this.unexpandAllExcept(itemTestCase);
-    this.updateIndexes()
+    this.updateIndexes();
   }
 
   showItemTestHelp() {
@@ -265,8 +264,8 @@ export default class ScoreFunctionTestForm extends Vue {
     );
   }
 
-  save(){
-      this.$emit('onSave')
+  save() {
+    this.$emit("onSave");
   }
 
   async removeItemTestCase(index: number) {
@@ -282,14 +281,14 @@ export default class ScoreFunctionTestForm extends Vue {
       );
       if (action == "confirm") {
         this.mechanic.itemTestCases.splice(index, 1);
-        this.updateIndexes()
+        this.updateIndexes();
       }
     } catch (e) {}
   }
 
   removeResponseTestCase(itemTestCase: ItemTestCase, responseIndex: number) {
     itemTestCase.responseTestCases.splice(responseIndex, 1);
-    this.updateIndexes()
+    this.updateIndexes();
   }
 
   addResponseTestCase(itemTestCase: ItemTestCase) {
@@ -370,7 +369,7 @@ ${fn.code}`;
   }
 
   mounted() {
-      this.updateIndexes()   
+    this.updateIndexes();
   }
 }
 </script>

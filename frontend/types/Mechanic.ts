@@ -72,6 +72,6 @@ export const createScoreFunctionCode = function (classDefinition: string, respon
     //}
     
     // Formato esperado com escore e escore máximo atingível
-    return { score: nota, max: 10 };
+    return { score: nota, max: 10, atributoCalculado: 'opcional' };
 }`
 }

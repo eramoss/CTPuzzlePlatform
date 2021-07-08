@@ -93,7 +93,7 @@ export class TestApplicationsController {
     }
 
     @Get('recalculateAllApplicationParticipationScores/:testApplicationId')
-    recalculateAllApplicationParticipationScores(@Param('testApplicationId') testApplicationId: number) {
+    recalculateAllApplicationParticipationScores(@Param('testApplicationId') testApplicationId: number):Promise<any> {
         return this.testApplicationsService.recalculateAllApplicationParticipationScores(testApplicationId)
     }
 

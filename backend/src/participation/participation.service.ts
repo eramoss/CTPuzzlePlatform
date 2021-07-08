@@ -43,9 +43,9 @@ export class ParticipationService {
 
     async countByTestApplication(application: TestApplication): Promise<number> {
         return this.participationRepository.createQueryBuilder("participation")
-        .innerJoin('participation.itemResponses', 'itemResponse')
-        .where("participation.application = :application", {application:application.id})
-        .getCount()
+            .innerJoin('participation.itemResponses', 'itemResponse')
+            .where("participation.application = :application", { application: application.id })
+            .getCount()
     }
 
     async saveProgress(participation: Participation) {
@@ -66,9 +66,8 @@ export class ParticipationService {
         return this.participationRepository.save(participation);
     }
 
-    async recalculateAllResponseEscores(itemResponses: ItemResponse[]): Promise<ItemResponse[]> {
-        this.itemResponseService.calculateScores(itemResponses)
-        return itemResponses;
+    recalculateAllResponseEscores(itemResponses: ItemResponse[]):Promise<ItemResponse[]> {
+        return this.itemResponseService.calculateScores(itemResponses)
     }
 
     getById(id: number): Promise<Participation> {

@@ -2,11 +2,11 @@ import { Score } from "src/item-responses/score.entity"
 
 export default class ScoreFunctionTestResult {
 
-    setResponse(response:string):ScoreFunctionTestResult{
+    setResponse(response: string): ScoreFunctionTestResult {
         this.response = response
         return this
     }
-    
+
     response!: string
 
     toScore(): Score {
@@ -16,6 +16,7 @@ export default class ScoreFunctionTestResult {
             let scoreJson = lines[lines.length - 1]
             score = JSON.parse(scoreJson) as Score
             score.message = this.response
+            score.json = scoreJson
             return score;
         } catch (e) {
             score = new Score();
