@@ -24,6 +24,7 @@ import Plot from "./Plot.vue";
 import { CsvData } from "~/types/CsvData";
 import { max, range } from "mathjs";
 import ItemCharacteristicCurveFunction from "~/types/ItemCharacteristicCurveFunction";
+import TestApplication from "~/types/TestApplication";
 
 @Component({
   components: {
@@ -31,7 +32,9 @@ import ItemCharacteristicCurveFunction from "~/types/ItemCharacteristicCurveFunc
   },
 })
 export default class ParametersEstimationPlot extends Vue {
+  @Prop() testApplication!: TestApplication;
   @Prop() testApplicationData!: CsvData;
+
   probabilityExpression!: string;
   data: any[] = [];
   numberOfGroups = 40;
@@ -79,7 +82,7 @@ export default class ParametersEstimationPlot extends Vue {
       { countOccurrences: number; averageScore: number }
     >();
 
-    this.testApplicationData.rows
+    this.testApplicationData?.rows
       .filter((row) => {
         return orderIdsHardestItems.find(
           (orderIdOfOneOfTheHardestItems) =>
@@ -112,7 +115,7 @@ export default class ParametersEstimationPlot extends Vue {
       number,
       { countOccurrences: number; scoreTotal: number }
     >();
-    this.testApplicationData.rows
+    this.testApplicationData?.rows
       .filter((row) => row["tutorial"] == "F")
       .map((row) => {
         return {

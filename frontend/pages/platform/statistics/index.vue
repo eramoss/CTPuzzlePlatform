@@ -10,21 +10,7 @@
       <h2>Estatísticas</h2>
 
       <form-item-label label="Aplicação de teste" :required="true" />
-      <div class="flex-row">
-        <el-select
-          :filterable="true"
-          v-model="selectedTestApplication"
-          value-key="id"
-          placeholder="Selecione a aplicação"
-        >
-          <el-option
-            v-for="testApplication in testApplications"
-            :key="testApplication.id"
-            :label="testApplication.name"
-            :value="testApplication"
-          ></el-option>
-        </el-select>
-      </div>
+      <select-test-application v-model="selectedTestApplication" />
 
       <div
         class="panel left top-marged"
@@ -89,6 +75,7 @@
       <graphics-page
         v-show="isContentLoaded"
         ref="graphicsChooserDialog"
+        :testApplication="selectedTestApplication"
         :testApplicationData="testApplicationData"
       />
     </div>
@@ -96,24 +83,14 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import {
-  Action,
-  Component,
-  namespace,
-  Ref,
-  Watch,
-} from "nuxt-property-decorator";
-import { Context } from "@nuxt/types";
+import { Action, Component, Ref, Watch } from "nuxt-property-decorator";
+
 import TestApplication from "~/types/TestApplication";
-import StatisticsTestApplication from "~/components/StatisticsTestApplication.vue";
-import { PageRequest, PageResponse } from "~/types/pagination";
+import SelectTestApplication from "~/components/SelectTestApplication.vue";
 import DownloadCsvDataDialog from "~/components/DownloadCsvDataDialog.vue";
 import SummaryTable from "~/components/SummaryTable.vue";
 import GraphicsPage from "~/components/graphics/GraphicsPage.vue";
-import {
-  ACTION_GET_CSV_DATA_TEST_APPLICATION,
-  ACTION_PAGINATE_APPLICATIONS,
-} from "~/store/test-applications";
+import { ACTION_GET_CSV_DATA_TEST_APPLICATION } from "~/store/test-applications";
 import {
   CsvData,
   CsvHeaderLabel,
@@ -123,46 +100,23 @@ import {
 } from "~/types/CsvData";
 import { ElTable } from "element-ui/types/table";
 
-const TOKEN_LOCAL_STORAGE_TEST_APPLICATION_ID = "TEST_APPLICATION_ID";
-const statistics = namespace("statistics");
-
 @Component({
   components: {
-    StatisticsTestApplication,
+    SelectTestApplication,
     DownloadCsvDataDialog,
     SummaryTable,
     GraphicsPage,
   },
 })
 export default class StatisticsPage extends Vue {
-  testApplications!: TestApplication[];
   selectedTestApplication: TestApplication = new TestApplication();
   testApplicationData: CsvData = new CsvData();
   totalLoadedRows = 10;
-  loadingMoreRows = false;
-  loadingTestApplicationData = false;
+  loadingMoreRows = true;
+  loadingTestApplicationData = true;
 
   @Ref() dataTable!: ElTable;
   @Ref() downloadCsvDialog!: DownloadCsvDataDialog;
-
-  @statistics.Mutation setTest!: (value: string) => void;
-
-  async asyncData(ctx: Context) {
-    let pageRequest = new PageRequest({});
-    let researchGroup = ctx.$auth.user?.researchGroup;
-    if (ctx.$auth.user?.researchGroup) {
-      //@ts-ignore
-      pageRequest.andWhere = "test.researchGroup.id = " + researchGroup.id;
-    }
-    let pageResponse: PageResponse<TestApplication> = await ctx.store.dispatch(
-      ACTION_PAGINATE_APPLICATIONS,
-      pageRequest
-    );
-    let testApplications = pageResponse.data;
-    return {
-      testApplications,
-    };
-  }
 
   columnToString(value: any) {
     return stringfyCsvColumnDataRow(value);
@@ -180,9 +134,9 @@ export default class StatisticsPage extends Vue {
         this.testApplicationData = await this.getCsvData(
           this.selectedTestApplication
         );
-        this.registerLoadedTestApplicationId();
         this.totalLoadedRows = this.quantityLinesToLoad;
       } catch (e) {
+        console.error(e);
         this.$notify({
           type: "error",
           title: "Falha ao carregar",
@@ -190,44 +144,13 @@ export default class StatisticsPage extends Vue {
         });
       } finally {
         this.loadingTestApplicationData = false;
+        this.loadingMoreRows = false;
       }
     }
   }
 
   get quantityLinesToLoad() {
     return 20;
-  }
-
-  registerLoadedTestApplicationId() {
-    localStorage.setItem(
-      TOKEN_LOCAL_STORAGE_TEST_APPLICATION_ID,
-      this.selectedTestApplication?.id + ""
-    );
-  }
-
-  loadPreviousSelectedTestApplicationId(): number | null {
-    let applicationId = undefined;
-    applicationId = localStorage.getItem(
-      TOKEN_LOCAL_STORAGE_TEST_APPLICATION_ID
-    );
-    applicationId = parseInt("0" + applicationId);
-    return applicationId;
-  }
-
-  selectTestApplicationById(testApplicationId: number) {
-    let testApplication = this.testApplications.find(
-      (testApplication) => testApplication.id == testApplicationId
-    );
-    if (testApplication) {
-      this.selectedTestApplication = testApplication;
-    }
-  }
-
-  loadSavedTestApplication() {
-    let testApplicationId = this.loadPreviousSelectedTestApplicationId();
-    if (testApplicationId) {
-      this.selectTestApplicationById(testApplicationId);
-    }
   }
 
   calculateColumnWidth(header: CsvHeaderLabel) {
@@ -296,7 +219,6 @@ export default class StatisticsPage extends Vue {
 
   mounted() {
     this.configureTableScrollEventListener();
-    this.loadSavedTestApplication();
   }
 }
 </script>

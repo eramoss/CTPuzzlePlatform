@@ -33,7 +33,11 @@ export default class SelectNumericVariables extends Vue {
   }
 
   get numericColumns(): CsvHeaderLabel[] {
-    return getNumericColumns(this.testApplicationData);
+    let numericColumns: CsvHeaderLabel[] = [];
+    if (this.testApplicationData) {
+      numericColumns = getNumericColumns(this.testApplicationData);
+    }
+    return numericColumns;
   }
 
   @Watch("numericColumns", { immediate: true })

@@ -25,6 +25,7 @@ import Plot from "./Plot.vue";
 import { CsvData } from "~/types/CsvData";
 import { evaluate, Matrix, range } from "mathjs";
 import ItemCharacteristicCurveFunction from "@/types/ItemCharacteristicCurveFunction";
+import TestApplication from "~/types/TestApplication";
 
 @Component({
   components: {
@@ -32,8 +33,7 @@ import ItemCharacteristicCurveFunction from "@/types/ItemCharacteristicCurveFunc
   },
 })
 export default class ItemResponseTheoryPlot extends Vue {
-  @Prop() testApplicationData!: CsvData;
-
+  
   data: any[] = [];
   discrimination = 2;
   difficulty = 0.4;
@@ -103,11 +103,6 @@ export default class ItemResponseTheoryPlot extends Vue {
   @Watch("curveExpression", { immediate: true })
   onChangeCurveExpression() {
     this.compileExpression();
-    this.updateData();
-  }
-
-  @Watch("testApplicationData", { immediate: true })
-  onChangeTestApplicationData() {
     this.updateData();
   }
 

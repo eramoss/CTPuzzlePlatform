@@ -279,6 +279,7 @@ export class TestApplicationsService {
         const searchLike = { search: `%${pageRequest.search.toString().toUpperCase()}%` };
         let data = await this.testApplicationRepository.createQueryBuilder('test-application')
             .leftJoinAndSelect('test-application.test', 'test')
+            .leftJoinAndSelect('test-application.controlApplication', 'controlApplication')
             .skip(pageRequest.start)
             .take(pageRequest.limit)
             .where(where)
