@@ -9,11 +9,18 @@ import { PlotRequest, PlotResponse } from './plot.dto';
 // Como passar argumentos para script R:
 // https://www.r-bloggers.com/2015/09/passing-arguments-to-an-r-script-from-command-lines/
 
+type RunRType = 'R' | 'Rscript'
+
 @Injectable()
 export class RService {
 
     constructor(
         private configService: ConfigService) {
+    }
+
+    run(payload: { script: string }): Promise<string> {
+        let { output, stderr } = this.runRscript(['--vanilla', '-e', `${payload.script}`])
+        return Promise.resolve(`${output}\n${stderr}`)
     }
 
     plot(plotRequest: PlotRequest): Promise<PlotResponse> {
@@ -29,17 +36,14 @@ export class RService {
 
                 write(data_file_path, plotRequest.csv)
 
-                let r: SpawnSyncReturns<Buffer> = spawnSync('Rscript',
-                    [
-                        '--vanilla',
-                        `${path}`,
-                        `--fn=${plotRequest.id}`,
-                        `--plot_output_file_path=${plot_file_path}`,
-                        `--data_input_file_path=${data_file_path}`,
-                    ],
-                    { env: {} });
-                let stderr = r.stderr.toString()
-                let output = r.stdout.toString()
+                let { output, stderr } = this.runRscript([
+                    '--vanilla',
+                    `${path}`,
+                    `--fn=${plotRequest.id}`,
+                    `--plot_output_file_path=${plot_file_path}`,
+                    `--data_input_file_path=${data_file_path}`,
+                ])
+
                 response.data = output;
                 response.plotFileName = plotFileName
                 response.err = stderr
@@ -52,5 +56,19 @@ export class RService {
             resolve(response)
         })
 
+    }
+
+    runRscript(lines: string[]): { output: string, stderr: string } {
+        return this.runR('Rscript', lines)
+    }
+
+    runR(runType: RunRType, lines: string[]) {
+        let r: SpawnSyncReturns<Buffer> = spawnSync(runType,
+            lines,
+            { env: {}, timeout: 20000 });
+
+        let stderr = r.stderr.toString()
+        let output = r.stdout.toString()
+        return { output, stderr }
     }
 }

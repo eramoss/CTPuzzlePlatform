@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { PlotRequest, PlotResponse } from './plot.dto';
 import { RService } from './r.service';
 
@@ -12,6 +12,11 @@ export class RController {
     @Post('plot')
     plot(@Body() plotRequest: PlotRequest): Promise<PlotResponse> {
         return this.rService.plot(plotRequest)
+    }
+
+    @Post('run')
+    run(@Body() payload: { script: string }): Promise<string> {
+        return this.rService.run(payload)
     }
 
 }

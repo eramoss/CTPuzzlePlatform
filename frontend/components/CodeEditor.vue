@@ -8,11 +8,12 @@
       :class="{ 'focus-mode': focusMode, 'big-shadow': focusMode }"
     >
       <b class="editor-lang">{{ language }}</b>
-      <div class="flex-row">
+      <div class="flex-row" v-show="editorTitle">
         <h2>
           <span v-show="focusMode || forceShowBigTitle">{{ editorTitle }}</span>
         </h2>
         <el-button
+          v-show="!hideMaximizer"
           type="text"
           @click="focusEditor"
           :title="focusMode ? 'Minimizar' : 'Maximizar'"
@@ -82,6 +83,7 @@ export default class CodeEditor extends Vue {
   bkpHeightPixels = 0;
   bkpUseHeightControls = false;
   @Prop({ default: "100%" }) width!: string;
+  @Prop({ default: false }) hideMaximizer!: boolean;
   @Prop({ default: "500px" }) height!: string;
   @Prop({ default: "typescript" }) language!: string;
   @Prop({}) editorTitle!: string;
@@ -152,7 +154,11 @@ export default class CodeEditor extends Vue {
   get calculedHeight() {
     let height =
       (this.code.split("\n").length + 1) * this.appliedFontSize * 1.328;
-    if (this.useHeightControls || this.focusMode) {
+    if (
+      this.useHeightControls ||
+      this.focusMode ||
+      height < this.heightPixels
+    ) {
       height = this.heightPixels;
     }
     return height;

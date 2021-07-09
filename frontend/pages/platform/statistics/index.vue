@@ -72,6 +72,10 @@
         <summary-table :data="testApplicationData" v-show="isContentLoaded" />
       </div>
 
+      <div class="panel big-shadow top-marged" v-show="isContentLoaded">
+        <r-interpreter :data="testApplicationData"></r-interpreter>
+      </div>
+
       <graphics-page
         v-show="isContentLoaded"
         ref="graphicsChooserDialog"
@@ -89,6 +93,7 @@ import TestApplication from "~/types/TestApplication";
 import SelectTestApplication from "~/components/SelectTestApplication.vue";
 import DownloadCsvDataDialog from "~/components/DownloadCsvDataDialog.vue";
 import SummaryTable from "~/components/SummaryTable.vue";
+import RInterpreter from "~/components/RInterpreter.vue";
 import GraphicsPage from "~/components/graphics/GraphicsPage.vue";
 import { ACTION_GET_CSV_DATA_TEST_APPLICATION } from "~/store/test-applications";
 import {
@@ -106,6 +111,7 @@ import { ElTable } from "element-ui/types/table";
     DownloadCsvDataDialog,
     SummaryTable,
     GraphicsPage,
+    RInterpreter,
   },
 })
 export default class StatisticsPage extends Vue {
