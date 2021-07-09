@@ -40,6 +40,7 @@ import {
   getColumnFixPosition,
   getColumnWidth,
   getNumericColumns,
+  getNumericColumnValues,
 } from "~/types/CsvData";
 
 import { mathHelper, round } from "~/types/MathHelper";
@@ -69,7 +70,7 @@ export default class SummaryTable extends Vue {
 
       this.numericColumns
         .map((header) => {
-          let values = this.getNumericColumnValues(this.data.rows, header);
+          let values = getNumericColumnValues(this.data, header);
           return {
             columnName: header.value,
             aggregationResult: summaryOperation.agregationFunction(values),
@@ -84,9 +85,7 @@ export default class SummaryTable extends Vue {
     });
   }
 
-  getNumericColumnValues(rows: any[], header: CsvHeaderLabel): number[] {
-    return rows.map((row) => row[header.value]);
-  }
+  
 
   get numericColumns() {
     return getNumericColumns(this.data);

@@ -73,7 +73,17 @@
       </div>
 
       <div class="panel big-shadow top-marged" v-show="isContentLoaded">
-        <r-interpreter :data="testApplicationData"></r-interpreter>
+        <h2>Interpretador R</h2>
+        <message-alert>
+          <p>
+            Se você conhece a linguagem R, pode utilizar algumas de suas funções
+            através do interpretador.
+          </p>
+        </message-alert>
+        <r-interpreter
+          class="top-marged"
+          :data="testApplicationData"
+        ></r-interpreter>
       </div>
 
       <graphics-page

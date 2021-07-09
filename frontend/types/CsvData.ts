@@ -326,3 +326,7 @@ export function getColumnFixPosition(header: CsvHeaderLabel) {
 export function getNumericColumns(csvData: CsvData): CsvHeaderLabel[] {
     return csvData?.labels.filter((header) => header.type == "number")
 }
+
+export function getNumericColumnValues(data: CsvData, header: CsvHeaderLabel): number[] {
+    return data.rows.map((row) => row[header.value]);
+}
