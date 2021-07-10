@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form-item-label label="Variável" :required="true" />
+    <form-item-label label="Variável" :required="true" v-show="!hideLabel" />
     <el-select
       placeholder="Selecione uma variável"
       :filterable="true"
@@ -24,6 +24,7 @@ import { CsvData, CsvHeaderLabel, getNumericColumns } from "~/types/CsvData";
 @Component
 export default class SelectNumericVariables extends Vue {
   @Prop({}) testApplicationData!: CsvData;
+  @Prop() hideLabel!:boolean
   @Prop({ default: "escore_obtido" }) defaultValue!: string;
 
   selectedColumn = new CsvHeaderLabel();
