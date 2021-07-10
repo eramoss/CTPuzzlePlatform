@@ -2,8 +2,15 @@
   <div class="panel shadow left bottom-marged r-function-panel">
     <h2>{{ rFunction.name }}</h2>
     <p class="description">{{ rFunction.description }}</p>
+    <el-tooltip effect="light" :open-delay="200">
+      <div slot="content" style="font-size: 14pt; max-width: 400px">
+        {{ rFunction.moreDescription }}
+      </div>
+      <p class="explanation">
+        {{ rFunction.howToInterpret }}
+      </p>
+    </el-tooltip>
     <pre class="code">{{ rFunction.code }}</pre>
-
     <p class="source">
       Fonte:
       <a
@@ -42,6 +49,9 @@ $gray: rgba(0, 0, 0, 0.4);
 
   .description {
     color: $gray;
+  }
+  .explanation {
+    font-size: 12pt;
   }
   .code {
     color: rgba(11, 133, 92, 0.5);

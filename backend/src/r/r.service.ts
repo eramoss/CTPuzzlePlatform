@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { spawnSync, SpawnSyncReturns } from 'child_process';
-import { buildCsv, write, writeCsv } from 'src/util/download';
+import { buildCsv, CsvData, write, writeCsv } from 'src/util/download';
 import { PlotRequest, PlotResponse } from './plot.dto';
 
 // Como gerar gráficos:
@@ -13,12 +13,22 @@ type RunRType = 'R' | 'Rscript'
 
 @Injectable()
 export class RService {
+    uploadDir: any;
 
     constructor(
         private configService: ConfigService) {
+        this.uploadDir = this.configService.get('FILE_UPLOAD_DIRECTORY')
     }
 
-    run(payload: { script: string }): Promise<string> {
+    run(payload: { script: string, csv: string, separator: string }): Promise<string> {
+        if (payload.csv?.length) {
+            const csvPath = this.uploadDir + 'data.csv';
+            let readCsv = `
+            separator = '${payload.separator}'
+            dados  <- read.csv('${csvPath}', header=TRUE, sep=separator)`
+            payload.script = readCsv + payload.script
+            write(csvPath, payload.csv)
+        }
         let { output, stderr } = this.runRscript(['--vanilla', '-e', `${payload.script}`])
         return Promise.resolve(`${output}\n${stderr}`)
     }
@@ -27,11 +37,11 @@ export class RService {
         return new Promise<PlotResponse>((resolve: (value: PlotResponse) => void, reject: (reason?: any) => void) => {
             let response = new PlotResponse()
             try {
-                let uploadDir = this.configService.get('FILE_UPLOAD_DIRECTORY')
+
                 let RscriptsLocation = this.configService.get('R_SCRIPTS_LOCATION')
                 let path = `${RscriptsLocation}/plot.R`
                 let plotFileName = `output-plot-${plotRequest.id}.png`
-                let plot_file_path = `${uploadDir}/${plotFileName}`
+                let plot_file_path = `${this.uploadDir}/${plotFileName}`
                 let data_file_path = `${RscriptsLocation}/input.csv`
 
                 write(data_file_path, plotRequest.csv)

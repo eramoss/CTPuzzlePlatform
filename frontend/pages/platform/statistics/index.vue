@@ -76,8 +76,7 @@
         <h2>Interpretador R</h2>
         <message-alert>
           <p>
-            Se você conhece a linguagem R, pode utilizar algumas de suas funções
-            através do interpretador.
+            Você pode fazer análises avançadas usando o interpretador de linguagem R.
           </p>
         </message-alert>
         <r-interpreter

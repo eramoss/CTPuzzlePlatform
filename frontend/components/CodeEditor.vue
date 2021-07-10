@@ -101,13 +101,14 @@ export default class CodeEditor extends Vue {
   @Prop({ default: false }) readonly!: boolean;
   @Prop({ default: 17 }) fontSize!: number;
   @Prop({ default: false }) openOnClick!: boolean;
+  @Prop({ default: false }) showLineNumbers!: boolean;
 
   // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorminimapoptions.html
 
   get options() {
     let normalModeOptions = {
       scrollBeyondLastLine: false,
-      lineNumbers: "off",
+      lineNumbers: this.showLineNumbers?"on":"off",
       //theme: "vs-light",
       //theme: "vs-dark",
       readOnly: this.readonly,
