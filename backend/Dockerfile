@@ -1,8 +1,11 @@
-FROM node:12.21.0
+FROM ubuntu:20.04
 
 WORKDIR /backend
 
 RUN apt-get update
+RUN apt-get -y upgrade --fix-missing
+RUN apt-get install nodejs -y
+RUN apt-get install npm -y
 RUN apt-get install curl -y
 RUN apt-get install r-base -y
 RUN curl -fsSL https://deno.land/x/install/install.sh | sh
