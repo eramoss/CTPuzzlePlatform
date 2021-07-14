@@ -1,6 +1,14 @@
 <template>
   <div>
     <el-row class="panel shadow top-marged">
+      <el-col :span="24">
+        <test-items-box-plot
+          :testApplication="testApplication"
+          :testApplicationData="testApplicationData"
+        ></test-items-box-plot>
+      </el-col>
+    </el-row>
+    <el-row class="panel shadow top-marged">
       <el-col :md="12">
         <parameters-estimation-plot
           @onChangePlotParameters="updateParameters"
@@ -10,14 +18,6 @@
       </el-col>
       <el-col :md="12">
         <item-response-theory-plot ref="itemResponseTheoryPlot" />
-      </el-col>
-    </el-row>
-    <el-row class="panel shadow top-marged">
-      <el-col :span="24">
-        <test-items-box-plot
-          :testApplication="testApplication"
-          :testApplicationData="testApplicationData"
-        ></test-items-box-plot>
       </el-col>
     </el-row>
   </div>

@@ -1,8 +1,32 @@
 <template>
   <div>
-    <el-button icon="el-icon-video-play" type="primary" @click="show"
-      >Experimentar</el-button
+    <color-panel
+      label="Interpretador R"
+      textColor="#1F77B4"
+      color="#BAD5E8"
+      :showInfo="true"
     >
+      <template slot="info">
+        O interpretador R é útil para cálculos mais complexos sobre as variáveis
+        do teste. <br />
+        Utilize fontes externas como sites ou livros para aprender sobre a
+        linguagem. <br />
+        Você também pode instalar a linguagem R e o editor RStudio para
+      </template>
+      <message-alert>
+        <p>
+          Você pode fazer análises avançadas usando o interpretador de linguagem
+          R.
+        </p>
+      </message-alert>
+      <el-button
+        icon="el-icon-video-play"
+        type="primary"
+        @click="show"
+        :loading="opening"
+        >Experimentar</el-button
+      >
+    </color-panel>
     <el-dialog
       top="20px"
       :visible.sync="visible"
@@ -62,34 +86,36 @@
       ref="functionsLibrary"
       @onChooseFunction="insertRFunctionCode"
     />
+    <r-script-runner ref="rScriptRunner" />
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Action, Component, Prop, Ref, Watch } from "nuxt-property-decorator";
+import { Component, Prop, Ref } from "nuxt-property-decorator";
 import CodeEditor from "~/components/CodeEditor.vue";
 import SelectNumericVariables from "~/components/SelectNumericVariables.vue";
 import FunctionsLibrary from "~/components/FunctionsLibrary.vue";
-import { ACTION_R_RUN_SCRIPT } from "~/store/r";
 import {
   CsvData,
   csvDataToCsv,
   CsvHeaderLabel,
   CSV_SEPARATOR,
-  getNumericColumnValues,
 } from "~/types/CsvData";
 import RFunctionCode from "~/types/RFunctionCode";
 import eventBus from "~/utils/eventBus";
+import RScriptRunner from "./statistics/RScriptRunner.vue";
 @Component({
   components: {
     CodeEditor,
     SelectNumericVariables,
     FunctionsLibrary,
+    RScriptRunner,
   },
 })
 export default class RInterpreter extends Vue {
   @Prop() data!: CsvData;
   @Ref() functionsLibrary!: FunctionsLibrary;
+  @Ref() rScriptRunner!: RScriptRunner;
 
   running = false;
   selectedVariable: string = "";
@@ -103,17 +129,15 @@ a + 2
 #Média:
 mean($1)
 `;
-
-  @Action(ACTION_R_RUN_SCRIPT) run!: (payload: {
-    script: string;
-    csv: string;
-    separator: string;
-  }) => Promise<string>;
+  opening: boolean = false;
 
   show() {
-    this.visible = true;
+    this.opening = true;
     eventBus.$emit("resize");
-    this.runScript();
+    setTimeout(() => {
+      this.visible = true;
+      this.opening = false;
+    }, 200);
   }
 
   clearConsole() {
@@ -124,10 +148,11 @@ mean($1)
     this.replaceParameters();
     try {
       this.running = true;
-      this.response = await this.run({
+      this.response = await this.rScriptRunner.run({
         script: this.rScript,
-        csv: csvDataToCsv(this.data, [], true),
+        csv: csvDataToCsv(this.data),
         separator: CSV_SEPARATOR,
+        dataVarName: "dados",
       });
     } catch (e) {
       this.response = e;
@@ -147,14 +172,14 @@ mean($1)
   }
 
   insertRFunctionCode(rFunctionCode: RFunctionCode) {
-    this.rScript += "\n#" + rFunctionCode.howToInterpret;
+    this.rScript += "\n\n#" + rFunctionCode.howToInterpret;
     this.rScript += "\n" + rFunctionCode.code;
     this.runScript();
   }
 
   replaceParameters() {
     if (this.selectedVariable) {
-      this.rScript = this.rScript.replace(
+      this.rScript = this.rScript.replaceAll(
         "$1",
         "dados$" + this.selectedVariable
       );

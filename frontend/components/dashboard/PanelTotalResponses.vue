@@ -1,13 +1,12 @@
 <template>
-  <div v-loading="loading">
-    <color-panel
-      icon="checklist"
-      label="Respostas"
-      link="/platform/test-applications"
-      :info="total"
-      color="#FFAF57"
-    />
-  </div>
+  <color-panel
+    :loading="loading"
+    icon="checklist"
+    label="Respostas"
+    link="/platform/test-applications"
+    :data="total"
+    color="#FFAF57"
+  />
 </template>
 <script lang="ts">
 import Vue from "vue";

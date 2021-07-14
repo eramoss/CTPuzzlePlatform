@@ -1,6 +1,6 @@
 <template>
   <div>
-    <card-panel :header="header" v-loading="loading">
+    <card-panel :header="header" :loading="loading">
       <template slot="info">
         Mostra o escore médio obtido em itens, exceto os de tipo tutorial. Os
         valores são calculados em porcentagem do valor de escore obtido em

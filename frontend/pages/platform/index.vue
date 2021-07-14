@@ -10,29 +10,6 @@
       <panel-total-participations :researchGroupId="researchGroupId" />
       <panel-total-responses :researchGroupId="researchGroupId" />
       <panel-avg-score :researchGroupId="researchGroupId" />
-      <!-- <color-panel
-        icon="el-icon-warning"
-        label="Mecânicas"
-        link="/platform/mechanics"
-        info="12"
-        color="#61C096"
-      />
-      <color-panel
-        icon="el-icon-warning"
-        label="Mecânicas"
-        link="/platform/mechanics"
-        info="12"
-        textColor="#68798C"
-        color="#DBDDE1"
-      />
-      <color-panel
-        icon="el-icon-warning"
-        label="Mecânicas"
-        link="/platform/mechanics"
-        info="12"
-        textColor="#68798C"
-        color="#DBDDE1"
-      /> -->
     </div>
     <div>
       <el-row :gutter="20">

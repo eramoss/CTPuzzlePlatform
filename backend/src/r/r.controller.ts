@@ -15,7 +15,7 @@ export class RController {
     }
 
     @Post('run')
-    run(@Body() payload: { script: string, csv: string, separator: string }): Promise<string> {
+    run(@Body() payload: { script: string, csv: string, separator: string, dataVarName: string }): Promise<string> {
         return this.rService.run(payload)
     }
 

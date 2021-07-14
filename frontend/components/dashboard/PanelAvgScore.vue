@@ -1,10 +1,11 @@
 <template>
-  <div v-loading="loading">
+  <div>
     <color-panel
+      :loading="loading"
       icon="score"
       label="Escore médio"
       link="/platform/test-applications"
-      :info="avgScorePercent+'%'"
+      :data="avgScorePercent + '%'"
       color="#ACB6C0"
     />
   </div>

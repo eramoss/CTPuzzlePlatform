@@ -1,15 +1,36 @@
 <template>
-  <div class="color-panel shadow" :style="{ 'background-color': color }" @click="$router.push(link)">
-    <div class="top-label">
+  <div
+    class="color-panel shadow"
+    :style="{ 'background-color': color }"
+    :class="{ 'with-link': !!link }"
+    @click="goToLink"
+  >
+    <div class="top-label flex-row">
       <span :style="{ color: textColor }">{{ label }}</span>
+      <el-tooltip placement="top" v-if="showInfo">
+        <div slot="content">
+          <div style="max-width: 300px">
+            <slot name="info" />
+          </div>
+        </div>
+        <span>
+          <icon name="info" :style="{ color: textColor }" class="info-icon" />
+        </span>
+      </el-tooltip>
     </div>
     <div class="flex-row">
       <icon
+        v-show="icon"
         :style="{ color: textColor }"
         :name="icon"
         class="panel-icon"
       ></icon>
-      <div :style="{ color: textColor }" class="main-info">{{ info }}</div>
+      <div :style="{ color: textColor }" class="main-info">
+        <slot>
+          <span v-show="loading">...</span>
+          <span v-show="!loading">{{ data }}</span>
+        </slot>
+      </div>
     </div>
     <!-- <nuxt-link v-if="link" :to="link" class="panel-link">
       <div :style="{ color: textColor }">
@@ -26,20 +47,29 @@ export default class ColorPanel extends Vue {
   @Prop() icon!: string;
   @Prop() label!: string;
   @Prop() link!: string;
-  @Prop() info!: string;
+  @Prop() data!: string;
   @Prop() color!: string;
+  @Prop({ default: true }) loading!: boolean;
   @Prop() textColor!: string;
+  @Prop({ default: false }) showInfo!: boolean;
+
+  goToLink() {
+    if (this.link) {
+      this.$router.push(this.link);
+    }
+  }
 }
 </script>
 <style lang="scss">
-.color-panel {
+.color-panel.with-link {
   cursor: pointer;
+}
+.color-panel {
   text-align: left;
   color: white;
   padding: 15px;
   min-width: 250px;
   border-radius: 6px;
-  margin: 12px 12px 25px 0;
   //box-shadow: rgba(0, 0, 0, 0.18) 0px 8px 19px;
 
   .top-label {

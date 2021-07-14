@@ -10,9 +10,13 @@
       <h2>Estatísticas</h2>
 
       <form-item-label label="Aplicação de teste" :required="true" />
-      <select-test-application v-model="selectedTestApplication" />
+      <select-test-application
+        v-model="selectedTestApplication"
+        @onLoadWithoutPreviousApplicationSelected="askForSelectTestApplication"
+      />
 
       <div
+        v-show="hasSelectedApplication"
         class="panel left top-marged"
         v-loading="loadingTestApplicationData"
         element-loading-text="Carregando dados..."
@@ -72,18 +76,19 @@
         <summary-table :data="testApplicationData" v-show="isContentLoaded" />
       </div>
 
-      <div class="panel big-shadow top-marged" v-show="isContentLoaded">
-        <h2>Interpretador R</h2>
-        <message-alert>
-          <p>
-            Você pode fazer análises avançadas usando o interpretador de linguagem R.
-          </p>
-        </message-alert>
-        <r-interpreter
-          class="top-marged"
-          :data="testApplicationData"
-        ></r-interpreter>
-      </div>
+      <el-row :gutter="20" v-show="hasSelectedApplication">
+        <el-col :md="12">
+          <cronbach-alpha-panel
+            :testApplicationData="testApplicationData"
+            class="top-marged"
+          />
+        </el-col>
+        <el-col :md="12">
+          <panel-test-application-avg-score
+            :testApplicationData="testApplicationData"
+          />
+        </el-col>
+      </el-row>
 
       <graphics-page
         v-show="isContentLoaded"
@@ -91,6 +96,12 @@
         :testApplication="selectedTestApplication"
         :testApplicationData="testApplicationData"
       />
+
+      <r-interpreter
+        v-show="isContentLoaded"
+        class="top-marged"
+        :data="testApplicationData"
+      ></r-interpreter>
     </div>
   </div>
 </template>
@@ -104,6 +115,8 @@ import DownloadCsvDataDialog from "~/components/DownloadCsvDataDialog.vue";
 import SummaryTable from "~/components/SummaryTable.vue";
 import RInterpreter from "~/components/RInterpreter.vue";
 import GraphicsPage from "~/components/graphics/GraphicsPage.vue";
+import CronbachAlphaPanel from "~/components/statistics/CronbachAlphaPanel.vue";
+import PanelTestApplicationAvgScore from "~/components/statistics/PanelTestApplicationAvgScore.vue";
 import { ACTION_GET_CSV_DATA_TEST_APPLICATION } from "~/store/test-applications";
 import {
   CsvData,
@@ -121,6 +134,8 @@ import { ElTable } from "element-ui/types/table";
     SummaryTable,
     GraphicsPage,
     RInterpreter,
+    CronbachAlphaPanel,
+    PanelTestApplicationAvgScore,
   },
 })
 export default class StatisticsPage extends Vue {
@@ -203,6 +218,10 @@ export default class StatisticsPage extends Vue {
     return this.totalLoadedRows >= this.totalDataRows;
   }
 
+  get hasSelectedApplication() {
+    return this.selectedTestApplication.id;
+  }
+
   configureTableScrollEventListener() {
     const dataTableBody = this.dataTable.$el.getElementsByClassName(
       "el-table__body-wrapper"
@@ -230,6 +249,18 @@ export default class StatisticsPage extends Vue {
 
   showDialogDownloadCsv() {
     this.downloadCsvDialog.show();
+  }
+
+  askForSelectTestApplication() {
+    if (!this.hasSelectedApplication) {
+      this.$alert(
+        "É necessário selecionar uma aplicação de teste para iniciar as análises",
+        "Selecione uma aplicação de teste",
+        {
+          confirmButtonText: "Entendi",
+        }
+      );
+    }
   }
 
   mounted() {

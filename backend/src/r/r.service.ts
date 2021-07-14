@@ -20,13 +20,13 @@ export class RService {
         this.uploadDir = this.configService.get('FILE_UPLOAD_DIRECTORY')
     }
 
-    run(payload: { script: string, csv: string, separator: string }): Promise<string> {
+    run(payload: { script: string, csv: string, separator: string, dataVarName:string }): Promise<string> {
         if (payload.csv?.length) {
             const csvPath = this.uploadDir + 'data.csv';
             let readCsv = `
             separator = '${payload.separator}'
-            dados  <- read.csv('${csvPath}', header=TRUE, sep=separator)`
-            payload.script = readCsv + payload.script
+            ${payload.dataVarName}  <- read.csv('${csvPath}', header=TRUE, sep=separator)`
+            payload.script = readCsv + "\n" + payload.script
             write(csvPath, payload.csv)
         }
         let { output, stderr } = this.runRscript(['--vanilla', '-e', `${payload.script}`])

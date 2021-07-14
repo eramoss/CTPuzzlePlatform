@@ -1,13 +1,15 @@
 <template>
-  <el-dialog title="Biblioteca de funções" :visible.sync="visible">
+  <el-dialog title="Biblioteca de funções" :visible.sync="visible" top="10px">
     <p>Clique para selecionar a função</p>
     <div class="top-marged">
-      <div
-        v-for="rFunction in rFunctions"
-        :key="rFunction.name"
-        @click="onChooseFunction(rFunction)"
-      >
-        <r-function-preview :rFunction="rFunction"></r-function-preview>
+      <div class="functions-list inset-shadow">
+        <div
+          v-for="rFunction in rFunctions"
+          :key="rFunction.name"
+          @click="onChooseFunction(rFunction)"
+        >
+          <r-function-preview :rFunction="rFunction"></r-function-preview>
+        </div>
       </div>
     </div>
   </el-dialog>
@@ -44,3 +46,11 @@ export default class FunctionsLibrary extends Vue {
   }
 }
 </script>
+<style lang="scss">
+.functions-list {
+  padding: 10px;
+  max-height: 78vh;
+  overflow-y: scroll;
+  border-radius: 10px;
+}
+</style>

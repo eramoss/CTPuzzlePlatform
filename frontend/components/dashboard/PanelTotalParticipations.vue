@@ -1,13 +1,12 @@
 <template>
-  <div v-loading="loading">
-    <color-panel
-      icon="groups"
-      label="Participações"
-      link="/platform/test-applications"
-      :info="totalParticipations"
-      color="#FA5C56"
-    />
-  </div>
+  <color-panel
+    :loading="loading"
+    icon="groups"
+    label="Participações"
+    link="/platform/test-applications"
+    :data="totalParticipations"
+    color="#FA5C56"
+  />
 </template>
 <script lang="ts">
 import Vue from "vue";

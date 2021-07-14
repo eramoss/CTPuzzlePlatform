@@ -87,6 +87,9 @@ export default class SelectTestApplication extends Vue {
     if (testApplicationId) {
       this.selectTestApplicationById(testApplicationId);
     }
+    if (!testApplicationId) {
+        this.$emit('onLoadWithoutPreviousApplicationSelected')
+    }
   }
 
   @Watch("selectedTestApplication")

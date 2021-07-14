@@ -23,7 +23,8 @@ export function stringfyCsvColumnDataRow(columnValue: any) {
     return columnValue?.toString().replaceAll('\n', ' ')
 }
 
-export function csvDataToCsv(csvData: CsvData, selectedColumns: CsvHeaderLabel[] = [], useColumnsNamesInSnakeCase = false): string {
+
+export function csvDataToCsv(csvData: CsvData, selectedColumns: CsvHeaderLabel[] = [], useColumnsNamesInSnakeCase = false, separator:string=CSV_SEPARATOR): string {
 
     let labels = csvData.labels
     if (selectedColumns.length) {
@@ -32,16 +33,16 @@ export function csvDataToCsv(csvData: CsvData, selectedColumns: CsvHeaderLabel[]
 
     let keys = labels.map(l => l.value)
 
-    let header: string[] | string = []
+    let header: string[] | string = keys
     if (useColumnsNamesInSnakeCase) {
         header = keys.map(k => formatSnakeCase(k))
     }
-    header = header.join(CSV_SEPARATOR)
+    header = header.join(separator)
 
     let body = csvData.rows.map(row =>
         keys.map(key => {
             return stringfyCsvColumnDataRow(row[key])
-        }).join(CSV_SEPARATOR)
+        }).join(separator)
     ).join('\n')
     return `${header}\n${body}`
 }

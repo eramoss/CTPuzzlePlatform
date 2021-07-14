@@ -15,6 +15,10 @@ src: ~/assets/segoeui/Segoe UI Bold.ttf */
   box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 16px 0px !important;
 }
 
+.inset-shadow{
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4) inset
+}
+
 .big-shadow {
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 40px 0px !important;
   }

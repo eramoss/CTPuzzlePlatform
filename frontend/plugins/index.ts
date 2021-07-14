@@ -22,6 +22,8 @@ import CenteredLogo from '~/components/CenteredLogo.vue'
 import FooterBar from '~/components/FooterBar.vue'
 import TutorialLabel from '~/components/TutorialLabel.vue'
 import TooltipInfo from '~/components/TooltipInfo.vue'
+import CardPanel from '~/components/CardPanel.vue'
+import ColorPanel from '~/components/ColorPanel.vue'
 
 Vue.component('container', Container)
 Vue.component('FormItemLabel', FormItemLabel)
@@ -46,6 +48,8 @@ Vue.component('CenteredLogo', CenteredLogo)
 Vue.component('FooterBar', FooterBar)
 Vue.component('TutorialLabel', TutorialLabel)
 Vue.component('TooltipInfo', TooltipInfo)
+Vue.component('CardPanel', CardPanel)
+Vue.component('ColorPanel', ColorPanel)
 
 // Global
 import VueTheMask from 'vue-the-mask'

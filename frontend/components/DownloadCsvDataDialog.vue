@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div class="columns-checkbox-group" v-show="isSelectedColumns">
+    <div class="columns-checkbox-group inset-shadow" v-show="isSelectedColumns">
       <el-checkbox-group v-model="selectedColumnsLabels">
         <el-checkbox
           size="small"
@@ -156,8 +156,7 @@ export default class DownloadCsvDataDialog extends Vue {
 .columns-checkbox-group {
   max-height: 200px;
   overflow-y: scroll;
-  padding: 0 20px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4) inset;
+  padding: 0 20px;;
   .column-checkbox {
     width: 200px;
     white-space: nowrap;

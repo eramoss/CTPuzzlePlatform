@@ -17,7 +17,6 @@ export default class ScoreFunctionTestResult {
             score = JSON.parse(scoreJson) as Score
             score.message = this.response
             score.json = scoreJson
-            return score;
         } catch (e) {
             score = new Score();
             score.score = -1;
@@ -25,6 +24,9 @@ export default class ScoreFunctionTestResult {
             score.message = this.response;
         }
         score.message = score.message.split('\n').filter(line => line.indexOf('at file') == -1).join('\n');
+        if (!score.score) {
+            score.score = 0
+        }
         return score;
     }
 }
