@@ -82,3 +82,4 @@ export const ACTION_RECALCULATE_ALL_APPLICATION_SCORES = "test-applications/reca
 export const ACTION_GET_APPLICATIONS = "test-applications/getAll"
 export const ACTION_GET_APPLICATION_DATA = "test-applications/paft"
 export const ACTION_PARTICIPATE_IN_THE_TEST = "test-applications/participateInTheTest"
+export const ACTION_GET_BY_ID = "test-applications/getById";

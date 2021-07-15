@@ -96,12 +96,12 @@ export default class TestApplicationUrlInput extends Vue {
   }
 
   get applicationUrl(): string {
-    let applicationName = this.testApplication.name.replace(
+    let applicationName = this.testApplication.name?.replace(
       /[^A-Za-z0-9]/g,
       ""
     );
     let url = "";
-    if (applicationName.length) {
+    if (applicationName?.length) {
       let params = {
         op: this.operation,
         dataUrl: this.dataUrl,

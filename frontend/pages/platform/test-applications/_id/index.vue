@@ -100,7 +100,12 @@
         </el-row>
 
         <el-row>
-          <h3>Participações ({{ testApplication.participations.length }})</h3>
+          <h3 v-if="validParticipations">
+            Participações ({{ validParticipations.length }})
+          </h3>
+          <h3 v-if="!validParticipations">
+            Ainda não há participações. Envie o link de participação.
+          </h3>
           <h3 v-if="lastResponse">
             Última resposta: {{ lastResponse.participation.user.name }},
             {{ dateFormat.fromNow(lastResponse.createdAt) }}
@@ -127,10 +132,7 @@
               </el-button>
             </span>
           </div>
-          <el-table
-            :data="testApplication.participations"
-            style="margin-bottom: 30px"
-          >
+          <el-table :data="validParticipations" style="margin-bottom: 30px">
             <el-table-column label="Quando" width="150">
               <template slot-scope="{ row }">
                 {{ dateFormat.fromNow(row.createdAt) }}
@@ -195,14 +197,13 @@ import AddObservationsBtn from "~/components/AddObservationsBtn.vue";
 import SwitchTestApplicationVisibility from "~/components/SwitchTestApplicationVisibility.vue";
 import { ACTION_SAVE_PARTICIPATION } from "~/store/participations";
 
-const ACTION_GET_BY_ID = "test-applications/getById";
-
 import {
   ACTION_GET_LAST_RESPONSE,
   ACTION_GENERATE_CSV,
   ACTION_SAVE_TEST_APPLICATION,
   ACTION_RECALCULATE_ALL_APPLICATION_SCORES,
   ACTION_GET_APPLICATIONS,
+  ACTION_GET_BY_ID,
 } from "~/store/test-applications";
 
 @Component({
@@ -385,6 +386,16 @@ export default class ApplicationEditForm extends Vue {
       this.refreshLastResponse,
       2000
     );
+  }
+
+  get validParticipations(): Participation[] {
+    let validParticipations: Participation[] = [];
+    if (this.testApplication?.participations) {
+      validParticipations = this.testApplication.participations.filter(
+        (it) => it.itemResponses?.length > 0
+      );
+    }
+    return validParticipations;
   }
 
   async refreshLastResponse() {

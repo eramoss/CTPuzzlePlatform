@@ -101,13 +101,13 @@ export class TestApplicationsService {
         return itemResponse
     }
 
-    getById(id: number): Promise<TestApplication> {
-        return this.testApplicationRepository.createQueryBuilder('test-application')
+    async getById(id: number): Promise<TestApplication> {
+        const testApplication = await this.testApplicationRepository.createQueryBuilder('test-application')
             .where({ id })
             .leftJoinAndSelect('test-application.test', 'test')
             .leftJoinAndSelect('test-application.participations', 'participation', `"participation"."deletedAt" is null`)
             .leftJoinAndSelect('test-application.controlApplication', 'controlApplication')
-            .innerJoinAndSelect('participation.itemResponses', 'itemResponse', `"itemResponse"."deletedAt" is null`)
+            .leftJoinAndSelect('participation.itemResponses', 'itemResponse', `"itemResponse"."deletedAt" is null`)
             .leftJoinAndSelect('itemResponse.testItem', 'testItem')
             .leftJoinAndSelect('itemResponse.score', 'score')
             .leftJoinAndSelect('testItem.item', 'item')
@@ -116,6 +116,7 @@ export class TestApplicationsService {
             .orderBy("participation.createdAt", "DESC")
             .withDeleted()
             .getOne();
+        return testApplication;
     }
 
     async generateCsvFromItemResponses(testApplicationId: number): Promise<string> {
