@@ -287,7 +287,7 @@ export default class EndOfTestQuizzPage extends Vue {
 
     if (!participationId) {
       if (momentOfQuizPresentation == "before-the-test") {
-        this.initializeParticipation();
+        await this.initializeParticipation();
       }
     }
 
@@ -304,7 +304,7 @@ export default class EndOfTestQuizzPage extends Vue {
   }
 
   async initializeParticipation() {
-    let userHash = loadUserUuid();
+    let userHash = loadUserUuid(true);
     let dataUrl = this.$route.query.dataUrl + "";
     dataUrl = dataUrl.replace("<user_uuid>", userHash);
     this.puzzleUrl = `${this.$route.query.puzzleUrl}&dataUrl=${dataUrl}`;
@@ -324,6 +324,7 @@ export default class EndOfTestQuizzPage extends Vue {
     quiz.index = 0;
     return quiz;
   }
+
   extractApplicationHash(dataUrl: string): string {
     return dataUrl.substring(
       dataUrl.indexOf("data") + 5,
