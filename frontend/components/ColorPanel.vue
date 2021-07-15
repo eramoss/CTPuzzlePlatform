@@ -7,16 +7,17 @@
   >
     <div class="top-label flex-row">
       <span :style="{ color: textColor }">{{ label }}</span>
-      <el-tooltip placement="top" v-if="showInfo">
-        <div slot="content">
-          <div style="max-width: 300px">
-            <slot name="info" />
+      <span class="flex-row">
+        <slot name="icons"></slot>
+        <el-tooltip placement="top" v-if="showInfo">
+          <div slot="content">
+            <div style="max-width: 300px">
+              <slot name="info" />
+            </div>
           </div>
-        </div>
-        <span>
-          <icon name="info" :style="{ color: textColor }" class="info-icon" />
-        </span>
-      </el-tooltip>
+          <icon name="info" :style="{ color: textColor }" />
+        </el-tooltip>
+      </span>
     </div>
     <div class="flex-row">
       <icon

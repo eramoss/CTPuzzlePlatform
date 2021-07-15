@@ -1,5 +1,5 @@
 <template>
-  <i :style="{'max-width':maxWidth}" 
+  <i @click="$emit('click')" :style="{'max-width':maxWidth}" 
      v-if="visible" 
     class="material-icons-outlined">{{name}}</i>
 </template>

@@ -10,6 +10,48 @@
       :showInfo="true"
       :data="alpha"
     >
+      <template slot="icons">
+        <el-popover
+          placement="top"
+          :width="400"
+          trigger="click"
+          v-model="itemsDialogVisible"
+        >
+          <template #reference>
+            <icon
+              @click="showItemsDialog"
+              style="
+                color: #1f77b4;
+                margin-right: 10px;
+                cursor: pointer;
+                display: block;
+              "
+              name="settings"
+            />
+          </template>
+          <div v-loading="loading">
+            <div style="text-align: center; margin-bottom:10px;">
+              <b >Itens para cálculo do alpha</b>
+            </div>
+            <el-checkbox
+              style="min-width: 90px"
+              v-for="item in itemsSelecteds"
+              :key="item.itemOrder"
+              v-model="item.selected"
+            >
+              Item {{ item.itemOrder + 1 }}
+            </el-checkbox>
+            <div style="text-align: center; margin-top: 10px">
+              <el-button size="mini" @click="closeItemsDialog"
+                >Fechar</el-button
+              >
+              <el-button type="primary" size="mini" @click="callCalculateAlpha"
+                >Calcular alpha</el-button
+              >
+            </div>
+          </div>
+        </el-popover>
+      </template>
       <template slot="info">
         O alpha de Cronbach é uma medida de consistência interna. <br />
         Indica o quão relacionados são os itens do teste. <br />
@@ -45,21 +87,57 @@ export default class CronbachAlphaPanel extends Vue {
   loading = true;
   alpha = "";
 
-  async calculateAlpha() {
-    const itemsCsvData = new CsvData();
+  itemsOrders: number[] = [];
+  itemsSelecteds: { itemOrder: number; selected: boolean }[] = [];
+
+  itemsDialogVisible = false;
+
+  showItemsDialog() {
+    if (this.itemsDialogVisible) {
+      this.closeItemsDialog();
+      return;
+    }
+    this.itemsDialogVisible = true;
+  }
+
+  closeItemsDialog() {
+    this.itemsDialogVisible = false;
+  }
+
+  updateItemsList() {
+    this.itemsSelecteds.splice(0);
     const itemsOrders: number[] = [];
-
     const testApplicationRows = this.testApplicationData.rows;
-
     testApplicationRows.forEach((row) => {
       let itemOrder = row["item_order"];
       if (itemsOrders.indexOf(itemOrder) == -1) {
         itemsOrders.push(itemOrder);
       }
     });
-    itemsOrders.sort((a, b) => a - b);
 
-    const headers = itemsOrders.map((itemOrder) => {
+    itemsOrders.sort((a, b) => a - b);
+    itemsOrders.forEach((itemOrder) => {
+      this.itemsSelecteds.push({ itemOrder, selected: true });
+    });
+    this.itemsOrders = itemsOrders;
+  }
+
+  isSelected(itemOrder: number) {
+    const selectedItem = this.itemsSelecteds.find(
+      (it) => it.itemOrder == itemOrder
+    );
+    return selectedItem && selectedItem.selected;
+  }
+
+  async calculateAlpha() {
+    const itemsCsvData = new CsvData();
+    const testApplicationRows = this.testApplicationData.rows;
+
+    const itemOrders: number[] = this.itemsOrders.filter((itemOrder) =>
+      this.isSelected(itemOrder)
+    );
+
+    const headers = itemOrders.map((itemOrder) => {
       const header = new CsvHeaderLabel();
       header.label = itemOrder + "";
       header.value = itemOrder + "";
@@ -72,12 +150,14 @@ export default class CronbachAlphaPanel extends Vue {
     testApplicationRows.forEach((row) => {
       const user = row["usuario"];
       const itemOrder = row["item_order"];
-      const itemScore = row["escore_obtido"];
-      if (!mapItemsScoresByUsers.get(user)) {
-        mapItemsScoresByUsers.set(user, {});
+      if (this.isSelected(itemOrder)) {
+        const itemScore = row["escore_obtido"];
+        if (!mapItemsScoresByUsers.get(user)) {
+          mapItemsScoresByUsers.set(user, {});
+        }
+        let objectOfItemsScores = mapItemsScoresByUsers.get(user);
+        objectOfItemsScores[itemOrder] = itemScore;
       }
-      let objectOfItemsScores = mapItemsScoresByUsers.get(user);
-      objectOfItemsScores[itemOrder] = itemScore;
     });
 
     mapItemsScoresByUsers.forEach((rowOfScoresByItem) => {
@@ -105,14 +185,20 @@ export default class CronbachAlphaPanel extends Vue {
         this.alpha = "Indefinido";
       }
     } catch (e) {
-      this.alpha = e;
+      console.error(e);
+      this.alpha = "0";
     }
   }
 
   @Watch("testApplicationData", { immediate: true })
-  async onChangeData() {
+  onChangeData() {
     if (!this.testApplicationData) return;
     if (!this.testApplicationData.rows.length) return;
+    this.updateItemsList();
+    this.callCalculateAlpha();
+  }
+
+  async callCalculateAlpha() {
     try {
       this.loading = true;
       await this.calculateAlpha();

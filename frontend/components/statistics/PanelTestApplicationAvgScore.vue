@@ -55,7 +55,8 @@ export default class PanelTestApplicationAvgScore extends Vue {
         this.avgScore = "Indefinido";
       }
     } catch (e) {
-      this.avgScore = e;
+      console.error(e);
+      this.avgScore = "0";
     } finally {
       this.loading = false;
     }
