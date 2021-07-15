@@ -5,7 +5,7 @@ import { PageResponse } from 'src/pagination/pageresponse.dto';
 import Participation from 'src/participation/participation.entity';
 import { ParticipationService } from 'src/participation/participation.service';
 import { TestService } from 'src/tests/tests.service';
-import { User } from 'src/users/user.entity';
+import { User, USER_UUID_TOKEN } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Brackets, DeleteResult, Long, Repository, UpdateResult } from 'typeorm';
 import { TestApplication } from './test-application.entity';
@@ -305,7 +305,7 @@ export class TestApplicationsService {
         let user = new User();
         user.hash = userHash;
 
-        if (userHash == '<user_uuid>') {
+        if (userHash == USER_UUID_TOKEN) {
             userHash = uuidv4().substring(0, 7);
             console.warn('The puzzle forgot to replace the user token with a random unique id value!!')
         }

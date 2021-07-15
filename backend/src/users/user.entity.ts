@@ -5,6 +5,8 @@ export enum UserRole {
     ADMIN = 'admin', STUDENT = 'student', SYSADMIN = 'sysadmin'
 }
 
+export const USER_UUID_TOKEN = "<user_uuid>"
+
 @Entity()
 export class User {
 

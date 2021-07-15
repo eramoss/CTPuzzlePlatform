@@ -162,6 +162,7 @@ import {
   ACTION_SAVE_QUIZ_RESPONSE,
 } from "~/store/participations";
 import { ACTION_PARTICIPATE_IN_THE_TEST } from "~/store/test-applications";
+import { USER_UUID_TOKEN } from "~/types/User";
 
 @Component({
   components: { CenteredLogo },
@@ -190,7 +191,7 @@ export default class EndOfTestQuizzPage extends Vue {
   }
 
   startTest() {
-    window.open(this.puzzleUrl, "_blank");
+    window.open(this.puzzleUrl);
   }
 
   async nextQuestion() {
@@ -306,7 +307,7 @@ export default class EndOfTestQuizzPage extends Vue {
   async initializeParticipation() {
     let userHash = loadUserUuid(true);
     let dataUrl = this.$route.query.dataUrl + "";
-    dataUrl = dataUrl.replace("<user_uuid>", userHash);
+    dataUrl = dataUrl.replace(USER_UUID_TOKEN, userHash);
     this.puzzleUrl = `${this.$route.query.puzzleUrl}&dataUrl=${dataUrl}`;
     let applicationHash = this.extractApplicationHash(dataUrl);
     this.participation = await this.participateInTheTest({

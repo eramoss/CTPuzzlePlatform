@@ -16,6 +16,7 @@ import { Context } from "@nuxt/types";
 import TestApplication from "~/types/TestApplication";
 import GameIframe from "./GameIframe.vue";
 import { loadUserUuid } from "~/types/userUuidUtil";
+import { USER_UUID_TOKEN } from "~/types/User";
 
 @Component({
   components: {
@@ -36,7 +37,7 @@ export default class TestApplicationGameIframe extends Vue {
       if (this.testApplication) {
         if (this.testApplication?.url) {
           gameUrl = this.testApplication?.url?.replace(
-            "<user_uuid>",
+            USER_UUID_TOKEN,
             this.userUuid
           );
         }

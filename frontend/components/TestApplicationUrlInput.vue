@@ -40,7 +40,7 @@
                         <td>dataUrl</td>
                         <td><a :href="dataUrl" style="margin-left:0; word-break: break-all" target="_blank">{{dataUrl}}</a></td>
                         <td>Endereço dos dados do teste em formato JSON.
-                             O parâmetro <b>&lt;user_uuid&gt;</b> identifica os participantes no teste.
+                             O parâmetro {{userUuid}} identifica os participantes no teste.
                              Deve ser gerado pelo aplicativo a cada nova participação.</td>
                     </tr>
 
@@ -58,6 +58,7 @@ import { Action, Component, Prop, Watch } from "nuxt-property-decorator";
 import TestApplication from "~/types/TestApplication";
 import CopyInput from "~/components/CopyInput.vue";
 import queryString from "~/utils/utils";
+import { USER_UUID_TOKEN } from "~/types/User";
 
 @Component({
   components: {
@@ -70,6 +71,7 @@ export default class TestApplicationUrlInput extends Vue {
   @Prop({ default: false }) showAccessIcon!: boolean;
   puzzleUrl: string = "";
   aboutApplicationLinkVisible: boolean = false;
+  userUuid = USER_UUID_TOKEN;
 
   @Action("tests/getPuzzleBaseUrl") getPuzzleBaseUrl!: (
     testId: number
@@ -86,7 +88,7 @@ export default class TestApplicationUrlInput extends Vue {
   get dataUrl() {
     let hash = this.testApplication.hash;
     let baseUrl = this.$axios.defaults.baseURL;
-    return `${baseUrl}/test-applications/public/data/${hash}/<user_uuid>`;
+    return `${baseUrl}/test-applications/public/data/${hash}/${USER_UUID_TOKEN}`;
   }
 
   @Watch("applicationUrl")
