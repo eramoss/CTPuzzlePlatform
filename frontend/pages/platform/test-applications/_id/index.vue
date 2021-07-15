@@ -35,6 +35,7 @@
             </el-form-item>
             <el-form-item label-width="170px" label="Teste">
               <nuxt-link
+                v-if="testApplication.test"
                 title="Acessar teste"
                 :to="`/platform/tests/${testApplication.test.id}`"
                 ref="inputName"
