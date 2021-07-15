@@ -6,6 +6,7 @@ import TestApplication from '~/types/TestApplication';
 import { downloadWithAxios } from '~/utils/utils';
 import ItemResponse from '~/types/ItemResponse';
 import { CsvData } from '~/types/CsvData';
+import Participation from '~/types/Participation';
 export const actions: ActionTree<any, any> = {
 
     generateItemResponsesCsv(state, testApplicationId: number) {
@@ -42,6 +43,10 @@ export const actions: ActionTree<any, any> = {
         return $axios.$get('/test-applications/public/getPuplicApplications');
     },
 
+    participateInTheTest(state, payload: { applicationHash: string, userHash: string }): Promise<Participation> {
+        return $axios.$get('/test-applications/public/participate/' + payload.applicationHash + "/" + payload.userHash);
+    },
+
     getById(state, id: number): Promise<TestApplication> {
         return $axios.$get('/test-applications/byId/' + id);
     },
@@ -75,3 +80,5 @@ export const ACTION_PAGINATE_APPLICATIONS = "test-applications/paginate"
 export const ACTION_GET_CSV_DATA_TEST_APPLICATION = "test-applications/getCsvData"
 export const ACTION_RECALCULATE_ALL_APPLICATION_SCORES = "test-applications/recalculateAllApplicationScores"
 export const ACTION_GET_APPLICATIONS = "test-applications/getAll"
+export const ACTION_GET_APPLICATION_DATA = "test-applications/paft"
+export const ACTION_PARTICIPATE_IN_THE_TEST = "test-applications/participateInTheTest"

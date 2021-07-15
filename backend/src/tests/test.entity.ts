@@ -5,6 +5,8 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMan
 import { TestItem } from "./test-item.entity";
 import { TestStatus } from './test-status-enum'
 
+export type MomentOfQuizPresentation = "after-the-test" | "before-the-test";
+
 @Entity()
 export class Test {
 
@@ -13,6 +15,9 @@ export class Test {
 
     @Column()
     name: string
+
+    @Column({ default: "after-the-test" })
+    momentOfQuizPresentation:MomentOfQuizPresentation
 
     @OneToMany(type => TestItem, testItem => testItem.test, { cascade: ['insert', 'update', 'remove'] })
     items: TestItem[]

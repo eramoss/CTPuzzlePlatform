@@ -10,15 +10,18 @@ import { TestItem } from './test-item.entity';
 import { Test } from './test.entity';
 import { getManager } from 'typeorm';
 import TestItemDifficulty from './test-item-difficulty.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class TestService {
+
 
     constructor(
         @InjectRepository(Test)
         private testRepository: Repository<Test>,
         private itemService: ItemsService,
         private itemResponseService: ItemResponsesService,
+        private configService: ConfigService
     ) { }
 
     save(test: Test): Promise<Test> {
@@ -116,7 +119,14 @@ export class TestService {
             .getOne()
         if (test) {
             if (test.items.length) {
-                baseUrl = test.items[0].item.mechanic.baseUrl
+                const puzzleUrl = test.items[0].item.mechanic.baseUrl
+                if (test.momentOfQuizPresentation == 'after-the-test') {
+                    baseUrl = puzzleUrl
+                }
+                if (test.momentOfQuizPresentation == 'before-the-test') {
+                    const siteUrl = this.configService.get('SITE_URL')
+                    baseUrl = `${siteUrl}/quiz?moment=${test.momentOfQuizPresentation}&puzzleUrl=${puzzleUrl}`
+                }
             }
         }
         return baseUrl;

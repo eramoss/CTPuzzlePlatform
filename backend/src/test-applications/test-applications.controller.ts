@@ -10,6 +10,8 @@ import { Response } from 'express';
 import { getResearchGroupId } from 'src/util/getClaim';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
 import { CsvData } from 'src/util/download';
+import { User } from 'src/users/user.entity';
+import Participation from 'src/participation/participation.entity';
 
 @Controller('test-applications')
 @UseGuards(JwtAuthGuard)
@@ -92,8 +94,18 @@ export class TestApplicationsController {
         return this.testApplicationsService.getApplicationData(testAplicationHash, userHash);
     }
 
+    @Get('public/participate/:testApplicationHash/:userHash')
+    participateInTheTest(
+        @Param('testApplicationHash') testApplicationHash: string,
+        @Param('userHash') userHash: string,
+    ): Promise<Participation> {
+        let user = new User();
+        user.hash = userHash
+        return this.testApplicationsService.participateInTheTest(testApplicationHash, user)
+    }
+
     @Get('recalculateAllApplicationParticipationScores/:testApplicationId')
-    recalculateAllApplicationParticipationScores(@Param('testApplicationId') testApplicationId: number):Promise<any> {
+    recalculateAllApplicationParticipationScores(@Param('testApplicationId') testApplicationId: number): Promise<any> {
         return this.testApplicationsService.recalculateAllApplicationParticipationScores(testApplicationId)
     }
 

@@ -1,6 +1,6 @@
 <template>
   <div v-if="testApplication">
-      <a ref="link" target="_blank" :href="gameUrl" style="display:none">Link</a>
+    <a ref="link" target="_blank" :href="gameUrl" style="display: none">Link</a>
     <game-iframe :url="gameUrl" :covered="covered" />
     <div>
       <a :href="gameUrl" target="_blank" rel="noopener noreferrer">
@@ -15,7 +15,7 @@ import { Component, Prop, Ref, Watch } from "nuxt-property-decorator";
 import { Context } from "@nuxt/types";
 import TestApplication from "~/types/TestApplication";
 import GameIframe from "./GameIframe.vue";
-import { v4 as uuidv4 } from "uuid";
+import { loadUserUuid } from "~/types/userUuidUtil";
 
 @Component({
   components: {
@@ -26,7 +26,7 @@ export default class TestApplicationGameIframe extends Vue {
   @Prop({}) testApplication!: TestApplication;
   @Prop({ default: true }) covered!: boolean;
   userUuid = "";
-  @Ref() link!:HTMLElement
+  @Ref() link!: HTMLElement;
 
   async asyncData(ctx: Context) {}
 
@@ -45,27 +45,14 @@ export default class TestApplicationGameIframe extends Vue {
     return gameUrl;
   }
 
-  loadUserUuid() {
-    let userUuid = "";
-    if (process.browser) {
-      userUuid = localStorage?.getItem("userUuid") || "";
-      if (!userUuid) {
-        userUuid = uuidv4();
-        localStorage?.setItem("userUuid", userUuid);
-      }
-    }
-    this.userUuid = userUuid;
-  }
-
-  @Watch('gameUrl')
-  onChangeGameUrl(){
-      //this.link.click()
+  @Watch("gameUrl")
+  onChangeGameUrl() {
+    //this.link.click()
   }
 
   @Watch("testApplication", { immediate: true })
   onChangeTestApplication() {
-    this.loadUserUuid();
+    this.userUuid = loadUserUuid();
   }
-
 }
 </script>

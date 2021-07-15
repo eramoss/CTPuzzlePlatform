@@ -1,15 +1,24 @@
 <template>
-  <div>
+  <div v-show="!loading">
     <centered-logo />
     <div v-show="isTestingQuiz" class="quiz-test-info">
       Testando questionário (as respostas não serão guardadas)
     </div>
     <div class="quiz-form center">
-      <div v-if="hasQuestion">
-        <h3>Parabéns! Você finalizou todas as fases!</h3>
-        <h2>Responda o questionário abaixo para ver o resultado</h2>
+      <div v-if="puzzleUrl">
+        <div v-if="hasQuestion">
+          <h3>Antes de iniciar, por favor responda ao questionário</h3>
+        </div>
       </div>
-      <h2 v-if="!hasQuestion">Obrigado por sua participação!</h2>
+
+      <div v-if="!puzzleUrl">
+        <div v-if="hasQuestion">
+          <h3>Parabéns! Você finalizou todas as fases!</h3>
+          <h2>Responda o questionário abaixo para ver o resultado</h2>
+        </div>
+        <h2 v-if="!hasQuestion">Obrigado por sua participação!</h2>
+      </div>
+
       <div>
         <div v-if="hasQuestion">
           <div class="question" style="margin: 0 auto">
@@ -102,7 +111,7 @@
         </div>
       </div>
       <div class="center fill" v-if="!hasQuestion">
-        <div>
+        <div v-if="!puzzleUrl">
           <el-button
             class="btnSeeResult"
             type="success"
@@ -112,6 +121,18 @@
             Ver resultado!
           </el-button>
         </div>
+
+        <div v-if="puzzleUrl">
+          <el-button
+            class="btnSeeResult"
+            type="success"
+            size="large"
+            @click="startTest"
+          >
+            Iniciar teste
+          </el-button>
+        </div>
+
         <!-- <div>
           <el-button
             @click="restart"
@@ -128,38 +149,37 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Action, Component, Ref, Watch } from "nuxt-property-decorator";
-import {
-  UserDataType,
-  UserDataQuestion,
-  VarType,
-  UserQuizSession,
-} from "~/types/UserDataQuiz";
+import { Action, Component, Ref } from "nuxt-property-decorator";
+import { UserDataQuestion, UserQuizSession } from "~/types/UserDataQuiz";
 import Participation from "~/types/Participation";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
 import CenteredLogo from "~/components/CenteredLogo.vue";
+import { loadUserUuid } from "~/types/userUuidUtil";
 
 import {
   ACTION_GET_BY_ID_PUBLIC_PARTICIPATION,
   ACTION_SAVE_QUIZ_RESPONSE,
 } from "~/store/participations";
+import { ACTION_PARTICIPATE_IN_THE_TEST } from "~/store/test-applications";
 
 @Component({
   components: { CenteredLogo },
   head: {
-    title: "Resultado do teste",
+    title: "Questionário",
   },
   auth: false,
 })
 export default class EndOfTestQuizzPage extends Vue {
-  participation!: Participation;
+  participation: Participation = new Participation();
+  loading = true;
 
   @Ref() input!: ElInput;
   @Ref() inputTextArea!: ElInput;
   @Ref() inputNumber!: ElInput;
 
   isTestingQuiz = false;
+  puzzleUrl: string = "";
 
   get hasQuestion() {
     return !!this.currentQuestion;
@@ -167,6 +187,10 @@ export default class EndOfTestQuizzPage extends Vue {
 
   get questionIndex() {
     return this.quizSession?.index || 0;
+  }
+
+  startTest() {
+    window.open(this.puzzleUrl, "_blank");
   }
 
   async nextQuestion() {
@@ -232,31 +256,7 @@ export default class EndOfTestQuizzPage extends Vue {
     return this.quizSession?.questions || [];
   }
 
-  async asyncData(ctx: Context) {
-    let participationId = ctx.params.participationId;
-    let participation = new Participation();
-    let isTestingQuiz = false;
-    if (participationId) {
-      participation = await ctx.store.dispatch(
-        ACTION_GET_BY_ID_PUBLIC_PARTICIPATION,
-        participationId
-      );
-      initQuizSession(participation);
-    } else {
-      isTestingQuiz = true;
-      let strQuiz = ctx.route.query.quiz as string;
-      let quiz = Object.assign(
-        new UserQuizSession(),
-        JSON.parse(strQuiz)
-      ) as UserQuizSession;
-      quiz.index = 0;
-      participation.userDataToRequest = quiz;
-    }
-    return {
-      participation,
-      isTestingQuiz,
-    };
-  }
+  async asyncData(ctx: Context) {}
 
   get participationId() {
     return this.$route.params.participationId;
@@ -268,8 +268,67 @@ export default class EndOfTestQuizzPage extends Vue {
     }
   }
 
-  mounted() {
+  @Action(ACTION_PARTICIPATE_IN_THE_TEST)
+  participateInTheTest!: (payload: {
+    applicationHash: string;
+    userHash: string;
+  }) => Promise<Participation>;
+
+  async mounted() {
+    let participationId = this.$route.params.participationId;
+    let momentOfQuizPresentation = this.$route.query.moment;
+
+    if (participationId) {
+      this.participation = await this.$store.dispatch(
+        ACTION_GET_BY_ID_PUBLIC_PARTICIPATION,
+        participationId
+      );
+    }
+
+    if (!participationId) {
+      if (momentOfQuizPresentation == "before-the-test") {
+        this.initializeParticipation();
+      }
+    }
+
+    if (!this.participationId && !this.participation.id) {
+      this.isTestingQuiz = true;
+      this.participation.userDataToRequest = this.convertQueryUrlToTestingQuiz();
+    }
+
+    if (!this.isTestingQuiz) {
+      initQuizSession(this.participation);
+    }
+    this.loading = false;
     this.focusInput();
+  }
+
+  async initializeParticipation() {
+    let userHash = loadUserUuid();
+    let dataUrl = this.$route.query.dataUrl + "";
+    dataUrl = dataUrl.replace("<user_uuid>", userHash);
+    this.puzzleUrl = `${this.$route.query.puzzleUrl}&dataUrl=${dataUrl}`;
+    let applicationHash = this.extractApplicationHash(dataUrl);
+    this.participation = await this.participateInTheTest({
+      applicationHash,
+      userHash,
+    });
+  }
+
+  convertQueryUrlToTestingQuiz(): UserQuizSession {
+    let strQuiz = this.$route.params.quiz as string;
+    let quiz = Object.assign(
+      new UserQuizSession(),
+      JSON.parse(strQuiz)
+    ) as UserQuizSession;
+    quiz.index = 0;
+    return quiz;
+  }
+  extractApplicationHash(dataUrl: string): string {
+    return dataUrl.substring(
+      dataUrl.indexOf("data") + 5,
+      dataUrl.lastIndexOf("/")
+    );
   }
 }
 function initQuizSession(participation: Participation, force: boolean = false) {

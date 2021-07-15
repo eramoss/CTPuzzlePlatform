@@ -1,14 +1,35 @@
 <template>
   <div class="form-builder panel shadow white">
-    <div class="flex-row bordered-bottom">
-      <h2 style="margin-bottom: 20px">Questionário de fim de teste</h2>
-      <el-button
-        @click="testQuizForm"
-        type="warning"
-        icon="el-icon-monitor"
-        style="font-weight: bold"
-        >Testar formulário</el-button
-      >
+    <div class="flex-row bottom-marged">
+      <span>
+        <h2 style="margin-bottom: 0">
+          {{
+            isQuizAfterTest
+              ? "Questionário após finalizar o teste"
+              : "Questionário antes de iniciar o teste"
+          }}
+        </h2>
+        <el-button
+          @click="toggleMomentOfQuizPresentation"
+          type="text"
+          size="mini"
+          :title="`Mostrar questionário ${
+            isQuizAfterTest ? 'antes' : 'depois'
+          } de o usuário realizar o teste`"
+        >
+          {{ isQuizAfterTest ? "Mostrar no início" : "Mostrar no fim" }}
+        </el-button>
+      </span>
+      <span>
+        <el-button
+          @click="testQuizForm"
+          type="warning"
+          icon="el-icon-monitor"
+          style="font-weight: bold"
+        >
+          Testar formulário
+        </el-button>
+      </span>
     </div>
 
     <table style="width: 100%">
@@ -136,7 +157,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, VModel } from "nuxt-property-decorator";
+import { Component, Prop, VModel, Watch } from "nuxt-property-decorator";
 import { ElInput } from "element-ui/types/input";
 
 import {
@@ -146,12 +167,32 @@ import {
   VarOption,
   UserQuizSession,
 } from "~/types/UserDataQuiz";
+import { MomentOfQuizPresentation } from "~/types/Test";
 
 @Component
 export default class UserDataToRequestFormBuilder extends Vue {
   @VModel() userDataList!: UserDataQuestion[];
+  @Prop({ default: "after-the-test" }) moment!: MomentOfQuizPresentation;
+
   optionsListDialogVisible: boolean = false;
   questionBeingEditted: UserDataQuestion = new UserDataQuestion();
+  momentOfPresentation: MomentOfQuizPresentation = "after-the-test";
+
+  @Watch("moment", { immediate: true })
+  onChangeMoment() {
+    this.momentOfPresentation = this.moment;
+  }
+
+  toggleMomentOfQuizPresentation() {
+    this.momentOfPresentation = this.isQuizAfterTest
+      ? "before-the-test"
+      : "after-the-test";
+    this.$emit("update:moment", this.momentOfPresentation);
+  }
+
+  get isQuizAfterTest() {
+    return this.momentOfPresentation == "after-the-test";
+  }
 
   get variableTypes(): UserDataType[] {
     return [
@@ -233,7 +274,7 @@ export default class UserDataToRequestFormBuilder extends Vue {
     let quiz = new UserQuizSession();
     quiz.questions = this.userDataList;
     let link = document.createElement("a");
-    link.href = `/end-of-test-quiz?quiz=${JSON.stringify(quiz)}`;
+    link.href = `/quiz?quiz=${JSON.stringify(quiz)}`;
     link.target = "_blank";
     link.click();
   }

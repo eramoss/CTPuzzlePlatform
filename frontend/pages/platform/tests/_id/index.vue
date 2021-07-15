@@ -133,7 +133,10 @@
           </el-col>
         </el-row>
         <el-row>
-          <user-data-to-request-form-builder v-model="test.userDataToRequest" />
+          <user-data-to-request-form-builder
+            v-model="test.userDataToRequest"
+            :moment.sync="test.momentOfQuizPresentation"
+          />
         </el-row>
         <el-row>
           <el-col>
@@ -226,7 +229,7 @@ export default class TestEditForm extends Vue {
     try {
       this.saving = true;
       let isJustSaved = !this.test.id;
-      this.test.items = this.selectedItems
+      this.test.items = this.selectedItems;
       this.test = await this.saveTest(this.test);
       if (isJustSaved || requestApply) {
         this.askForTestApplication();

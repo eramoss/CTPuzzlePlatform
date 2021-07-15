@@ -370,7 +370,7 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
             curl -X PUT --header 'Content-Type: application/json' -d '{"testApplication": ${participation.id}, "source": "facebook"}' ${urlToSendSource}`
             },
             urlToEndOfTestQuiz: {
-                url: `${siteUrl}/end-of-test-quiz/${participation.id}`
+                url: `${siteUrl}/quiz/${participation.id}`
             }
         } as PreparedParticipation
 
@@ -385,7 +385,7 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
         return nextItem
     }
 
-    private async participateInTheTest(testApplicationHash: string, user: User): Promise<Participation> {
+    async participateInTheTest(testApplicationHash: string, user: User): Promise<Participation> {
 
         if (!user.password)
             user.password = user.hash

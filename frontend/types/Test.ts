@@ -1,10 +1,11 @@
+import moment from "moment"
 import Item from "./Item"
 import ResearchGroup from "./ResearchGroup"
 import TestApplication from "./TestApplication"
 import TestItem from "./TestItem"
 import { UserDataQuestion } from "./UserDataQuiz"
 
-
+export type MomentOfQuizPresentation = "after-the-test" | "before-the-test";
 export default class Test {
     id!: number
     name!: string
@@ -16,4 +17,5 @@ export default class Test {
     deletedAt!: Date
     updatedAt!: Date
     userDataToRequest!: UserDataQuestion[]
+    momentOfQuizPresentation: MomentOfQuizPresentation = "after-the-test"
 }
