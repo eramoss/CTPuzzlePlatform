@@ -7,7 +7,7 @@
   >
     <div class="top-label flex-row">
       <span :style="{ color: textColor }">{{ label }}</span>
-      <span class="flex-row">
+      <div class="flex-row">
         <slot name="icons"></slot>
         <el-tooltip placement="top" v-if="showInfo">
           <div slot="content">
@@ -15,9 +15,11 @@
               <slot name="info" />
             </div>
           </div>
-          <icon name="info" :style="{ color: textColor }" />
+          <span style="display:flex">
+            <icon name="info" :style="{ color: textColor }" />
+          </span>
         </el-tooltip>
-      </span>
+      </div>
     </div>
     <div class="flex-row">
       <icon

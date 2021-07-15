@@ -178,7 +178,7 @@ export default class CronbachAlphaPanel extends Vue {
     });
 
     try {
-      let match = output.match(/alpha: [0-9.]+/);
+      let match = output.match(/alpha: [-0-9.]+/);
       if (match) {
         this.alpha = match[0].split(" ")[1];
       } else {
