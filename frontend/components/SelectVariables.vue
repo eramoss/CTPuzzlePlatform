@@ -9,7 +9,7 @@
       value-key="value"
     >
       <el-option
-        v-for="column in numericColumns"
+        v-for="column in selectableVariables"
         :key="column.value"
         :label="column.label"
         :value="column"
@@ -20,11 +20,17 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop, Watch } from "nuxt-property-decorator";
-import { CsvData, CsvHeaderLabel, getNumericColumns } from "~/types/CsvData";
+import {
+  CsvColumnType,
+  CsvData,
+  CsvHeaderLabel,
+  getColumnsByTypeEquals,
+} from "~/types/CsvData";
 @Component
-export default class SelectNumericVariables extends Vue {
+export default class SelectVariables extends Vue {
   @Prop({}) testApplicationData!: CsvData;
-  @Prop() hideLabel!:boolean
+  @Prop() hideLabel!: boolean;
+  @Prop({ default: "number" }) type!: CsvColumnType;
   @Prop({ default: "escore_obtido" }) defaultValue!: string;
 
   selectedColumn = new CsvHeaderLabel();
@@ -33,21 +39,24 @@ export default class SelectNumericVariables extends Vue {
     this.$emit("change", this.selectedColumn);
   }
 
-  get numericColumns(): CsvHeaderLabel[] {
-    let numericColumns: CsvHeaderLabel[] = [];
+  get selectableVariables(): CsvHeaderLabel[] {
+    let selectableVariables: CsvHeaderLabel[] = [];
     if (this.testApplicationData) {
-      numericColumns = getNumericColumns(this.testApplicationData);
+      selectableVariables = getColumnsByTypeEquals(
+        this.testApplicationData,
+        this.type
+      );
     }
-    return numericColumns;
+    return selectableVariables;
   }
 
-  @Watch("numericColumns", { immediate: true })
-  onChangeNumericColumns() {
-    const defaultColumn = this.numericColumns.find(
+  @Watch("selectableVariables", { immediate: true })
+  onChangeSelectableVariables() {
+    const defaultVariable = this.selectableVariables.find(
       (it) => it.value == this.defaultValue
     );
-    if (defaultColumn) {
-      this.selectedColumn = defaultColumn;
+    if (defaultVariable) {
+      this.selectedColumn = defaultVariable;
       this.onSelectColumn();
     }
   }

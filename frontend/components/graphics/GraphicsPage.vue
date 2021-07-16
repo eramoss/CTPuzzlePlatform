@@ -2,6 +2,14 @@
   <div>
     <el-row class="panel shadow top-marged">
       <el-col :span="24">
+        <caregorical-variables-plot
+          :testApplication="testApplication"
+          :testApplicationData="testApplicationData"
+        ></caregorical-variables-plot>
+      </el-col>
+    </el-row>
+    <el-row class="panel shadow top-marged">
+      <el-col :span="24">
         <test-items-box-plot
           :testApplication="testApplication"
           :testApplicationData="testApplicationData"
@@ -28,6 +36,7 @@ import { Component, Prop, Ref } from "nuxt-property-decorator";
 import TestItemsBoxPlot from "./TestItemsBoxPlot.vue";
 import ItemResponseTheoryPlot from "./ItemResponseTheoryPlot.vue";
 import ParametersEstimationPlot from "./ParametersEstimationPlot.vue";
+import CaregoricalVariablesPlot from "./CaregoricalVariablesPlot.vue";
 import TestApplication from "~/types/TestApplication";
 import { CsvData } from "~/types/CsvData";
 @Component({
@@ -35,6 +44,7 @@ import { CsvData } from "~/types/CsvData";
     TestItemsBoxPlot,
     ItemResponseTheoryPlot,
     ParametersEstimationPlot,
+    CaregoricalVariablesPlot
   },
 })
 export default class GraphicsPage extends Vue {

@@ -24,7 +24,7 @@ export function stringfyCsvColumnDataRow(columnValue: any) {
 }
 
 
-export function csvDataToCsv(csvData: CsvData, selectedColumns: CsvHeaderLabel[] = [], useColumnsNamesInSnakeCase = false, separator:string=CSV_SEPARATOR): string {
+export function csvDataToCsv(csvData: CsvData, selectedColumns: CsvHeaderLabel[] = [], useColumnsNamesInSnakeCase = false, separator: string = CSV_SEPARATOR): string {
 
     let labels = csvData.labels
     if (selectedColumns.length) {
@@ -325,7 +325,11 @@ export function getColumnFixPosition(header: CsvHeaderLabel) {
     return fixed;
 }
 export function getNumericColumns(csvData: CsvData): CsvHeaderLabel[] {
-    return csvData?.labels.filter((header) => header.type == "number")
+    return getColumnsByTypeEquals(csvData, 'number')
+}
+
+export function getColumnsByTypeEquals(csvData: CsvData, type: CsvColumnType): CsvHeaderLabel[] {
+    return csvData?.labels.filter((header) => header.type == type)
 }
 
 export function getNumericColumnValues(data: CsvData, header: CsvHeaderLabel): number[] {

@@ -35,7 +35,8 @@
       width="80%"
     >
       <div class="flex-row">
-        <select-numeric-variables
+        <select-variables
+          type="number"
           :hideLabel="true"
           @change="onSelectVariable"
           :testApplicationData="data"
@@ -93,7 +94,7 @@
 import Vue from "vue";
 import { Component, Prop, Ref } from "nuxt-property-decorator";
 import CodeEditor from "~/components/CodeEditor.vue";
-import SelectNumericVariables from "~/components/SelectNumericVariables.vue";
+import SelectVariables from "~/components/SelectVariables.vue";
 import FunctionsLibrary from "~/components/FunctionsLibrary.vue";
 import {
   CsvData,
@@ -107,7 +108,7 @@ import RScriptRunner from "./statistics/RScriptRunner.vue";
 @Component({
   components: {
     CodeEditor,
-    SelectNumericVariables,
+    SelectVariables,
     FunctionsLibrary,
     RScriptRunner,
   },
