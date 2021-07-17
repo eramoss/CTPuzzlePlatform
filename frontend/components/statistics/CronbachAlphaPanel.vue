@@ -30,8 +30,8 @@
             />
           </template>
           <div v-loading="loading">
-            <div style="text-align: center; margin-bottom:10px;">
-              <b >Itens para cálculo do alpha</b>
+            <div style="text-align: center; margin-bottom: 10px">
+              <b>Itens para cálculo do alpha</b>
             </div>
             <el-checkbox
               style="min-width: 90px"

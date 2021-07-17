@@ -1,5 +1,5 @@
 <template>
-  <div class="top-marged">
+  <div>
     <color-panel
       :showInfo="true"
       icon="score"

@@ -134,9 +134,9 @@ mean($1)
 
   show() {
     this.opening = true;
-    eventBus.$emit("resize");
+    this.visible = true;
     setTimeout(() => {
-      this.visible = true;
+      eventBus.$emit("resize");
       this.opening = false;
     }, 200);
   }

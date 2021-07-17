@@ -2,6 +2,7 @@
   <div>
     <div class="flex-row">
       <el-button
+        :disabled="disabled"
         type="primary"
         @click="showDialogGroupSelector"
         size="small"
@@ -30,7 +31,7 @@
         A aplicação selecionada não é o grupo de controle da aplicação em
         análise.
         <el-button @click="selectControlGroup" type="text">
-            Selecionar grupo de controle
+          Selecionar grupo de controle
         </el-button>
       </message-alert>
       <div>
@@ -90,6 +91,8 @@ import SelectTestApplication from "~/components/SelectTestApplication.vue";
 export default class GroupDataLoader extends Vue {
   @Prop({ default: () => new TestApplication() })
   testApplication!: TestApplication;
+  @Prop() disabled!: boolean;
+
   selectedTestApplication: TestApplication = new TestApplication();
   selectorDialogVisible = false;
   showMessageInvalidControlGroupSelected = false;
