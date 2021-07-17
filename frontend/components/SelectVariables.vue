@@ -34,7 +34,13 @@ export default class SelectVariables extends Vue {
   @Prop({ default: "Variável" }) label!: string;
   @Prop({ default: false }) required!: boolean;
   @Prop({ default: "number" }) type!: CsvColumnType;
+  @Prop() value!: CsvHeaderLabel;
   @Prop({ default: "escore_obtido" }) defaultValue!: string;
+
+  @Watch("value")
+  onChangeValue() {
+    this.selectedColumn = this.value;
+  }
 
   selectedColumn = new CsvHeaderLabel();
 

@@ -12,9 +12,10 @@
         <select-variables
           :required="true"
           label="Variável categórica"
-          type="string"
+          type="category"
           defaultValue="tutorial"
           :testApplicationData="testApplicationData"
+          :value="selectedCategory"
           @change="selectCategory"
         />
       </el-col>
@@ -124,6 +125,15 @@ export default class CaregoricalVariablesPlot extends Vue {
       name: string;
       type: string;
     }[] = [];
+
+    if (!this.selectedCategoricalVariable) {
+      let firstCaregoricVariable = this.testApplicationData.labels.find(
+        (label) => label.type == "category"
+      );
+      if (firstCaregoricVariable) {
+        this.selectedCategory = firstCaregoricVariable;
+      }
+    }
 
     this.dataGroups.forEach((dataGroup) => {
       let trace: { name: string; x: string[]; y: number[]; type: string } = {

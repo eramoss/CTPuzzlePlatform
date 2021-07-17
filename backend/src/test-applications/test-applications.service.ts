@@ -243,6 +243,13 @@ export class TestApplicationsService {
                     }
                     type = "string"
                 }
+                if (type == 'string') {
+                    if (testApplication.test.userDataToRequest.some(quizQuestion => {
+                        return quizQuestion.name == label.value && quizQuestion.variableType.varType == 'options'
+                    })) {
+                        type = 'category'
+                    }
+                }
             }
             label.type = type
         })

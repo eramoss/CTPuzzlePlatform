@@ -25,7 +25,7 @@
       <el-col :md="12">
         <select-variables
           label="Variável categórica"
-          type="string"
+          type="category"
           defaultValue="tutorial"
           :testApplicationData="testApplicationData"
           @change="selectCategory"

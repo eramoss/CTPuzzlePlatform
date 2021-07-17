@@ -2,7 +2,7 @@ import { groupByKey, LogicOperation, OperationOnGroup } from "./StatisticMeasure
 
 export const CSV_SEPARATOR = "|"
 
-export type CsvColumnType = "string" | "number"
+export type CsvColumnType = "string" | "number" | "category"
 
 export class CsvHeaderLabel {
     label!: string

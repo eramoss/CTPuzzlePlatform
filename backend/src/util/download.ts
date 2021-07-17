@@ -1,7 +1,7 @@
 import { Parser } from 'json2csv';
 import fs from 'fs'
 
-export type CsvColumnType = "number" | "string"
+export type CsvColumnType = "number" | "string" | "category"
 export class CsvHeaderLabel {
     label!: string
     value!: string
