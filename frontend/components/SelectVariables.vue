@@ -1,7 +1,8 @@
 <template>
   <div>
-    <form-item-label label="Variável" :required="true" v-show="!hideLabel" />
+    <form-item-label :label="label" :required="required" v-show="!hideLabel" />
     <el-select
+      :clearable="!required"
       placeholder="Selecione uma variável"
       :filterable="true"
       v-model="selectedColumn"
@@ -30,6 +31,8 @@ import {
 export default class SelectVariables extends Vue {
   @Prop({}) testApplicationData!: CsvData;
   @Prop() hideLabel!: boolean;
+  @Prop({ default: "Variável" }) label!: string;
+  @Prop({ default: false }) required!: boolean;
   @Prop({ default: "number" }) type!: CsvColumnType;
   @Prop({ default: "escore_obtido" }) defaultValue!: string;
 

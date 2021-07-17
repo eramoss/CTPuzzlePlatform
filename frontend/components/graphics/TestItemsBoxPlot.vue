@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex-row">
-      <h2>Box Plots</h2>
+      <h2>Box plots</h2>
       <div class="flex-row left">
         <span class="right-marged">
           <el-checkbox v-model="splitByItems">Separar por itens</el-checkbox>
@@ -12,12 +12,27 @@
         />
       </div>
     </div>
-    <select-variables
-      type="number"
-      defaultValue="escore_obtido"
-      :testApplicationData="testApplicationData"
-      @change="selectColumn"
-    />
+    <el-row :gutter="20">
+      <el-col :md="12">
+        <select-variables
+          :required="true"
+          label="Variável numérica"
+          defaultValue="escore_obtido"
+          :testApplicationData="testApplicationData"
+          @change="selectColumn"
+        />
+      </el-col>
+      <el-col :md="12">
+        <select-variables
+          label="Variável categórica"
+          type="string"
+          defaultValue="tutorial"
+          :testApplicationData="testApplicationData"
+          @change="selectCategory"
+        />
+      </el-col>
+    </el-row>
+
     <plot :data="data" :layout="plotLayout" />
   </div>
 </template>
@@ -47,6 +62,7 @@ export default class TestItemsBoxPlot extends Vue {
   comparisonTestApplication: TestApplication = new TestApplication();
   data: any[] = [];
   selectedColumn = new CsvHeaderLabel();
+  selectedCategory = new CsvHeaderLabel();
 
   get plotLayout() {
     return {
@@ -54,9 +70,11 @@ export default class TestItemsBoxPlot extends Vue {
       boxmode: this.isGroupingPlot ? "group" : "",
       yaxis: {
         title: this.selectedColumnValue,
+        //type: "log",
+        autorange: true,
       },
       xaxis: {
-        title: "itens do teste",
+        title: this.selectedCategoricalVariableLabel,
       },
     };
   }
@@ -70,8 +88,21 @@ export default class TestItemsBoxPlot extends Vue {
     this.updateData();
   }
 
+  selectCategory(csvHeaderLabel: CsvHeaderLabel) {
+    this.selectedCategory = csvHeaderLabel;
+    this.updateData();
+  }
+
   get selectedColumnValue() {
     return this.selectedColumn?.value;
+  }
+
+  get selectedCategoricalVariable(): string {
+    return this.selectedCategory.value;
+  }
+
+  get selectedCategoricalVariableLabel(): string {
+    return this.selectedCategoricalVariable || "Itens";
   }
 
   get dataGroups(): { groupName: string; data: CsvData }[] {
@@ -104,11 +135,25 @@ export default class TestItemsBoxPlot extends Vue {
 
     this.dataGroups.forEach((dataGroup) => {
       dataGroup.data.rows
-        .sort((a, b) => a["item_order"] - b["item_order"])
+        .sort(
+          (a, b) =>
+            a[this.selectedCategoricalVariable] -
+            b[this.selectedCategoricalVariable]
+        )
         .forEach((row) => {
-          let itemLabelInGraphic = this.splitByItems
-            ? `Item ${row["item_order"] + 1}`
-            : dataGroup.groupName;
+          let itemName = "";
+          if (this.splitByItems) {
+            itemName = `Item ${row["item_order"] + 1}`;
+          }
+          let category = "";
+          if (this.selectedCategoricalVariable) {
+            category = row[this.selectedCategoricalVariable] || "Não informado";
+          }
+
+          let itemLabelInGraphic = [itemName, category]
+            .filter((it) => it.length)
+            .join(" / ");
+
           if (!scoresByItems.get(itemLabelInGraphic)) {
             scoresByItems.set(itemLabelInGraphic, {
               scores: [],

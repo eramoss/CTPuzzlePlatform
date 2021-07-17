@@ -8,15 +8,10 @@
       />
     </div>
     <el-row :gutter="20">
-      <el-col :md="12">
+      <el-col :md="24">
         <select-variables
-          defaultValue="escore_obtido"
-          :testApplicationData="testApplicationData"
-          @change="selectColumn"
-        />
-      </el-col>
-      <el-col :md="12">
-        <select-variables
+          :required="true"
+          label="Variável categórica"
           type="string"
           defaultValue="tutorial"
           :testApplicationData="testApplicationData"
@@ -49,7 +44,7 @@ export default class CaregoricalVariablesPlot extends Vue {
   @Prop() testApplication!: TestApplication;
   @Prop() testApplicationData!: CsvData;
 
-  splitByItems = true;
+  splitByItems = false;
   comparisonGroupData: CsvData = new CsvData();
   comparisonTestApplication: TestApplication = new TestApplication();
   data: any[] = [];
@@ -59,12 +54,14 @@ export default class CaregoricalVariablesPlot extends Vue {
   get plotLayout() {
     return {
       //title: this.selectedColumnValue,
-      boxmode: this.isGroupingPlot ? "group" : "",
+      barmode: this.isGroupingPlot ? "group" : "",
       yaxis: {
-        title: this.selectedColumnValue,
+        title: "Total",
+        //type: "log",
+        autorange: true,
       },
       xaxis: {
-        title: "itens do teste",
+        title: this.selectedCategoricalVariableLabel,
       },
     };
   }
@@ -73,38 +70,47 @@ export default class CaregoricalVariablesPlot extends Vue {
     return this.dataGroups.length > 1;
   }
 
-  selectColumn(csvHeaderLabel: CsvHeaderLabel) {
-    this.selectedColumn = csvHeaderLabel;
-    this.updateData();
-  }
-
   selectCategory(csvHeaderLabel: CsvHeaderLabel) {
     this.selectedCategory = csvHeaderLabel;
     this.updateData();
   }
 
-  get selectedColumnValue() {
-    return this.selectedColumn?.value;
+  get selectedCategoricalVariable(): string {
+    return this.selectedCategory.value;
   }
 
-  get selectedCategoricalVariable(): string {
-    return this.selectedCategory.value || "item_order";
+  get selectedCategoricalVariableLabel(): string {
+    return this.selectedCategoricalVariable || "Itens";
   }
 
   get dataGroups(): { groupName: string; data: CsvData }[] {
     let dataGroups: { groupName: string; data: CsvData }[] = [];
 
+    function reduceDataByUsers(csvDataByItems: CsvData): CsvData {
+      const csvDataByUsers = new CsvData();
+      csvDataByUsers.labels = csvDataByItems.labels;
+      let usersIds: any[] = [];
+      csvDataByItems.rows.forEach((row) => {
+        let userId = row["usuario"];
+        if (usersIds.indexOf(userId) == -1) {
+          usersIds.push(userId);
+          csvDataByUsers.rows.push(row);
+        }
+      });
+      return csvDataByUsers;
+    }
+
     if (this.testApplication) {
       dataGroups.push({
         groupName: this.testApplication.name,
-        data: this.testApplicationData,
+        data: reduceDataByUsers(this.testApplicationData),
       });
     }
 
     if (this.comparisonTestApplication.id) {
       dataGroups.push({
         groupName: this.comparisonTestApplication.name,
-        data: this.comparisonGroupData,
+        data: reduceDataByUsers(this.comparisonGroupData),
       });
     }
 
@@ -112,14 +118,26 @@ export default class CaregoricalVariablesPlot extends Vue {
   }
 
   updateData() {
-    const traces: any[] = [];
-
-    let scoresByItems: Map<
-      string,
-      { scores: number[]; groupNames: string[] }
-    > = new Map<string, { scores: []; groupNames: string[] }>();
+    const traces: {
+      x: string[];
+      y: number[];
+      name: string;
+      type: string;
+    }[] = [];
 
     this.dataGroups.forEach((dataGroup) => {
+      let trace: { name: string; x: string[]; y: number[]; type: string } = {
+        name: dataGroup.groupName,
+        x: [],
+        y: [],
+        type: "bar",
+      };
+
+      let categoryDataByUser: Map<string, { total: number }> = new Map<
+        string,
+        { total: number }
+      >();
+
       dataGroup.data.rows
         .sort(
           (a, b) =>
@@ -127,44 +145,34 @@ export default class CaregoricalVariablesPlot extends Vue {
             b[this.selectedCategoricalVariable]
         )
         .forEach((row) => {
-          let itemLabelInGraphic = this.splitByItems
-            ? `${row[this.selectedCategoricalVariable] || 'Não informado'}`
-            : dataGroup.groupName;
-          if (!scoresByItems.get(itemLabelInGraphic)) {
-            scoresByItems.set(itemLabelInGraphic, {
-              scores: [],
-              groupNames: [],
+          let xCategoryLabel = "";
+          if (this.selectedCategoricalVariable) {
+            xCategoryLabel =
+              row[this.selectedCategoricalVariable] || "Não informado";
+          }
+          if (!categoryDataByUser.get(xCategoryLabel)) {
+            categoryDataByUser.set(xCategoryLabel, {
+              total: 0,
             });
           }
-          let item = scoresByItems.get(itemLabelInGraphic);
-          item?.scores.push(row[this.selectedColumnValue]);
-          item?.groupNames.push(dataGroup.groupName);
+          let item = categoryDataByUser.get(xCategoryLabel);
+          item!.total++;
         });
+
+      categoryDataByUser.forEach(
+        (value: { total: number }, category: string) => {
+          trace.x.push(category);
+          trace.y.push(value.total);
+        }
+      );
+      traces.push(trace);
     });
 
-    scoresByItems.forEach(
-      (value: { scores: number[]; groupNames: string[] }, itemName: string) => {
-        const trace: any = {
-          y: value.scores,
-          name: itemName,
-          type: "box",
-        };
-        if (this.isGroupingPlot) {
-          trace.x = value.groupNames;
-        }
-        traces.push(trace);
-      }
-    );
     this.data = traces;
   }
 
   @Watch("testApplicationData", { immediate: true })
   onChangeTestApplicationData() {
-    this.updateData();
-  }
-
-  @Watch("splitByItems", { immediate: true })
-  onChangeSplitByItems() {
     this.updateData();
   }
 
