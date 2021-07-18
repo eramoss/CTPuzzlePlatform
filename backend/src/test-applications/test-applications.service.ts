@@ -147,7 +147,7 @@ export class TestApplicationsService {
                 userKeys = Object.keys(participation.user.data);
                 userKeys.reverse().forEach(key => {
                     if (!labels.some(l => l.label == key)) {
-                        labels.splice(1, 0, { label: key, value: key });
+                        labels.splice(1, 0, { label: key, value: key, source: 'userData' });
                     }
                 });
             }
@@ -156,7 +156,7 @@ export class TestApplicationsService {
                 let quizKeys = participation.userDataToRequest.questions.map(q => q.name);
                 quizKeys.reverse().forEach(key => {
                     if (!labels.some(l => l.label == key)) {
-                        labels.splice(2, 0, { label: key, value: key });
+                        labels.splice(2, 0, { label: key, value: key, source: 'quiz' });
                     }
                 });
                 if (quizKeys.length > quizProperties.length) {
@@ -210,7 +210,7 @@ export class TestApplicationsService {
         });
 
         responseKeys.forEach(prop => {
-            labels.push({ label: prop, value: prop });
+            labels.push({ label: prop, value: prop, source: 'response' });
         });
         scoreKeys.forEach(prop => {
             labels.push({ label: prop, value: prop });

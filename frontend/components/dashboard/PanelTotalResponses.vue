@@ -5,8 +5,14 @@
     label="Respostas"
     link="/platform/test-applications"
     :data="total"
-    color="#FFAF57"
-  />
+    textColor="#FF7F0E"
+    color="#FFDAB9"
+    :showInfo="true"
+  >
+    <template slot="info">
+      Total de respostas informadas a itens de testes
+    </template>
+  </color-panel>
 </template>
 <script lang="ts">
 import Vue from "vue";

@@ -21,7 +21,12 @@
     </div>
     <div>
       <el-row :gutter="20">
-        <el-col :md="8">
+        <el-col>
+          <panel-participatins-history :researchGroupId="researchGroupId" />
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col>
           <panel-items-avg header="Escore médio por item" :sort="'ascending'" />
         </el-col>
       </el-row>
@@ -40,6 +45,7 @@ import PanelTotalParticipations from "~/components/dashboard/PanelTotalParticipa
 import PanelTotalResponses from "~/components/dashboard/PanelTotalResponses.vue";
 import PanelAvgScore from "~/components/dashboard/PanelAvgScore.vue";
 import PanelItemsAvg from "~/components/dashboard/PanelItemsAvgScore.vue";
+import PanelParticipatinsHistory from "~/components/dashboard/PanelParticipatinsHistory.vue";
 @Component({
   components: {
     ColorPanel,
@@ -48,6 +54,7 @@ import PanelItemsAvg from "~/components/dashboard/PanelItemsAvgScore.vue";
     PanelTotalResponses,
     PanelAvgScore,
     PanelItemsAvg,
+    PanelParticipatinsHistory,
   },
 })
 export default class PlatformDashboard extends Vue {

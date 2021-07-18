@@ -7,7 +7,8 @@ import { TestApplication } from 'src/test-applications/test-application.entity';
 import { TestItem } from 'src/tests/test-item.entity';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, EntityManager, In, Repository, UpdateResult } from 'typeorm';
+import ParticipationCount from './participation.count.dto';
 import Participation from './participation.entity';
 
 @Injectable()
@@ -19,6 +20,7 @@ export class ParticipationService {
         @InjectRepository(TestItem) private testItemRepository: Repository<TestItem>,
         private itemResponseService: ItemResponsesService,
         private userService: UsersService,
+        private entityManager: EntityManager
     ) { }
 
     async countParticipations(groupId: number): Promise<number> {
@@ -32,6 +34,33 @@ export class ParticipationService {
             .getCount()
         return count;
     }
+
+    async getParticipationsPerTime(researchGroupId:number): Promise<ParticipationCount> {
+        const sql = `
+        select 
+            count(*),
+            extract(day from participation."createdAt") as day,
+            extract(month from participation."createdAt") as month,
+            extract(year from participation."createdAt") as year 
+        from
+            participation
+        where
+            participation."applicationId" in (
+                select 
+                    id 
+                from 
+                    test_application 
+                where 
+                    "testId" in (select id from test where "researchGroupId" = $1)
+            )
+        group by 
+            day, month, year
+        order by 
+            year, month, day;`
+        let result = await this.entityManager.query(sql, [researchGroupId])
+        return result
+    }
+
 
     async saveSource(participationId: number, source: string): Promise<UpdateResult> {
         return this.participationRepository.update({ id: participationId }, { source })
@@ -66,7 +95,7 @@ export class ParticipationService {
         return this.participationRepository.save(participation);
     }
 
-    recalculateAllResponseEscores(itemResponses: ItemResponse[]):Promise<ItemResponse[]> {
+    recalculateAllResponseEscores(itemResponses: ItemResponse[]): Promise<ItemResponse[]> {
         return this.itemResponseService.calculateScores(itemResponses)
     }
 

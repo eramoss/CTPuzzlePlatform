@@ -3,6 +3,7 @@ import { $axios } from '~/utils/axios'
 import { AxiosResponse } from 'axios';
 import Participation from '~/types/Participation';
 import TestApplication from '~/types/TestApplication';
+import ParticipationCount from '~/types/ParticipationCount';
 
 
 export const actions: ActionTree<any, any> = {
@@ -37,6 +38,10 @@ export const actions: ActionTree<any, any> = {
 
     async getTotalParticipations(state, researchGroupId: number) {
         return $axios.$get('/participations/getTotalParticipations/' + researchGroupId)
+    },
+
+    async perTime(state, researchGroupId: number): Promise<ParticipationCount[]> {
+        return $axios.$get('/participations/perTime/' + researchGroupId)
     }
 
 }
@@ -47,3 +52,4 @@ export const ACTION_GET_BY_ID_PUBLIC_PARTICIPATION = 'participations/getByIdPubl
 export const ACTION_RECALCULATE_ALL_SCORES = "participations/recalculateAllResponseItems"
 export const ACTION_REMOVE_PARTICIPATION_BY_ID = "participations/removeById"
 export const ACTION_GET_TOTAL_PARTICIPATIONS = "participations/getTotalParticipations"
+export const ACTION_GET_PARTICIPATIONS_PER_TIME = "participations/perTime"

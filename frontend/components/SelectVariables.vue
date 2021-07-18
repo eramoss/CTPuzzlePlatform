@@ -23,6 +23,7 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "nuxt-property-decorator";
 import {
   CsvColumnType,
+  CsvColumnSource,
   CsvData,
   CsvHeaderLabel,
   getColumnsByTypeEquals,
@@ -34,15 +35,20 @@ export default class SelectVariables extends Vue {
   @Prop({ default: "Variável" }) label!: string;
   @Prop({ default: false }) required!: boolean;
   @Prop({ default: "number" }) type!: CsvColumnType;
+  @Prop() source!: CsvColumnSource;
   @Prop() value!: CsvHeaderLabel;
   @Prop({ default: "escore_obtido" }) defaultValue!: string;
-
-  @Watch("value")
-  onChangeValue() {
-    this.selectedColumn = this.value;
-  }
-
   selectedColumn = new CsvHeaderLabel();
+
+  @Watch("value", { immediate: true })
+  onChangeValue() {
+    let value = this.selectableVariables.find(
+      (it) => it.value == this.value?.value
+    );
+    if (value) {
+      this.selectedColumn = value;
+    }
+  }
 
   onSelectColumn() {
     this.$emit("change", this.selectedColumn);
@@ -55,6 +61,9 @@ export default class SelectVariables extends Vue {
         this.testApplicationData,
         this.type
       );
+    }
+    if(this.source){
+        selectableVariables = selectableVariables.filter(it=>it.source == this.source)
     }
     return selectableVariables;
   }

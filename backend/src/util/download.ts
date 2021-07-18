@@ -2,10 +2,12 @@ import { Parser } from 'json2csv';
 import fs from 'fs'
 
 export type CsvColumnType = "number" | "string" | "category"
+export type CsvColumnSource = "userData" | "quiz" | "response"
 export class CsvHeaderLabel {
     label!: string
     value!: string
     type?: CsvColumnType = "string"
+    source?: CsvColumnSource
 }
 
 export class CsvData {

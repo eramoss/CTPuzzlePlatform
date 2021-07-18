@@ -6,8 +6,14 @@
       label="Escore médio"
       link="/platform/test-applications"
       :data="avgScorePercent + '%'"
-      color="#ACB6C0"
-    />
+      textColor="#2CA02C"
+      color="#AEDBAE"
+      :showInfo="true"
+    >
+      <template slot="info">
+        Escore médio percentual de todas as participações
+      </template>
+    </color-panel>
   </div>
 </template>
 <script lang="ts">

@@ -3,11 +3,13 @@ import { groupByKey, LogicOperation, OperationOnGroup } from "./StatisticMeasure
 export const CSV_SEPARATOR = "|"
 
 export type CsvColumnType = "string" | "number" | "category"
+export type CsvColumnSource = "userData" | "quiz" | "response"
 
 export class CsvHeaderLabel {
     label!: string
     value!: string
     type?: CsvColumnType
+    source?: CsvColumnSource
 }
 
 export class CsvData {

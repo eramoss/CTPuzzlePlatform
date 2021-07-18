@@ -5,8 +5,14 @@
     label="Participações"
     link="/platform/test-applications"
     :data="totalParticipations"
-    color="#FA5C56"
-  />
+    textColor="#1F77B4"
+    :showInfo="true"
+    color="#BAD5E8"
+  >
+    <template slot="info">
+      Total de participações válidas em todos os testes
+    </template>
+  </color-panel>
 </template>
 <script lang="ts">
 import Vue from "vue";

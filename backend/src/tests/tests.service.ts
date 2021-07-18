@@ -33,18 +33,20 @@ export class TestService {
             select 
                 item.id as "itemId",
                 item.name as "itemName",
+                mechanic.name as "mechanicName",
                 round(avg(score.score / score.max * 100),2) as "avgScore"
             from 
                 score 
                 join item_response ON item_response."scoreId" = score.id 
                 join test_item ON test_item.id = item_response."testItemId" 
                 join item ON item.id = test_item."itemId"
+                join mechanic ON item."mechanicId" = mechanic.id
             where 
                 score.score > 0  
                 and item."isTutorial" is false
                 and item_response."deletedAt" is null
             group by 
-                item.id, item.name
+                item.id, item.name, mechanic.name
             order by 
                 "avgScore" desc
        `)
@@ -131,6 +133,8 @@ export class TestService {
         }
         return baseUrl;
     }
+
+
 
     async generateJson(testId: number): Promise<{}> {
         const test = await this.getByIdJoinItemMechanics(testId);

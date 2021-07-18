@@ -2,7 +2,7 @@ import moment from 'moment';
 const DEFAULT_FORMAT = 'DD/MM/YYYY HH:mm:ss';
 export class DateFormat {
 
-    constructor(){
+    constructor() {
         moment.locale('pt-BR');
     }
 
@@ -17,5 +17,9 @@ export class DateFormat {
 
     fromNow(date: Date): string {
         return moment(date).fromNow()
+    }
+
+    plusDay(date: Date): Date {
+        return moment(date).add(1, 'days').toDate()
     }
 }

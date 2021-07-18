@@ -86,14 +86,16 @@
           />
         </el-col>
         <el-col :md="6">
-          <advance-in-test-panel 
+          <advance-in-test-panel
             :test="selectedTestApplication.test"
-            :testApplicationData="testApplicationData" />
+            :testApplicationData="testApplicationData"
+          />
         </el-col>
         <el-col :md="6">
-          <finish-panel 
+          <finish-panel
             :test="selectedTestApplication.test"
-            :testApplicationData="testApplicationData" />
+            :testApplicationData="testApplicationData"
+          />
         </el-col>
       </el-row>
 
@@ -109,6 +111,12 @@
         class="top-marged"
         :data="testApplicationData"
       ></r-interpreter>
+
+      <open-responses-viewer
+        v-show="isContentLoaded"
+        class="top-marged"
+        :data="testApplicationData"
+      />
     </div>
   </div>
 </template>
@@ -121,6 +129,7 @@ import SelectTestApplication from "~/components/SelectTestApplication.vue";
 import DownloadCsvDataDialog from "~/components/DownloadCsvDataDialog.vue";
 import SummaryTable from "~/components/SummaryTable.vue";
 import RInterpreter from "~/components/RInterpreter.vue";
+import OpenResponsesViewer from "~/components/statistics/OpenResponsesViewer.vue";
 import GraphicsPage from "~/components/graphics/GraphicsPage.vue";
 import CronbachAlphaPanel from "~/components/statistics/CronbachAlphaPanel.vue";
 import FinishPanel from "~/components/statistics/FinishPanel.vue";
@@ -147,6 +156,7 @@ import { ElTable } from "element-ui/types/table";
     FinishPanel,
     AdvanceInTestPanel,
     PanelTestApplicationAvgScore,
+    OpenResponsesViewer,
   },
 })
 export default class StatisticsPage extends Vue {

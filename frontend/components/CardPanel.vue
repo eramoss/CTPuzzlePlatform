@@ -2,16 +2,21 @@
   <div class="left panel shadow top-marged" v-loading="loading">
     <div class="flex-row">
       <h2 style="margin: 0">{{ header }}</h2>
-      <el-tooltip placement="top">
-        <div slot="content">
-          <div style="max-width: 300px">
-            <slot name="info" />
-          </div>
+      <div class="flex-row">
+        <div class="right-marged">
+          <slot name="top-right" />
         </div>
-        <span>
-          <icon name="info" class="info-icon" />
-        </span>
-      </el-tooltip>
+        <el-tooltip placement="top">
+          <div slot="content">
+            <div style="max-width: 300px">
+              <slot name="info" />
+            </div>
+          </div>
+          <span>
+            <icon name="info" class="info-icon" />
+          </span>
+        </el-tooltip>
+      </div>
     </div>
     <div class="panel-slot scrollbar">
       <slot />
@@ -38,7 +43,7 @@ export default class CardPanel extends Vue {
   color: #999;
 }
 .panel-slot {
-  max-height: 270px;
+  max-height: 470px;
   overflow-y: scroll;
 }
 </style>

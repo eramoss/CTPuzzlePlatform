@@ -6,7 +6,7 @@
       label="Alpha de Cronbach"
       textColor="#1F77B4"
       color="#BAD5E8"
-      icon="font_download"
+      icon="motion_photos_auto"
       :showInfo="true"
       :data="alpha"
     >

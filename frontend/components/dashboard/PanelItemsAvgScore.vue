@@ -8,7 +8,6 @@
       </template>
       <el-table
         :data="items"
-        :default-sort="{ prop: 'avgScore', order: 'descending' }"
       >
         <el-table-column label="Item" prop="itemName">
           <template slot-scope="{ row }">
@@ -22,12 +21,13 @@
             </nuxt-link>
           </template>
         </el-table-column>
+        <el-table-column label="Mecânica" prop="mechanicName" width="200">
+        </el-table-column>
         <el-table-column
           align="right"
           label="Escore médio"
           prop="avgScore"
           width="150"
-          sortable
         >
           <template slot-scope="{ row }"> {{ row.avgScore }}% </template>
         </el-table-column>
@@ -62,6 +62,7 @@ export default class PanelItemsAvgScore extends Vue {
       if (this.maxRows) {
         this.items = this.items.slice(0, this.maxRows);
       }
+      this.items.sort((a, b) => a.avgScore - b.avgScore);
     } catch (e) {
       this.items = [];
     } finally {

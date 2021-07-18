@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { DeleteResult } from 'typeorm';
+import ParticipationCount from './participation.count.dto';
 import Participation from './participation.entity';
 import { ParticipationService } from './participation.service';
 
@@ -19,6 +20,11 @@ export class ParticipationController {
     @Put('public/save-source/:participationId/')
     saveParticipationSource(@Body() body: { participationId: number, source: string }) {
         this.service.saveSource(body.participationId, body.source)
+    }
+
+    @Get('perTime/:researchGroupId')
+    async getParticipationsPerTime(@Param('researchGroupId') researchGroupId: number): Promise<ParticipationCount> {
+        return this.service.getParticipationsPerTime(researchGroupId);
     }
 
     @Post()

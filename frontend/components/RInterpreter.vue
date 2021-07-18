@@ -11,7 +11,9 @@
         do teste. <br />
         Utilize fontes externas como sites ou livros para aprender sobre a
         linguagem. <br />
-        Você também pode instalar a linguagem R e o editor RStudio para
+        Você também pode instalar a linguagem R e o editor RStudio no seu computador
+        e analisar os dados exportados da plataforma. <br>
+        Para baixar os dados, utilize o botão próximo a tabela de dados.
       </template>
       <message-alert>
         <p>
