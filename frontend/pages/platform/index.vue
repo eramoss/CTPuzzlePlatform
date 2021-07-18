@@ -6,10 +6,18 @@
       </el-breadcrumb-item>
     </el-breadcrumb>
     <dashboard-title>Dados da Plataforma</dashboard-title>
-    <div class="start flex-row">
-      <panel-total-participations :researchGroupId="researchGroupId" />
-      <panel-total-responses :researchGroupId="researchGroupId" />
-      <panel-avg-score :researchGroupId="researchGroupId" />
+    <div>
+      <el-row :gutter="20">
+        <el-col :md="8">
+          <panel-total-participations :researchGroupId="researchGroupId" />
+        </el-col>
+        <el-col :md="8">
+          <panel-total-responses :researchGroupId="researchGroupId" />
+        </el-col>
+        <el-col :md="8">
+          <panel-avg-score :researchGroupId="researchGroupId" />
+        </el-col>
+      </el-row>
     </div>
     <div>
       <el-row :gutter="20">

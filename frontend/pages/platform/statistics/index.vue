@@ -77,16 +77,21 @@
       </div>
 
       <el-row :gutter="20" v-show="hasSelectedApplication" class="top-marged">
-        <el-col :md="8">
+        <el-col :md="6">
           <cronbach-alpha-panel :testApplicationData="testApplicationData" />
         </el-col>
-        <el-col :md="8">
+        <el-col :md="6">
           <panel-test-application-avg-score
             :testApplicationData="testApplicationData"
           />
         </el-col>
-        <el-col :md="8">
-          <finish-rate-panel 
+        <el-col :md="6">
+          <advance-in-test-panel 
+            :test="selectedTestApplication.test"
+            :testApplicationData="testApplicationData" />
+        </el-col>
+        <el-col :md="6">
+          <finish-panel 
             :test="selectedTestApplication.test"
             :testApplicationData="testApplicationData" />
         </el-col>
@@ -118,7 +123,8 @@ import SummaryTable from "~/components/SummaryTable.vue";
 import RInterpreter from "~/components/RInterpreter.vue";
 import GraphicsPage from "~/components/graphics/GraphicsPage.vue";
 import CronbachAlphaPanel from "~/components/statistics/CronbachAlphaPanel.vue";
-import FinishRatePanel from "~/components/statistics/FinishRatePanel.vue";
+import FinishPanel from "~/components/statistics/FinishPanel.vue";
+import AdvanceInTestPanel from "~/components/statistics/AdvanceInTestPanel.vue";
 import PanelTestApplicationAvgScore from "~/components/statistics/PanelTestApplicationAvgScore.vue";
 import { ACTION_GET_CSV_DATA_TEST_APPLICATION } from "~/store/test-applications";
 import {
@@ -138,7 +144,8 @@ import { ElTable } from "element-ui/types/table";
     GraphicsPage,
     RInterpreter,
     CronbachAlphaPanel,
-    FinishRatePanel,
+    FinishPanel,
+    AdvanceInTestPanel,
     PanelTestApplicationAvgScore,
   },
 })
