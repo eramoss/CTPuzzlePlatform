@@ -42,3 +42,4 @@ export const actions: ActionTree<any, any> = {
 export const ACTION_GET_TEST_BY_ID = "tests/getById"
 export const ACTION_SAVE_TEST = "tests/save"
 export const ACTION_GET_AVG_SCORE_BY_ITEM = "tests/getAvgScoreByItem"
+export const ACTION_GET_TESTS = "tests/findAll"

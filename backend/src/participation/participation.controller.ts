@@ -22,9 +22,9 @@ export class ParticipationController {
         this.service.saveSource(body.participationId, body.source)
     }
 
-    @Get('perTime/:researchGroupId')
-    async getParticipationsPerTime(@Param('researchGroupId') researchGroupId: number): Promise<ParticipationCount> {
-        return this.service.getParticipationsPerTime(researchGroupId);
+    @Post('perTime')
+    async getParticipationsPerTime(@Body() payload: { researchGroupId: number, testId: number }): Promise<ParticipationCount> {
+        return this.service.getParticipationsPerTime(payload);
     }
 
     @Post()

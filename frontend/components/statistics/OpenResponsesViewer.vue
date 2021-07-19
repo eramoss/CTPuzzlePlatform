@@ -22,7 +22,7 @@
       </el-button>
     </color-panel>
     <el-dialog
-      top="20px"
+      top="20px"      
       width="80%"
       :visible.sync="visible"
       :close-on-click-modal="false"
@@ -191,16 +191,18 @@ export default class OpenResponsesViewer extends Vue {
 </script>
 <style lang="scss">
 .responses-list {
-  height: 60vh;
+  //background: rgb(36, 41, 31);
+  height: 70vh;
   overflow-y: scroll;
   padding: 50px 100px;
 }
 
 .response-text {
+  //color: white;
   transition: all 300ms;
   font-style: italic;
   text-align: center;
-  font-size: 18pt;
+  font-size: 19pt;
   line-height: 1.5em;
   margin-top: 15px;
   margin-bottom: 15px;

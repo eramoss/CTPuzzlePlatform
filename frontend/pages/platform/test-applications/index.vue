@@ -28,22 +28,10 @@
           ></el-input>
         </filters-box-item>
         <filters-box-item label="Teste" :grow="0">
-          <el-select
+          <select-tests
             v-model="pageRequest.filter.test"
             @clear="clearTestFilter"
-            placeholder="Filtro por testes"
-            value-key="id"
-            filterable
-            clearable
-          >
-            <el-option
-              v-for="test in tests"
-              :key="test.id"
-              :value="test"
-              :label="test.name"
-            >
-            </el-option>
-          </el-select>
+          />
         </filters-box-item>
       </filters-box>
 
@@ -103,12 +91,15 @@ import TestApplication from "~/types/TestApplication";
 import TestApplicationDialog from "~/components/TestApplicationDialog.vue";
 import SwitchTestApplicationVisibility from "~/components/SwitchTestApplicationVisibility.vue";
 import SnackBarRemove from "~/components/SnackBarRemove.vue";
+import SelectTests from "~/components/SelectTests.vue";
 import { ACTION_PAGINATE_APPLICATIONS } from "~/store/test-applications";
+import { ACTION_GET_TEST_BY_ID } from "~/store/tests";
 
 @Component({
   components: {
     BtnRemove,
     TestApplicationDialog,
+    SelectTests,
     SnackBarRemove,
     SwitchTestApplicationVisibility,
   },
@@ -122,7 +113,7 @@ export default class ApplicationsList extends Vue {
   goingCreate: boolean = false;
   pageResponse!: PageResponse<Test>;
   pageRequest!: PageRequest;
-  tests: Test[] = [];
+
   @Ref("applicationDialog") testApplicationDialog!: TestApplicationDialog;
   @Ref() snackBar!: SnackBarRemove;
 
@@ -161,10 +152,9 @@ export default class ApplicationsList extends Vue {
 
   async asyncData(ctx: Context) {
     let filter: { test?: Test } = { test: undefined };
-    let tests: Test[] = await ctx.store.dispatch("tests/findAll");
     let testId = ctx.query.test;
     if (testId) {
-      filter.test = tests.find((test) => test.id + "" == testId);
+      filter.test = await ctx.store.dispatch(ACTION_GET_TEST_BY_ID, testId);
     }
 
     let pageRequest = new PageRequest(filter);
@@ -179,7 +169,7 @@ export default class ApplicationsList extends Vue {
       ACTION_PAGINATE_APPLICATIONS,
       pageRequest
     );
-    return { pageResponse, pageRequest, tests };
+    return { pageResponse, pageRequest };
   }
 
   mounted() {

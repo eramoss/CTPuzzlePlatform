@@ -35,7 +35,11 @@ export class ParticipationService {
         return count;
     }
 
-    async getParticipationsPerTime(researchGroupId:number): Promise<ParticipationCount> {
+    async getParticipationsPerTime(payload: { researchGroupId: number, testId: number }): Promise<ParticipationCount> {
+        let whereTestId = ""
+        if (payload.testId) {
+            whereTestId = ' and "testId" = $2'
+        }
         const sql = `
         select 
             count(*),
@@ -54,12 +58,17 @@ export class ParticipationService {
                     test_application 
                 where 
                     "testId" in (select id from test where "researchGroupId" = $1)
+                    ${whereTestId}
             )
         group by 
             day, month, year
         order by 
             year, month, day;`
-        let result = await this.entityManager.query(sql, [researchGroupId])
+        const queryParams = [payload.researchGroupId]
+        if (whereTestId) {
+            queryParams.push(payload.testId)
+        }
+        let result = await this.entityManager.query(sql, queryParams)
         return result
     }
 

@@ -1,9 +1,13 @@
 <template>
-  <el-tooltip :open-delay="500" content="Salvar (Ctrl + Shift + S)" effect="light">
+  <el-tooltip
+    :open-delay="500"
+    content="Salvar (Ctrl + Shift + S)"
+    effect="light"
+  >
     <el-button
       v-bind="$attrs"
       icon="el-icon-check"
-      @click="$emit('click')"
+      @click="onClick"
       type="success"
       >Salvar</el-button
     >
@@ -21,6 +25,9 @@ export default class BtnSave extends Vue {
         this.$emit("click");
       }
     }
+  }
+  onClick() {
+    this.$emit("click");
   }
   mounted() {
     window.addEventListener("keydown", this.ctrlPlusSListener);

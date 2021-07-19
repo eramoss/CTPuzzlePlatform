@@ -153,7 +153,7 @@
         </el-row>
         <el-row>
           <el-col>
-            <btn-save @click="save" />
+            <btn-save @click="save" :loading="saving" />
             <btn-back @click="back"></btn-back>
             <el-button
               type="primary"

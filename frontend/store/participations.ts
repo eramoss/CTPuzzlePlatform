@@ -40,8 +40,8 @@ export const actions: ActionTree<any, any> = {
         return $axios.$get('/participations/getTotalParticipations/' + researchGroupId)
     },
 
-    async perTime(state, researchGroupId: number): Promise<ParticipationCount[]> {
-        return $axios.$get('/participations/perTime/' + researchGroupId)
+    async perTime(state, payload: {researchGroupId: number, testId:number}): Promise<ParticipationCount[]> {
+        return $axios.$post('/participations/perTime', payload)
     }
 
 }
