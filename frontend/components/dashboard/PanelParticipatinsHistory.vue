@@ -42,9 +42,11 @@ export default class PanelParticipatinsHistory extends Vue {
   days: { date: Date; count: number }[] = [];
   loading = true;
 
-  daysInterval = { days: 1 };
+  daysInterval = { days: 2 };
   intervals = [
     { days: 1 },
+    { days: 2 },
+    { days: 3 },
     { days: 5 },
     { days: 7 },
     { days: 10 },
@@ -62,7 +64,7 @@ export default class PanelParticipatinsHistory extends Vue {
   ) => Promise<ParticipationCount[]>;
 
   get graphicData() {
-    var trace1: { x: string[]; y: number[]; type: string } = {
+    var trace1: { x: string[]; y: number[]; type: string; } = {
       x: [],
       y: [],
       type: "scatter",
@@ -70,7 +72,7 @@ export default class PanelParticipatinsHistory extends Vue {
     this.days.forEach((participationsInDate) => {
       let date = this.dateFormat.format(
         participationsInDate.date,
-        "DD/MM/YYYY"
+        "DD/MMMM"
       );
       let count = participationsInDate.count;
       if (participationsInDate.date.getDate() % this.daysInterval.days == 0) {
@@ -89,7 +91,7 @@ export default class PanelParticipatinsHistory extends Vue {
         title: "Número de participações",
       },
       xaxis: {
-        title: "Dias",
+        title: "Tempo",
       },
     };
   }

@@ -45,7 +45,9 @@ export class ParticipationService {
         from
             participation
         where
-            participation."applicationId" in (
+            participation."deletedAt" is null
+            and (select count(*) from item_response where "participationId" = participation.id) > 0
+            and participation."applicationId" in (
                 select 
                     id 
                 from 
