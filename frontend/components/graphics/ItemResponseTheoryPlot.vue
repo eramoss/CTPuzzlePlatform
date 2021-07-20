@@ -51,7 +51,7 @@ export default class ItemResponseTheoryPlot extends Vue {
       ).toArray() as number[];
       let probabilityOfTotalHitGivenSkillLevel: number[] = [];
       abilityRange.forEach((ability) => {
-        let p = this.probabilityFunction.execute(
+        let p = this.probabilityFunction.P(
           ability,
           this.discrimination,
           this.difficulty

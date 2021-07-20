@@ -3,16 +3,12 @@ import { evaluate, range } from "mathjs";
 
 export default class ItemCharacteristicCurveFunction {
 
-    itemCharacteristicCurve!: Function;
+    P!: Function;
     curveExpression =
         "P(ability, a, b) = 1 / ( 1 + exp(1) ^ (-a * (ability - b)) )";
 
     constructor() {
         this.compile()
-    }
-
-    execute(ability: number, discrimination: number, difficulty: number): number {
-        return this.itemCharacteristicCurve(ability, discrimination, difficulty)
     }
 
     setExpression(curveExpression: string) {
@@ -21,26 +17,26 @@ export default class ItemCharacteristicCurveFunction {
     }
 
     compile() {
-        this.itemCharacteristicCurve = evaluate(this.curveExpression)
+        this.P = evaluate(this.curveExpression)
     }
 
     maximumLikelihoodEstimation(
-        abilityLevelsRange: number[],
-        observedCorrectnessProportionsInThatLevels: number[]): { difficulty: number, discrimination: number } {
+        abilityLevels: number[],
+        hitProbabilityByAbilityLevel: number[]): { difficulty: number, discrimination: number } {
 
-        let difficulties = range(-3, 3, 0.1)
-        let discriminations = range(0, 30, 0.1)
+        let difficulties = range(-3, 3, 0.5)
+        let discriminations = range(1, 50, 0.5)
 
         let bestFitDifficulty = 1
         let bestFitDiscrimination = 0
         let minError = Infinity
 
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 5; i++) {
             minError = Infinity
             difficulties.forEach(difficulty => {
                 let error = this.calculateError(
-                    abilityLevelsRange,
-                    observedCorrectnessProportionsInThatLevels,
+                    abilityLevels,
+                    hitProbabilityByAbilityLevel,
                     bestFitDiscrimination,
                     difficulty)
 
@@ -53,8 +49,8 @@ export default class ItemCharacteristicCurveFunction {
             minError = Infinity
             discriminations.forEach(discrimination => {
                 let error = this.calculateError(
-                    abilityLevelsRange,
-                    observedCorrectnessProportionsInThatLevels,
+                    abilityLevels,
+                    hitProbabilityByAbilityLevel,
                     discrimination,
                     bestFitDifficulty)
 
@@ -72,16 +68,27 @@ export default class ItemCharacteristicCurveFunction {
     }
 
     calculateError(
-        abilityLevelsRange: number[],
-        observedCorrectnessProportionsInThatLevels: number[],
+        abilityLevels: number[],
+        hitProbabilityByAbilityLevel: number[],
         discrimination: number,
         difficulty: number): number {
 
         let error = 0
-        abilityLevelsRange.forEach((ability, index) => {
-            let probabilithOfBeingCorrectGivenThisAbilithLevel = this.execute(ability, discrimination, difficulty)
-            let observedCorrectProportion = observedCorrectnessProportionsInThatLevels[index]
-            error += Math.abs(probabilithOfBeingCorrectGivenThisAbilithLevel - observedCorrectProportion)
+        let shift = 2
+        abilityLevels.forEach((ability, index) => {
+            let hitProbability = this.P(ability, discrimination, difficulty)
+            for (let i = index - shift; i < index + shift; i++) {
+                let observedCorrectProportion = hitProbabilityByAbilityLevel[i]
+                if (observedCorrectProportion != undefined) {
+                    let x1 = abilityLevels[i]
+                    let x2 = ability
+                    let y1 = observedCorrectProportion
+                    let y2 = hitProbability
+                    let b2 = Math.pow(Math.abs(x2 - x1), 2)
+                    let c2 = Math.pow(Math.abs(y2 - y1), 2)
+                    error += Math.sqrt(b2 + c2)
+                }
+            }
         })
         return error
     }
