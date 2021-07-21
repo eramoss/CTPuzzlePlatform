@@ -263,7 +263,8 @@ export default class ParametersEstimationPlot extends Vue {
         range: [-3, 3],
       },
       yaxis: {
-        range: [0, 1],
+        tickmode: 'array',
+        tickvals: [0, 0.5, 1],
         title: "Probabilidade de acerto total",
       },
     };

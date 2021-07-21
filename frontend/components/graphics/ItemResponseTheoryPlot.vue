@@ -145,7 +145,8 @@ export default class ItemResponseTheoryPlot extends Vue {
       },
       yaxis: {
         title: "Probabilidade de acerto total",
-        range: [0, 1],
+        tickmode: "array",
+        tickvals: [0, 0.5, 1],
       },
     };
   }
