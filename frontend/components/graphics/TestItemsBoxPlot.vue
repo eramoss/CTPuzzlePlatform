@@ -135,6 +135,7 @@ export default class TestItemsBoxPlot extends Vue {
 
     this.dataGroups.forEach((dataGroup) => {
       dataGroup.data.rows
+        .sort((a, b) => a["item_order"] - b["item_order"])
         .sort(
           (a, b) =>
             a[this.selectedCategoricalVariable] -

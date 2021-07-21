@@ -20,12 +20,12 @@ export default class ItemCharacteristicCurveFunction {
         this.P = evaluate(this.curveExpression)
     }
 
-    maximumLikelihoodEstimation(
+    estimateItemParameters(
         abilityLevels: number[],
         hitProbabilityByAbilityLevel: number[]): { difficulty: number, discrimination: number } {
 
-        let difficulties = range(-3, 3, 0.5)
-        let discriminations = range(1, 50, 0.5)
+        let difficulties = range(-3, 3, 0.03)
+        let discriminations = range(0.5, 20, 0.2)
 
         let bestFitDifficulty = 1
         let bestFitDiscrimination = 0

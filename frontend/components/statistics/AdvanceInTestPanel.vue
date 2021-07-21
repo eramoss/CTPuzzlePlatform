@@ -8,8 +8,7 @@
       color="#AEDBAE"
       icon="directions_run"
       :showInfo="true"
-      :data="advanceInTest
-      "
+      :data="calculatedAdvance"
     >
       <template slot="info">
         A taxa de avanço mostra até que ponto do teste os participantes chegaram
@@ -39,9 +38,17 @@ export default class AdvanceInTestPanel extends Vue {
   @Ref() rScriptRunner!: RScriptRunner;
 
   loading = true;
-  advanceInTest
-   = "";
-  totalTestItems: number = 0;
+  advanceInTest = "";
+  loadedTest: Test = new Test();
+
+  get calculatedAdvance() {
+    if (this.totalItems == 0) return "...";
+    return `${this.advanceInTest}/${this.totalItems}`;
+  }
+
+  get totalItems() {
+    return this.loadedTest?.items?.length;
+  }
 
   async calculateAdvance() {
     const testApplicationRows = this.testApplicationData.rows;
@@ -63,22 +70,22 @@ export default class AdvanceInTestPanel extends Vue {
       totalItemsAnswered += answeredItemsIds.size;
     });
 
-    this.advanceInTest
-     =
-      (totalItemsAnswered / mapItemsIdsByUsers.size).toFixed(0) +
-      "/" +
-      this.totalTestItems;
+    this.advanceInTest = (totalItemsAnswered / mapItemsIdsByUsers.size).toFixed(
+      0
+    );
   }
 
   @Watch("testApplicationData", { immediate: true })
   onChangeData() {
-    if (!this.testApplicationData) return;
-    if (!this.testApplicationData.rows.length) return;
     this.callCalculateAdvance();
   }
 
   async callCalculateAdvance() {
     try {
+      if (!this.testApplicationData) return;
+      if (!this.testApplicationData.rows.length) return;
+      if (!this.test?.id) return;
+      this.loadedTest = await this.getTest(this.test?.id);
       this.loading = true;
       await this.calculateAdvance();
     } finally {
@@ -88,10 +95,5 @@ export default class AdvanceInTestPanel extends Vue {
 
   @Action(ACTION_GET_TEST_BY_ID)
   getTest!: (testId: number) => Promise<Test>;
-
-  @Watch("test")
-  async onChangeTest() {
-    this.totalTestItems = (await this.getTest(this.test?.id)).items.length;
-  }
 }
 </script>

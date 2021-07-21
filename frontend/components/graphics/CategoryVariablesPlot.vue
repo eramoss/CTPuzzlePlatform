@@ -3,11 +3,11 @@
     <div class="flex-row">
       <h2>Análise de categorias</h2>
       <div class="flex-row">
-        <el-switch
-          class="right-marged"
-          v-model="showValuesInPercent"
-          active-text="Usar porcentagem (%)"
-        />
+        <div class="right-marged">
+          <el-checkbox v-model="showValuesInPercent">
+              Usar porcentagem
+            </el-checkbox>
+        </div>
         <group-data-loader
           :disabled="selectedSecondCategoricalVariable"
           :testApplication="testApplication"
@@ -20,6 +20,7 @@
         <select-variables
           :required="true"
           label="Variável categórica principal"
+          noDataText="Sem dados. O questionário do teste não foi aplicado ou não possui perguntas de opções."
           type="category"
           defaultValue="tutorial"
           :testApplicationData="testApplicationData"
@@ -30,6 +31,7 @@
       <el-col :md="12">
         <select-variables
           label="Variável categórica secundária"
+          noDataText="Sem dados. O questionário do teste não foi aplicado ou não possui perguntas de opções."
           type="category"
           defaultValue="tutorial"
           :testApplicationData="testApplicationData"
@@ -248,11 +250,9 @@ export default class CaregoricalVariablesPlot extends Vue {
         });
 
       let totalOfTotals = 0;
-      categoryDataByUser.forEach(
-        (value: { total: number } ) => {
-          totalOfTotals += value.total;
-        }
-      );
+      categoryDataByUser.forEach((value: { total: number }) => {
+        totalOfTotals += value.total;
+      });
 
       categoryDataByUser.forEach(
         (value: { total: number }, category: string) => {

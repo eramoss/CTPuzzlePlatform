@@ -8,11 +8,11 @@
       color="#F5CACA"
       icon="sports_score"
       :showInfo="true"
-      :data="finish"
+      :data="finishRate"
     >
       <template slot="info">
         A taxa de finalização indica a porcentagem de usuários que responderam
-        aos {{ totalTestItems }} itens do teste
+        aos {{ totalItems }} itens do teste
       </template>
     </color-panel>
     <r-script-runner ref="rScriptRunner" />
@@ -38,8 +38,12 @@ export default class FinishPanel extends Vue {
   @Ref() rScriptRunner!: RScriptRunner;
 
   loading = true;
-  finish = "";
-  totalTestItems: number = 0;
+  finishRate = "...";
+  loadedTest: Test = new Test();
+
+  get totalItems() {
+    return this.loadedTest?.items?.length;
+  }
 
   async calculateFinish() {
     const testApplicationRows = this.testApplicationData.rows;
@@ -58,28 +62,26 @@ export default class FinishPanel extends Vue {
 
     let finisherCount = 0;
     mapItemsIdsByUsers.forEach((answeredItemsIds: Set<number>) => {
-      if (answeredItemsIds.size == this.totalTestItems) {
+      if (answeredItemsIds.size >= this.totalItems) {
         finisherCount++;
       }
     });
 
-    this.finish =
-      (
-        (finisherCount / (mapItemsIdsByUsers.size * this.totalTestItems)) *
-        100
-      ).toFixed(2) + "%";
-  }
-
-  @Watch("testApplicationData", { immediate: true })
-  onChangeData() {
-    if (!this.testApplicationData) return;
-    if (!this.testApplicationData.rows.length) return;
-    this.callCalculateFinish();
+    let finishRate =
+      (finisherCount / (mapItemsIdsByUsers.size * this.totalItems)) * 100;
+    if (finisherCount == 0) {
+      finishRate = 0;
+    }
+    this.finishRate = `${finishRate.toFixed(2)}%`;
   }
 
   async callCalculateFinish() {
     try {
+      if (!this.testApplicationData) return;
+      if (!this.testApplicationData.rows.length) return;
+      if (!this.test.id) return;
       this.loading = true;
+      this.loadedTest = await this.getTest(this.test?.id);
       await this.calculateFinish();
     } finally {
       this.loading = false;
@@ -89,9 +91,9 @@ export default class FinishPanel extends Vue {
   @Action(ACTION_GET_TEST_BY_ID)
   getTest!: (testId: number) => Promise<Test>;
 
-  @Watch("test")
-  async onChangeTest() {
-    this.totalTestItems = (await this.getTest(this.test?.id)).items.length;
+  @Watch("testApplicationData", { immediate: true })
+  async onChangeTestApplicationData() {
+    this.callCalculateFinish();
   }
 }
 </script>

@@ -5,6 +5,7 @@
       :clearable="!required"
       placeholder="Selecione uma variável"
       :filterable="true"
+      :no-data-text="noDataText"
       v-model="selectedColumn"
       @change="onSelectColumn"
       value-key="value"
@@ -33,6 +34,7 @@ export default class SelectVariables extends Vue {
   @Prop({}) testApplicationData!: CsvData;
   @Prop() hideLabel!: boolean;
   @Prop({ default: "Variável" }) label!: string;
+  @Prop({ default: "Vazio" }) noDataText!: string;
   @Prop({ default: false }) required!: boolean;
   @Prop({ default: "number" }) type!: CsvColumnType;
   @Prop() source!: CsvColumnSource;
@@ -62,8 +64,10 @@ export default class SelectVariables extends Vue {
         this.type
       );
     }
-    if(this.source){
-        selectableVariables = selectableVariables.filter(it=>it.source == this.source)
+    if (this.source) {
+      selectableVariables = selectableVariables.filter(
+        (it) => it.source == this.source
+      );
     }
     return selectableVariables;
   }
