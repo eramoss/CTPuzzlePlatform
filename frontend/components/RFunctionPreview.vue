@@ -2,7 +2,11 @@
   <div class="panel shadow left bottom-marged r-function-panel">
     <h2>{{ rFunction.name }}</h2>
     <p class="description">{{ rFunction.description }}</p>
-    <el-tooltip effect="light" :open-delay="200">
+    <el-tooltip
+      effect="light"
+      :open-delay="200"
+      v-if="rFunction.moreDescription && rFunction.howToInterpret"
+    >
       <div slot="content" style="font-size: 14pt; max-width: 400px">
         {{ rFunction.moreDescription }}
       </div>

@@ -17,11 +17,10 @@
       </el-col>
     </el-row>
     <el-row class="panel shadow top-marged">
-      <el-col :span="24">
-        <el-checkbox v-model="showEstimationInputs"
-          >Mostrar campos de parâmetros</el-checkbox
-        >
-      </el-col>
+      <div class="flex-row">
+        <h2>Probabilidade de acerto por nível de habilidade</h2>
+        <el-checkbox v-model="showEstimationInputs">Mostrar campos de parâmetros</el-checkbox>
+      </div>
       <el-col :md="12">
         <parameters-estimation-plot
           :showInputs="showEstimationInputs"

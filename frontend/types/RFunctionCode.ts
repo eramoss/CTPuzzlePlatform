@@ -17,6 +17,13 @@ export const rPredefinedFunctions: RFunctionCode[] = [
         source: 'https://www.programmingr.com/shapiro-wilk-test-in-r/'
     },
     {
+        name: 'Resumo',
+        description: 'Mostra diversas estatísticas sobre os dados',
+        code: 'summary($1)',
+        howToInterpret: '',
+        source: 'https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/summary'
+    },
+    {
         name: 'Média aritmética',
         description: 'Valor médio de um conjunto de números.',
         code: 'mean($1)',
