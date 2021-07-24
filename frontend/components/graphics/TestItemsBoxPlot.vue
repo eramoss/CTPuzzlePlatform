@@ -4,6 +4,11 @@
       <h2>Box plots</h2>
       <div class="flex-row left">
         <span class="right-marged">
+          <el-checkbox v-model="useLogScale"
+            >Usar escala logarítmica</el-checkbox
+          >
+        </span>
+        <span class="right-marged">
           <el-checkbox v-model="splitByItems">Separar por itens</el-checkbox>
         </span>
         <group-data-loader
@@ -58,6 +63,7 @@ export default class TestItemsBoxPlot extends Vue {
   @Prop() testApplicationData!: CsvData;
 
   splitByItems = true;
+  useLogScale = false;
   comparisonGroupData: CsvData = new CsvData();
   comparisonTestApplication: TestApplication = new TestApplication();
   data: any[] = [];
@@ -70,7 +76,7 @@ export default class TestItemsBoxPlot extends Vue {
       boxmode: this.isGroupingPlot ? "group" : "",
       yaxis: {
         title: this.selectedColumnValue,
-        //type: "log",
+        type: this.useLogScale ? "log" : "",
         autorange: true,
       },
       xaxis: {
@@ -188,8 +194,13 @@ export default class TestItemsBoxPlot extends Vue {
     this.updateData();
   }
 
-  @Watch("splitByItems", { immediate: true })
+  @Watch("splitByItems")
   onChangeSplitByItems() {
+    this.updateData();
+  }
+
+  @Watch("useLogScale")
+  onChangeUseLogScale() {
     this.updateData();
   }
 

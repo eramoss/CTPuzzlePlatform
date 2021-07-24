@@ -3,10 +3,15 @@
     <div class="flex-row">
       <h2>Análise de categorias</h2>
       <div class="flex-row">
+        <span class="right-marged">
+          <el-checkbox v-model="useLogScale"
+            >Usar escala logarítmica</el-checkbox
+          >
+        </span>
         <div class="right-marged">
           <el-checkbox v-model="showValuesInPercent">
-              Usar porcentagem
-            </el-checkbox>
+            Usar porcentagem
+          </el-checkbox>
         </div>
         <group-data-loader
           :disabled="selectedSecondCategoricalVariable"
@@ -74,6 +79,7 @@ export default class CaregoricalVariablesPlot extends Vue {
   selectedSecondCategory = new CsvHeaderLabel();
   hideNonInformedCases = true;
   showValuesInPercent = false;
+  useLogScale = false;
 
   get plotLayout() {
     return {
@@ -81,7 +87,7 @@ export default class CaregoricalVariablesPlot extends Vue {
       barmode: this.isGroupingPlot ? "group" : "",
       yaxis: {
         title: this.showValuesInPercent ? "Porcentagem" : "Total",
-        //type: "log",
+        type: this.useLogScale ? "log" : "",
         autorange: true,
       },
       xaxis: {
@@ -277,6 +283,11 @@ export default class CaregoricalVariablesPlot extends Vue {
 
   @Watch("showValuesInPercent")
   onChangeShowValuesInPercent() {
+    this.updateData();
+  }
+
+  @Watch("useLogScale")
+  onChangeUseLogScale() {
     this.updateData();
   }
 
