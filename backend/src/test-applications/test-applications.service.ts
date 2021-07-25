@@ -184,12 +184,15 @@ export class TestApplicationsService {
                 };
                 let responseJson = JSON.parse(itemResponse.response);
                 let scoreJson = JSON.parse(itemResponse.score.json)
-                if (!responseKeys.length) {
-                    responseKeys = Object.keys(responseJson);
-                }
+                
+                Object.keys(responseJson)
+                    .filter(key => responseKeys.indexOf(key) == -1)
+                    .forEach(key => responseKeys.push(key))
+
                 if (!scoreKeys.length) {
                     scoreKeys = Object.keys(scoreJson)
                 }
+
                 userKeys.forEach((key: string) => {
                     row[key] = participation.user.data[key];
                 });
@@ -221,7 +224,7 @@ export class TestApplicationsService {
         ].forEach(item => labels.push(item));
 
         ///^\d*([,.]){0,1}\d+$/.test('12,12')
-        let regexMatchNumbers = /^\d*[,.]?\d+$/
+        let regexMatchNumbers = /^-?\d*[,.]?\d+$/
         labels.forEach(label => {
             let type: CsvColumnType = "number"
             let rowIndex = 0

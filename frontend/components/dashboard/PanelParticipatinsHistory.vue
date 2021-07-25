@@ -12,25 +12,6 @@
             v-model="selectedTest"
             @input="loadData"
           />
-          <el-tooltip
-            content="Intervalo em dias"
-            effect="light"
-            placement="top"
-          >
-            <el-select
-              value-key="days"
-              v-model="daysInterval"
-              placeholder="Intervalo em dias"
-            >
-              <el-option
-                v-for="interval in intervals"
-                :key="interval.days"
-                :label="`${interval.days} dia${interval.days > 1 ? 's' : ''}`"
-                :value="interval"
-              >
-              </el-option>
-            </el-select>
-          </el-tooltip>
         </div>
       </div>
       <plot :data="graphicData" :layout="plotLayout" />
@@ -56,17 +37,6 @@ export default class PanelParticipatinsHistory extends Vue {
   loading = true;
   selectedTest: Test = new Test();
 
-  daysInterval = { days: 2 };
-  intervals = [
-    { days: 1 },
-    { days: 2 },
-    { days: 3 },
-    { days: 5 },
-    { days: 7 },
-    { days: 10 },
-    { days: 30 },
-  ];
-
   dateFormat = new DateFormat();
 
   @Prop({ default: "Histórico de participações" }) header!: string;
@@ -87,10 +57,10 @@ export default class PanelParticipatinsHistory extends Vue {
     this.days.forEach((participationsInDate) => {
       let date = this.dateFormat.format(participationsInDate.date, "DD/MMMM");
       let count = participationsInDate.count;
-      if (participationsInDate.date.getDate() % this.daysInterval.days == 0) {
+      //if (participationsInDate.date.getDate() % this.daysInterval.days == 0) {
         trace1.x.push(date);
         trace1.y.push(count);
-      }
+      //}
     });
 
     var data = [trace1];
