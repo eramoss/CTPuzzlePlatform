@@ -10,8 +10,7 @@ COPY . .
 
 ARG NODE_ENV
 ARG API_URL
-
-RUN npm run build
+RUN NODE_OPTIONS=--max-old-space-size=8192 npm run build
 
 # Buildar
 # docker image build -t frontend-platform:1.0 .
