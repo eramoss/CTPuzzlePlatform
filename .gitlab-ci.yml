@@ -1,7 +1,6 @@
 variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
-    NODE_OPTIONS: --max_old_space_size=4096
 
 stages:
     - test
