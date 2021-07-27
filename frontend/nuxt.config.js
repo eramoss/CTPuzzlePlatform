@@ -46,7 +46,6 @@ export default {
         '@/plugins/axios-accessors',
         '@/plugins/extends',
         { src: '@/plugins/jsontree', ssr: false },
-        { src: '@/plugins/vuex-persist', ssr: false },
     ],
     /*
     ** Nuxt.js dev-modules
