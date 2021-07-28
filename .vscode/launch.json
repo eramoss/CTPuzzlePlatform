@@ -31,13 +31,26 @@
             ],
             "console": "integratedTerminal",
         },
+        {
+            "name": "Docs",
+            "request": "launch",
+            //"preLaunchTask": "Install docs generator",
+            "type": "node-terminal",
+            "cwd": "${workspaceFolder}",
+            "command": "docsify serve docs",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal",
+        },
     ],
     "compounds": [
         {
-            "name": "Backend + Frontend",
+            "name": "Backend + Frontend + Docs",
             "configurations": [
                 "Backend",
-                "Frontend"
+                "Frontend",
+                "Docs"
             ],
         }
     ]

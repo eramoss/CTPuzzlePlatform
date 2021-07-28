@@ -71,6 +71,18 @@
             "problemMatcher": []
         },
         {
+            "label": "Install docs generator",
+            "type": "shell",
+            "command": "npm i docsify-cli -g",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "Stop Tasks",
             "type": "shell",
             "command": "${input:terminateAllTasks}",
