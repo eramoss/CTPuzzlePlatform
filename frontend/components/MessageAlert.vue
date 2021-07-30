@@ -11,7 +11,9 @@
         {{ label }}
       </h3>
     </div>
-    <slot></slot>
+    <div style="display: inline">
+      <slot></slot>
+    </div>
   </div>
 </template>
 <script lang="ts">

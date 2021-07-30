@@ -14,19 +14,21 @@ import { TestModule } from './tests/tests.module';
 import { TestApplicationsModule } from './test-applications/test-applications.module';
 import { ScoreFunctionTestModule } from './score-function-test/score-function-test.module';
 import { CodeInterpreterModule } from './code-interpreter/code-interpreter.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import { databaseConfig } from './databaseConfig'
 import { ParticipationModule } from './participation/participation.module';
 import { ItemResponsesModule } from './item-responses/item-responses.module';
 import { ResearchGroupModule } from './research-group/research-group.module';
 import { RModule } from './r/r.module';
+import { AppConfigModule } from './app-config/app-config.module';
 
 @Module({
     imports: [
-        ConfigModule.forRoot({
+        NestConfigModule.forRoot({
             isGlobal: true
         }),
         TypeOrmModule.forRoot(databaseConfig),
+        AppConfigModule,
         UsersModule,
         AuthModule,
         MechanicsModule,
@@ -42,7 +44,5 @@ import { RModule } from './r/r.module';
         ResearchGroupModule,
         RModule,
     ],
-    controllers: [AppController],
-    providers: [AppService],
 })
 export class AppModule { }

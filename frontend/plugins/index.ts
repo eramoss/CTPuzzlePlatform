@@ -24,6 +24,7 @@ import TutorialLabel from '~/components/TutorialLabel.vue'
 import TooltipInfo from '~/components/TooltipInfo.vue'
 import CardPanel from '~/components/CardPanel.vue'
 import ColorPanel from '~/components/ColorPanel.vue'
+import WikiLink from '~/components/WikiLink.vue'
 
 Vue.component('container', Container)
 Vue.component('FormItemLabel', FormItemLabel)
@@ -50,6 +51,7 @@ Vue.component('TutorialLabel', TutorialLabel)
 Vue.component('TooltipInfo', TooltipInfo)
 Vue.component('CardPanel', CardPanel)
 Vue.component('ColorPanel', ColorPanel)
+Vue.component('WikiLink', WikiLink)
 
 // Global
 import VueTheMask from 'vue-the-mask'
