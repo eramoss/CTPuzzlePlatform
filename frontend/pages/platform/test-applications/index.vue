@@ -113,6 +113,7 @@ export default class ApplicationsList extends Vue {
   goingCreate: boolean = false;
   pageResponse!: PageResponse<Test>;
   pageRequest!: PageRequest;
+  loading: boolean = false;
 
   @Ref("applicationDialog") testApplicationDialog!: TestApplicationDialog;
   @Ref() snackBar!: SnackBarRemove;
@@ -140,6 +141,7 @@ export default class ApplicationsList extends Vue {
 
   async loadData() {
     try {
+      this.loading = true;
       this.pageResponse = await this.paginate(this.pageRequest);
     } catch (e) {
       console.error(e);
@@ -147,6 +149,8 @@ export default class ApplicationsList extends Vue {
         message: "Não foi possível listar as aplicações",
         title: "Erro ao listar aplicações",
       });
+    } finally {
+      this.loading = false;
     }
   }
 

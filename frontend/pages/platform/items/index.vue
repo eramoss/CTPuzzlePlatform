@@ -43,7 +43,7 @@
           </el-select>
         </filters-box-item>
       </filters-box>
-      <el-table :data="pageResponse.data">
+      <el-table :data="pageResponse.data" v-loading="loading">
         <el-table-column label="Código" prop="id" width="70"></el-table-column>
         <el-table-column label="Nome" prop="name">
           <template slot-scope="{ row }">
@@ -61,7 +61,7 @@
               >
                 {{ row.name }}
               </el-button>
-              <tutorial-label :item="row" style="margin-left:10px" />
+              <tutorial-label :item="row" style="margin-left: 10px" />
             </div>
           </template>
         </el-table-column>
@@ -110,6 +110,7 @@ export default class ItemsList extends Vue {
   pageRequest: PageRequest = new PageRequest();
   pageResponse: PageResponse<Item> = new PageResponse<Item>();
   mechanics: Mechanic[] = [];
+  loading: boolean = false;
 
   @Ref() snackBar!: SnackBarRemove;
 
@@ -134,7 +135,17 @@ export default class ItemsList extends Vue {
   ) => Promise<PageResponse<Item>>;
 
   async loadData() {
-    this.pageResponse = await this.paginate(this.pageRequest);
+    try {
+      this.loading = true;
+      this.pageResponse = await this.paginate(this.pageRequest);
+    } catch (e) {
+      this.$notify.error({
+        message: "Não foi possível carregar os dados",
+        title: "Falha ao carregar",
+      });
+    } finally {
+      this.loading = false;
+    }
   }
 
   clearMechanicFilter() {
