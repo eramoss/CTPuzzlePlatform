@@ -23,13 +23,17 @@ export function downloadWithAxios(axios: NuxtAxiosInstance, url: string, filenam
         method: 'GET',
         responseType: 'blob', // important
     }).then((response: any) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
+        downloadData(response.data,filename)
+    });
+}
+
+export function downloadData(data:any,filename:string){
+    const url = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', filename);
         document.body.appendChild(link);
         link.click();
-    });
 }
 
 export function getDeclaredClassesNames(classCode: string, classWitName: string = ''): string[] {

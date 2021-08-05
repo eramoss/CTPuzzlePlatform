@@ -22,7 +22,7 @@
       </el-button>
     </color-panel>
     <el-dialog
-      top="20px"      
+      top="20px"
       width="80%"
       :visible.sync="visible"
       :close-on-click-modal="false"
@@ -54,7 +54,20 @@
       </el-row>
 
       <div class="top-marged">
-        <h2>{{ filteredResponses.length }}/{{ responses.length }} respostas</h2>
+        <div class="flex-row">
+          <h2>
+            {{ filteredResponses.length }}/{{ responses.length }} respostas
+          </h2>
+          <el-button
+            type="primary"
+            icon="el-icon-download"
+            size="small"
+            :loading="downloading"
+            @click="download"
+          >
+            Baixar respostas
+          </el-button>
+        </div>
 
         <div class="responses-list inset-shadow">
           <div
@@ -75,6 +88,7 @@ import Vue from "vue";
 import { Component, Prop, Ref, Watch } from "nuxt-property-decorator";
 import SelectVariables from "~/components/SelectVariables.vue";
 import { CsvData, CsvHeaderLabel } from "~/types/CsvData";
+import { downloadData } from "~/utils/utils";
 @Component({
   components: {
     SelectVariables,
@@ -89,6 +103,7 @@ export default class OpenResponsesViewer extends Vue {
   useRegex = false;
   validExpression: boolean = true;
   index = 0;
+  downloading = false;
 
   @Watch("data")
   onChangeData() {
@@ -107,6 +122,30 @@ export default class OpenResponsesViewer extends Vue {
   show() {
     this.visible = true;
     this.selectFirstTextualVariable();
+  }
+
+  download() {
+    this.downloading = true;
+    try {
+      const csv = this.filteredResponses
+        .map((response) => `${response.user};${response.response}`)
+        .join("\n");
+      const d = new Date();
+      downloadData(
+        csv,
+        `respostas_abertas_${d.getFullYear()}_${
+          d.getMonth() + 1
+        }_${d.getDate()}_${d.getHours()}_${d.getMinutes()}_${d.getSeconds()}.csv`
+      );
+    } catch (e) {
+      this.$notify({
+        title: "Erro ao baixar",
+        message: "Não foi possível baixar as respostas",
+        type: "error",
+      });
+    } finally {
+      this.downloading = false;
+    }
   }
 
   onSelectVariable(csvHeader: CsvHeaderLabel) {
