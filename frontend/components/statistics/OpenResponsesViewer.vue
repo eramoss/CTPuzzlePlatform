@@ -133,7 +133,9 @@ export default class OpenResponsesViewer extends Vue {
       const d = new Date();
       downloadData(
         csv,
-        `respostas_abertas_${d.getFullYear()}_${
+        `respostas_abertas_${this.replaceSpecialCharacters(
+          this.selectedVariable.label
+        )}_${d.getFullYear()}_${
           d.getMonth() + 1
         }_${d.getDate()}_${d.getHours()}_${d.getMinutes()}_${d.getSeconds()}.csv`
       );
@@ -174,18 +176,18 @@ export default class OpenResponsesViewer extends Vue {
       .filter((it) => !!it);
   }
 
-  get filteredResponses(): { user: string; response: string }[] {
-    function prepareToFilter(text: any) {
-      return text
-        .toUpperCase()
-        .replace(/[ÃÁÂÀ]/g, "A")
-        .replace(/[ẼÉÊÈ]/g, "E")
-        .replace(/[ĨÍÎÌ]/g, "I")
-        .replace(/[ÕÓÔÒ]/g, "O")
-        .replace(/[ŨÚÛÙ]/g, "U")
-        .replace(/[Ç]/g, "C");
-    }
+  replaceSpecialCharacters(text: string) {
+    return text
+      .toUpperCase()
+      .replace(/[ÃÁÂÀ]/g, "A")
+      .replace(/[ẼÉÊÈ]/g, "E")
+      .replace(/[ĨÍÎÌ]/g, "I")
+      .replace(/[ÕÓÔÒ]/g, "O")
+      .replace(/[ŨÚÛÙ]/g, "U")
+      .replace(/[Ç]/g, "C");
+  }
 
+  get filteredResponses(): { user: string; response: string }[] {
     this.validExpression = true;
     try {
       new RegExp(this.searchString);
@@ -194,13 +196,13 @@ export default class OpenResponsesViewer extends Vue {
     }
 
     let regex = this.validExpression ? new RegExp(this.searchString) : null;
-    let filter = prepareToFilter(this.searchString);
+    let filter = this.replaceSpecialCharacters(this.searchString);
 
     //@ts-ignore
     return this.responses
       .filter((it) => !!it)
       .filter((it) => {
-        let response = prepareToFilter(it?.response);
+        let response = this.replaceSpecialCharacters(it?.response);
         return (
           !this.searchString ||
           response.indexOf(filter) > -1 ||
