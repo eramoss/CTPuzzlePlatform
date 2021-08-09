@@ -6,6 +6,8 @@ export enum TestApplicationVisibility { "PUBLIC", "PRIVATE" }
 
 @Entity()
 export class TestApplication {
+    
+    
 
     @PrimaryGeneratedColumn()
     id: number
@@ -43,5 +45,9 @@ export class TestApplication {
 
     @UpdateDateColumn()
     updatedAt: Date
+
+    hasQuiz() {
+        return this.test?.userDataToRequest.length > 0
+    }
 
 }

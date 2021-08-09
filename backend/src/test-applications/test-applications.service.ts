@@ -349,7 +349,7 @@ export class TestApplicationsService {
             }
         }
 
-        const hasQuiz = participation.application.test.userDataToRequest.length > 0
+        const hasQuiz = participation?.application?.hasQuiz()
 
         let preparedParticipation = {
             participationId: participation.id,
