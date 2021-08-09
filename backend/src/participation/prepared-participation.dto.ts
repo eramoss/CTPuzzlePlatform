@@ -25,7 +25,7 @@ export class UrlToSendSource {
 
 export class UrlToEndOfTestQuiz {
     url: string
-    help: 'Open in a browser'
+    help: string
 }
 
 export default class PreparedParticipation {
