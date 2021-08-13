@@ -57,6 +57,7 @@ import { CsvData, CsvHeaderLabel } from "~/types/CsvData";
 import SelectVariables from "~/components/SelectVariables.vue";
 import GroupDataLoader from "~/components/GroupDataLoader.vue";
 import TestApplication from "~/types/TestApplication";
+import Trace from "~/types/Trace";
 import { ACTION_GET_CSV_DATA_TEST_APPLICATION } from "~/store/test-applications";
 
 @Component({
@@ -204,12 +205,7 @@ export default class CaregoricalVariablesPlot extends Vue {
   }
 
   updateData() {
-    const traces: {
-      x: string[];
-      y: number[];
-      name: string;
-      type: string;
-    }[] = [];
+    const traces: Trace[] = [];
 
     if (!this.selectedCategoricalVariable) {
       let firstCaregoricVariable = this.testApplicationData.labels.find(
@@ -233,24 +229,23 @@ export default class CaregoricalVariablesPlot extends Vue {
         { total: number }
       >();
 
+      const question = this.testApplication.test.userDataToRequest.find(
+        (it) => it.name == this.selectedCategoricalVariable
+      );
+      question?.options.forEach((category) => {
+        categoryDataByUser.set(category.name, {
+          total: 0,
+        });
+      });
+
       dataGroup.data.rows
         .filter((row) => {
           return (
             this.hideNonInformedCases && !!row[this.selectedCategoricalVariable]
           );
         })
-        .sort(
-          (a, b) =>
-            a[this.selectedCategoricalVariable] -
-            b[this.selectedCategoricalVariable]
-        )
         .forEach((row) => {
           let xCategoryLabel = row[this.selectedCategoricalVariable];
-          if (!categoryDataByUser.get(xCategoryLabel)) {
-            categoryDataByUser.set(xCategoryLabel, {
-              total: 0,
-            });
-          }
           let item = categoryDataByUser.get(xCategoryLabel);
           item!.total++;
         });
@@ -273,7 +268,11 @@ export default class CaregoricalVariablesPlot extends Vue {
       traces.push(trace);
     });
 
-    this.data = traces;
+    this.data = this.sortLabels(traces);
+  }
+
+  sortLabels(traces: Trace[]): Trace[] {
+    return traces;
   }
 
   @Watch("testApplicationData", { immediate: true })
