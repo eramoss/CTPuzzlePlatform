@@ -131,7 +131,7 @@ export default class CaregoricalVariablesPlot extends Vue {
         values.push(value);
       }
     });
-    return values.sort();
+    return values;
   }
 
   reduceDataByUsers(csvDataByItems: CsvData): CsvData {
@@ -229,7 +229,7 @@ export default class CaregoricalVariablesPlot extends Vue {
         { total: number }
       >();
 
-      const question = this.testApplication.test.userDataToRequest.find(
+      const question = this.testApplication?.test?.userDataToRequest?.find(
         (it) => it.name == this.selectedCategoricalVariable
       );
       question?.options.forEach((category) => {
