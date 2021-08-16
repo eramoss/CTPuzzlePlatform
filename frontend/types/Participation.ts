@@ -12,6 +12,6 @@ export default class Participation {
     createdAt!: Date
     deletedAt!: Date
     updatedAt!: Date
-    userDataToRequest!: UserQuizSession
+    userDataToRequest: UserQuizSession = new UserQuizSession()
     observations!: string
 }

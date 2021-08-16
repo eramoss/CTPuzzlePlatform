@@ -155,7 +155,7 @@ import Participation from "~/types/Participation";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
 import CenteredLogo from "~/components/CenteredLogo.vue";
-import { loadUserUuid } from "~/types/userUuidUtil";
+import { loadUserUuid } from "~/types/userUuidUtil"
 
 import {
   ACTION_GET_BY_ID_PUBLIC_PARTICIPATION,
@@ -174,13 +174,12 @@ import { USER_UUID_TOKEN } from "~/types/User";
 export default class EndOfTestQuizzPage extends Vue {
   participation: Participation = new Participation();
   loading = true;
+  isTestingQuiz = false;
+  puzzleUrl: string = "";
 
   @Ref() input!: ElInput;
   @Ref() inputTextArea!: ElInput;
   @Ref() inputNumber!: ElInput;
-
-  isTestingQuiz = false;
-  puzzleUrl: string = "";
 
   get hasQuestion() {
     return !!this.currentQuestion;
@@ -317,7 +316,7 @@ export default class EndOfTestQuizzPage extends Vue {
   }
 
   convertQueryUrlToTestingQuiz(): UserQuizSession {
-    let strQuiz = this.$route.params.quiz as string;
+    let strQuiz = this.$route.query.quiz as string;
     let quiz = Object.assign(
       new UserQuizSession(),
       JSON.parse(strQuiz)

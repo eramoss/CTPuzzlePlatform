@@ -67,11 +67,11 @@ export default class FinishPanel extends Vue {
       }
     });
 
-    let finishRate =
-      (finisherCount / (mapItemsIdsByUsers.size * this.totalItems)) * 100;
+    let finishRate = (finisherCount / (mapItemsIdsByUsers.size)) * 100;
     if (finisherCount == 0) {
       finishRate = 0;
     }
+    
     this.finishRate = `${finishRate.toFixed(2)}%`;
   }
 
