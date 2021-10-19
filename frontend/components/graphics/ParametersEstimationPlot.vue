@@ -34,8 +34,8 @@ import CciPlotParameters from "~/types/CciPlotParameters";
 
 @Component({
   components: {
-    Plot,
-  },
+    Plot
+  }
 })
 export default class ParametersEstimationPlot extends Vue {
   @Prop() testApplication!: TestApplication;
@@ -58,7 +58,7 @@ export default class ParametersEstimationPlot extends Vue {
     let traces: any[] = [];
     this.$emit("onStartEstimate");
 
-    range(this.firstOrderId, this.lastOrderId, true).forEach((itemOrderId) => {
+    range(this.firstOrderId, this.lastOrderId, true).forEach(itemOrderId => {
       const probabilityRange = this.calculateProbabilityOfCorrectnessByAbilityRange(
         itemOrderId,
         usersAndTheirScores
@@ -69,7 +69,7 @@ export default class ParametersEstimationPlot extends Vue {
         y: probabilityRange,
         mode: "markers",
         marker: { size: 5 },
-        name: `Item ${itemOrderId}`,
+        name: `Item ${itemOrderId}`
       };
 
       traces.push(itemCharacteristicCurve);
@@ -85,7 +85,7 @@ export default class ParametersEstimationPlot extends Vue {
         difficulty: parameters.difficulty,
         discrimination: parameters.discrimination,
         itemName: `Item ${itemOrderId}`,
-        itemNumber: itemOrderId,
+        itemNumber: itemOrderId
       } as CciPlotParameters);
     });
 
@@ -94,14 +94,12 @@ export default class ParametersEstimationPlot extends Vue {
 
   getHarderstItems() {
     const orderIdsHardestItems = this.getOrderIdsOfHardestItems();
-    const dataRowsHarderstItems = this.testApplicationData?.rows.filter(
-      (row) => {
-        return orderIdsHardestItems.find(
-          (orderIdOfOneOfTheHardestItems) =>
-            orderIdOfOneOfTheHardestItems == row["item_order"]
-        );
-      }
-    );
+    const dataRowsHarderstItems = this.testApplicationData?.rows.filter(row => {
+      return orderIdsHardestItems.find(
+        orderIdOfOneOfTheHardestItems =>
+          orderIdOfOneOfTheHardestItems == row["item_order"]
+      );
+    });
     return dataRowsHarderstItems;
   }
 
@@ -116,13 +114,13 @@ export default class ParametersEstimationPlot extends Vue {
       { countOccurrences: number; averageScore: number }
     >();
 
-    dataRowsHarderstItems.forEach((row) => {
+    dataRowsHarderstItems.forEach(row => {
       let userId = row["usuario"];
       let mapAlreadyHaveUser = averageHarderstItemsUserScore.get(userId);
       if (!mapAlreadyHaveUser) {
         averageHarderstItemsUserScore.set(userId, {
           countOccurrences: 0,
-          averageScore: 0,
+          averageScore: 0
         });
       }
       let scorePerUser = averageHarderstItemsUserScore.get(userId);
@@ -132,7 +130,7 @@ export default class ParametersEstimationPlot extends Vue {
         scorePerUser.averageScore += rowScore;
       }
     });
-    averageHarderstItemsUserScore.forEach((scorePerUser) => {
+    averageHarderstItemsUserScore.forEach(scorePerUser => {
       scorePerUser.averageScore =
         scorePerUser.averageScore / scorePerUser.countOccurrences;
     });
@@ -145,11 +143,11 @@ export default class ParametersEstimationPlot extends Vue {
       { countOccurrences: number; scoreTotal: number }
     >();
     this.testApplicationData?.rows
-      .filter((row) => row["tutorial"] == "F")
-      .map((row) => {
+      .filter(row => row["tutorial"] == "F")
+      .map(row => {
         return {
           selectedItemOrderId: parseFloat(row["item_order"]),
-          userScore: parseFloat(row["escore_obtido"]),
+          userScore: parseFloat(row["escore_obtido"])
         };
       })
       .forEach(
@@ -157,7 +155,7 @@ export default class ParametersEstimationPlot extends Vue {
           if (!mapAvgScoresByItems.get(scoreByItem.selectedItemOrderId)) {
             mapAvgScoresByItems.set(scoreByItem.selectedItemOrderId, {
               countOccurrences: 0,
-              scoreTotal: 0,
+              scoreTotal: 0
             });
           }
           let item = mapAvgScoresByItems.get(scoreByItem.selectedItemOrderId);
@@ -175,13 +173,19 @@ export default class ParametersEstimationPlot extends Vue {
     });
     items.sort((a, b) => a.userScore - b.userScore);
 
-    let percentItemsToGet = 0.333;
+    let percentItemsToGet = 0.75;
+    if (items.length > 5) {
+      percentItemsToGet = 0.5;
+    }
+    if (items.length > 10) {
+      percentItemsToGet = 0.333;
+    }
     let hardestItems = items.slice(
       0,
       Math.floor(items.length * percentItemsToGet)
     );
 
-    return hardestItems.map((it) => it.orderId);
+    return hardestItems.map(it => it.orderId);
   }
 
   get step() {
@@ -198,7 +202,7 @@ export default class ParametersEstimationPlot extends Vue {
   }
 
   get abilityRange() {
-    return this.groupsRange.map((x) => (6 / 10) * x - 3);
+    return this.groupsRange.map(x => (6 / 10) * x - 3);
   }
 
   calculateProbabilityOfCorrectnessByAbilityRange(
@@ -207,7 +211,7 @@ export default class ParametersEstimationPlot extends Vue {
   ) {
     const mapUsersByScoreGroup = new Map<number, string[]>();
 
-    this.groupsRange.forEach((groupNumber) => {
+    this.groupsRange.forEach(groupNumber => {
       const usersFitInGroup: string[] = [];
 
       usersAndTheirScores.forEach((scorePerUser, userId: string) => {
@@ -222,18 +226,18 @@ export default class ParametersEstimationPlot extends Vue {
       mapUsersByScoreGroup.set(groupNumber, usersFitInGroup);
     });
 
-    const probabilityRange = this.groupsRange.map((groupNumber) => {
+    const probabilityRange = this.groupsRange.map(groupNumber => {
       let probability = 0;
       const usersInGroup = mapUsersByScoreGroup.get(groupNumber);
       if (usersInGroup) {
         const averageItemScoreByUsersInThisAbilityRangeGroup = this.testApplicationData?.rows
-          .filter((row) => {
+          .filter(row => {
             return (
               usersInGroup.indexOf(row["usuario"]) > -1 &&
               row["item_order"] == itemOrderId - 1
             );
           })
-          .map((row) => {
+          .map(row => {
             return parseFloat(row["escore_obtido"]);
           })
           .reduce((previousScore, currentScore) => {
@@ -248,9 +252,7 @@ export default class ParametersEstimationPlot extends Vue {
     });
 
     let maxProbability = max(probabilityRange);
-    const normalizedProbability = probabilityRange.map(
-      (p) => p / maxProbability
-    );
+    const normalizedProbability = probabilityRange.map(p => p / maxProbability);
 
     return normalizedProbability;
   }
@@ -260,13 +262,13 @@ export default class ParametersEstimationPlot extends Vue {
       title: "Estimação de parâmetros",
       xaxis: {
         title: "Habilidade",
-        range: [-3, 3],
+        range: [-3, 3]
       },
       yaxis: {
-        tickmode: 'array',
+        tickmode: "array",
         tickvals: [0, 0.5, 1],
-        title: "Probabilidade de acerto total",
-      },
+        title: "Probabilidade de acerto total"
+      }
     };
   }
 
@@ -287,9 +289,7 @@ export default class ParametersEstimationPlot extends Vue {
 
   @Watch("testApplicationData", { immediate: true })
   onChangeTestApplicationData() {
-    let itemOrders = this.testApplicationData?.rows.map(
-      (it) => it["item_order"]
-    );
+    let itemOrders = this.testApplicationData?.rows.map(it => it["item_order"]);
     if (itemOrders?.length) {
       this.firstOrderId = min(itemOrders) + 1;
       this.lastOrderId = max(itemOrders) + 1;
