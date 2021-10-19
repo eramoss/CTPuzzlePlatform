@@ -51,9 +51,9 @@ export class ItemResponsesService {
             .where('researchGroup.id = :id', { id: researchGroupId })
             .andWhere('participation."deletedAt" is null')
             .getMany()
-        let totalScore = itemResponses.map(itemResponse => parseFloat(itemResponse.score.score+""))
+        let totalScore = itemResponses.map(itemResponse => parseFloat(itemResponse.score.score + ""))
             .reduce((left, right) => left + right)
-        let totalMax = itemResponses.map(itemResponse => parseFloat(itemResponse.score.max+""))
+        let totalMax = itemResponses.map(itemResponse => parseFloat(itemResponse.score.max + ""))
             .reduce((left, right) => left + right)
         return Math.ceil((totalScore / totalMax) * 100);
     }
@@ -94,8 +94,14 @@ export class ItemResponsesService {
         return score
     }
 
-    async calculateScores(itemResponses: ItemResponse[]):Promise<ItemResponse[]>{
+    async calculateScores(itemResponses: ItemResponse[]): Promise<ItemResponse[]> {
 
+        itemResponses.filter(itemResponse => !itemResponse.testItem)
+            .forEach(itemResponse => {
+                console.log('Não há item de teste para a resposta ', itemResponse)
+            })
+
+        itemResponses = itemResponses.filter(itemResponse => itemResponse.testItem);
         await this.loadItemsResponsesWithMechanics(itemResponses)
 
         let calculationScoreParamsList = itemResponses.map((itemResponse) => {
@@ -113,13 +119,15 @@ export class ItemResponsesService {
     }
 
     async loadItemsResponsesWithMechanics(itemResponses: ItemResponse[]) {
-        let idByItemMap:Map<number,Item> = new Map<number, Item>();
-        const itemsIds = itemResponses.map(itemResponse => itemResponse.testItem.item.id);
+        let idByItemMap: Map<number, Item> = new Map<number, Item>();
+        const itemsIds =
+            itemResponses.map(itemResponse => itemResponse.testItem.item.id);
+
         let items = await this.itemsService.getByIds(itemsIds)
-        items.forEach(item=>{
+        items.forEach(item => {
             idByItemMap.set(item.id, item)
         })
-        itemResponses.forEach(itemResponse=>{
+        itemResponses.forEach(itemResponse => {
             itemResponse.testItem.item = idByItemMap.get(itemResponse.testItem.item.id)
         })
     }
