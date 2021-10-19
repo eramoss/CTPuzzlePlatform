@@ -175,9 +175,6 @@ export default class ParametersEstimationPlot extends Vue {
 
     let percentItemsToGet = 0.75;
     if (items.length > 5) {
-      percentItemsToGet = 0.5;
-    }
-    if (items.length > 10) {
       percentItemsToGet = 0.333;
     }
     let hardestItems = items.slice(
