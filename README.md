@@ -13,15 +13,15 @@
 - Postgres (Banco)
 
 ## Como rodar
-Instalar postgres (https://www.postgresql.org/download/)
-gunzip dump2022-10-01-03-00.sql.gz
-psql -U postgres -h localhost
-create database ct_puzzle_platform with owner postgres
-psql -U postgres -h localhost -d ct_puzzle_plataform < dump2022-10-01-03-00.sql
+- Instalar postgres (https://www.postgresql.org/download/)
+- gunzip dump2022-10-01-03-00.sql.gz
+- psql -U postgres -h localhost
+- create database ct_puzzle_platform with owner postgres
+- psql -U postgres -h localhost -d ct_puzzle_plataform < dump2022-10-01-03-00.sql
 
 Substituir credenciais no arquivo .env.dev
 TYPEORM_PASSWORD=****
 
 ## No Visual Studio Code
-Abrir pasta raiz CTPuzzlePlatform
-Run > Start Debugging (F5)
+- Abrir pasta raiz CTPuzzlePlatform
+- Run > Start Debugging (F5)
