@@ -58,11 +58,24 @@
             "problemMatcher": []
         },
         {
-            "label": "npm install",
+            "label": "npm install frontend",
             "type": "shell",
             "command": "npm install",
             "options": {
                 "cwd": "${workspaceFolder}/frontend"
+            },
+            "presentation": {
+                "group": "a",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "npm install backend",
+            "type": "shell",
+            "command": "npm install",
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
             },
             "presentation": {
                 "group": "a",
