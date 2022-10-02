@@ -22,7 +22,7 @@
             "name": "Frontend",
             "request": "launch",
             //"preLaunchTask": "npm install",
-            "type": "pwa-node",
+            "type": "node",
             "envFile": "${workspaceFolder}/.env.dev",
             "cwd": "${workspaceFolder}/frontend",
             "program": "${workspaceFolder}/frontend/node_modules/nuxt/bin/nuxt",
@@ -45,6 +45,13 @@
         },
     ],
     "compounds": [
+        {
+            "name": "Backend + Frontend",
+            "configurations": [
+                "Backend",
+                "Frontend"
+            ],
+        },
         {
             "name": "Backend + Frontend + Docs",
             "configurations": [

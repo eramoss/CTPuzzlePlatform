@@ -73,6 +73,7 @@ import Test from "~/types/Test";
 import { ElInput } from "element-ui/types/input";
 import TestApplicationUrlInput from "~/components/TestApplicationUrlInput.vue";
 import TestApplication from "~/types/TestApplication";
+import { ACTION_SAVE_TEST_APPLICATION } from '~/store/test-applications'
 
 //@ts-ignore
 import { v4 as uuidv4 } from "uuid";
@@ -119,7 +120,7 @@ export default class TestApplicationDialog extends Vue {
   @Ref("applicationUrlInput") applicationUrlInput!: TestApplicationUrlInput;
 
   @Action("tests/findAll") findAllTests!: () => Promise<Test[]>;
-  @Action("test-applications/save") saveApplication!: (
+  @Action(ACTION_SAVE_TEST_APPLICATION) saveApplication!: (
     testApplication: TestApplication
   ) => Promise<TestApplication>;
 
