@@ -4,7 +4,7 @@
 
     <div class="center result-page">
 
-      <el-button id="playAgainBtn" :style="{background:playAgainButtonColor}" @click="playAgain">Jogar!</el-button>
+      <el-button id="playAgainBtn" :style="{background:playAgainButtonColor}" @click="playAgain">Novo jogo</el-button>
       <test-application-url-input ref="urlInput" style="display:none" :showAccessIcon="true"
         :test-application.sync="participation.application" />
       
@@ -22,7 +22,6 @@
             <el-progress :text-inside="true" :stroke-width="26" color="#67c23a"
               :percentage="getPercentage(itemResponse)"></el-progress>
           </div>
-          <div class="result-message">{{ getItemMessage(itemResponse) }}</div>
         </div>
 
       </div>
@@ -74,24 +73,6 @@ export default class extends Vue {
     return (itemResponse.score.score / itemResponse.score.max) * 100;
   }
 
-  getItemMessage(itemResponse: ItemResponse) {
-    let percentage = this.getPercentage(itemResponse);
-    let message = "Pode melhorar";
-    if (percentage > 25) {
-      message = "Bom";
-    }
-    if (percentage > 50) {
-      message = "Muito bom";
-    }
-    if (percentage > 75) {
-      message = "Ótimo";
-    }
-    if (percentage > 100) {
-      message = "Perfeito!";
-    }
-    return message;
-  }
-
   get scores() {
     const itemResponses = this.participation.itemResponses;
     return itemResponses.map((itemResponse) => itemResponse.score);
@@ -118,15 +99,21 @@ export default class extends Vue {
   }
 
   get totalGrade(): number {
-    return this.scores
-      .map((score) => score.score)
-      .reduce((prev: number, current: number) => prev + current, 0);
+    let total = 0
+    this.scores.forEach(s=>{
+      let score = s.score+''
+      total+= parseFloat(score)
+    })
+    return total;
   }
 
   get maxGrade(): number {
-    return this.scores
-      .map((score) => score.max)
-      .reduce((prev: number, current: number) => prev + current, 0);
+    let total = 0
+    this.scores.forEach(s=>{
+      let score = s.max+''
+      total+= parseFloat(score)
+    })
+    return total;
   }
 
   mounted(){
@@ -159,10 +146,6 @@ export default class extends Vue {
 
     .score {
       margin: auto 20px;
-    }
-
-    .result-message {
-      width: 100px;
     }
 
     margin: 10px auto;
