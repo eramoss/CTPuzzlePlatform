@@ -10,16 +10,16 @@
       
       <p class="hability-paragraph">
         Pontuação:
-        {{ ((totalGrade / maxGrade) * 100).toFixed(0) + "" }}%
+        {{ totalGrade.toFixed(0) }}
       </p>
       <div class="score-item" :key="itemResponse.id" v-for="(itemResponse, index) in participation.itemResponses">
         <div class="flex-row">
           <div class="item">
-            Item {{ index + 1 }}
+            Fase {{ index + 1 }}
             <!-- <thumbnail :src="itemResponse.testItem.item.thumbnail" /> -->
           </div>
           <div class="score" style="flex-grow: 1">
-            <el-progress :text-inside="true" :stroke-width="26" color="#67c23a"
+            <el-progress :text-inside="true" :show-text="false" :stroke-width="26" color="#67c23a"
               :percentage="getPercentage(itemResponse)"></el-progress>
           </div>
         </div>
@@ -70,7 +70,7 @@ export default class extends Vue {
   }
 
   getPercentage(itemResponse: ItemResponse) {
-    return (itemResponse.score.score / itemResponse.score.max) * 100;
+    return ((itemResponse.score.score / itemResponse.score.max) * 100).toFixed(0);
   }
 
   get scores() {
@@ -78,39 +78,10 @@ export default class extends Vue {
     return itemResponses.map((itemResponse) => itemResponse.score);
   }
 
-  get congratsMessage(): string {
-    let congratMessage = "Parabéns. Você chegou ao final!";
-    if (this.totalGrade / this.maxGrade > 0.25) {
-      congratMessage = "Seu resultado foi bom!";
-    }
-    if (this.totalGrade / this.maxGrade > 0.5) {
-      congratMessage = "Muito bom!";
-    }
-    if (this.totalGrade / this.maxGrade > 0.75) {
-      congratMessage = "Ótimo!";
-    }
-    if (this.totalGrade / this.maxGrade > 0.9) {
-      congratMessage = "Incrível!";
-    }
-    if (this.totalGrade / this.maxGrade > 0.99) {
-      congratMessage = "Estupendo!";
-    }
-    return congratMessage;
-  }
-
   get totalGrade(): number {
     let total = 0
     this.scores.forEach(s=>{
       let score = s.score+''
-      total+= parseFloat(score)
-    })
-    return total;
-  }
-
-  get maxGrade(): number {
-    let total = 0
-    this.scores.forEach(s=>{
-      let score = s.max+''
       total+= parseFloat(score)
     })
     return total;
