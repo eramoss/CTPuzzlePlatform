@@ -47,6 +47,7 @@ import { Context } from "@nuxt/types";
 import ItemResponse from "~/types/ItemResponse";
 import { ACTION_GET_BY_ID_PUBLIC_PARTICIPATION } from "~/store/participations";
 import { secondsToHms } from "~/utils/utils";
+import { filter } from "mathjs";
 
 @Component({
   auth: false,
@@ -68,6 +69,13 @@ export default class extends Vue {
       ACTION_GET_BY_ID_PUBLIC_PARTICIPATION,
       participationId
     );
+    
+    
+    participation.itemResponses = participation
+      .itemResponses
+      .filter((a: ItemResponse) => !a.testItem.item.isTutorial)
+      .sort((a: ItemResponse, b: ItemResponse) => a.testItem.order - b.testItem.order)
+      
     return {
       participation,
     };
@@ -168,18 +176,24 @@ html{
 
     .top-number-item-label{
       color:#67c23a;
+      text-shadow: 1px 1px gray;
     }
     .top-number-item-number{
       color:#67c23a;
+      text-shadow: 1px 1px gray;
     }
   }
 }
 
 #playAgainBtn {
+  box-shadow: 0 0 6px #0000002e;
   transition: background-color 0.8s;
   font-weight: bold;
+  border-radius: 20px;
   font-size: 30pt;
   margin: 30pt;
+  border: 2px dashed rgba(255, 255, 255, 0.232);
   color: white;
+  text-shadow: 2px 2px black;
 }
 </style>
