@@ -85,6 +85,9 @@ As configs de email são feitas no arquivo .env.dev e devem ser ajustadas.
 - Backend + Frontend (roda os dois de uma vez)
 - Backend + Frontend + Docs (roda os dois e gera a doc)
 
+## Documentacão
+A documentação é feita a partir da edição do arquivo readme da pasta docs (ver doc Docsify)
+
 ## Tasks úteis
 No arquivo tasks.json do vscode há diferentes tasks úteis. Confira lá. Algumas são:
 - Rodar migrations
