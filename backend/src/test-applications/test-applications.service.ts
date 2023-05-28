@@ -184,7 +184,7 @@ export class TestApplicationsService {
                 };
                 let responseJson = JSON.parse(itemResponse.response);
                 let scoreJson = JSON.parse(itemResponse.score.json)
-                
+
                 Object.keys(responseJson)
                     .filter(key => responseKeys.indexOf(key) == -1)
                     .forEach(key => responseKeys.push(key))
@@ -349,6 +349,8 @@ export class TestApplicationsService {
             }
         }
 
+        const hasQuiz = participation?.application?.hasQuiz()
+
         let preparedParticipation = {
             participationId: participation.id,
             lastVisitedItemId: lastVisitedItemId,
@@ -381,7 +383,8 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
             curl -X PUT --header 'Content-Type: application/json' -d '{"testApplication": ${participation.id}, "source": "facebook"}' ${urlToSendSource}`
             },
             urlToEndOfTestQuiz: {
-                url: `${siteUrl}/quiz/${participation.id}`
+                url: hasQuiz ? `${siteUrl}/quiz/${participation.id}` : '',
+                help: hasQuiz ? 'Abra essa url quando o usuário finalizar o teste ou desistir!' : 'Não há questionário de teste. Verifique as configurações do teste!'
             }
         } as PreparedParticipation
 

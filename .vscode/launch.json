@@ -46,6 +46,13 @@
     ],
     "compounds": [
         {
+            "name": "Backend + Frontend",
+            "configurations": [
+                "Backend",
+                "Frontend"
+            ],
+        },
+        {
             "name": "Backend + Frontend + Docs",
             "configurations": [
                 "Backend",

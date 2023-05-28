@@ -1,6 +1,5 @@
 <template>
   <div v-show="!loading">
-    <centered-logo />
     <div v-show="isTestingQuiz" class="quiz-test-info">
       Testando questionário (as respostas não serão guardadas)
     </div>
@@ -16,13 +15,12 @@
           <h3>Parabéns! Você finalizou todas as fases!</h3>
           <h2>Responda o questionário abaixo para ver o resultado</h2>
         </div>
-        <h2 v-if="!hasQuestion">Obrigado por sua participação!</h2>
       </div>
 
       <div>
         <div v-if="hasQuestion">
           <div class="question" style="margin: 0 auto">
-            <h3>Questão {{ questionIndex + 1 }} de {{ questions.length }}</h3>
+            <h3>{{ questionIndex + 1 }} de {{ questions.length }}</h3>
             <h2>
               {{ currentQuestion.name }}
               <span v-show="!currentQuestion.required">(opcional)</span>
@@ -88,7 +86,7 @@
           </div>
           <div class="flex-row center btns">
             <div class="prev" v-if="questionIndex > 0">
-              <el-button @click="prevQuestion" type="success">
+              <el-button @click="prevQuestion">
                 <div class="flex-row">
                   <icon name="arrow_back" />
                   Questão anterior
@@ -98,7 +96,6 @@
             <div class="next" v-if="questionIndex < questions.length">
               <el-button
                 @click="nextQuestion"
-                type="success"
                 :disabled="!currentQuestion.answer && currentQuestion.required"
               >
                 <div class="flex-row">
@@ -114,7 +111,7 @@
         <div v-if="!puzzleUrl">
           <el-button
             class="btnSeeResult"
-            type="success"
+            type="primary"
             size="large"
             @click="seeResult"
           >
@@ -125,11 +122,11 @@
         <div v-if="puzzleUrl">
           <el-button
             class="btnSeeResult"
-            type="success"
+            type="primary"
             size="large"
             @click="startTest"
           >
-            Iniciar teste
+            Iniciar!
           </el-button>
         </div>
 
@@ -155,7 +152,7 @@ import Participation from "~/types/Participation";
 import { Context } from "@nuxt/types";
 import { ElInput } from "element-ui/types/input";
 import CenteredLogo from "~/components/CenteredLogo.vue";
-import { loadUserUuid } from "~/types/userUuidUtil";
+import { loadUserUuid } from "~/types/userUuidUtil"
 
 import {
   ACTION_GET_BY_ID_PUBLIC_PARTICIPATION,
@@ -174,13 +171,12 @@ import { USER_UUID_TOKEN } from "~/types/User";
 export default class EndOfTestQuizzPage extends Vue {
   participation: Participation = new Participation();
   loading = true;
+  isTestingQuiz = false;
+  puzzleUrl: string = "";
 
   @Ref() input!: ElInput;
   @Ref() inputTextArea!: ElInput;
   @Ref() inputNumber!: ElInput;
-
-  isTestingQuiz = false;
-  puzzleUrl: string = "";
 
   get hasQuestion() {
     return !!this.currentQuestion;
@@ -191,7 +187,8 @@ export default class EndOfTestQuizzPage extends Vue {
   }
 
   startTest() {
-    window.open(this.puzzleUrl);
+    //@ts-ignore
+    window.location = this.puzzleUrl;
   }
 
   async nextQuestion() {
@@ -317,7 +314,7 @@ export default class EndOfTestQuizzPage extends Vue {
   }
 
   convertQueryUrlToTestingQuiz(): UserQuizSession {
-    let strQuiz = this.$route.params.quiz as string;
+    let strQuiz = this.$route.query.quiz as string;
     let quiz = Object.assign(
       new UserQuizSession(),
       JSON.parse(strQuiz)
@@ -345,6 +342,9 @@ function initQuizSession(participation: Participation, force: boolean = false) {
 </script>
 <style lang="scss">
 .quiz-form {
+  h3 {
+    color: lightgray;
+  }
   padding: 15px;
   .question {
     h3 {

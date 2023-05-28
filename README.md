@@ -3,7 +3,7 @@
 - Os puzzles são games externos à plataforma, mas que são configurados por ela.
 - Permite especificar mecânicas dos itens, especificar suas estruturas por meio de classes
 - Os eventos de resposta são armazenados por meio de uma api no banco de dados
-- Com os dados de resposta é feito o cálculo da dificuldade e discriminação dos itens
+- A partir dos dados de resposta é feito o cálculo da dificuldade e discriminação dos itens seguindo TRI politômica
 
 ## Tecnologia
 - Nestjs (backend)
@@ -13,6 +13,7 @@
 - Postgres (Banco de dados)
 - Docsify (Documentação) https://docsify.js.org/#/?id=docsify
 - Postgres v12 (Banco)
+- Deno https://deno.com/manual@v1.34.0/introduction
 
 ## Versões
 - node 12.21.0
@@ -61,6 +62,13 @@ arquivo de env utilizado pelo docker-compose
 #### .env.dev 
 arquivo de variáveis de ambiente que o vscode utiliza ao subir a aplicação
 - Informe a senha na variável TYPEORM_PASSWORD
+
+### Deno
+O deno é um interpretador typescript como o node. 
+É utilizado para executar a função que calcula a nota de cada item.
+```
+./install-deno.sh
+```
 
 ## Rodar
 - Abrir pasta raiz CTPuzzlePlatform

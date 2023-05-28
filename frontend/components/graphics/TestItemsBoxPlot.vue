@@ -49,6 +49,7 @@ import { CsvData, CsvHeaderLabel } from "~/types/CsvData";
 import SelectVariables from "~/components/SelectVariables.vue";
 import GroupDataLoader from "~/components/GroupDataLoader.vue";
 import TestApplication from "~/types/TestApplication";
+import BoxItem from "~/types/BoxItem";
 import { ACTION_GET_CSV_DATA_TEST_APPLICATION } from "~/store/test-applications";
 
 @Component({
@@ -134,59 +135,61 @@ export default class TestItemsBoxPlot extends Vue {
   updateData() {
     const traces: any[] = [];
 
-    let scoresByItems: Map<
-      string,
-      { scores: number[]; groupNames: string[] }
-    > = new Map<string, { scores: []; groupNames: string[] }>();
+    let scoresByItems: BoxItem[] = [];
 
     this.dataGroups.forEach((dataGroup) => {
-      dataGroup.data.rows
-        .sort((a, b) => a["item_order"] - b["item_order"])
-        .sort(
-          (a, b) =>
-            a[this.selectedCategoricalVariable] -
-            b[this.selectedCategoricalVariable]
-        )
-        .forEach((row) => {
-          let itemName = "";
-          if (this.splitByItems) {
-            itemName = `Item ${row["item_order"] + 1}`;
-          }
-          let category = "";
-          if (this.selectedCategoricalVariable) {
-            category = row[this.selectedCategoricalVariable] || "Não informado";
-          }
+      dataGroup.data.rows.forEach((row) => {
+        let itemName = "";
+        if (this.splitByItems) {
+          itemName = `Item ${row["item_order"] + 1}`;
+        }
+        let category = "";
+        if (this.selectedCategoricalVariable) {
+          category = row[this.selectedCategoricalVariable] || "Não informado";
+        }
 
-          let itemLabelInGraphic = [itemName, category]
-            .filter((it) => it.length)
-            .join(" / ");
+        let newBox = new BoxItem();
+        newBox.category = category;
+        newBox.itemName = itemName;
 
-          if (!scoresByItems.get(itemLabelInGraphic)) {
-            scoresByItems.set(itemLabelInGraphic, {
-              scores: [],
-              groupNames: [],
-            });
-          }
-          let item = scoresByItems.get(itemLabelInGraphic);
-          item?.scores.push(row[this.selectedColumnValue]);
-          item?.groupNames.push(dataGroup.groupName);
-        });
+        let box = scoresByItems.find((it) => it.isEquals(newBox));
+
+        if (!box) {
+          box = newBox;
+          scoresByItems.push(box);
+        }
+
+        box?.scores.push(row[this.selectedColumnValue]);
+        box?.groupNames.push(dataGroup.groupName);
+      });
     });
 
-    scoresByItems.forEach(
-      (value: { scores: number[]; groupNames: string[] }, itemName: string) => {
+    scoresByItems
+      .sort((a, b) => a.compareItemNumber(b))
+      .sort((a, b) => a.compareCategory(b, this.categories))
+      .forEach((value: BoxItem) => {
         const trace: any = {
           y: value.scores,
-          name: itemName,
+          name: value.getLabel(),
           type: "box",
         };
         if (this.isGroupingPlot) {
           trace.x = value.groupNames;
         }
         traces.push(trace);
-      }
-    );
+      });
     this.data = traces;
+  }
+
+  get categories() {
+    const question = this.testApplication?.test?.userDataToRequest?.find(
+      (it) => it.name == this.selectedCategoricalVariable
+    );
+    const categories: string[] = [];
+    question?.options?.forEach((option) => {
+      categories.push(option.name);
+    });
+    return categories;
   }
 
   @Watch("testApplicationData", { immediate: true })
