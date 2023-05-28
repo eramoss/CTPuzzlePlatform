@@ -70,6 +70,32 @@ O deno é um interpretador typescript como o node.
 ./install-deno.sh
 ```
 
+### Email
+Ao cadastrar-se na aplicação, a plataforma manda um email.
+As configs de email são feitas no arquivo .env.dev e devem ser ajustadas.
+
+
 ## Rodar
 - Abrir pasta raiz CTPuzzlePlatform
 - Run > Start Debugging (F5)
+
+### Tipos de run
+- Backend
+- Frontend
+- Backend + Frontend (roda os dois de uma vez)
+- Backend + Frontend + Docs (roda os dois e gera a doc)
+
+## Tasks úteis
+No arquivo tasks.json do vscode há diferentes tasks úteis. Confira lá. Algumas são:
+- Rodar migrations
+- Instalar gerador de documentção
+- Buildar imagem docker da aplicação para rodar localmente
+- Rodar imagem docker da aplicação gerada
+
+## TODOs
+- Implementar uma forma segura de guardar a senha e login
+- Adicionar aviso de cookies para atender a LGPD
+- Revisar o método de geração da CCI
+
+## Ideias
+- Integrar com gerador de dashboards como Grafana
