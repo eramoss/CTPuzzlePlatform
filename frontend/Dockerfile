@@ -1,10 +1,12 @@
-FROM node:12.21.0-alpine
+FROM node:14.18.0-alpine
 
 WORKDIR /frontend
 
 COPY package.json .
-
+RUN rm -rf ./node_modules ./package-lock.json
 RUN npm install
+
+
 
 COPY . .
 
