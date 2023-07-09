@@ -6,9 +6,9 @@ import { Item } from './item.entity';
 import { CodeInterpreterModule } from 'src/code-interpreter/code-interpreter.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Item]), CodeInterpreterModule],
-    exports: [ItemsService],
-    providers: [ItemsService],
-    controllers: [ItemsController]
+  imports: [TypeOrmModule.forFeature([Item]), CodeInterpreterModule],
+  exports: [ItemsService],
+  providers: [ItemsService],
+  controllers: [ItemsController],
 })
-export class ItemsModule { }
+export class ItemsModule {}

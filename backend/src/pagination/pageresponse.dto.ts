@@ -1,9 +1,7 @@
 export class PageResponse<T> {
+  data: T[];
 
-  data: T[]
-
-  constructor(data:T[]){
+  constructor(data: T[]) {
     this.data = data;
   }
-
 }

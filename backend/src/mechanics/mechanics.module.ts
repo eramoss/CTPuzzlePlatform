@@ -8,12 +8,12 @@ import { ItemTestCase } from 'src/score-function-test/item-test-case.entity';
 import { ResponseTestCase } from 'src/score-function-test/response-test-case.entity';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Mechanic, ItemTestCase, ResponseTestCase]),
-        ScoreFunctionTestModule,
-    ],
-    exports: [MechanicsService],
-    providers: [MechanicsService],
-    controllers: [MechanicsController]
+  imports: [
+    TypeOrmModule.forFeature([Mechanic, ItemTestCase, ResponseTestCase]),
+    ScoreFunctionTestModule,
+  ],
+  exports: [MechanicsService],
+  providers: [MechanicsService],
+  controllers: [MechanicsController],
 })
-export class MechanicsModule { }
+export class MechanicsModule {}

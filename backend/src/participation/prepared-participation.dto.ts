@@ -1,42 +1,40 @@
 export class UrlToSendProgress {
-    method: string
-    url: string
-    help: string
+  method: string;
+  url: string;
+  help: string;
 }
 
 export class UrlToSendResponses {
-    method: string
-    url: string
-    help: string
-    responseClass: string
+  method: string;
+  url: string;
+  help: string;
+  responseClass: string;
 }
 
 export class UrlToSendUserData {
-    method: string
-    url: string
-    help: string
+  method: string;
+  url: string;
+  help: string;
 }
 
 export class UrlToSendSource {
-    method: string
-    url: string
-    help: string
+  method: string;
+  url: string;
+  help: string;
 }
 
 export class UrlToEndOfTestQuiz {
-    url: string
-    help: string
+  url: string;
+  help: string;
 }
 
 export default class PreparedParticipation {
-
-    lastVisitedItemId:number
-    participationId:number
-    test: string
-    urlToSendResponses: UrlToSendResponses
-    urlToSendProgress: UrlToSendProgress
-    urlToSendUserData: UrlToSendUserData
-    urlToSendSource: UrlToSendUserData
-    urlToEndOfTestQuiz: UrlToEndOfTestQuiz
-
+  lastVisitedItemId: number;
+  participationId: number;
+  test: string;
+  urlToSendResponses: UrlToSendResponses;
+  urlToSendProgress: UrlToSendProgress;
+  urlToSendUserData: UrlToSendUserData;
+  urlToSendSource: UrlToSendUserData;
+  urlToEndOfTestQuiz: UrlToEndOfTestQuiz;
 }

@@ -16,7 +16,7 @@
 - Deno https://deno.com/manual@v1.34.0/introduction
 
 ## Versões
-- node 12.21.0
+- node 12.21.0 (frontend) e v18.14.1 (backend)
 - postgresql 12
 
 ## Pré-requisitos
@@ -37,7 +37,7 @@ npm install
 ### Backend
 ```
 cd backend
-nvm use 12.21.0
+nvm use v18.14.1
 npm install
 ```
 

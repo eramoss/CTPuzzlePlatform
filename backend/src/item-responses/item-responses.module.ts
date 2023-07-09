@@ -9,14 +9,14 @@ import { ItemResponsesService } from './item-responses.service';
 import { Score } from './score.entity';
 
 @Module({
-    controllers: [ItemResponsesController],
-    imports: [
-        CodeInterpreterModule,
-        ScoreFunctionTestModule,
-        ItemsModule,
-        TypeOrmModule.forFeature([ItemResponse, Score])
-    ],
-    providers: [ItemResponsesService],
-    exports: [ItemResponsesService]
+  controllers: [ItemResponsesController],
+  imports: [
+    CodeInterpreterModule,
+    ScoreFunctionTestModule,
+    ItemsModule,
+    TypeOrmModule.forFeature([ItemResponse, Score]),
+  ],
+  providers: [ItemResponsesService],
+  exports: [ItemResponsesService],
 })
-export class ItemResponsesModule { }
+export class ItemResponsesModule {}

@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js",
+                "!**/node_modules/**"
+            ],
+            "name": "Backend",
+            "request": "launch",
+            "type": "node-terminal",
+            "command": "npm run start",
+            "envFile": "${workspaceFolder}/.env.dev",
+            "cwd": "${workspaceFolder}",
+            "internalConsoleOptions": "openOnFirstSessionStart"
+        },
+    
+    ]
+}
