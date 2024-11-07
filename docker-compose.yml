@@ -1,7 +1,5 @@
-version: "3.3"
 services:
   backend:
-    image: registry.gitlab.com/cassiano.pvianna/ct-puzzle-platform/backend:1.0
     env_file: .env.prod
     build: 
         context: backend
@@ -12,8 +10,8 @@ services:
         - db
     volumes:
         - files:/root/files
+    restart: always
   frontend:
-    image: registry.gitlab.com/cassiano.pvianna/ct-puzzle-platform/frontend:1.0
     env_file: .env.prod
     build: 
         context: frontend
@@ -23,6 +21,7 @@ services:
     ports:
     - 3020:${NUXT_PORT:-3002}
     command: npm start
+    restart: always
     depends_on:
     - backend
   db:
@@ -35,6 +34,7 @@ services:
     - 5656:5432
     volumes:
       - database:/var/lib/postgresql
+      - ./db/init:/docker-entrypoint-initdb.d
 volumes:
     files: {}
     database: {}
