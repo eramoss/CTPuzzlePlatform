@@ -106,7 +106,8 @@ export default {
     },
 
     router: {
-        middleware: ['auth']
+        middleware: ['auth'],
+	base: '/ctpuzzleplatform/'
     },
     /*
     ** Build configuration
