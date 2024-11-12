@@ -1,6 +1,6 @@
 <template>
    <div class="centered-logo">
-       <img src="/logo-1.svg" alt="Logo">
+       <img src="logo-1.svg" alt="Logo">
    </div>
 </template>
 <script lang="ts">

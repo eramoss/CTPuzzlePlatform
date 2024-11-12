@@ -95,3 +95,4 @@ backend/uploads/*
 
 backend/src/r/scripts/input.csv
 backend/src/r/scripts/.Rhistory
+.env

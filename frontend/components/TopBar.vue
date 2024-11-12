@@ -3,7 +3,7 @@
     <container class="container" :max-width="width">
       <div style="flex-grow: 1" class="img">
         <nuxt-link to="/">
-          <img src="/logo-1.svg" />
+          <img src="logo-1.svg" />
         </nuxt-link>
       </div>
       <a
@@ -16,7 +16,7 @@
           type="warning"
           title="Acessa a Google Play para baixar o app"
         >
-          <img src="/play_icon.svg" style="width: 11px" /> Baixar CT Puzzle Test
+          <img src="play_icon.svg" style="width: 11px" /> Baixar CT Puzzle Test
         </el-button>
       </a>
       <nuxt-link

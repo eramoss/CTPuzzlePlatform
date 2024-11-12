@@ -1,25 +1,26 @@
 services:
   backend:
-    env_file: .env.prod
+    env_file: .env
     build: 
         context: backend
     command: npm start
     ports:
-        - 3010:${BACKEND_PORT:-3001}
+        - 8080:${BACKEND_PORT:-8080}
     depends_on:
         - db
     volumes:
         - files:/root/files
     restart: always
   frontend:
-    env_file: .env.prod
+    env_file: .env
     build: 
         context: frontend
         args: 
             API_URL: $API_URL
             NODE_ENV: ${NODE_ENV:-production}
+            FRONTEND_PREFIX: $FRONTEND_PREFIX
     ports:
-    - 3020:${NUXT_PORT:-3002}
+    - 9000:${NUXT_PORT:-8080}
     command: npm start
     restart: always
     depends_on:
@@ -31,7 +32,7 @@ services:
       POSTGRES_USER: $TYPEORM_USERNAME
       POSTGRES_DB: $TYPEORM_DATABASE
     ports:
-    - 5656:5432
+    - 5432:5432
     volumes:
       - database:/var/lib/postgresql
       - ./db/init:/docker-entrypoint-initdb.d

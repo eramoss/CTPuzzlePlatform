@@ -1,6 +1,6 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
 
-export default function queryString(params: any):string {
+export default function queryString(params: any): string {
     return Object.keys(params)
         .map((key) => `${key}=${params[key]}`)
         .join("&");
@@ -23,17 +23,17 @@ export function downloadWithAxios(axios: NuxtAxiosInstance, url: string, filenam
         method: 'GET',
         responseType: 'blob', // important
     }).then((response: any) => {
-        downloadData(response.data,filename)
+        downloadData(response.data, filename)
     });
 }
 
-export function downloadData(data:any,filename:string){
+export function downloadData(data: any, filename: string) {
     const url = window.URL.createObjectURL(new Blob([data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
 }
 
 export function getDeclaredClassesNames(classCode: string, classWitName: string = ''): string[] {
@@ -57,5 +57,7 @@ export function secondsToHms(d: any) {
     var hDisplay = h > 0 ? h + (h == 1 ? " hora, " : " horas, ") : "";
     var mDisplay = m > 0 ? m + (m == 1 ? " minuto, " : " minutos, ") : "";
     var sDisplay = s > 0 ? s + (s == 1 ? " segundo" : " segundos") : "";
-    return hDisplay + mDisplay + sDisplay; 
+    return hDisplay + mDisplay + sDisplay;
 }
+
+export const baseURL = process.env.FRONTEND_PREFIX ? process.env.FRONTEND_PREFIX : '/';

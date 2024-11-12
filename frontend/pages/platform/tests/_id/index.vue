@@ -98,7 +98,7 @@
                       </div>
                       <template slot="start">
                         <div class="drag-indicator" style="height: 100%">
-                          <img src="/dragger.svg" alt="Arrastar" />
+                          <img src="dragger.svg" alt="Arrastar" />
                         </div>
                       </template>
                       <template slot="end">

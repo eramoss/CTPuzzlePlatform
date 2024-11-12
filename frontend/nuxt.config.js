@@ -23,7 +23,7 @@ export default {
             { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
         ],
         link: [
-            { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+            { rel: 'icon', type: 'image/x-icon', href: 'favicon.ico' }
         ]
     },
     /*
@@ -72,7 +72,8 @@ export default {
 
     publicRuntimeConfig: {
         axios: {
-            browserBaseURL: process.env.API_URL
+            browserBaseURL: process.env.API_URL,
+            assetBaseURL: process.env.FRONTEND_PREFIX || ''
         }
     },
 
@@ -107,8 +108,9 @@ export default {
 
     router: {
         middleware: ['auth'],
-	base: '/ctpuzzleplatform/'
+        base: process.env.FRONTEND_PREFIX || ''
     },
+
     /*
     ** Build configuration
     */
@@ -129,6 +131,7 @@ export default {
                     })
                 )
             }
-        }
+        },
+
     }
 }

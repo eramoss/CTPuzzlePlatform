@@ -11,4 +11,5 @@ COPY . .
 
 ARG NODE_ENV
 ARG API_URL
+ARG FRONTEND_PREFIX
 RUN NODE_OPTIONS=--max-old-space-size=8192 npm run build
