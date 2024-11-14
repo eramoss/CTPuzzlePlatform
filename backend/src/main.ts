@@ -17,7 +17,6 @@ async function bootstrap() {
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       allowedHeaders: 'Content-Type, Authorization',
       optionsSuccessStatus: 204,
-      credentials: true,
     }
   )
   const port = process.env.BACKEND_PORT;
