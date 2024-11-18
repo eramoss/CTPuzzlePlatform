@@ -9,7 +9,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       const message = context.getArgs()[0] as IncomingMessage;
       const url = message.url;
       const secondPathPart = url.split('/')[2];
-      if (secondPathPart == 'public') {
+      if (url.includes('public')) {
         return true;
       }
     } catch (e) {
