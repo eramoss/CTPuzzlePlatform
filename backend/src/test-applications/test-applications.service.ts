@@ -1,34 +1,27 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ItemResponse } from 'src/item-responses/item-response.entity';
+import { Mechanic } from 'src/mechanics/mechanic.entity';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
 import { PageResponse } from 'src/pagination/pageresponse.dto';
 import Participation from 'src/participation/participation.entity';
 import { ParticipationService } from 'src/participation/participation.service';
+import PreparedParticipation from 'src/participation/prepared-participation.dto';
+import { TestItem } from 'src/tests/test-item.entity';
+import { Test } from 'src/tests/test.entity';
 import { TestService } from 'src/tests/tests.service';
 import { User, USER_UUID_TOKEN } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
-import {
-  Brackets,
-  DeleteResult,
-  Long,
-  Repository,
-  UpdateResult,
-} from 'typeorm';
-import { TestApplication } from './test-application.entity';
-import { v4 as uuidv4 } from 'uuid';
-import { ConfigService } from '@nestjs/config';
-import PreparedParticipation from 'src/participation/prepared-participation.dto';
-import { Mechanic } from 'src/mechanics/mechanic.entity';
 import {
   buildCsv,
   CsvColumnType,
   CsvData,
   CsvHeaderLabel,
 } from 'src/util/download';
-import { ItemResponse } from 'src/item-responses/item-response.entity';
-import { TestItem } from 'src/tests/test-item.entity';
-import { Item } from 'src/items/item.entity';
-import { Test } from 'src/tests/test.entity';
+import { Brackets, DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
+import { TestApplication } from './test-application.entity';
 
 @Injectable()
 export class TestApplicationsService {
@@ -323,6 +316,7 @@ export class TestApplicationsService {
       .leftJoinAndSelect('test.items', 'testItem')
       .orderBy('testItem.order', 'ASC')
       .leftJoinAndSelect('testItem.item', 'item')
+      .leftJoinAndSelect('item.mechanic', 'mechanic')
       .where({ hash })
       .getOne();
     return testApplication;
@@ -393,81 +387,8 @@ export class TestApplicationsService {
       applicationHash,
       user,
     );
-    const apiUrl = this.configService.get('API_URL');
-    const siteUrl = this.configService.get('SITE_URL');
-    const urlToSendResponses = `${apiUrl}/participations/public/respond/${participation.id}/<item_id>`;
-    const urlToSendProgress = `${apiUrl}/participations/public/save-progress`;
-    const urlToSendSource = `${apiUrl}/participations/public/save-source/${participation.id}`;
-    const urlToSendUserData = `${apiUrl}/participations/public/save-user/${userHash}`;
 
-    let responseClassDefinition = '';
-    try {
-      const testItem = participation.application.test.items[0];
-      const mechanic: Mechanic = await this.testService.getMechanicFromTestItem(
-        testItem,
-      );
-      responseClassDefinition = mechanic.responseClassDefinition;
-    } catch (error) {
-      console.error(
-        'Não foi possível obter a classe de resposta para mostrar como exemplo. ',
-        error,
-      );
-    }
-
-    let lastVisitedItemId = participation.lastVisitedItemId;
-
-    if (participation.lastVisitedItemWasFinished) {
-      const nextItem = this.getUndoneItem(participation);
-      if (nextItem) {
-        lastVisitedItemId = nextItem.id;
-      }
-      if (!nextItem) {
-        lastVisitedItemId = -1;
-      }
-    }
-
-    const hasQuiz = participation?.application?.hasQuiz();
-
-    const preparedParticipation = {
-      participationId: participation.id,
-      lastVisitedItemId: lastVisitedItemId,
-      test: participation.test,
-      urlToSendResponses: {
-        method: 'POST',
-        url: urlToSendResponses,
-        help: `Envie as respostas em formato JSON e de acordo 
-com a classe de respostas definida na mecânica de cada item.
-O valor \"responseClass"\ mostra um exemplo de classe de resposta`,
-        responseClass: responseClassDefinition,
-      },
-      urlToSendProgress: {
-        method: 'PUT',
-        url: urlToSendProgress,
-        help: `Ao acessar um item,
-chame essa url enviando um JSON no formato { id: id_da_participacao, lastVisitedItemId: id_do_ultimo_item_visitado }. Exemplo:
-curl -X PUT --header 'Content-Type: application/json' -d '{"id": ${participation.id}, "lastVisitedItemId": ${participation.lastVisitedItemId}}' ${urlToSendProgress}`,
-      },
-      urlToSendUserData: {
-        method: 'POST',
-        url: urlToSendUserData,
-        help: `Envie um JSON com as informações do usuário. Exemplo:
-curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "idade": 10}' ${urlToSendUserData}`,
-      },
-      urlToSendSource: {
-        method: 'PUT',
-        url: urlToSendSource,
-        help: `Envie uma string com a informação de onde o usuário veio. Exemplo (document.referrer)
-            curl -X PUT --header 'Content-Type: application/json' -d '{"testApplication": ${participation.id}, "source": "facebook"}' ${urlToSendSource}`,
-      },
-      urlToEndOfTestQuiz: {
-        url: hasQuiz ? `${siteUrl}/quiz/${participation.id}` : '',
-        help: hasQuiz
-          ? 'Abra essa url quando o usuário finalizar o teste ou desistir!'
-          : 'Não há questionário de teste. Verifique as configurações do teste!',
-      },
-    } as unknown as PreparedParticipation;
-
-    return preparedParticipation;
+    return this.participationService.buildUrls(participation);
   }
 
   getUndoneItem(participation: Participation): TestItem {
@@ -527,26 +448,8 @@ curl -X POST --header 'Content-Type: application/json' -d '{"nome": "João", "id
       testApplication = controlGroupApplication;
     }
 
-    const testJson = await this.testService.generateJson(
-      testApplication.test.id,
-    );
-    participation.test = testJson;
     participation.user = savedUser;
     participation.application = testApplication;
-    participation = await this.participationService.save(participation);
-
-    let itemsToPlay = [];
-    const items = testApplication.test.items;
-    if (participation.lastVisitedItemId) {
-      const lastVisitedItem = items.find(
-        (testItem) => testItem.id === participation.lastVisitedItemId,
-      );
-      const index = items.indexOf(lastVisitedItem);
-      itemsToPlay = items.slice(index);
-    }
-    if (itemsToPlay.length) {
-      testApplication.test.items = itemsToPlay;
-    }
-    return participation;
+    return this.participationService.save(participation);
   }
 }

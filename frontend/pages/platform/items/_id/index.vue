@@ -1,12 +1,8 @@
 <template>
   <div class="left">
     <el-breadcrumb>
-      <el-breadcrumb-item :to="{ path: '/platform' }"
-        >Plataforma</el-breadcrumb-item
-      >
-      <el-breadcrumb-item :to="{ path: '/platform/items' }"
-        >Itens de teste</el-breadcrumb-item
-      >
+      <el-breadcrumb-item :to="{ path: '/platform' }">Plataforma</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/platform/items' }">Itens de teste</el-breadcrumb-item>
       <el-breadcrumb-item>Edição</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="panel">
@@ -16,77 +12,34 @@
           <el-col>
             <el-row :gutter="20">
               <el-col :span="18">
-                <el-form-item
-                  label="Nome"
-                  title="Nome"
-                  prop="name"
-                  required=""
-                  label-width="170px"
-                >
-                  <el-input
-                    ref="nameInput"
-                    v-model="item.name"
-                    autofocus
-                    placeholder="Fase de programação fácil"
-                  ></el-input>
+                <el-form-item label="Nome" title="Nome" prop="name" required="" label-width="170px">
+                  <el-input ref="nameInput" v-model="item.name" autofocus
+                    placeholder="Fase de programação fácil"></el-input>
                 </el-form-item>
-                <el-form-item
-                  label="Tipo de mecânica"
-                  label-width="170px"
-                  prop="mechanic"
-                >
+                <el-form-item label="Tipo de mecânica" label-width="170px" prop="mechanic">
                   <el-row>
                     <el-col :span="item.mechanic ? 21 : 24">
-                      <el-select
-                        value-key="id"
-                        v-model="item.mechanic"
-                        class="fill"
-                        filterable
-                      >
-                        <el-option
-                          v-for="m in availableMechanics"
-                          :key="m.id"
-                          :value="m"
-                          :label="m.name"
-                        ></el-option>
+                      <el-select value-key="id" v-model="item.mechanic" class="fill" filterable>
+                        <el-option v-for="m in availableMechanics" :key="m.id" :value="m" :label="m.name"></el-option>
                       </el-select>
                     </el-col>
                     <el-col :span="3" v-if="item.mechanic">
-                      <nuxt-link
-                        :to="`/platform/mechanics/${item.mechanic.id}`"
-                      >
-                        <el-button
-                          :disabled="!item.mechanic"
-                          type="text"
-                          icon="el-icon-top-right"
-                        >
+                      <nuxt-link :to="`/platform/mechanics/${item.mechanic.id}`">
+                        <el-button :disabled="!item.mechanic" type="text" icon="el-icon-top-right">
                           Acessar
                         </el-button>
                       </nuxt-link>
                     </el-col>
                   </el-row>
                 </el-form-item>
-                <el-form-item
-                  prop="description"
-                  label="Descrição"
-                  title="Descrição da mecânica"
-                  label-width="170px"
-                >
-                  <el-input
-                    type="textarea"
-                    v-model="item.description"
-                    autofocus
-                    placeholder="Informações sobre o desafio presente no item"
-                  ></el-input>
+                <el-form-item prop="description" label="Descrição" title="Descrição da mecânica" label-width="170px">
+                  <el-input type="textarea" v-model="item.description" autofocus
+                    placeholder="Informações sobre o desafio presente no item"></el-input>
                 </el-form-item>
                 <el-form-item label="Tutorial" label-width="170px">
-                  <el-checkbox v-model="item.isTutorial"
-                    >Este é um item de tutorial
-                    <el-tooltip
-                      effect="light"
-                      content="Itens de tutorial não contam pontos"
-                      ><i class="el-icon-question" /> </el-tooltip
-                  ></el-checkbox>
+                  <el-checkbox v-model="item.isTutorial">Este é um item de tutorial
+                    <el-tooltip effect="light" content="Itens de tutorial não contam pontos"><i
+                        class="el-icon-question" /> </el-tooltip></el-checkbox>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
@@ -108,39 +61,18 @@
               <FormItemLabel label="Especificação do item" :required="true" />
               <el-row :gutter="10">
                 <el-col :span="8" v-if="item.mechanic">
-                  <code-editor
-                    @onSave="save"
-                    :uniqueId="`mechanicClassDefinition${item.id}`"
-                    editor-title="Classe da mecânica"
-                    :font-size="13"
-                    :readonly="true"
-                    v-model="item.mechanic.classDefinition"
-                  >
+                  <code-editor @onSave="save" :uniqueId="`mechanicClassDefinition${item.id}`"
+                    editor-title="Classe da mecânica" :font-size="13" :readonly="true"
+                    v-model="item.mechanic.classDefinition">
                   </code-editor>
                 </el-col>
                 <el-col :span="16">
-                  <code-editor
-                    @onSave="save"
-                    :uniqueId="`item.itemDefinition${item.id}`"
-                    id="instantiate"
-                    editor-title="Instanciação do item"
-                    :disabled="!item.mechanic"
-                    language="typescript"
-                    v-model="item.itemDefinition"
-                    height="500px"
-                    @input="form.validateField('itemDefinition')"
-                  >
+                  <code-editor @onSave="save" :uniqueId="`item.itemDefinition${item.id}`" id="instantiate"
+                    editor-title="Instanciação do item" :disabled="!item.mechanic" language="typescript"
+                    v-model="item.itemDefinition" height="500px" @input="form.validateField('itemDefinition')">
                     <template v-slot:bar>
-                      <el-tooltip
-                        effect="light"
-                        :open-delay="300"
-                        content="Testar item no ambiente do puzzzle"
-                      >
-                        <el-button
-                          @click="testOpenItem"
-                          type="success"
-                          icon="el-icon-video-play"
-                        >
+                      <el-tooltip effect="light" :open-delay="300" content="Testar item no ambiente do puzzzle">
+                        <el-button @click="testOpenItem" type="success" icon="el-icon-video-play">
                           Testar
                         </el-button>
                       </el-tooltip>
@@ -155,13 +87,8 @@
           <el-col>
             <btn-save @click="save" :loading="saving" />
             <btn-back @click="back"></btn-back>
-            <el-button
-              type="primary"
-              @click="duplicateItem"
-              icon="el-icon-copy-document"
-              title="Cria um novo item igual a este para servir de base"
-              >Fazer uma cópia</el-button
-            >
+            <el-button type="primary" @click="duplicateItem" icon="el-icon-copy-document"
+              title="Cria um novo item igual a este para servir de base">Fazer uma cópia</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -323,7 +250,16 @@ export default class ItemEditForm extends Vue {
     let testItemNumber = this.item.id;
     let urlToInstantiateItem = `${serverBaseUrl}/items/public/instantiate/${testItemNumber}`;
     let qs = queryString({ op: "playground", urlToInstantiateItem });
-    window.open(`${appBaseUrl}?${qs}`, "_blank");
+    const url = `${appBaseUrl}?${qs}`
+    if (url.indexOf('http') == -1) {
+      this.$notify({
+        type: "error",
+        title: "Url da mecânica inválida",
+        message: "A URL da mecânica não inicia com o protocolo http/https. Revise no cadastro da mecânica.",
+      });
+      return;
+    }
+    window.open(url, "_blank");
   }
 
   back() {

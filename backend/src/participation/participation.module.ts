@@ -1,17 +1,20 @@
 import { Module } from '@nestjs/common';
-import { ParticipationService } from './participation.service';
-import { ParticipationController } from './participation.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import Participation from './participation.entity';
-import { TestItem } from 'src/tests/test-item.entity';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
 import { ItemResponsesModule } from 'src/item-responses/item-responses.module';
+import { ItemsModule } from 'src/items/items.module';
+import { TestItem } from 'src/tests/test-item.entity';
+import { Test } from 'src/tests/test.entity';
 import { UsersModule } from 'src/users/users.module';
+import { ParticipationController } from './participation.controller';
+import Participation from './participation.entity';
+import { ParticipationService } from './participation.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Participation, TestItem, ItemResponse]),
+    TypeOrmModule.forFeature([Participation, Test, TestItem, ItemResponse]),
     ItemResponsesModule,
+    ItemsModule,
     UsersModule,
   ],
   providers: [ParticipationService],

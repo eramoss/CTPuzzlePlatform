@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ItemsService } from './items.service';
-import { ItemsController } from './items.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Item } from './item.entity';
 import { CodeInterpreterModule } from 'src/code-interpreter/code-interpreter.module';
+import { Item } from './item.entity';
+import { ItemsController } from './items.controller';
+import { ItemsService } from './items.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Item]), CodeInterpreterModule],

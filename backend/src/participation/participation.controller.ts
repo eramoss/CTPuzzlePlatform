@@ -99,4 +99,15 @@ export class ParticipationController {
   ) {
     return this.service.saveResponse(participationId, itemId, response);
   }
+
+  @Get('public/instantiate/:participationId/:testItemId')
+  instantiateParticipationItem(
+    @Param('participationId') participationId: number,
+    @Param('testItemId') testItemId: number,
+  ) {
+    return this.service.instantiateParticipationItem(
+      participationId,
+      testItemId,
+    );
+  }
 }

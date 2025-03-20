@@ -67,7 +67,7 @@ export default class Participation {
     type: 'jsonb',
     nullable: true,
   })
-  test: object;
+  test: { totalItems: number; items: { url: string; id: number }[] };
 
   @DeleteDateColumn()
   deletedAt: Date;
