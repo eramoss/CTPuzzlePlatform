@@ -188,36 +188,54 @@ export class ParticipationService {
     const items = participation.test.items;
     const index = items.indexOf(items.find((i) => i.id == itemId));
     const nextItem = items[index + 1];
+
+    if (!nextItem) {
+      this.finishParticipation(participation);
+    }
     return {
       next: nextItem?.url,
     };
   }
 
-  async save(participation: Participation): Promise<Participation> {
-    this.addItems(participation);
+  finishParticipation(participation: Participation) {
+    participation.finishedAt = new Date();
+    this.save(participation);
+  }
+
+  save(participation: Participation): Promise<Participation> {
     return this.participationRepository.save(participation);
   }
 
-  private addItems(participation: Participation) {
+  async saveAndConfigureItems(
+    participation: Participation,
+  ): Promise<Participation> {
+    return this.setupItems(await this.save(participation));
+  }
+
+  private setupItems(participation: Participation) {
     const items = participation.application.test.items;
+    if (!items) return;
     participation.test = {
-      totalItems: items.length,
-      items: items.map((testItem) => {
+      items: items.map((testItem, index) => {
         const baseUrl = testItem.item.mechanic.baseUrl;
         return {
           id: testItem.id,
-          url: this.buildItemUrl(baseUrl, testItem.id),
-          hasResponse: participation.itemResponses?.some(
-            (r) => r.testItem?.id === testItem?.id,
-          ),
+          url: this.buildItemUrl(baseUrl, participation.id, testItem.id),
+          progress: `${index + 1}/${items.length}`,
         };
       }),
     };
-    return participation;
+    return this.save(participation);
   }
 
-  private buildItemUrl(baseUrl: string, testItemId: number): string {
-    return `${baseUrl}?op=play&testItemId=${testItemId}`;
+  private buildItemUrl(
+    baseUrl: string,
+    participationId: number,
+    testItemId: number,
+  ): string {
+    const apiUrl = this.configService.get('API_URL');
+    const urlToInstantiateItem = `${apiUrl}/participations/public/instantiate/${participationId}/${testItemId}`;
+    return `${baseUrl}?op=play&urlToInstantiateItem=${urlToInstantiateItem}`;
   }
 
   softDeleteById(id: number): Promise<DeleteResult> {
@@ -249,19 +267,22 @@ export class ParticipationService {
 
   async getPreparedParticipation(
     participationId: number,
+    testItemId: number,
   ): Promise<PreparedParticipation> {
     const participation = await this.participationRepository
       .createQueryBuilder('participation')
       .where({ id: participationId })
       .getOne();
-    return this.buildUrls(participation);
+    return this.buildUrls(participation, testItemId);
   }
 
-  buildUrls(participation: Participation): PreparedParticipation {
+  buildUrls(
+    participation: Participation,
+    testItemId: number,
+  ): PreparedParticipation {
     const apiUrl = this.configService.get('API_URL');
     const siteUrl = this.configService.get('SITE_URL');
-    const urlToSendResponses = `${apiUrl}/participations/public/respond/${participation.id}/{item_id}`;
-    const urlToInstantiateItem = `${apiUrl}/participations/public/instantiate/${participation.id}/{item_id}`;
+    const urlToSendResponses = `${apiUrl}/participations/public/respond/${participation.id}/${testItemId}`;
 
     const preparedParticipation = {
       participationId: participation.id,
@@ -275,11 +296,6 @@ export class ParticipationService {
         url: `${siteUrl}/quiz/${participation.id}`,
         help: 'Abra essa url quando o usuário finalizar o teste ou desistir!',
       },
-      urlToInstantiateItem: {
-        method: 'GET',
-        url: urlToInstantiateItem,
-        help: 'Url para obter o json da fase. Concatenar com o itemId de cada item',
-      },
     } as unknown as PreparedParticipation;
 
     return preparedParticipation;
@@ -288,15 +304,25 @@ export class ParticipationService {
   async instantiateParticipationItem(
     participationId: number,
     testItemId: number,
-  ): Promise<{ json: string; participation: PreparedParticipation }> {
+  ): Promise<{
+    json: string;
+    participation: PreparedParticipation;
+    progress: string;
+  }> {
     const testItem = await this.testItemRepository
       .createQueryBuilder('testItem')
       .leftJoinAndSelect('testItem.item', 'item')
       .where({ id: testItemId })
       .getOne();
+    const participation = await this.getPreparedParticipation(
+      participationId,
+      testItem.id,
+    );
+    const item = participation.test.items.find((i) => i.id == testItemId);
     return {
       json: await this.itemService.instantiateToGetJson(testItem.item.id),
-      participation: await this.getPreparedParticipation(participationId),
+      participation: participation,
+      progress: `Fase ${item.progress}`,
     };
   }
 }

@@ -388,7 +388,7 @@ export class TestApplicationsService {
       user,
     );
 
-    return this.participationService.buildUrls(participation);
+    return { test: participation.test };
   }
 
   getUndoneItem(participation: Participation): TestItem {
@@ -450,6 +450,6 @@ export class TestApplicationsService {
 
     participation.user = savedUser;
     participation.application = testApplication;
-    return this.participationService.save(participation);
+    return this.participationService.saveAndConfigureItems(participation);
   }
 }

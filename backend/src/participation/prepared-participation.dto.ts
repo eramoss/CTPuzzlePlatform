@@ -1,3 +1,5 @@
+import { ParticipationTest } from './participation.entity';
+
 export class UrlHelper {
   method: string;
   url: string;
@@ -6,9 +8,7 @@ export class UrlHelper {
 }
 
 export default class PreparedParticipation {
-  participationId: number;
-  test: string;
-  urlToSendResponses: UrlHelper;
-  urlToEndOfTestQuiz: UrlHelper;
-  urlToInstantiateItem: UrlHelper;
+  test: ParticipationTest;
+  urlToSendResponses?: UrlHelper;
+  urlToEndOfTestQuiz?: UrlHelper;
 }
