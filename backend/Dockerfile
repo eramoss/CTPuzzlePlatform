@@ -1,11 +1,10 @@
-FROM node:18.14.1-alpine
+FROM node:18.14.1-bullseye
 
 WORKDIR /backend
 
 # install deps 
-RUN apk add --no-cache \
-    R \
-    R-dev \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    r-base \
     curl \
     gcc \
     g++ \
