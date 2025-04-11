@@ -182,8 +182,6 @@ export class ParticipationService {
     itemResponse.score = await this.itemResponseService.calculateScore(
       itemResponse,
     );
-    //participation.lastVisitedItemWasFinished = true;
-    this.participationRepository.save(participation);
 
     const items = participation.test.items;
     const index = items.indexOf(items.find((i) => i.id == itemId));
@@ -192,6 +190,9 @@ export class ParticipationService {
     if (!nextItem) {
       this.finishParticipation(participation);
     }
+
+    this.participationRepository.save(participation);
+
     return {
       next: nextItem?.url,
     };
@@ -199,7 +200,6 @@ export class ParticipationService {
 
   finishParticipation(participation: Participation) {
     participation.finishedAt = new Date();
-    this.save(participation);
   }
 
   save(participation: Participation): Promise<Participation> {
