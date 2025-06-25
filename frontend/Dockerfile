@@ -1,4 +1,4 @@
-FROM node:14.18.0-alpine
+FROM node:20.16-bullseye
 
 WORKDIR /frontend
 

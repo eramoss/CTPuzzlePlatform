@@ -131,6 +131,7 @@ export default {
                     })
                 )
             }
+						config.resolve.alias['node-fetch-native'] = 'node-fetch'
         },
 
     }
