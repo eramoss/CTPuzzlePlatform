@@ -13,6 +13,10 @@ import {
 } from 'typeorm';
 import { UserQuizSession } from './user-quiz.dto';
 
+export interface ParticipationTest {
+  items: { url: string; id: number; progress: string }[];
+}
+
 @Entity()
 export default class Participation {
   @PrimaryGeneratedColumn()
@@ -67,7 +71,7 @@ export default class Participation {
     type: 'jsonb',
     nullable: true,
   })
-  test: object;
+  test: ParticipationTest;
 
   @DeleteDateColumn()
   deletedAt: Date;

@@ -1,40 +1,14 @@
-export class UrlToSendProgress {
+import { ParticipationTest } from './participation.entity';
+
+export class UrlHelper {
   method: string;
   url: string;
   help: string;
-}
-
-export class UrlToSendResponses {
-  method: string;
-  url: string;
-  help: string;
-  responseClass: string;
-}
-
-export class UrlToSendUserData {
-  method: string;
-  url: string;
-  help: string;
-}
-
-export class UrlToSendSource {
-  method: string;
-  url: string;
-  help: string;
-}
-
-export class UrlToEndOfTestQuiz {
-  url: string;
-  help: string;
+  responseClass?: string;
 }
 
 export default class PreparedParticipation {
-  lastVisitedItemId: number;
-  participationId: number;
-  test: string;
-  urlToSendResponses: UrlToSendResponses;
-  urlToSendProgress: UrlToSendProgress;
-  urlToSendUserData: UrlToSendUserData;
-  urlToSendSource: UrlToSendUserData;
-  urlToEndOfTestQuiz: UrlToEndOfTestQuiz;
+  test: ParticipationTest;
+  urlToSendResponses?: UrlHelper;
+  urlToEndOfTestQuiz?: UrlHelper;
 }

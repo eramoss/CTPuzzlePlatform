@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ItemResponse } from 'src/item-responses/item-response.entity';
 import { ItemResponsesService } from 'src/item-responses/item-responses.service';
+import { ItemsService } from 'src/items/items.service';
 import { TestApplication } from 'src/test-applications/test-application.entity';
 import { TestItem } from 'src/tests/test-item.entity';
 import { User } from 'src/users/user.entity';
@@ -10,11 +12,13 @@ import {
   DeleteResult,
   EntityManager,
   In,
+  IsNull,
   Repository,
   UpdateResult,
 } from 'typeorm';
 import ParticipationCount from './participation.count.dto';
 import Participation from './participation.entity';
+import PreparedParticipation from './prepared-participation.dto';
 
 @Injectable()
 export class ParticipationService {
@@ -24,8 +28,10 @@ export class ParticipationService {
     @InjectRepository(TestItem)
     private testItemRepository: Repository<TestItem>,
     private itemResponseService: ItemResponsesService,
+    private itemService: ItemsService,
     private userService: UsersService,
     private entityManager: EntityManager,
+    private configService: ConfigService,
   ) {}
 
   async countParticipations(groupId: number): Promise<number> {
@@ -155,6 +161,7 @@ export class ParticipationService {
       .leftJoinAndSelect('testItem.item', 'item')
       .where({ id: itemId })
       .getOne();
+
     const participation = await this.participationRepository
       .createQueryBuilder('participation')
       .leftJoinAndSelect('participation.itemResponses', 'itemResponse')
@@ -175,12 +182,60 @@ export class ParticipationService {
     itemResponse.score = await this.itemResponseService.calculateScore(
       itemResponse,
     );
-    //participation.lastVisitedItemWasFinished = true;
+
+    const items = participation.test.items;
+    const index = items.indexOf(items.find((i) => i.id == itemId));
+    const nextItem = items[index + 1];
+
+    if (!nextItem) {
+      this.finishParticipation(participation);
+    }
+
     this.participationRepository.save(participation);
+
+    return {
+      next: nextItem?.url,
+    };
+  }
+
+  finishParticipation(participation: Participation) {
+    participation.finishedAt = new Date();
   }
 
   save(participation: Participation): Promise<Participation> {
     return this.participationRepository.save(participation);
+  }
+
+  async saveAndConfigureItems(
+    participation: Participation,
+  ): Promise<Participation> {
+    return this.setupItems(await this.save(participation));
+  }
+
+  private setupItems(participation: Participation) {
+    const items = participation.application.test.items;
+    if (!items) return;
+    participation.test = {
+      items: items.map((testItem, index) => {
+        const baseUrl = testItem.item.mechanic.baseUrl;
+        return {
+          id: testItem.id,
+          url: this.buildItemUrl(baseUrl, participation.id, testItem.id),
+          progress: `${index + 1}/${items.length}`,
+        };
+      }),
+    };
+    return this.save(participation);
+  }
+
+  private buildItemUrl(
+    baseUrl: string,
+    participationId: number,
+    testItemId: number,
+  ): string {
+    const apiUrl = this.configService.get('API_URL');
+    const urlToInstantiateItem = `${apiUrl}/participations/public/instantiate/${participationId}/${testItemId}`;
+    return `${baseUrl}?op=play&urlToInstantiateItem=${urlToInstantiateItem}`;
   }
 
   softDeleteById(id: number): Promise<DeleteResult> {
@@ -204,9 +259,70 @@ export class ParticipationService {
       .where({
         application: { id: In(ids) },
         user: user,
-        finishedAt: null,
+        finishedAt: IsNull(),
       })
       .orderBy('participation.id', 'DESC')
       .getOne();
+  }
+
+  async getPreparedParticipation(
+    participationId: number,
+    testItemId: number,
+  ): Promise<PreparedParticipation> {
+    const participation = await this.participationRepository
+      .createQueryBuilder('participation')
+      .where({ id: participationId })
+      .getOne();
+    return this.buildUrls(participation, testItemId);
+  }
+
+  buildUrls(
+    participation: Participation,
+    testItemId: number,
+  ): PreparedParticipation {
+    const apiUrl = this.configService.get('API_URL');
+    const siteUrl = this.configService.get('SITE_URL');
+    const urlToSendResponses = `${apiUrl}/participations/public/respond/${participation.id}/${testItemId}`;
+
+    const preparedParticipation = {
+      participationId: participation.id,
+      test: participation.test,
+      urlToSendResponses: {
+        method: 'POST',
+        url: urlToSendResponses,
+        help: `Envie as respostas em formato JSON e de acordo com a classe de respostas definida na mecânica de cada item.`,
+      },
+      urlToEndOfTestQuiz: {
+        url: `${siteUrl}/quiz/${participation.id}`,
+        help: 'Abra essa url quando o usuário finalizar o teste ou desistir!',
+      },
+    } as unknown as PreparedParticipation;
+
+    return preparedParticipation;
+  }
+
+  async instantiateParticipationItem(
+    participationId: number,
+    testItemId: number,
+  ): Promise<{
+    json: string;
+    participation: PreparedParticipation;
+    progress: string;
+  }> {
+    const testItem = await this.testItemRepository
+      .createQueryBuilder('testItem')
+      .leftJoinAndSelect('testItem.item', 'item')
+      .where({ id: testItemId })
+      .getOne();
+    const participation = await this.getPreparedParticipation(
+      participationId,
+      testItem.id,
+    );
+    const item = participation.test.items.find((i) => i.id == testItemId);
+    return {
+      json: await this.itemService.instantiateToGetJson(testItem.item.id),
+      participation: participation,
+      progress: `Fase ${item.progress}`,
+    };
   }
 }

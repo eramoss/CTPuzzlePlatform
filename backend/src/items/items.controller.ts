@@ -5,8 +5,8 @@ import {
   Get,
   Param,
   Post,
-  UseGuards,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PageRequest } from 'src/pagination/pagerequest.dto';
@@ -56,7 +56,7 @@ export class ItemsController {
   }
 
   @Get('public/instantiate/:id')
-  instantiate(@Param('id') id: number): Promise<string> {
-    return this.itemService.instantiateToGetJson(id);
+  async instantiate(@Param('id') id: number): Promise<{ json: string }> {
+    return { json: await this.itemService.instantiateToGetJson(id) };
   }
 }

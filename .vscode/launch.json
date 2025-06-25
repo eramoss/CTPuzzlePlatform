@@ -13,7 +13,7 @@
             "name": "Backend",
             "request": "launch",
             "type": "node-terminal",
-            "command": "npm run start:debug",
+            "command": "nvm use v18.14.1 && npm run start:debug",
             "envFile": "${workspaceFolder}/.env.dev",
             "cwd": "${workspaceFolder}/backend",
             "internalConsoleOptions": "openOnFirstSessionStart"

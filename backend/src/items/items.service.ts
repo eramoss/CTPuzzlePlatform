@@ -85,8 +85,8 @@ export class ItemsService {
       .getMany();
   }
 
-  async instantiateToGetJson(testItemId: number): Promise<any> {
-    const item = await this.getById(testItemId);
+  async instantiateToGetJson(itemId: number): Promise<any> {
+    const item = await this.getById(itemId);
     return this.getJsonFromItem(item);
   }
 

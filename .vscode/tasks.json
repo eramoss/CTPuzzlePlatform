@@ -64,10 +64,6 @@
             "options": {
                 "cwd": "${workspaceFolder}/frontend"
             },
-            "presentation": {
-                "group": "a",
-                "panel": "new"
-            },
             "problemMatcher": []
         },
         {
@@ -77,10 +73,6 @@
             "options": {
                 "cwd": "${workspaceFolder}/backend"
             },
-            "presentation": {
-                "group": "a",
-                "panel": "new"
-            },
             "problemMatcher": []
         },
         {
@@ -89,10 +81,6 @@
             "command": "npm i docsify-cli -g",
             "options": {
                 "cwd": "${workspaceFolder}"
-            },
-            "presentation": {
-                "group": "a",
-                "panel": "new"
             },
             "problemMatcher": []
         },
