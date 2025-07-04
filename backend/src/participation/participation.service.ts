@@ -151,6 +151,7 @@ export class ParticipationService {
       .leftJoinAndSelect('itemResponse.testItem', 'testItem')
       .leftJoinAndSelect('itemResponse.score', 'score')
       .leftJoinAndSelect('testItem.item', 'item')
+      .leftJoinAndSelect('item.mechanic', 'mechanic')
       .where({ id })
       .getOne();
   }
