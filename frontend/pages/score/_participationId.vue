@@ -86,7 +86,7 @@ export default class extends Vue {
     // Calcula os totais a partir das respostas
     this.participation.itemResponses.forEach((itemResponse) => {
       try {
-        const json = JSON.parse(itemResponse.score.json);
+        const json = JSON.parse(itemResponse.score.json.toString());
         totalAbstracao += json.abstracao ?? 0;
         totalAlgoritmo += json.algoritmo ?? 0;
         totalReconhecimentoDePadroes += json.reconhecimentoDePadroes ?? 0;
@@ -255,7 +255,7 @@ export default class extends Vue {
       const mechanicId = itemResponse.testItem?.item?.mechanic?.id;
       if (mechanicId !== undefined && mechanicId !== null) {
         try {
-          const json = JSON.parse(itemResponse.score.json);
+          const json = JSON.parse(itemResponse.score.json.toString());
 
           if (!pesosPorMecanica[mechanicId]) {
             pesosPorMecanica[mechanicId] = {
@@ -341,7 +341,7 @@ export default class extends Vue {
 
   getJson(itemResponse: ItemResponse) {
     try {
-      const response = JSON.parse(itemResponse.score.json)
+      const response = JSON.parse(itemResponse.score.json.toString());
       return response;
     } catch (e) {
       console.log(e);
