@@ -1,9 +1,9 @@
 {
     "type": "postgres",
     "host": "localhost",
-    "port": 5432,
+    "port": 5656,
     "username": "postgres",
-    "password": "root",
+    "password": "postgres",
     "synchronize": false,
     "database": "ct_puzzle_platform",
     "entities": [
