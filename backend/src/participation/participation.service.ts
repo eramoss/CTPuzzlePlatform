@@ -291,7 +291,7 @@ export class ParticipationService {
       urlToSendResponses: {
         method: 'POST',
         url: urlToSendResponses,
-        help: `Envie as respostas em formato JSON e de acordo com a classe de respostas definida na mecânica de cada item.`,
+        help: `Envie as respostas em formato JSON e de acordo com a classe de respostas definido no minijogo de cada item.`,
       },
       urlToEndOfTestQuiz: {
         url: `${siteUrl}/quiz/${participation.id}`,

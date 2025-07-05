@@ -78,9 +78,6 @@ export default class extends Vue {
       MaxAlgoritmo += pesosMedia[mechanicId].peso_algoritmo * quantidadeFases;
       MaxReconhecimentoDePadroes += pesosMedia[mechanicId].peso_reconhecimentoDePadroes * quantidadeFases;
       MaxDecomposicao += pesosMedia[mechanicId].peso_decomposicao * quantidadeFases;
-
-      console.log(`Mecânica ${numericMechanicId} - Quantidade de Fases: ${quantidadeFases}`);
-      console.log(`Pesos Média para Mecânica ${numericMechanicId}:`, pesosMedia[mechanicId]);
     }
     
     // Calcula os totais a partir das respostas
