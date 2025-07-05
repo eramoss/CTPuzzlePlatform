@@ -21,7 +21,7 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column label="Mecânica" prop="mechanicName" width="200">
+        <el-table-column label="Minijogo" prop="mechanicName" width="200">
         </el-table-column>
         <el-table-column
           align="right"

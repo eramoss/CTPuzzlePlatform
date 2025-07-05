@@ -16,7 +16,7 @@
                   <el-input ref="nameInput" v-model="item.name" autofocus
                     placeholder="Fase de programação fácil"></el-input>
                 </el-form-item>
-                <el-form-item label="Tipo de mecânica" label-width="170px" prop="mechanic">
+                <el-form-item label="Tipo de minijogo" label-width="170px" prop="mechanic">
                   <el-row>
                     <el-col :span="item.mechanic ? 21 : 24">
                       <el-select value-key="id" v-model="item.mechanic" class="fill" filterable>
@@ -32,7 +32,7 @@
                     </el-col>
                   </el-row>
                 </el-form-item>
-                <el-form-item prop="description" label="Descrição" title="Descrição da mecânica" label-width="170px">
+                <el-form-item prop="description" label="Descrição" title="Descrição do minijogo" label-width="170px">
                   <el-input type="textarea" v-model="item.description" autofocus
                     placeholder="Informações sobre o desafio presente no item"></el-input>
                 </el-form-item>
@@ -43,7 +43,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item title="Ilustração da mecânica">
+                <el-form-item title="Ilustração do minijogo">
                   <FormItemLabel label="Ilustração do item" />
                   <ImageUploader v-model="item.thumbnail" />
                 </el-form-item>
@@ -52,7 +52,7 @@
 
             <MessageAlert type="info">
               A configuração do item deve obedecer as especificações definidas
-              na mecânica. <br />
+              no minijogo. <br />
               O objeto json/TypeScript configurado deve ser utilizado pelo
               desenvolvedor no momento de instanciar o item do teste.
             </MessageAlert>
@@ -62,7 +62,7 @@
               <el-row :gutter="10">
                 <el-col :span="8" v-if="item.mechanic">
                   <code-editor @onSave="save" :uniqueId="`mechanicClassDefinition${item.id}`"
-                    editor-title="Classe da mecânica" :font-size="13" :readonly="true"
+                    editor-title="Classe do minijogo" :font-size="13" :readonly="true"
                     v-model="item.mechanic.classDefinition">
                   </code-editor>
                 </el-col>
@@ -131,7 +131,7 @@ export default class ItemEditForm extends Vue {
       },
       mechanic: {
         required: true,
-        message: "Informe a mecânica",
+        message: "Informe o minijogo",
         trigger: "change",
       },
       description: {
@@ -221,7 +221,7 @@ export default class ItemEditForm extends Vue {
         type: "error",
         title: "Não foi possível abrir o item",
         message:
-          "Para rodar o item, é necessário selecionar uma mecânica válida, com url base do aplicativo que vai abrir o item configurado",
+          "Para rodar o item, é necessário selecionar um minijogo válido, com url base do aplicativo que vai abrir o item configurado",
       });
       return;
     }
@@ -231,7 +231,7 @@ export default class ItemEditForm extends Vue {
         type: "error",
         title: "Não existe o endereço base do aplicativo",
         message:
-          "A mecânica não possui uma url base do aplicativo que deve apresentar a o item configurado",
+          "O minijogo não possui uma url base do aplicativo que deve apresentar a o item configurado",
       });
       return;
     }
@@ -254,8 +254,8 @@ export default class ItemEditForm extends Vue {
     if (url.indexOf('http') == -1) {
       this.$notify({
         type: "error",
-        title: "Url da mecânica inválida",
-        message: "A URL da mecânica não inicia com o protocolo http/https. Revise no cadastro da mecânica.",
+        title: "Url do minijogo inválida",
+        message: "A URL do minijogo não inicia com o protocolo http/https. Revise no cadastro do minijogo.",
       });
       return;
     }
