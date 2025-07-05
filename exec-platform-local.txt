@@ -1,0 +1,55 @@
+
+INSTRUÇÕES PARA EXECUÇÃO DA PLATAFORMA
+
+>>>>>CRIAR IMAGEM DOCKER<<<<<
+
+1º DEIXA O DOCKER ABERTO E EXECUTANDO
+2º Abre o terminar no visualstudio > fica na pasta raiz
+
+A instalação do postgres pode ser feita via docker e docker-compose
+
+-> AO INVÉS DESSE COMANDO
+docker-compose --file docker-compose.database-only.yml --env .env.database-only up
+
+-> EXECUTAR ESSE AQUI
+Get-Content .env.database-only | ForEach-Object {
+    $name, $value = $_ -split '=', 2
+    Set-Item -Path "env:\$name" -Value $value
+}
+docker-compose -f docker-compose.database-only.yml up
+
+>>>>CRIAR O BANCO DE DADOS<<<<<
+
+#LISTA TODOS OS CONTAINERS
+docker ps
+
+#EXECTUA O CONTAINER NO POSTGRES
+docker exec -it 7a6bb60357ef psql -U postgres
+
+#CRIA O DB 
+create database ct_puzzle_platform with owner postgres;
+
+#LISTA TODOS OS BANCOS
+\l
+
+#DAR PERMISSÃO PARA O POSTGRES NESSE BANCO
+GRANT ALL PRIVILEGES ON DATABASE ct_puzzle_platform TO postgres;
+
+>>>>INCLUIR O DUMP NA PLATAFORMA<<<<<
+
+Abre o terminar no visualstudio > fica na pasta raiz
+-> Aqui tem que trocar para o nome da imagem docker
+1º docker cp C:\Git\Jogo\CTPuzzlePlatform_2025\arq_novo_dump_Ana.sql 7a6bb60357ef:/tmp/dump.sql
+
+2º docker exec -it 7a6bb60357ef bash
+
+3º psql -U postgres -d ct_puzzle_platform -f /tmp/dump.sql
+
+
+>>>>>CRIAR DUMP<<<<<
+
+#COMANDO PARA CRIAR UM DUMP COM OS COMANDOS VISÍVEIS
+pg_dump -h localhost -p 5432 -U postgres -d minha_base -F p -f /home/usuario/dump/minha_base.sql
+
+#COMANDO QUE USEI LOCALMENTE NA MINHA MÁQUINA
+pg_dump -h localhost -p 5656 -U postgres -d ct_puzzle_platform -F p -f C:/Git/Jogo/CTPuzzlePlatform_NEW/arq_novo_dump_05072025.sql
