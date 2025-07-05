@@ -105,7 +105,7 @@ export default class extends Vue {
         pointBackgroundColor: "rgba(100, 181, 246, 1)",
       },
       {
-        label: "Valor Máximo",
+        label: "Pontuação Máxima",
         data: [
           MaxAbstracao.toFixed(2),
           MaxAlgoritmo.toFixed(2),
