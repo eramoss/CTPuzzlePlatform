@@ -7,7 +7,7 @@ export type MomentOfQuizPresentation = "after-the-test" | "before-the-test";
 export default class Test {
     id!: number
     name!: string
-    link: string = 'http://localhost:9000/'
+    link: string = 'https://ct.playerweb.com.br'
     items: TestItem[] = []
     applications: TestApplication[] = []
     researchGroup!: ResearchGroup
