@@ -5,12 +5,12 @@
         >Plataforma</el-breadcrumb-item
       >
       <el-breadcrumb-item :to="{ path: '/platform/mechanics' }"
-        >Mecânicas</el-breadcrumb-item
+        >Minijogos</el-breadcrumb-item
       >
       <el-breadcrumb-item>Edição</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="panel">
-      <h2>Edição de mecânica de puzzle</h2>
+      <h2>Edição de minijogos de puzzle</h2>
       <el-form :model="mechanic" :rules="formRules" ref="mechanicForm">
         <el-row>
           <el-col>
@@ -18,7 +18,7 @@
               <el-col :span="18">
                 <el-form-item
                   label="Nome"
-                  title="Nome da mecânica"
+                  title="Nome do minijogo"
                   required=""
                   prop="name"
                 >
@@ -31,7 +31,7 @@
                 </el-form-item>
                 <el-form-item
                   label="Endereço do aplicativo (URL) que apresenta o puzzle"
-                  title="URL base do aplicativo que deve apresentar esse tipo de puzzle (mecânica)"
+                  title="URL base do aplicativo que deve apresentar esse tipo de puzzle (minijogo)"
                   required=""
                   prop="baseUrl"
                 >
@@ -43,19 +43,19 @@
                 </el-form-item>
                 <el-form-item
                   label="Descrição"
-                  title="Descrição da mecânica"
+                  title="Descrição do minijogo"
                   prop="description"
                 >
                   <el-input
                     type="textarea"
                     v-model="mechanic.description"
                     autofocus
-                    placeholder="Informações sobre a mecânica, destinada ao criador dos itens do teste"
+                    placeholder="Informações sobre o minijogo, destinada ao criador dos itens do teste"
                   ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item title="Ilustração da mecânica">
+                <el-form-item title="Ilustração do minijogo">
                   <FormItemLabel label="Imagem de ilustração" />
                   <ImageUploader v-model="mechanic.thumbnail" />
                 </el-form-item>
@@ -64,7 +64,7 @@
 
             <MessageAlert type="info">
               <p>
-                A especificação da mecânica é uma classe <wiki-link
+                A especificação do minijogo é uma classe <wiki-link
                   target="_blank"
                   href="https://www.typescriptlang.org/"
                   label="TypeScript"
@@ -79,7 +79,7 @@
             <el-form-item prop="classDefinition">
               <code-editor
                 @onSave="save"
-                editorTitle="Especificação da mecânica"
+                editorTitle="Especificação do minijogo"
                 :required="true"
                 :uniqueId="`mechanicClassDefinition${mechanic.id}`"
                 v-model="mechanic.classDefinition"
@@ -174,7 +174,7 @@ import User from "~/types/User";
 
 @Component({
   head: {
-    title: "Mecânica e puzzle",
+    title: "Minijogo e puzzle",
   },
   components: { CodeEditor, ScoreFunctionTestDialog },
 })
@@ -189,12 +189,12 @@ export default class MechanicEditForm extends Vue {
     return {
       name: {
         required: true,
-        message: "Informe o nome da mecânica",
+        message: "Informe o nome do minijogo",
         trigger: "blur",
       },
       description: {
         required: true,
-        message: "Informe a descrição da mecânica",
+        message: "Informe a descrição do minijogo",
         trigger: "blur",
       },
       baseUrl: {
@@ -205,7 +205,7 @@ export default class MechanicEditForm extends Vue {
       },
       classDefinition: {
         required: true,
-        message: "Informe a classe da mecânica",
+        message: "Informe a classe do minijogo",
       },
       responseClassDefinition: {
         required: true,
@@ -254,14 +254,14 @@ export default class MechanicEditForm extends Vue {
       this.$notify({
         duration: 7000,
         type: "success",
-        title: "Sucesso ao salvar a mecânica!",
-        message: "Agora você já pode criar itens com essa mecânica",
+        title: "Sucesso ao salvar o minijogo!",
+        message: "Agora você já pode criar itens com esse minijogo",
       });
       this.$router.push({ params: { id: data.id } });
     } catch (e) {
       this.$notify.error({
-        message: "Não foi possível salvar a mecânica",
-        title: "Erro ao salvar mecânica",
+        message: "Não foi possível salvar o minijogo",
+        title: "Erro ao salvar minijogo",
       });
     } finally {
       this.saving = false;

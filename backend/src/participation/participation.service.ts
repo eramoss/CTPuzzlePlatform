@@ -151,6 +151,7 @@ export class ParticipationService {
       .leftJoinAndSelect('itemResponse.testItem', 'testItem')
       .leftJoinAndSelect('itemResponse.score', 'score')
       .leftJoinAndSelect('testItem.item', 'item')
+      .leftJoinAndSelect('item.mechanic', 'mechanic')
       .where({ id })
       .getOne();
   }
@@ -290,7 +291,7 @@ export class ParticipationService {
       urlToSendResponses: {
         method: 'POST',
         url: urlToSendResponses,
-        help: `Envie as respostas em formato JSON e de acordo com a classe de respostas definida na mecânica de cada item.`,
+        help: `Envie as respostas em formato JSON e de acordo com a classe de respostas definido no minijogo de cada item.`,
       },
       urlToEndOfTestQuiz: {
         url: `${siteUrl}/quiz/${participation.id}`,

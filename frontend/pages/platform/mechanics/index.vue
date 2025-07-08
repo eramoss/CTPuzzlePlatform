@@ -4,18 +4,18 @@
       <el-breadcrumb-item :to="{ path: '/platform' }"
         >Plataforma</el-breadcrumb-item
       >
-      <el-breadcrumb-item>Mecânicas</el-breadcrumb-item>
+      <el-breadcrumb-item>Minijogos</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="panel">
-      <h2>Mecânicas</h2>
+      <h2>Minijogos</h2>
       <el-button
-        title="Abre o cadastro de uma nova mecânica para um jogo (puzzle) de Pensamento Computacional"
+        title="Abre o cadastro de um novo minijogo para um jogo (puzzle) de Pensamento Computacional"
         type="primary"
         icon="el-icon-plus"
         @click="create"
         :loading="goingCreate"
       >
-        Nova mecânica de puzzle
+        Novo minijogo de puzzle
       </el-button>
       <!-- <el-input v-model="pageRequest.search"></el-input> -->
       <el-table :data="pageResponse.data">
@@ -59,7 +59,7 @@ import SnackBarRemove from "~/components/SnackBarRemove.vue";
   },
   head() {
     return {
-      title: "Mecânicas",
+      title: "Minijogos",
     };
   },
 })

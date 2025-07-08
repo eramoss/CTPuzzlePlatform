@@ -24,11 +24,11 @@
             class="fill"
           ></el-input>
         </filters-box-item>
-        <filters-box-item label="Mecânicas de puzzles" :grow="0">
+        <filters-box-item label="Minijogos de puzzles" :grow="0">
           <el-select
             v-model="pageRequest.filter.mechanic"
             @clear="clearMechanicFilter"
-            placeholder="Filtro por mecânicas"
+            placeholder="Filtro por minijogos"
             value-key="id"
             filterable
             clearable
@@ -66,7 +66,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="Mecânica"
+          label="Minijogo"
           prop="mechanic.name"
           width="200"
         ></el-table-column>

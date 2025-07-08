@@ -66,12 +66,54 @@ export const createScoreFunctionCode = function (classDefinition: string, respon
     // Escreva a função de escore
     
     // Exemplo
-    // let nota = 0;
-    // if(resposta.tempo == item.tempoEsperado / 2){
-    //    nota = 5
-    //}
+
+    //pesos
+    //let peso_abstracao = 0.2
+    //let peso_algoritmo = 0
+    //let peso_reconhecimento_padroes = 0.4
+    //let peso_decomposicao = 0.4
+
+    //pilares 
+    //let abstracao = 0
+    //let algoritmo = 0
+    //let reconhecimento_padroes = 0
+    //let decomposicao = 0
+
+    //respota obtida na fase
+    //let contadorCliques = resposta.contadorCliques
+    //let contadorGiros = resposta.contadorGiros
+    //let tempoEmSegundos = resposta.tempoEmSegundos
+
+    //valor minimo esperado
+    //let contadorCliquesMinimo = item.contadorCliquesMinimo
+    //let contadorGirosMinimo = item.contadorGirosMinimo
+
+    //cálculo da fórmula em partes
+    //let calc_cliques = ((contadorCliques - contadorCliquesMinimo) * 0.001)
+    //let calc_giros = ((contadorGiros - contadorGirosMinimo) * 0.001)
+    //let calc_tempo = (tempoEmSegundos * 0.01)
+
+    //cálculo da fórmula final
+    //let escore_final = 1 - calc_cliques - calc_giros - calc_tempo
+
+    //cálculo por pilar do PC
+    //abstracao = parseFloat((peso_abstracao * escore_final).toFixed(2))
+    //algoritmo = parseFloat((peso_algoritmo * escore_final).toFixed(2))
+    //reconhecimento_padroes = parseFloat((peso_reconhecimento_padroes * escore_final).toFixed(2))
+    //decomposicao = parseFloat((peso_decomposicao * escore_final).toFixed(2))
+    //escore_final = parseFloat(escore_final.toFixed(2))
+
     
     // Formato esperado com escore e escore máximo atingível
-    return { score: nota, max: 10, atributoCalculado: 'opcional' };
+    //    return {score: escore_final,
+    //       abstracao: abstracao, 
+    //       peso_abstracao: peso_abstracao, 
+    //       algoritmo: algoritmo, 
+    //       peso_algoritmo: peso_algoritmo,
+    //       reconhecimentoDePadroes: reconhecimento_padroes, 
+    //       peso_reconhecimentoDePadroes: peso_reconhecimento_padroes,
+    //       decomposicao: decomposicao, 
+    //       peso_decomposicao: peso_decomposicao
+    };
 }`
 }

@@ -23,7 +23,7 @@
               route="/platform/mechanics"
             >
               <icon name="tune" />
-              <span slot="title"> Mecânicas </span>
+              <span slot="title"> Minijogos </span>
             </el-menu-item>
             <el-menu-item index="/platform/items" route="/platform/items">
               <icon name="format_list_numbered" />

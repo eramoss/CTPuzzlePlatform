@@ -1,12 +1,9 @@
 <template>
   <div class="jumbotron-and-image">
     <div class="jumbotron">
-      <h1>Plataforma de <br />CT com puzzles</h1>
+      <h1>Plataforma de Puzzles</h1>
       <p>
-        Uma aplicação para medir as habilidades do Pensamento <br />
-        Computacional (Computational Thinking - CT) por meio de
-        <i>puzzles</i> <br />
-        divertidos
+        Uma aplicação para medir as habilidades do Pensamento por meio de <i>puzzles</i> divertidos
       </p>
       <div style="margin-top: 40px">
         <nuxt-link to="/public-applications">
@@ -29,7 +26,7 @@
       </div>
     </div>
     <div class="image">
-      <img src="statistics.svg" alt="Mãos segurando juntas peças de puzzles" />
+      <img src="imagem_puzzle.png" alt="Mãos segurando juntas peças de puzzles" />
     </div>
   </div>
 </template>

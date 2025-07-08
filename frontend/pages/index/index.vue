@@ -2,12 +2,6 @@
   <div>
     <container>
       <jumbotron-site-banner />
-      <section id="play">
-        <h2 class="title">Confira esse game configurado na plataforma:</h2>
-        <test-application-game-iframe
-          :testApplication="randomTestApplication"
-        />
-      </section>
     </container>
   </div>
 </template>
