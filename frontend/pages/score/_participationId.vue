@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="center result-page">
-      <div>
         <div>
           <div class="fundo-branco">
             <div style="display: flex; flex-direction: column; align-items: center;">
@@ -11,8 +10,14 @@
               <canvas id="radarChart"></canvas>
             </div>
           </div>
+          <div class="fundo-branco">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <h2 style="padding: 16px 0;">
+                OUTRA AREA DE CONQUISTA
+              </h2>
+            </div>
+          </div>
         </div>
-      </div>
 
       <el-button id="playAgainBtn" :style="{ background: playAgainButtonColor }" @click="playAgain">Novo
         jogo</el-button>
