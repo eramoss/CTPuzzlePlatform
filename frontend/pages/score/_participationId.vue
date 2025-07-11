@@ -12,15 +12,39 @@
           </div>
           <div class="fundo-branco">
             <div style="display: flex; flex-direction: column; align-items: center;">
-              <h2 style="padding: 16px 0;">
-                OUTRA AREA DE CONQUISTA
-              </h2>
+              <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                  <tr>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #ccc;">Fase</th>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #ccc;">Pontuação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="itemResponse in participation.itemResponses" :key="itemResponse.id">
+                    <td style="text-align:left; padding:8px; border-bottom:1px solid #eee;">{{ getItemName(itemResponse) }}</td>
+                    <td style="text-align:left; padding:8px; border-bottom:1px solid #eee;">{{ itemResponse.score.score }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table style="width: 100%; border-collapse: collapse; margin-top: 24px;">
+                <thead>
+                  <tr>
+                    <th style="text-align:left; padding:8px; border-bottom:1px solid #ccc;">Pontuação Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="text-align:left; padding:8px; border-bottom:1px solid #eee;">{{ totalGrade.toFixed(2) }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
 
-      <el-button id="playAgainBtn" :style="{ background: playAgainButtonColor }" @click="playAgain">Novo
-        jogo</el-button>
+      <el-button id="playAgainBtn" :style="{ background: playAgainButtonColor }" @click="playAgain">
+        Jogar Novamente
+      </el-button>
       <test-application-url-input ref="urlInput" style="display:none" :showAccessIcon="true"
         :test-application.sync="participation.application" />
 
@@ -98,7 +122,7 @@ export default class extends Vue {
 
     const datasets = [
       {
-        label: "Escore",
+        label: "Pontuação",
         data: [
           totalAbstracao.toFixed(2),
           totalAlgoritmo.toFixed(2),
