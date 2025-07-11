@@ -14,6 +14,7 @@
                 <tr>
                   <th style="padding:8px; border-bottom:1px solid #ccc;">Fase</th>
                   <th style="padding:8px; border-bottom:1px solid #ccc;">Pontuação</th>
+                  <th style="padding:8px; border-bottom:1px solid #ccc;">Tempo em Segundos</th>
                 </tr>
               </thead>
               <tbody>
@@ -21,6 +22,9 @@
                   <td style="padding:8px; border-bottom:1px solid #eee;">{{ getItemName(itemResponse)
                   }}</td>
                   <td style="padding:8px; border-bottom:1px solid #eee;">{{ itemResponse.score.score }}
+                  </td>
+                  <td style="padding:8px; border-bottom:1px solid #eee;">
+                    {{ formataTempo(getTempoEmSegundos(itemResponse)) }}
                   </td>
                 </tr>
               </tbody>
