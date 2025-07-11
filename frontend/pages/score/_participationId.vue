@@ -1,46 +1,81 @@
 <template>
   <div>
     <div class="center result-page">
-        <div>
-          <div class="fundo-branco">
-            <div style="display: flex; flex-direction: column; align-items: center;">
-              <h2 style="padding: 16px 0;">
-                Gráfico de escore final por pilares do Pensamento Computacional
-              </h2>
-              <canvas id="radarChart"></canvas>
-            </div>
+      <div>
+        <div class="fundo-branco" >
+          <div>
+            <h2>Gráfico de pontuação final por pilares do Pensamento Computacional</h2>
+            <canvas id="radarChart"></canvas>
           </div>
-          <div class="fundo-branco">
-            <div style="display: flex; flex-direction: column; align-items: center;">
-              <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr>
-                    <th style="text-align:left; padding:8px; border-bottom:1px solid #ccc;">Fase</th>
-                    <th style="text-align:left; padding:8px; border-bottom:1px solid #ccc;">Pontuação</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="itemResponse in participation.itemResponses" :key="itemResponse.id">
-                    <td style="text-align:left; padding:8px; border-bottom:1px solid #eee;">{{ getItemName(itemResponse) }}</td>
-                    <td style="text-align:left; padding:8px; border-bottom:1px solid #eee;">{{ itemResponse.score.score }}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <table style="width: 100%; border-collapse: collapse; margin-top: 24px;">
-                <thead>
-                  <tr>
-                    <th style="text-align:left; padding:8px; border-bottom:1px solid #ccc;">Pontuação Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style="text-align:left; padding:8px; border-bottom:1px solid #eee;">{{ totalGrade.toFixed(2) }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+
+          <div style="margin-top: 40px; font-family: Tahoma; text-align:left;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr>
+                  <th style="padding:8px; border-bottom:1px solid #ccc;">Fase</th>
+                  <th style="padding:8px; border-bottom:1px solid #ccc;">Pontuação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="itemResponse in participation.itemResponses" :key="itemResponse.id">
+                  <td style="padding:8px; border-bottom:1px solid #eee;">{{ getItemName(itemResponse)
+                  }}</td>
+                  <td style="padding:8px; border-bottom:1px solid #eee;">{{ itemResponse.score.score }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 30px;">
+              <thead>
+                <tr>
+                  <th style="padding:8px; border-bottom:1px solid #ccc;">Pontuação total das fases</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding:8px; border-bottom:1px solid #eee;">{{ totalGrade.toFixed(2) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <div class="fundo-branco">
+          <div style="font-family: Tahoma; text-align:left;">
+            <p>
+              O pensamento computacional é uma forma de pensar e resolver problemas usando conceitos da ciência da
+              computação. É definido por quatro pilares principais:
+            </p>
+
+            <table style="max-width: 800px; border-collapse: collapse; margin-top: 12px;">
+              <tbody>
+                <tr>
+                  <td class="padded-bordered" style="font-weight: bold;">Decomposição</td>
+                  <td class="padded-bordered">Quebrar um problema grande em partes menores e
+                    mais fáceis de gerenciar.</td>
+                </tr>
+                <tr>
+                  <td class="padded-bordered" style="font-weight: bold; ">Reconhecimento de Padrões</td>
+                  <td class="padded-bordered">Identificar semelhanças e tendências em dados ou
+                    situações para simplificar soluções.</td>
+                </tr>
+                <tr>
+                  <td class="padded-bordered" style="font-weight: bold;">Abstração</td>
+                  <td class="padded-bordered" >Focar nas informações mais importantes do problema,
+                    ignorando os detalhes irrelevantes.</td>
+                </tr>
+                <tr>
+                  <td class="padded-bordered" style="font-weight: bold;">Algoritmos</td>
+                  <td class="padded-bordered">Criar uma sequência de passos claros e organizados
+                    para chegar à solução.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+      </div>
 
       <el-button id="playAgainBtn" :style="{ background: playAgainButtonColor }" @click="playAgain">
         Jogar Novamente
@@ -49,7 +84,7 @@
         :test-application.sync="participation.application" />
 
 
-  </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -108,7 +143,7 @@ export default class extends Vue {
       MaxReconhecimentoDePadroes += pesosMedia[mechanicId].peso_reconhecimentoDePadroes * quantidadeFases;
       MaxDecomposicao += pesosMedia[mechanicId].peso_decomposicao * quantidadeFases;
     }
-    
+
     // Calcula os totais a partir das respostas
     this.participation.itemResponses.forEach((itemResponse) => {
       try {
@@ -159,22 +194,22 @@ export default class extends Vue {
         scale: {
           ticks: {
             beginAtZero: true,
-            fontFamily: 'Tahoma, Arial, sans-serif', // igual ao .label-text
-            fontSize: 15,                            // igual ao .label-text (15pt ≈ 20px)
+            fontFamily: 'Tahoma', // igual ao .label-text
+            fontSize: 16,                            // igual ao .label-text (15pt ≈ 20px)
             fontColor: '#464646',                    // igual ao .label-text
             fontStyle: 'normal',
           },
           pointLabels: {
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: 15,
+            fontFamily: 'Tahoma',
+            fontSize: 16,
             fontColor: '#464646',
             fontStyle: 'normal',
           }
         },
         legend: {
           labels: {
-            fontFamily: 'Tahoma, Arial, sans-serif',
-            fontSize: 15,
+            fontFamily: 'Tahoma',
+            fontSize: 16,
             fontColor: '#464646',
             fontStyle: 'normal',
           }
@@ -426,6 +461,11 @@ export default class extends Vue {
 <style lang="scss">
 html {
   background: rgba(210, 207, 207, 0.714);
+}
+
+.padded-bordered {
+  padding: 12px;
+  border: 1px solid #ddd;
 }
 
 .fundo-branco {
