@@ -3,7 +3,7 @@
     <div class="jumbotron">
       <h1>Plataforma de Puzzles</h1>
       <p>
-        Uma aplicação para medir as habilidades do Pensamento por meio de <i>puzzles</i> divertidos
+        Uma aplicação para medir as habilidades do Pensamento Computacional por meio de <i>puzzles</i> divertidos
       </p>
       <div style="margin-top: 40px">
         <nuxt-link to="/public-applications">
