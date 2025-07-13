@@ -49,31 +49,26 @@
         <div class="fundo-branco">
           <div style="font-family: Tahoma; text-align:left;">
             <p>
-              O pensamento computacional é uma forma de pensar e resolver problemas usando conceitos da ciência da
-              computação. É definido por quatro pilares principais:
+              O Pensamento Computacional significa aplica conceitos da ciência da computação para estruturar e resolver problemas de maneira mais lógica e sistemática.
             </p>
 
             <table style="max-width: 800px; border-collapse: collapse; margin-top: 12px;">
               <tbody>
                 <tr>
                   <td class="padded-bordered" style="font-weight: bold;">Decomposição</td>
-                  <td class="padded-bordered">Quebrar um problema grande em partes menores e
-                    mais fáceis de gerenciar.</td>
+                  <td class="padded-bordered">Dividir um problema complexo em partes menores e mais gerenciáveis​</td>
                 </tr>
                 <tr>
                   <td class="padded-bordered" style="font-weight: bold; ">Reconhecimento de Padrões</td>
-                  <td class="padded-bordered">Identificar semelhanças e tendências em dados ou
-                    situações para simplificar soluções.</td>
+                  <td class="padded-bordered">Identificar semelhanças ou regularidades entre os problemas​</td>
                 </tr>
                 <tr>
                   <td class="padded-bordered" style="font-weight: bold;">Abstração</td>
-                  <td class="padded-bordered" >Focar nas informações mais importantes do problema,
-                    ignorando os detalhes irrelevantes.</td>
+                  <td class="padded-bordered" >Focar apenas nos aspectos essenciais, descartando detalhes desnecessários​</td>
                 </tr>
                 <tr>
                   <td class="padded-bordered" style="font-weight: bold;">Algoritmos</td>
-                  <td class="padded-bordered">Criar uma sequência de passos claros e organizados
-                    para chegar à solução.</td>
+                  <td class="padded-bordered">Criar uma sequência de passos lógicos para resolver o problema​</td>
                 </tr>
               </tbody>
             </table>
